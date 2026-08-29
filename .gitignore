@@ -1,0 +1,17 @@
+# Claude Code / agent state
+.claude/
+
+# Deploy config — host alias is fine but KeyPath is machine-specific
+tools/deploy-config.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
+*~
+
+# Build / runtime
+node_modules/
+dist/
+*.log

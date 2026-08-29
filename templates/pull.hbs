@@ -1,0 +1,48 @@
+<section class="inperson-body">
+
+  <div class="inperson-scene">
+    <div class="inperson-scene-head">
+      <h3><i class="fa-solid fa-map"></i> {{sceneName}}</h3>
+      <div class="inperson-pull-tools">
+        <button type="button" data-action="all" class="inperson-mini">
+          {{localize "INPERSON.Pull.All"}}
+        </button>
+        <button type="button" data-action="none" class="inperson-mini">
+          {{localize "INPERSON.Pull.None"}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {{#if hasUsers}}
+    <div class="inperson-pull-list">
+      {{#each users}}
+        <label class="inperson-pull-row {{#if this.here}}here{{/if}}">
+          <input type="checkbox" data-user-id="{{this.id}}" {{#if this.checked}}checked{{/if}}>
+          <span class="inperson-dot" style="background:{{this.color}}"></span>
+          <span class="inperson-pull-main">
+            <span class="inperson-pull-name">
+              {{this.name}}
+              {{#if this.isGM}}<em class="inperson-tag">GM</em>{{/if}}
+              {{#if this.isMonitor}}<em class="inperson-tag muted">{{localize "INPERSON.Panel.MonitorTag"}}</em>{{/if}}
+            </span>
+            <span class="inperson-pull-note">{{this.note}}</span>
+          </span>
+        </label>
+      {{/each}}
+    </div>
+  {{else}}
+    <p class="inperson-hint">
+      <i class="fa-solid fa-circle-info"></i>
+      {{localize "INPERSON.Pull.NobodyOnline"}}
+    </p>
+  {{/if}}
+
+  <footer class="inperson-foot">
+    <button type="button" data-action="pull" class="inperson-master-toggle" {{#unless hasUsers}}disabled{{/unless}}>
+      <i class="fa-solid fa-people-arrows"></i>
+      <span>{{localize "INPERSON.Pull.Confirm"}}</span>
+    </button>
+  </footer>
+
+</section>

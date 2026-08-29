@@ -1,0 +1,629 @@
+/*
+ * Ninjo's In-Person Tools
+ *
+ * Styling follows the D&D look of FANG and NDRS: parchment ground, dark red,
+ * gold accent, 2px radii.
+ *
+ * The values are set here on purpose instead of inherited from `--fang-*`.
+ * Inheriting would drag FANG's cyberpunk variant along whenever it is switched
+ * on, and this panel is meant to stay D&D in every case.
+ */
+
+.inperson-panel,
+#ninjos-inperson-tools-pill {
+  --tm-bg:       #fdfbf7;
+  --tm-card:     #ffffff;
+  --tm-nav:      #f4f1ea;
+  --tm-text:     #1a1a1a;
+  --tm-border:   #dcd6cc;
+  --tm-red:      #8B0000;
+  --tm-red-rgb:  139, 0, 0;
+  --tm-gold:     #D4AF37;
+  --tm-gold-rgb: 212, 175, 55;
+  --tm-onred:    #ffffff;
+  --tm-font:     'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --tm-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --tm-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* -------------------------------------------- */
+/*  Status pill                                 */
+/* -------------------------------------------- */
+
+#ninjos-inperson-tools-pill {
+  position: fixed;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border: 1px solid var(--tm-border);
+  border-radius: 2px;
+  background: var(--tm-card);
+  color: var(--tm-text);
+  font-family: var(--tm-font);
+  font-size: 12px;
+  line-height: 1;
+  letter-spacing: 0.2px;
+  box-shadow: var(--tm-shadow-md);
+  pointer-events: auto;
+  user-select: none;
+}
+
+#ninjos-inperson-tools-pill i {
+  color: var(--tm-red);
+}
+
+#ninjos-inperson-tools-pill.is-gm {
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+#ninjos-inperson-tools-pill.is-gm:hover {
+  border-color: var(--tm-gold);
+}
+
+/* -------------------------------------------- */
+/*  Panel                                       */
+/* -------------------------------------------- */
+
+.inperson-panel {
+  font-family: var(--tm-font);
+  color: var(--tm-text);
+}
+
+.inperson-panel .window-content {
+  background: var(--tm-bg);
+  color: var(--tm-text);
+}
+
+.inperson-panel .inperson-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px;
+}
+
+/* Master switch ------------------------------ */
+
+.inperson-master {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border: 1px solid var(--tm-border);
+  border-radius: 4px;
+  background: var(--tm-nav);
+}
+
+.inperson-master.on {
+  border-color: var(--tm-red);
+  background: rgba(var(--tm-red-rgb), 0.06);
+}
+
+.inperson-master-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 34px;
+  padding: 0 14px;
+  border: none;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  background-color: var(--tm-red);
+  color: var(--tm-onred);
+  font-family: var(--tm-font);
+  font-size: 0.88rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.inperson-master-toggle:hover {
+  background-color: var(--tm-red);
+  filter: brightness(1.15);
+}
+
+.inperson-master-note {
+  margin: 0;
+  font-size: 12px;
+  text-align: center;
+  opacity: 0.75;
+}
+
+/* Scene block -------------------------------- */
+
+.inperson-scene {
+  padding: 9px 12px;
+  border: 1px solid var(--tm-border);
+  border-radius: 4px;
+  background: var(--tm-card);
+  box-shadow: var(--tm-shadow-sm);
+}
+
+.inperson-scene-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.inperson-scene-head h3 {
+  margin: 0;
+  border: none;
+  font-family: var(--tm-font);
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--tm-red);
+}
+
+.inperson-scene-cost {
+  margin: 6px 0 0;
+  font-size: 12px;
+}
+
+.inperson-scene-cost strong {
+  color: var(--tm-red);
+  cursor: help;
+  border-bottom: 1px dotted var(--tm-border);
+}
+
+.inperson-warn {
+  color: var(--tm-gold);
+  cursor: help;
+  filter: brightness(0.85);
+}
+
+.inperson-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 6px 8px;
+  border-left: 3px solid var(--tm-gold);
+  background: rgba(var(--tm-gold-rgb), 0.1);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.inperson-hint i {
+  margin-top: 1px;
+  color: var(--tm-gold);
+}
+
+/* Buttons ------------------------------------ */
+
+.inperson-mini {
+  flex: 0 0 auto;
+  width: auto;
+  height: 26px;
+  padding: 0 12px;
+  border: 1px solid var(--tm-border);
+  border-radius: 2px;
+  background: var(--tm-nav);
+  color: var(--tm-text);
+  font-family: var(--tm-font);
+  font-size: 12px;
+  line-height: 24px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.inperson-mini:hover:not(:disabled) {
+  border-color: var(--tm-red);
+  background: rgba(var(--tm-red-rgb), 0.08);
+}
+
+.inperson-mini:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+
+/* Player list -------------------------------- */
+
+.inperson-users {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.inperson-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--tm-border);
+  border-radius: 3px;
+  background: var(--tm-card);
+}
+
+.inperson-user.offline {
+  opacity: 0.55;
+}
+
+.inperson-dot {
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+.inperson-user-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inperson-user-name {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inperson-user-meta {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.inperson-tag {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 0 5px;
+  border-radius: 2px;
+  background: var(--tm-red);
+  color: var(--tm-onred);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: bold;
+  vertical-align: middle;
+}
+
+.inperson-tag.muted {
+  background: var(--tm-border);
+  color: var(--tm-text);
+}
+
+.inperson-tag.shield {
+  background: var(--tm-gold);
+  color: #1a1a1a;
+  cursor: help;
+}
+
+/* Three-way choice --------------------------- */
+
+.inperson-choice {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 2px;
+}
+
+.inperson-choice button {
+  width: 30px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--tm-border);
+  border-radius: 2px;
+  background: var(--tm-nav);
+  color: var(--tm-text);
+  font-family: var(--tm-font);
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.inperson-choice button:hover {
+  border-color: var(--tm-red);
+}
+
+.inperson-choice button.active {
+  border-color: var(--tm-red);
+  background: var(--tm-red);
+  color: var(--tm-onred);
+}
+
+/* Footer ------------------------------------- */
+
+.inperson-foot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Split: what is blocked, what still loads ---- */
+
+.inperson-split {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--tm-border);
+}
+
+.inperson-split-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.inperson-split-row i {
+  width: 14px;
+  text-align: center;
+}
+
+.inperson-split-label {
+  flex: 1 1 auto;
+  opacity: 0.8;
+}
+
+.inperson-split-row strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.inperson-split-row.blocked i,
+.inperson-split-row.blocked strong {
+  color: var(--tm-red);
+}
+
+.inperson-split-row.passing i,
+.inperson-split-row.passing strong {
+  color: var(--tm-text);
+  opacity: 0.7;
+}
+
+.inperson-split-row.saving i,
+.inperson-split-row.saving strong {
+  color: var(--tm-gold);
+  filter: brightness(0.8);
+}
+
+/* -------------------------------------------- */
+/*  Scene navigation badge                      */
+/* -------------------------------------------- */
+
+#scene-navigation .scene.inperson-on-monitor,
+#navigation .scene.inperson-on-monitor {
+  box-shadow: inset 0 0 0 2px #D4AF37;
+}
+
+.inperson-monitor-badge {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  font-size: 10px;
+  color: #D4AF37;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.9);
+  pointer-events: auto;
+  cursor: help;
+}
+
+/* -------------------------------------------- */
+/*  Display block                               */
+/* -------------------------------------------- */
+
+.inperson-monitors {
+  padding: 9px 12px;
+  border: 1px solid var(--tm-border);
+  border-radius: 4px;
+  background: var(--tm-card);
+  box-shadow: var(--tm-shadow-sm);
+}
+
+.inperson-monitors h3 {
+  margin: 0 0 6px;
+  border: none;
+  font-family: var(--tm-font);
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--tm-red);
+}
+
+.inperson-monitor-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.inperson-monitor-row.offline {
+  opacity: 0.55;
+}
+
+.inperson-monitor-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inperson-monitor-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.inperson-monitor-state {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.inperson-idle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--tm-border);
+  font-size: 12px;
+}
+
+.inperson-idle-select {
+  flex: 1 1 auto;
+  height: 26px;
+  border: 1px solid var(--tm-border);
+  border-radius: 2px;
+  background: var(--tm-nav);
+  color: var(--tm-text);
+  font-family: var(--tm-font);
+  font-size: 12px;
+}
+
+.inperson-idle-note {
+  margin: 4px 0 0;
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0.65;
+}
+
+/* Companion pairs ---------------------------- */
+
+.inperson-pairs {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--tm-border);
+}
+
+.inperson-pairs h4 {
+  margin: 0 0 4px;
+  border: none;
+  font-family: var(--tm-font);
+  font-size: 12px;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+.inperson-pair-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  font-size: 12px;
+}
+
+.inperson-pair-from,
+.inperson-pair-to {
+  flex: 1 1 0;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inperson-pair-row i {
+  flex: 0 0 auto;
+  color: var(--tm-gold);
+  font-size: 10px;
+}
+
+.inperson-pair-remove {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--tm-border);
+  border-radius: 2px;
+  background: var(--tm-nav);
+  color: var(--tm-text);
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.inperson-pair-remove:hover {
+  border-color: var(--tm-red);
+  color: var(--tm-red);
+}
+
+.inperson-companion select {
+  width: 100%;
+}
+
+/* -------------------------------------------- */
+/*  Rotated scenes: keep HUD text upright       */
+/* -------------------------------------------- */
+
+/*
+ * The HUD frame turns with the canvas so the individual HUDs land on their
+ * tokens. That leaves their text on its side, so the children are turned back.
+ * Around their centre, not the top-left corner the base stylesheet uses -
+ * rotating about the corner swings an element away from the token it labels.
+ */
+#hud.inperson-hud-upright > * {
+  rotate: var(--tm-hud-counter, 0deg);
+  transform-origin: center center;
+}
+
+/* -------------------------------------------- */
+/*  Bring players                               */
+/* -------------------------------------------- */
+
+.inperson-pull-tools {
+  display: flex;
+  gap: 4px;
+}
+
+.inperson-pull-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.inperson-pull-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--tm-border);
+  border-radius: 3px;
+  background: var(--tm-card);
+  cursor: pointer;
+}
+
+.inperson-pull-row.here {
+  opacity: 0.6;
+}
+
+.inperson-pull-row input {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.inperson-pull-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inperson-pull-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.inperson-pull-note {
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+/* The pull dialog reuses the panel styling; this class only sets its own
+   comfortable width so the "currently on …" notes do not wrap. */
+.inperson-pull .window-content {
+  min-width: 360px;
+}

@@ -1,0 +1,185 @@
+<section class="inperson-body">
+
+  <div class="inperson-master {{#if enabled}}on{{else}}off{{/if}}">
+    <button type="button" data-action="toggleMaster" class="inperson-master-toggle">
+      <i class="fa-solid {{#if enabled}}fa-eye-slash{{else}}fa-eye{{/if}}"></i>
+      <span>{{#if enabled}}{{localize "INPERSON.Panel.MasterOn"}}{{else}}{{localize "INPERSON.Panel.MasterOff"}}{{/if}}</span>
+    </button>
+    <p class="inperson-master-note">
+      {{#if enabled}}
+        {{localize "INPERSON.Panel.AffectedCount" count=affectedCount}}
+      {{else}}
+        {{localize "INPERSON.Panel.MasterHint"}}
+      {{/if}}
+    </p>
+  </div>
+
+  <div class="inperson-scene">
+    <div class="inperson-scene-head">
+      <h3><i class="fa-solid fa-map"></i> {{sceneName}}</h3>
+      <button type="button" data-action="measure" class="inperson-mini"
+              data-tooltip="{{localize 'INPERSON.Panel.MeasureTooltip'}}">
+        <i class="fa-solid fa-ruler"></i> {{localize "INPERSON.Panel.Measure"}}
+      </button>
+    </div>
+    <p class="inperson-scene-cost">
+      {{sceneFileCount}}
+      &mdash;
+      <strong data-tooltip="{{localize 'INPERSON.Panel.CostTooltip'}}">{{sceneCost}}</strong>
+      {{localize "INPERSON.Panel.PerClient"}}
+      {{#if sceneUnmeasured}}
+        <span class="inperson-warn"
+              data-tooltip="{{localize 'INPERSON.Panel.UnmeasuredTooltip'}}">({{localize "INPERSON.Panel.Unmeasured" count=sceneUnmeasured}})</span>
+      {{/if}}
+    </p>
+
+    {{#if showSplit}}
+      <div class="inperson-split">
+        <div class="inperson-split-row blocked">
+          <i class="fa-solid fa-ban"></i>
+          <span class="inperson-split-label">{{localize "INPERSON.Panel.SplitActive"}}</span>
+          <strong>{{sceneBlocked}}</strong>
+        </div>
+        <div class="inperson-split-row passing">
+          <i class="fa-solid fa-arrow-down"></i>
+          <span class="inperson-split-label">{{localize "INPERSON.Panel.SplitPassing"}}</span>
+          <strong>{{scenePassing}}</strong>
+        </div>
+      </div>
+    {{/if}}
+
+    {{#if showSaving}}
+      <div class="inperson-split">
+        <div class="inperson-split-row saving">
+          <i class="fa-solid fa-arrow-trend-down"></i>
+          <span class="inperson-split-label">{{localize "INPERSON.Panel.WouldSave"}}</span>
+          <strong>{{sceneSaving}}</strong>
+        </div>
+      </div>
+    {{/if}}
+    {{#if sceneUnmeasured}}
+      <p class="inperson-hint">
+        <i class="fa-solid fa-circle-info"></i>
+        {{localize "INPERSON.Panel.MeasureHint"}}
+      </p>
+    {{/if}}
+  </div>
+
+  {{#if hasMonitors}}
+    <div class="inperson-monitors">
+      <h3><i class="fa-solid fa-display"></i> {{localize "INPERSON.Panel.MonitorsTitle"}}</h3>
+
+      {{#if bmName}}
+        <div class="inperson-monitor-row {{#unless bmActive}}offline{{/unless}}">
+          <div class="inperson-monitor-main">
+            <span class="inperson-monitor-name">
+              {{bmName}}
+              <em class="inperson-tag muted">{{localize "INPERSON.Panel.TagBM"}}</em>
+              {{#unless bmActive}}<em class="inperson-tag muted">{{localize "INPERSON.Panel.Offline"}}</em>{{/unless}}
+            </span>
+            <span class="inperson-monitor-state">{{localize "INPERSON.Panel.RoleFollow"}}</span>
+          </div>
+        </div>
+      {{/if}}
+
+      {{#if scName}}
+        <div class="inperson-monitor-row {{#unless scActive}}offline{{/unless}}">
+          <div class="inperson-monitor-main">
+            <span class="inperson-monitor-name">
+              {{scName}}
+              <em class="inperson-tag muted">{{localize "INPERSON.Panel.TagSC"}}</em>
+              {{#unless scActive}}<em class="inperson-tag muted">{{localize "INPERSON.Panel.Offline"}}</em>{{/unless}}
+            </span>
+            <span class="inperson-monitor-state">{{pinLabel}}</span>
+          </div>
+          <div class="inperson-choice">
+            <button type="button" data-action="togglePin"
+                    class="{{#if pinned}}active{{/if}}"
+                    data-tooltip="{{localize 'INPERSON.Panel.RolePinnedTip'}}">
+              <i class="fa-solid fa-thumbtack"></i>
+            </button>
+          </div>
+        </div>
+      {{/if}}
+
+      <div class="inperson-idle">
+        <label data-tooltip="{{localize 'INPERSON.Panel.IdleSceneTip'}}">{{localize "INPERSON.Panel.IdleScene"}}</label>
+        <select name="idleScene" class="inperson-idle-select">
+          <option value="">{{localize "INPERSON.Panel.IdleSceneNone"}}</option>
+          {{#each sceneChoices}}
+            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      {{#unless releaseIsIdle}}
+        <p class="inperson-idle-note">{{localize "INPERSON.Panel.IdleSceneUnused"}}</p>
+      {{/unless}}
+
+      {{#if hasPairs}}
+        <div class="inperson-pairs">
+          <h4>{{localize "INPERSON.Panel.PairsTitle"}}</h4>
+          {{#each pairs}}
+            <div class="inperson-pair-row">
+              <span class="inperson-pair-from">{{this.sceneName}}</span>
+              <i class="fa-solid fa-arrow-right"></i>
+              <span class="inperson-pair-to">{{this.companionName}}</span>
+              <button type="button" data-action="unpair" data-scene-id="{{this.sceneId}}"
+                      class="inperson-pair-remove"
+                      data-tooltip="{{localize 'INPERSON.Panel.UnpairTip'}}">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+    </div>
+  {{/if}}
+
+  <ul class="inperson-users">
+    {{#each users}}
+      <li class="inperson-user {{#unless active}}offline{{/unless}}">
+        <span class="inperson-dot" style="background:{{this.color}}"></span>
+        <div class="inperson-user-main">
+          <span class="inperson-user-name">
+            {{this.name}}
+            {{#if this.isGM}}<em class="inperson-tag">GM</em>{{/if}}
+            {{#if this.isMonitor}}
+              <em class="inperson-tag shield" title="{{localize 'INPERSON.Panel.MonitorProtected'}}">
+                <i class="fa-solid fa-shield-halved"></i> {{localize "INPERSON.Panel.MonitorTag"}}
+              </em>
+            {{/if}}
+            {{#unless this.active}}<em class="inperson-tag muted">{{localize "INPERSON.Panel.Offline"}}</em>{{/unless}}
+          </span>
+          <span class="inperson-user-meta">
+            {{this.reason}}
+            {{#if this.savedLabel}}
+              &middot; {{localize "INPERSON.Panel.Saved"}} <strong>{{this.savedLabel}}</strong>
+              ({{this.blockedCount}})
+            {{/if}}
+          </span>
+        </div>
+        <div class="inperson-choice">
+          <button type="button" data-action="setUser" data-user-id="{{this.id}}" data-value="auto"
+                  class="{{#if this.isAuto}}active{{/if}}"
+                  title="{{localize 'INPERSON.Panel.Auto'}}">A</button>
+          <button type="button" data-action="setUser" data-user-id="{{this.id}}" data-value="on"
+                  class="{{#if this.isOn}}active{{/if}}"
+                  title="{{localize 'INPERSON.Panel.ForceOn'}}"><i class="fa-solid fa-eye-slash"></i></button>
+          <button type="button" data-action="setUser" data-user-id="{{this.id}}" data-value="off"
+                  class="{{#if this.isOff}}active{{/if}}"
+                  title="{{localize 'INPERSON.Panel.ForceOff'}}"><i class="fa-solid fa-eye"></i></button>
+        </div>
+      </li>
+    {{/each}}
+  </ul>
+
+  <footer class="inperson-foot">
+    <button type="button" data-action="pullPlayers" class="inperson-mini">
+      <i class="fa-solid fa-people-arrows"></i> {{localize "INPERSON.Pull.MenuEntry"}}
+    </button>
+    <button type="button" data-action="refreshAll" class="inperson-mini">
+      <i class="fa-solid fa-rotate"></i> {{localize "INPERSON.Panel.RefreshAll"}}
+    </button>
+  </footer>
+
+</section>
