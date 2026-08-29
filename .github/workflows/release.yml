@@ -1,0 +1,56 @@
+name: Release Creation
+
+on:
+  push:
+    tags:
+      - "v*" # triggers on tags like v14.2605.1
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: ${{ startsWith(github.ref_name, 'v') && !contains(github.ref_name, 'beta') }}
+    runs-on: ubuntu-latest
+    env:
+      # Job-level so the publish step's `if` can read it. A step's own env
+      # is not yet available when its `if` is evaluated.
+      PACKAGE_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate Module
+        run: node tools/validate.mjs
+
+      - name: Create Module Archive
+        run: |
+          zip -r ./module.zip . \
+            -x ".git/*" \
+               ".github/*" \
+               ".gitignore" \
+               "tools/*" \
+               "AGENTS.md" \
+               "MACHBARKEIT-*.md" \
+               "TESTPLAN.md" \
+               "HINWEIS-*.md"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            module.json
+            module.zip
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }} (FVTT 13-14)
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish Module to FoundryVTT Website
+        if: ${{ env.PACKAGE_TOKEN != '' }}
+        uses: cs96and/FoundryVTT-release-package@v1
+        with:
+          package-token: ${{ secrets.PACKAGE_TOKEN }}
+          manifest-url: https://github.com/Niclasp1501/Ninjos-InPerson-Tools/releases/download/${{ github.ref_name }}/module.json
