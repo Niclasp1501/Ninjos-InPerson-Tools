@@ -7,13 +7,18 @@
  * scene context menu only offers "pull everyone", which drags the display
  * clients along and yanks a player out of a character sheet they were reading.
  *
- * So this is a picker, not a mechanism. It pre-selects the players who are not
- * already on the target scene, leaves the display accounts out by default (they
- * are steered separately), and remembers nothing - each call is a deliberate act.
+ * So this is a picker, not a mechanism. Everyone connected is ticked to begin
+ * with - the usual case is "all of you, look at this" - with one exception: the
+ * scene display, whose entire job is to stay where it is. Ticking it anyway is
+ * allowed and counts as a deliberate choice, which is what lets it override the
+ * pin.
+ *
+ * Nothing is remembered between calls; each one is its own decision.
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
-import { isMonitorUser } from "./state.js";
+import { isMonitorUser, isSceneDisplay } from "./state.js";
+import { DELIBERATE } from "./monitor.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -66,8 +71,16 @@ export class PullPlayersDialog extends HandlebarsApplicationMixin(ApplicationV2)
           isGM: user.isGM,
           isMonitor: monitor,
           here,
-          // Already there needs no pulling; displays have their own steering.
-          checked: !here && !monitor,
+          // Everyone is ticked, bar the scene display. Being on the scene
+          // already is no reason to leave someone out: a player who wandered
+          // off and came back still has the window scrolled somewhere else, and
+          // the point of the button is that afterwards everybody is looking at
+          // the same thing.
+          //
+          // The scene display is the one exception, because staying put is its
+          // whole job. It can still be ticked by hand - doing so counts as a
+          // deliberate choice and overrides the pin.
+          checked: !isSceneDisplay(user),
           note: here
             ? game.i18n.localize("INPERSON.Pull.AlreadyHere")
             : (user.viewedScene
@@ -100,7 +113,10 @@ export class PullPlayersDialog extends HandlebarsApplicationMixin(ApplicationV2)
     if (!users.length) {
       return ui.notifications.warn("INPERSON.Pull.NobodySelected", { localize: true });
     }
-    this.#scene.pullUsers(users);
+    // Marked deliberate: whoever is ticked here was ticked by hand, a pinned
+    // display included. The pin guards against blanket pulls, not against an
+    // explicit choice.
+    this.#scene.pullUsers(users, { [DELIBERATE]: true });
     ui.notifications.info(game.i18n.format("INPERSON.Pull.Done", {
       count: users.length,
       scene: this.#scene.name

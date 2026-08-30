@@ -102,36 +102,6 @@
         </div>
       {{/if}}
 
-      <div class="inperson-idle">
-        <label data-tooltip="{{localize 'INPERSON.Panel.IdleSceneTip'}}">{{localize "INPERSON.Panel.IdleScene"}}</label>
-        <select name="idleScene" class="inperson-idle-select">
-          <option value="">{{localize "INPERSON.Panel.IdleSceneNone"}}</option>
-          {{#each sceneChoices}}
-            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
-          {{/each}}
-        </select>
-      </div>
-      {{#unless releaseIsIdle}}
-        <p class="inperson-idle-note">{{localize "INPERSON.Panel.IdleSceneUnused"}}</p>
-      {{/unless}}
-
-      {{#if hasPairs}}
-        <div class="inperson-pairs">
-          <h4>{{localize "INPERSON.Panel.PairsTitle"}}</h4>
-          {{#each pairs}}
-            <div class="inperson-pair-row">
-              <span class="inperson-pair-from">{{this.sceneName}}</span>
-              <i class="fa-solid fa-arrow-right"></i>
-              <span class="inperson-pair-to">{{this.companionName}}</span>
-              <button type="button" data-action="unpair" data-scene-id="{{this.sceneId}}"
-                      class="inperson-pair-remove"
-                      data-tooltip="{{localize 'INPERSON.Panel.UnpairTip'}}">
-                <i class="fa-solid fa-xmark"></i>
-              </button>
-            </div>
-          {{/each}}
-        </div>
-      {{/if}}
     </div>
   {{/if}}
 

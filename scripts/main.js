@@ -16,9 +16,15 @@ import { syncNoCanvas } from "./nocanvas.js";
 import { applyRotation, getRotation, ROTATION_FLAG, ANGLES } from "./rotation.js";
 import { openPullDialog } from "./pull.js";
 import { migrateFromOldId } from "./migrate.js";
+import { installLockViewInterop, onRotationChanged, describeInterop } from "./lockview.js";
+import { installScreensaver } from "./screensaver.js";
+import { openDisplaySettings } from "./displays-settings.js";
+import { openTableModeSettings } from "./tablemode-settings.js";
 import {
-  installMonitorWrapper, applyPinnedScene, showOnMonitor, setPinned, isPinned,
-  getSceneDisplay, getPinnedScene, getCompanionScene, setCompanionScene, COMPANION_FLAG
+  installMonitorWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
+  getSceneDisplay, getPinnedScene, getCompanionScene, setCompanionScene,
+  setDefaultCompanionScene, setScreensaverState,
+  COMPANION_FLAG
 } from "./monitor.js";
 
 /* -------------------------------------------- */
@@ -34,11 +40,16 @@ function onRelevantSettingChanged() {
 function registerSettings() {
   const S = (key, data) => game.settings.register(MODULE_ID, key, data);
 
+  // Not in the settings list on purpose. It is the same switch as the big
+  // button at the top of the controls, and there it says what it is doing -
+  // "table mode is running, 6 players have stopped downloading maps" - where a
+  // checkbox in a list can only show a tick. Two ways to the same switch, one
+  // of them worse, and the controls are one click away right above it.
   S(SETTINGS.ENABLED, {
     name: "INPERSON.Settings.Enabled.Name",
     hint: "INPERSON.Settings.Enabled.Hint",
     scope: "world",
-    config: true,
+    config: false,
     type: Boolean,
     default: false,
     onChange: onRelevantSettingChanged
@@ -48,7 +59,7 @@ function registerSettings() {
     name: "INPERSON.Settings.DefaultPlayers.Name",
     hint: "INPERSON.Settings.DefaultPlayers.Hint",
     scope: "world",
-    config: true,
+    config: false,   // lives on the table-mode page
     type: Boolean,
     default: true,
     onChange: onRelevantSettingChanged
@@ -58,7 +69,7 @@ function registerSettings() {
     name: "INPERSON.Settings.Scope.Name",
     hint: "INPERSON.Settings.Scope.Hint",
     scope: "world",
-    config: true,
+    config: false,   // lives on the table-mode page
     type: String,
     choices: {
       background: "INPERSON.Settings.Scope.Background",
@@ -72,7 +83,7 @@ function registerSettings() {
     name: "INPERSON.Settings.KeepTokens.Name",
     hint: "INPERSON.Settings.KeepTokens.Hint",
     scope: "world",
-    config: true,
+    config: false,   // lives on the table-mode page
     type: Boolean,
     default: true,
     onChange: onRelevantSettingChanged
@@ -82,7 +93,7 @@ function registerSettings() {
     name: "INPERSON.Settings.BlockAudio.Name",
     hint: "INPERSON.Settings.BlockAudio.Hint",
     scope: "world",
-    config: true,
+    config: false,   // lives on the table-mode page
     type: Boolean,
     default: false
   });
@@ -91,7 +102,7 @@ function registerSettings() {
     name: "INPERSON.Settings.MonitorBM.Name",
     hint: "INPERSON.Settings.MonitorBM.Hint",
     scope: "world",
-    config: true,
+    config: false,   // lives on the scene-display page
     type: String,
     choices: {},          // filled in during setup, see fillAccountChoices()
     default: "",
@@ -102,7 +113,7 @@ function registerSettings() {
     name: "INPERSON.Settings.MonitorSC.Name",
     hint: "INPERSON.Settings.MonitorSC.Hint",
     scope: "world",
-    config: true,
+    config: false,   // lives on the scene-display page
     type: String,
     choices: {},
     default: "",
@@ -129,7 +140,7 @@ function registerSettings() {
     name: "INPERSON.Settings.MonitorRelease.Name",
     hint: "INPERSON.Settings.MonitorRelease.Hint",
     scope: "world",
-    config: true,
+    config: false,   // lives on the scene-display page
     type: String,
     choices: {
       follow: "INPERSON.Settings.MonitorRelease.Follow",
@@ -145,21 +156,92 @@ function registerSettings() {
     default: ""
   });
 
-  S(SETTINGS.HUD_UPRIGHT, {
-    name: "INPERSON.Settings.HudUpright.Name",
-    hint: "INPERSON.Settings.HudUpright.Hint",
+  S(SETTINGS.DEFAULT_COMPANION, {
     scope: "world",
-    config: true,
+    config: false,
+    type: String,
+    default: "",
+    onChange: () => refreshPanel()
+  });
+
+  S(SETTINGS.IDLE_ENABLED, {
+    name: "INPERSON.Settings.IdleEnabled.Name",
+    hint: "INPERSON.Settings.IdleEnabled.Hint",
+    scope: "world",
+    config: false,   // lives on the scene-display page
     type: Boolean,
-    default: true,
-    onChange: () => applyRotation()
+    default: false
+  });
+
+  S(SETTINGS.IDLE_MODE, {
+    name: "INPERSON.Settings.IdleMode.Name",
+    hint: "INPERSON.Settings.IdleMode.Hint",
+    scope: "world",
+    config: false,   // lives on the scene-display page
+    type: String,
+    choices: {
+      cover: "INPERSON.Settings.IdleMode.Cover",
+      scene: "INPERSON.Settings.IdleMode.Scene"
+    },
+    default: "cover"
+  });
+
+  S(SETTINGS.IDLE_AFTER, {
+    name: "INPERSON.Settings.IdleAfter.Name",
+    hint: "INPERSON.Settings.IdleAfter.Hint",
+    scope: "world",
+    config: false,   // lives on the scene-display page
+    type: Number,
+    range: { min: 1, max: 120, step: 1 },
+    default: 5
+  });
+
+  S(SETTINGS.IDLE_FOLDER, {
+    name: "INPERSON.Settings.IdleFolder.Name",
+    hint: "INPERSON.Settings.IdleFolder.Hint",
+    scope: "world",
+    config: false,   // lives on the scene-display page
+    type: String,
+    choices: {},          // filled in `setup`, once the folders exist
+    default: ""
+  });
+
+  S(SETTINGS.IDLE_ROTATE_EVERY, {
+    name: "INPERSON.Settings.IdleRotate.Name",
+    hint: "INPERSON.Settings.IdleRotate.Hint",
+    scope: "world",
+    config: false,   // lives on the scene-display page
+    type: Number,
+    range: { min: 1, max: 60, step: 1 },
+    default: 5
+  });
+
+
+  S(SETTINGS.IDLE_BLANK_FOR, {
+    name: "INPERSON.Settings.IdleBlankFor.Name",
+    hint: "INPERSON.Settings.IdleBlankFor.Hint",
+    scope: "world",
+    config: false,   // lives on the scene-display page
+    type: Number,
+    range: { min: 1, max: 60, step: 1 },
+    default: 3
+  });
+
+  S(SETTINGS.IDLE_LOGO, {
+    name: "INPERSON.Settings.IdleLogo.Name",
+    hint: "INPERSON.Settings.IdleLogo.Hint",
+    scope: "world",
+    config: false,   // lives on the scene-display page
+    type: String,
+    filePicker: "image",
+    default: ""
   });
 
   S(SETTINGS.HIDE_PROGRESS, {
     name: "INPERSON.Settings.HideProgress.Name",
     hint: "INPERSON.Settings.HideProgress.Hint",
     scope: "world",
-    config: true,
+    config: false,   // lives on the table-mode page
     type: Boolean,
     default: true
   });
@@ -168,7 +250,7 @@ function registerSettings() {
     name: "INPERSON.Settings.AutoNoCanvas.Name",
     hint: "INPERSON.Settings.AutoNoCanvas.Hint",
     scope: "world",
-    config: true,
+    config: false,   // lives on the table-mode page
     type: Boolean,
     default: false,
     onChange: onRelevantSettingChanged
@@ -185,7 +267,7 @@ function registerSettings() {
     name: "INPERSON.Settings.AllowList.Name",
     hint: "INPERSON.Settings.AllowList.Hint",
     scope: "world",
-    config: true,
+    config: false,   // lives on the table-mode page
     type: String,
     default: "",
     onChange: onRelevantSettingChanged
@@ -246,6 +328,47 @@ function registerSettings() {
     type: InPersonPanelShim,
     restricted: true
   });
+
+  // One page per tool. Blocking downloads and steering two televisions have
+  // nothing to do with one another beyond the occasion, and a flat list made
+  // whichever tool had the most settings look like "the settings of the module".
+  game.settings.registerMenu(MODULE_ID, "tablemode", {
+    name: "INPERSON.TableMode.MenuName",
+    label: "INPERSON.TableMode.MenuLabel",
+    hint: "INPERSON.TableMode.MenuHint",
+    icon: "fa-solid fa-eye-slash",
+    type: TableModeSettingsShim,
+    restricted: true
+  });
+
+  // Everything about the two televisions has its own page. Steering displays and
+  // stopping downloads are separate jobs that merely share a module, and one
+  // flat list made them read as a heap of unrelated switches.
+  game.settings.registerMenu(MODULE_ID, "displays", {
+    name: "INPERSON.Displays.MenuName",
+    label: "INPERSON.Displays.MenuLabel",
+    hint: "INPERSON.Displays.MenuHint",
+    icon: "fa-solid fa-display",
+    type: DisplaySettingsShim,
+    restricted: true
+  });
+}
+
+/** Same shim trick as below - the menu wants a class, we want our own window. */
+class TableModeSettingsShim extends foundry.applications.api.ApplicationV2 {
+  constructor(...args) {
+    super(...args);
+    openTableModeSettings();
+  }
+  async render() { return this; }
+}
+
+class DisplaySettingsShim extends foundry.applications.api.ApplicationV2 {
+  constructor(...args) {
+    super(...args);
+    openDisplaySettings();
+  }
+  async render() { return this; }
 }
 
 /** Settings menus want a FormApplication-shaped class; we just open our panel. */
@@ -362,6 +485,11 @@ function onSocket(payload) {
   }
   if (payload?.type === SOCKET.REFRESH) {
     applyStateChange();
+    return;
+  }
+  if (payload?.type === SOCKET.SCREENSAVER) {
+    if (!game.user.isGM) return;
+    setScreensaverState(payload.userId, !!payload.active);
   }
 }
 
@@ -421,6 +549,14 @@ Hooks.once("ready", async () => {
   reportToGM();
   syncNoCanvas();
   applyPinnedScene();
+  // One place that notices the display moving, whatever moved it. Replaces the
+  // earlier per-route bookkeeping, which could only ever cover the routes we
+  // had thought of.
+  installActivityListener();
+  installScreensaver();
+  // Lock View may not have built its global yet when our `ready` runs; the
+  // canvasReady attempt below is the second chance. Both are no-ops without it.
+  installLockViewInterop();
 
   if (isActive()) {
     console.log(`${MODULE_ID} | Table Mode active - scene backgrounds are blocked for this client.`);
@@ -432,6 +568,7 @@ Hooks.on("canvasReady", () => {
   updatePill();
   reportToGM();
   applyRotation();
+  installLockViewInterop();
 });
 
 // The HUD frame is re-aligned on every pan and rebuilt whenever a HUD opens, so
@@ -441,13 +578,24 @@ for (const hook of ["renderHeadsUpDisplayContainer", "canvasPan", "updateScene"]
   Hooks.on(hook, () => applyRotation());
 }
 
+Hooks.on("updateScene", (scene, changed) => {
+  // Lock View fits a scene when it loads, so a rotation changed while standing
+  // on the scene needs the fitting run again. Tied to the flag rather than to
+  // applyRotation, which also fires on every pan and would pan itself in a loop.
+  // `-=rotation` is how a removed flag arrives - setRotation unsets it for 0
+  // degrees, so leaving it out would skip exactly the case of straightening a
+  // scene back up.
+  const rotationChange = changed?.flags?.[MODULE_ID];
+  if (rotationChange && (ROTATION_FLAG in rotationChange || `-=${ROTATION_FLAG}` in rotationChange)) {
+    onRotationChanged(scene);
+  }
+});
+
 for (const hook of ["createToken", "updateToken", "deleteToken"]) {
   Hooks.on(hook, () => refreshTokenSources());
 }
 
-
 Hooks.on("renderPlayers", () => updatePill());
-
 
 /* -------------------------------------------- */
 /* -------------------------------------------- */
@@ -495,12 +643,40 @@ function onSceneContextOptions(app, options) {
   // right-click, so wording that names the current state would freeze. The
   // state is on the gold badge anyway; reading it inside the callback keeps
   // the toggle correct at click time.
+  // Pinning from a scene row means "pin it *here*" - the display is sent to the
+  // scene that was right-clicked and held there. Releasing needs no scene.
+  const togglePinHere = withScene(scene => setPinned(isPinned() ? false : true, scene));
   options.push({
     label: "INPERSON.Context.TogglePin",
     icon: '<i class="fa-solid fa-thumbtack"></i>',
     condition: gm, visible: gm,
-    callback: () => setPinned(),
-    onClick: () => setPinned()
+    callback: togglePinHere,
+    onClick: togglePinHere
+  });
+
+  // Takes the scene that was right-clicked, not the one being viewed. That is
+  // the whole point of having it here rather than only in the controls: bring
+  // people somewhere without going there yourself first.
+  options.push({
+    label: "INPERSON.Context.BringPlayers",
+    icon: '<i class="fa-solid fa-people-arrows"></i>',
+    condition: gm, visible: gm,
+    callback: withScene(scene => openPullDialog(scene)),
+    onClick: withScene(scene => openPullDialog(scene))
+  });
+
+  options.push({
+    label: "INPERSON.Context.SetDefaultCompanion",
+    icon: '<i class="fa-solid fa-clone"></i>',
+    condition: gm, visible: gm,
+    callback: withScene(async scene => {
+      await setDefaultCompanionScene(scene.id);
+      ui.notifications.info(game.i18n.format("INPERSON.Notify.DefaultCompanionSet", { scene: scene.name }));
+    }),
+    onClick: withScene(async scene => {
+      await setDefaultCompanionScene(scene.id);
+      ui.notifications.info(game.i18n.format("INPERSON.Notify.DefaultCompanionSet", { scene: scene.name }));
+    })
   });
 
   options.push({
@@ -595,6 +771,15 @@ function fillAccountChoices() {
     const setting = game.settings.settings.get(`${MODULE_ID}.${key}`);
     if (setting) setting.choices = options;
   }
+
+  // Scene folders for the screensaver. Filled here rather than at registration
+  // because `init` runs before the world's documents exist.
+  const folders = { "": game.i18n.localize("INPERSON.Settings.IdleFolder.None") };
+  for (const folder of game.folders?.filter(f => f.type === "Scene") ?? []) {
+    folders[folder.id] = folder.name;
+  }
+  const idleFolder = game.settings.settings.get(`${MODULE_ID}.${SETTINGS.IDLE_FOLDER}`);
+  if (idleFolder) idleFolder.choices = folders;
 }
 
 /**
@@ -621,6 +806,9 @@ function onRenderSceneConfig(app, element) {
   const scene = app.document;
   const current = scene?.getFlag?.(MODULE_ID, COMPANION_FLAG) ?? "";
   const currentRotation = getRotation(scene);
+  // Only says anything when Lock View is installed *and* this scene is turned
+  // sideways - otherwise there is no interaction to explain.
+  const interop = describeInterop(scene);
   const others = game.scenes
     .filter(s => s.id !== scene?.id)
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -651,6 +839,7 @@ function onRenderSceneConfig(app, element) {
         </select>
       </div>
       <p class="hint">${game.i18n.localize("INPERSON.SceneConfig.RotationHint")}</p>
+      ${interop ? `<p class="notification info inperson-interop">${interop}</p>` : ""}
     </div>`;
   tab.appendChild(fieldset);
 }

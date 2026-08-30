@@ -13,10 +13,12 @@ export const SETTINGS = {
   DEFAULT_PLAYERS: "defaultForPlayers",
   /** "background" = only scene backgrounds (default), "everything" = all heavy media (world). */
   SCOPE: "blockScope",
-  /** Keep loading token artwork so players can still tell their tokens apart (world). */
-  KEEP_TOKENS: "keepTokens",
   /** Block Sound#load as well - playlists, ambient audio, music (world). */
   BLOCK_AUDIO: "blockAudio",
+  /** Keep loading token artwork so players can still tell their tokens apart (world). */
+  KEEP_TOKENS: "keepTokens",
+  /** Suppress Foundry's scene loading bar on affected clients (world). */
+  HIDE_PROGRESS: "hideProgress",
   /** User id of the battlemap display - always follows activations (world). */
   MONITOR_BM: "monitorBM",
   /** User id of the scene display - the one that can be pinned (world). */
@@ -29,10 +31,36 @@ export const SETTINGS = {
   MONITOR_RELEASE: "monitorRelease",
   /** Scene shown as the idle screen when a display is released (world). */
   MONITOR_IDLE_SCENE: "monitorIdleScene",
-  /** Keep token HUD text upright while a scene is rotated (world). */
-  HUD_UPRIGHT: "hudUpright",
-  /** Suppress Foundry's scene loading bar on affected clients (world). */
-  HIDE_PROGRESS: "hideProgress",
+  /**
+   * Scene the display falls back to when an activated battlemap names none of
+   * its own (world). Without it an unpinned display simply mirrors the
+   * battlemap, which is the one thing a second screen need not do.
+   */
+  DEFAULT_COMPANION: "defaultCompanionScene",
+  /** Is the screensaver wanted at all? Everything else hangs off this (world). */
+  IDLE_ENABLED: "idleEnabled",
+  /**
+   * Which kind (world): "scene" swaps to other scenes, "cover" lays a black
+   * sheet over the one that is showing. They are alternatives, not stages - the
+   * first changes what is displayed, the second hides it and leaves it be.
+   */
+  IDLE_MODE: "idleMode",
+  /** Minutes of quiet before it starts (world). */
+  IDLE_AFTER: "idleAfter",
+  /** Scene folder the screensaver cycles through. One scene in it = just that one (world). */
+  IDLE_FOLDER: "idleFolder",
+  /** Minutes between two scenes of that folder (world). */
+  IDLE_ROTATE_EVERY: "idleRotateEvery",
+  /**
+   * How long the black cover stays before lifting again (world).
+   *
+   * It lifts on purpose. The point was never to switch the television off, only
+   * to stop one picture standing in the same pixels for hours - so the cover
+   * comes and goes, and in between the scene is there to be looked at.
+   */
+  IDLE_BLANK_FOR: "idleBlankFor",
+  /** Image drifting across the black cover. Empty = a plain dot (world). */
+  IDLE_LOGO: "idleLogo",
   /** Newline/comma separated path fragments that are never blocked (world). */
   ALLOW_LIST: "allowList",
   /** Has the one-off migration from the old module id run? (world) */
@@ -53,7 +81,15 @@ export const SETTINGS = {
 export const SOCKET = {
   NAME: `module.${MODULE_ID}`,
   REPORT: "report",
-  REFRESH: "refresh"
+  REFRESH: "refresh",
+  /**
+   * The display announcing that it went into or came out of its screensaver.
+   *
+   * Without this the GM would record the screensaver scene as "where the
+   * display belongs" and the pin target would be lost the first time the table
+   * took a break.
+   */
+  SCREENSAVER: "screensaver"
 };
 
 /**

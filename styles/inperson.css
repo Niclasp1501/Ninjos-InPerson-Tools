@@ -472,7 +472,9 @@
   font-size: 12px;
 }
 
-.inperson-idle-select {
+/* Same row layout as the idle scene picker above it - the two belong together. */
+.inperson-idle-select,
+.inperson-companion-select {
   flex: 1 1 auto;
   height: 26px;
   border: 1px solid var(--tm-border);
@@ -498,9 +500,17 @@
   border-top: 1px solid var(--tm-border);
 }
 
+/*
+ * The colour is spelled out rather than inherited. Foundry styles `h4` for its
+ * own dark theme, and that rule beats the inherited colour of our parchment
+ * panel - which left this heading at rgb(239,230,216) on a white ground,
+ * measured at 0.09 brightness apart and effectively invisible. Anything that
+ * sets a font on a bare heading tag has to set the colour too.
+ */
 .inperson-pairs h4 {
   margin: 0 0 4px;
   border: none;
+  color: var(--tm-text);
   font-family: var(--tm-font);
   font-size: 12px;
   font-weight: bold;
@@ -553,6 +563,17 @@
   width: 100%;
 }
 
+/*
+ * The Lock View note. Foundry's `.notification` carries its own colours and
+ * padding; all this adds is the spacing that keeps it attached to the hint
+ * above it rather than floating between two form groups.
+ */
+.inperson-companion .inperson-interop {
+  margin: 0.25rem 0 0;
+  font-size: var(--font-size-12);
+  line-height: 1.4;
+}
+
 /* -------------------------------------------- */
 /*  Rotated scenes: keep HUD text upright       */
 /* -------------------------------------------- */
@@ -563,9 +584,38 @@
  * Around their centre, not the top-left corner the base stylesheet uses -
  * rotating about the corner swings an element away from the token it labels.
  */
-#hud.inperson-hud-upright > * {
+/*
+ * Two kinds of thing live in #hud, and they need opposite treatment. An earlier
+ * version turned every direct child alike, which was wrong for half of them.
+ *
+ * A placeable HUD is a small box pinned to its token - 45x45 for a token HUD -
+ * so turning it about its own centre keeps it on the token and puts the writing
+ * straight.
+ *
+ * #measurement and #chat-bubbles are the other kind: full-size overlays whose
+ * children carry their own absolute position, in scene coordinates, inside the
+ * frame. Turning such a container about its centre swings everything in it
+ * across the screen. Measured on 2026-08-29: #measurement is 2121x1624, and a
+ * ruler label reading "25 ft" ended up in the far corner of the map, nowhere
+ * near the ruler it belonged to.
+ *
+ * So those containers stay put, and the leaves turn instead - about the anchor
+ * Foundry already set on them. `#measurement .waypoint-label` has
+ * `transform-origin: top left` with the position in `--position-x/y`; rotating
+ * about that same origin was measured to hold the label as close to its
+ * waypoint as no rotation at all (6 px either way), while `center center` threw
+ * it three times as far.
+ */
+#hud.inperson-hud-upright > .placeable-hud {
   rotate: var(--tm-hud-counter, 0deg);
   transform-origin: center center;
+}
+
+/* Deliberately no transform-origin here: Foundry's own is the right one, and
+   overriding it is what moves the label off its anchor. */
+#hud.inperson-hud-upright #measurement .waypoint-label,
+#hud.inperson-hud-upright #chat-bubbles .chat-bubble {
+  rotate: var(--tm-hud-counter, 0deg);
 }
 
 /* -------------------------------------------- */
@@ -626,4 +676,231 @@
    comfortable width so the "currently on …" notes do not wrap. */
 .inperson-pull .window-content {
   min-width: 360px;
+}
+
+/* -------------------------------------------- */
+/*  Screensaver: the black stage                */
+/* -------------------------------------------- */
+
+/*
+ * Pure black, not a dark grey: on an OLED #000 switches the pixel off entirely,
+ * and an off pixel does not age. Anything lighter keeps the panel working.
+ *
+ * The fade only runs on the way in. Coming back is instant - somebody just
+ * touched something and wants to see the table, not a transition.
+ */
+#inperson-screensaver {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;          /* above every Foundry layer, including dialogs */
+  background: #000;
+  opacity: 0;
+  pointer-events: none;     /* never swallows a click meant for the canvas */
+  visibility: hidden;
+}
+
+#inperson-screensaver.inperson-screensaver-on {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 2.5s ease-in;
+}
+
+/*
+ * The drifting mark. Deliberately small and dim: it exists so the screen is not
+ * a dead black rectangle that looks like a broken television, not to be read.
+ * It jumps rather than glides - a slow glide would light every pixel along the
+ * path, which is the opposite of the point.
+ */
+.inperson-screensaver-mark {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #D4AF37;      /* the module's gold, at a fraction of full output */
+  opacity: 0.35;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
+}
+
+/*
+ * With an image chosen, the dot gets out of the way entirely - no background, no
+ * glow, no rounding, or a logo with its own edges would sit in a gold circle.
+ * Capped by viewport rather than pixels so the same file works on a 24" monitor
+ * and a 75" television, and held well under half brightness: the mark is there
+ * so the screen does not look broken, not to be admired.
+ */
+.inperson-screensaver-mark.has-logo {
+  width: auto;
+  height: auto;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  opacity: 0.45;
+}
+
+.inperson-screensaver-mark.has-logo img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 18vw;
+  max-height: 18vh;
+  border: none;
+}
+
+/* Logo picker on the display settings page ---- */
+
+.inperson-logo-row {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.inperson-logo-row input[type="text"] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inperson-logo-preview {
+  margin-top: 6px;
+  padding: 8px;
+  border: 1px solid var(--tm-border);
+  border-radius: 2px;
+  background: #000;         /* shown against the ground it will actually sit on */
+  text-align: center;
+}
+
+.inperson-logo-preview img {
+  max-width: 100%;
+  max-height: 90px;
+  border: none;
+}
+
+/* -------------------------------------------- */
+/*  Scene displays: the settings page           */
+/* -------------------------------------------- */
+
+/*
+ * Inherits the panel's D&D palette through .inperson-panel on the same element.
+ * Only the grouping needs saying: fieldsets carry the three topics, and the
+ * gold rule on each legend is what keeps them apart at a glance.
+ */
+/*
+ * The window is set to grow with its content, and with eleven fields in three
+ * groups it grew straight past the bottom of the screen with nothing to scroll:
+ * a part declared scrollable needs a *bounded* height, or there is no overflow
+ * for it to scroll.
+ *
+ * So the body is capped against the viewport and split in two - the fields
+ * scroll, the Save button stays put. Scrolling the button out of reach on a
+ * form whose whole purpose is to be saved would be its own small cruelty.
+ *
+ * `min-height: 0` is the part people leave out: a flex child refuses to shrink
+ * below its content unless told, and without it the inner box simply grows and
+ * nothing scrolls after all.
+ */
+.inperson-displays .inperson-body {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 160px);
+}
+
+.inperson-displays .inperson-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;      /* room for the scrollbar, so it never covers a field */
+}
+
+.inperson-displays .inperson-foot {
+  flex: 0 0 auto;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--tm-border);
+}
+
+.inperson-displays fieldset {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--tm-border);
+  border-radius: 4px;
+  background: var(--tm-card);
+}
+
+.inperson-displays legend {
+  padding: 0 6px;
+  border-bottom: 2px solid var(--tm-gold);
+  color: var(--tm-red);
+  font-family: var(--tm-font);
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.inperson-displays .form-group {
+  margin: 8px 0;
+}
+
+.inperson-displays .hint {
+  margin: 3px 0 0;
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0.8;
+}
+
+.inperson-displays .units {
+  flex: 0 0 auto;
+  align-self: center;
+  padding-left: 6px;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.inperson-displays input[type="number"] {
+  max-width: 90px;
+}
+
+/* -------------------------------------------- */
+/*  Displays page: showing things in order      */
+/* -------------------------------------------- */
+
+/*
+ * The three staged blocks. They carry `hidden` from the template and have it
+ * toggled as the answers above change, so the rule only needs to give them a
+ * little indent - enough to read as "these belong to the question above" without
+ * a second frame around them.
+ *
+ * `display: none` is left to the `hidden` attribute itself rather than restated
+ * here: a CSS rule fighting the attribute is the kind of thing that stops a
+ * block from ever appearing and takes an afternoon to find.
+ */
+.inperson-when-idle,
+.inperson-when-cover,
+.inperson-when-scene {
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: 2px solid var(--tm-gold);
+}
+
+/*
+ * The cover shown as a preview. Same black and the same drifting mark, only
+ * without the slow fade - a preview that takes two and a half seconds to appear
+ * feels broken rather than gentle.
+ */
+#inperson-screensaver.inperson-screensaver-preview {
+  transition: none;
+}
+
+/*
+ * The clear button next to the logo path. It is always in the document and
+ * only hidden, so that choosing an image never has to re-render the form -
+ * a render would rebuild every field from the stored settings and throw away
+ * whatever had been filled in but not saved.
+ */
+.inperson-logo-clear[hidden] {
+  display: none;
+}
+
+/* Table-mode page: the token question only applies to the wider scope. */
+.inperson-when-wide {
+  margin-left: 10px;
+  padding-left: 10px;
+  border-left: 2px solid var(--tm-gold);
 }

@@ -2,7 +2,7 @@
   "id": "ninjos-inperson-tools",
   "title": "Ninjo's In-Person Tools",
   "description": "Werkzeuge fuer Foundry VTT beim Spielen am echten Tisch: Karten-Downloads auf Spieler-Clients unterbinden, zwei Szenen-Monitore mit getrennten Aufgaben steuern, hochkante Karten quer drehen und einzelne Spieler gezielt auf eine Szene holen.",
-  "version": "14.2609.7",
+  "version": "14.2611.1",
   "compatibility": {
     "minimum": "13",
     "verified": "14"

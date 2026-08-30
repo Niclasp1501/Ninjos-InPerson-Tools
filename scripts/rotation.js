@@ -96,13 +96,22 @@ function applyHudRotation(degrees) {
   if (hud.style.rotate !== wanted) hud.style.rotate = wanted;
 
   // Turning the frame puts the HUDs in the right place but leaves their text
-  // lying on its side. Counter-rotating the children puts the writing back
-  // upright while the frame keeps doing the positioning. Around their centre,
-  // not the top left corner the stylesheet uses: an element rotated about its
-  // corner swings away from the token it belongs to.
-  const counter = game.settings.get(MODULE_ID, SETTINGS.HUD_UPRIGHT) && degrees;
-  hud.classList.toggle("inperson-hud-upright", !!counter);
-  const value = counter ? `${-degrees}deg` : "";
+  // lying on its side. This variable drives the counter-rotation that puts the
+  // writing back upright while the frame keeps doing the positioning.
+  //
+  // *Which* elements it applies to is decided in the stylesheet, and the
+  // distinction matters: small HUDs pinned to a placeable turn about their
+  // centre, while ruler labels and chat bubbles turn individually inside their
+  // full-size containers. Turning those containers instead throws their
+  // contents across the screen - see the note in inperson.css.
+  // Always counter-rotated. This was switchable while it was unclear whether a
+  // HUD would end up beside its token instead of on it - an escape hatch for a
+  // doubt, not a preference. Since then it has been measured: turned about the
+  // anchor Foundry already sets, a label stays as close to its token as with no
+  // rotation at all, 6 px either way. Sideways writing on the table screen is
+  // nobody's choice.
+  hud.classList.toggle("inperson-hud-upright", !!degrees);
+  const value = degrees ? `${-degrees}deg` : "";
   if (hud.style.getPropertyValue("--tm-hud-counter") !== value) {
     hud.style.setProperty("--tm-hud-counter", value);
   }

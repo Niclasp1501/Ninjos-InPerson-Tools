@@ -52,6 +52,22 @@ down still hold references; destroying first makes Foundry's teardown throw.
 **Scroll positions** need `PARTS[…].scrollable` declared, otherwise every button
 click jumps the list back to the top.
 
+**A removed flag arrives as `-=name`.** `updateScene` reports an unset flag under
+the deletion key, not the plain one. `setRotation` unsets for 0 degrees, so
+checking only `changed.flags[MODULE_ID].rotation` misses exactly the case of
+straightening a scene back up. Test both keys.
+
+**The viewbox correction runs on the sending client.** After deploying, reload
+the *display* clients, not just a GM window: the display computes and emits the
+extent, the GM only draws what arrives. Cost an investigation on 2026-08-29 -
+the frame stayed crooked on a GM window that was already running the new code.
+
+**Lock View interop is patched on instances, not prototypes** (`lockview.js`).
+`lockView.socket` and `lockView.sceneHandler` are singletons built during its
+own startup, so the patch has to wait for the global to exist - hence the
+attempt from both `ready` and `canvasReady`. Everything there is guarded: without
+Lock View the file does nothing at all.
+
 ## Measured, not assumed
 
 Blocking was verified on a live server: one "preload scene" click transferred

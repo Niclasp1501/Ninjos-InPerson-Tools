@@ -1,0 +1,194 @@
+<div class="inperson-body">
+  <div class="inperson-scroll">
+
+  <fieldset>
+    <legend>{{localize "INPERSON.Displays.AccountsLegend"}}</legend>
+    <p class="hint">{{localize "INPERSON.Displays.AccountsHint"}}</p>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Settings.MonitorBM.Name"}}</label>
+      <div class="form-fields">
+        <select name="monitorBM">
+          {{#each accountsBM}}
+            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.MonitorBM.Hint"}}</p>
+    </div>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Settings.MonitorSC.Name"}}</label>
+      <div class="form-fields">
+        <select name="monitorSC">
+          {{#each accountsSC}}
+            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.MonitorSC.Hint"}}</p>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "INPERSON.Displays.SceneLegend"}}</legend>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Panel.DefaultCompanion"}}</label>
+      <div class="form-fields">
+        <select name="defaultCompanionScene">
+          {{#each companions}}
+            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      <p class="hint">{{localize "INPERSON.Panel.DefaultCompanionTip"}}</p>
+    </div>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Settings.MonitorRelease.Name"}}</label>
+      <div class="form-fields">
+        <select name="monitorRelease">
+          <option value="follow" {{#if releaseFollow}}selected{{/if}}>{{localize "INPERSON.Settings.MonitorRelease.Follow"}}</option>
+          <option value="idle" {{#unless releaseFollow}}selected{{/unless}}>{{localize "INPERSON.Settings.MonitorRelease.Idle"}}</option>
+        </select>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.MonitorRelease.Hint"}}</p>
+    </div>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Panel.IdleScene"}}</label>
+      <div class="form-fields">
+        <select name="monitorIdleScene">
+          {{#each idleScenes}}
+            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+      {{#if releaseFollow}}
+        <p class="hint">{{localize "INPERSON.Panel.IdleSceneUnused"}}</p>
+      {{/if}}
+    </div>
+
+    {{#if hasPairs}}
+      <div class="inperson-pairs">
+        <h4>{{localize "INPERSON.Panel.PairsTitle"}}</h4>
+        <p class="hint">{{localize "INPERSON.Displays.PairsHint"}}</p>
+        {{#each pairs}}
+          <div class="inperson-pair-row">
+            <span class="inperson-pair-from">{{this.sceneName}}</span>
+            <i class="fa-solid fa-arrow-right"></i>
+            <span class="inperson-pair-to">{{this.companionName}}</span>
+            <button type="button" data-action="unpair" data-scene-id="{{this.sceneId}}"
+                    class="inperson-pair-remove"
+                    data-tooltip="{{localize 'INPERSON.Panel.UnpairTip'}}">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        {{/each}}
+      </div>
+    {{/if}}
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "INPERSON.Displays.BurnInLegend"}}</legend>
+    <p class="hint">{{localize "INPERSON.Displays.BurnInHint"}}</p>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Settings.IdleEnabled.Name"}}</label>
+      <div class="form-fields">
+        <input type="checkbox" name="idleEnabled" {{#if idleEnabled}}checked{{/if}}>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.IdleEnabled.Hint"}}</p>
+    </div>
+
+    <div class="inperson-when-idle" {{#unless idleEnabled}}hidden{{/unless}}>
+
+      <div class="form-group">
+        <label>{{localize "INPERSON.Settings.IdleAfter.Name"}}</label>
+        <div class="form-fields">
+          <input type="number" name="idleAfter" value="{{idleAfter}}" min="1" max="120" step="1">
+          <span class="units">{{localize "INPERSON.Displays.Minutes"}}</span>
+        </div>
+        <p class="hint">{{localize "INPERSON.Settings.IdleAfter.Hint"}}</p>
+      </div>
+
+      <div class="form-group">
+        <label>{{localize "INPERSON.Settings.IdleMode.Name"}}</label>
+        <div class="form-fields">
+          <select name="idleMode">
+            <option value="cover" {{#if modeIsCover}}selected{{/if}}>{{localize "INPERSON.Settings.IdleMode.Cover"}}</option>
+            <option value="scene" {{#unless modeIsCover}}selected{{/unless}}>{{localize "INPERSON.Settings.IdleMode.Scene"}}</option>
+          </select>
+        </div>
+        <p class="hint">{{localize "INPERSON.Settings.IdleMode.Hint"}}</p>
+      </div>
+
+      <div class="inperson-when-cover" {{#unless modeIsCover}}hidden{{/unless}}>
+        <div class="form-group">
+          <label>{{localize "INPERSON.Settings.IdleBlankFor.Name"}}</label>
+          <div class="form-fields">
+            <input type="number" name="idleBlankFor" value="{{blankFor}}" min="1" max="60" step="1">
+            <span class="units">{{localize "INPERSON.Displays.Minutes"}}</span>
+          </div>
+          <p class="hint">{{localize "INPERSON.Settings.IdleBlankFor.Hint"}}</p>
+        </div>
+
+        <div class="form-group">
+          <label>{{localize "INPERSON.Settings.IdleLogo.Name"}}</label>
+          <div class="form-fields inperson-logo-row">
+            <input type="text" name="idleLogo" value="{{logo}}" placeholder="{{localize 'INPERSON.Settings.IdleLogo.Placeholder'}}">
+            <button type="button" class="inperson-mini" data-action="pickLogo">
+              <i class="fa-solid fa-folder-open"></i>
+            </button>
+            <button type="button" class="inperson-mini inperson-logo-clear"
+                    data-action="clearLogo" {{#unless hasLogo}}hidden{{/unless}}>
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <p class="hint">{{localize "INPERSON.Settings.IdleLogo.Hint"}}</p>
+          <div class="inperson-logo-preview" {{#unless hasLogo}}hidden{{/unless}}>
+            <img src="{{logo}}" alt="">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <button type="button" class="inperson-mini" data-action="testCover">
+            <i class="fa-solid fa-eye"></i> {{localize "INPERSON.Displays.TestCover"}}
+          </button>
+          <p class="hint">{{localize "INPERSON.Displays.TestCoverHint"}}</p>
+        </div>
+      </div>
+
+      <div class="inperson-when-scene" {{#if modeIsCover}}hidden{{/if}}>
+        <div class="form-group">
+          <label>{{localize "INPERSON.Settings.IdleFolder.Name"}}</label>
+          <div class="form-fields">
+            <select name="idleFolder">
+              {{#each folders}}
+                <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
+              {{/each}}
+            </select>
+          </div>
+          <p class="hint">{{localize "INPERSON.Settings.IdleFolder.Hint"}}</p>
+        </div>
+
+        <div class="form-group">
+          <label>{{localize "INPERSON.Settings.IdleRotate.Name"}}</label>
+          <div class="form-fields">
+            <input type="number" name="idleRotateEvery" value="{{rotateEvery}}" min="1" max="60" step="1">
+            <span class="units">{{localize "INPERSON.Displays.Minutes"}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+  </div>
+
+  <footer class="inperson-foot">
+    <button type="submit" class="inperson-mini">
+      <i class="fa-solid fa-floppy-disk"></i> {{localize "INPERSON.Displays.Save"}}
+    </button>
+  </footer>
+</div>

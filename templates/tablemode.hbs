@@ -1,0 +1,95 @@
+<div class="inperson-body">
+  <div class="inperson-scroll">
+
+  <p class="notification info">
+    {{#if running}}
+      {{localize "INPERSON.TableMode.StateOn"}}
+    {{else}}
+      {{localize "INPERSON.TableMode.StateOff"}}
+    {{/if}}
+    <button type="button" class="inperson-mini" data-action="openControls">
+      <i class="fa-solid fa-sliders"></i> {{localize "INPERSON.Menu.Label"}}
+    </button>
+  </p>
+
+  <fieldset>
+    <legend>{{localize "INPERSON.TableMode.WhoLegend"}}</legend>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Settings.DefaultPlayers.Name"}}</label>
+      <div class="form-fields">
+        <input type="checkbox" name="defaultForPlayers" {{#if defaultPlayers}}checked{{/if}}>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.DefaultPlayers.Hint"}}</p>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "INPERSON.TableMode.WhatLegend"}}</legend>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Settings.Scope.Name"}}</label>
+      <div class="form-fields">
+        <select name="blockScope">
+          <option value="background" {{#if scopeBackground}}selected{{/if}}>{{localize "INPERSON.Settings.Scope.Background"}}</option>
+          <option value="everything" {{#unless scopeBackground}}selected{{/unless}}>{{localize "INPERSON.Settings.Scope.Everything"}}</option>
+        </select>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.Scope.Hint"}}</p>
+    </div>
+
+    <div class="inperson-when-wide" {{#if scopeBackground}}hidden{{/if}}>
+      <div class="form-group">
+        <label>{{localize "INPERSON.Settings.KeepTokens.Name"}}</label>
+        <div class="form-fields">
+          <input type="checkbox" name="keepTokens" {{#if keepTokens}}checked{{/if}}>
+        </div>
+        <p class="hint">{{localize "INPERSON.Settings.KeepTokens.Hint"}}</p>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Settings.BlockAudio.Name"}}</label>
+      <div class="form-fields">
+        <input type="checkbox" name="blockAudio" {{#if blockAudio}}checked{{/if}}>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.BlockAudio.Hint"}}</p>
+    </div>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Settings.AllowList.Name"}}</label>
+      <div class="form-fields">
+        <textarea name="allowList" rows="3">{{allowList}}</textarea>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.AllowList.Hint"}}</p>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "INPERSON.TableMode.DeviceLegend"}}</legend>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Settings.HideProgress.Name"}}</label>
+      <div class="form-fields">
+        <input type="checkbox" name="hideProgress" {{#if hideProgress}}checked{{/if}}>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.HideProgress.Hint"}}</p>
+    </div>
+
+    <div class="form-group">
+      <label>{{localize "INPERSON.Settings.AutoNoCanvas.Name"}}</label>
+      <div class="form-fields">
+        <input type="checkbox" name="autoNoCanvas" {{#if autoNoCanvas}}checked{{/if}}>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.AutoNoCanvas.Hint"}}</p>
+    </div>
+  </fieldset>
+
+  </div>
+
+  <footer class="inperson-foot">
+    <button type="submit" class="inperson-mini">
+      <i class="fa-solid fa-floppy-disk"></i> {{localize "INPERSON.Displays.Save"}}
+    </button>
+  </footer>
+</div>

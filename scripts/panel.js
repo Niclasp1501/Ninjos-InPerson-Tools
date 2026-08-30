@@ -6,8 +6,7 @@ import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
 import { isSceneBackground } from "./blocker.js";
 import { openPullDialog } from "./pull.js";
 import {
-  isPinned, setPinned, getSceneDisplay, getBattlemapDisplay, getPinnedScene,
-  listCompanionPairs, setCompanionScene
+  isPinned, setPinned, getSceneDisplay, getBattlemapDisplay, getPinnedScene
 } from "./monitor.js";
 import { resolveFor, getForcedState, setForcedState, isMonitorUser } from "./state.js";
 import { measureScene, collectSceneSources, sumKnown, formatBytes } from "./measure.js";
@@ -34,7 +33,6 @@ export class InPersonPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       measure: InPersonPanel.#onMeasure,
       refreshAll: InPersonPanel.#onRefreshAll,
       togglePin: InPersonPanel.#onTogglePin,
-      unpair: InPersonPanel.#onUnpair,
       pullPlayers: InPersonPanel.#onPullPlayers
     }
   };
@@ -94,14 +92,6 @@ export class InPersonPanel extends HandlebarsApplicationMixin(ApplicationV2) {
     const bm = getBattlemapDisplay();
     const sc = getSceneDisplay();
     const pinnedScene = getPinnedScene();
-    const pairs = listCompanionPairs().map(p => ({
-      sceneId: p.scene.id,
-      sceneName: p.scene.name,
-      companionName: p.companion.name
-    }));
-
-    const idleId = game.settings.get(MODULE_ID, SETTINGS.MONITOR_IDLE_SCENE);
-    const releaseMode = game.settings.get(MODULE_ID, SETTINGS.MONITOR_RELEASE);
 
     return {
       enabled,
@@ -118,11 +108,6 @@ export class InPersonPanel extends HandlebarsApplicationMixin(ApplicationV2) {
             ? game.i18n.format("INPERSON.Panel.RolePinned", { scene: pinnedScene.name })
             : game.i18n.localize("INPERSON.Panel.RolePinnedNoScene"))
         : game.i18n.localize("INPERSON.Panel.RoleFollow"),
-      pairs,
-      hasPairs: pairs.length > 0,
-      releaseIsIdle: releaseMode === "idle",
-      idleSceneName: idleId ? (game.scenes.get(idleId)?.name ?? null) : null,
-      sceneChoices: game.scenes.map(s => ({ id: s.id, name: s.name, selected: s.id === idleId })),
       sceneName: scene?.name ?? game.i18n.localize("INPERSON.Panel.NoScene"),
       sceneFileCount: game.i18n.format(
         sources.length === 1 ? "INPERSON.Panel.FileOne" : "INPERSON.Panel.FileMany",
@@ -143,25 +128,6 @@ export class InPersonPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       sceneUnmeasured: unknown,
       affectedCount: users.filter(u => u.blackedOut).length
     };
-  }
-
-  /**
-   * Bind the idle-scene dropdown by hand.
-   *
-   * Not through `data-action`: ApplicationV2 dispatches those on **click**
-   * (application.mjs:1879), and on a <select> that fires the moment the list
-   * opens. The handler then re-rendered the window, the element was replaced,
-   * and the open list disappeared before anything could be picked. A plain
-   * change listener fires once, after a choice has actually been made.
-   * @override
-   */
-  _onRender(context, options) {
-    super._onRender?.(context, options);
-    const select = this.element?.querySelector(".inperson-idle-select");
-    select?.addEventListener("change", async event => {
-      await game.settings.set(MODULE_ID, SETTINGS.MONITOR_IDLE_SCENE, event.target.value ?? "");
-      this.render();   // updates the note below; the list is already closed
-    });
   }
 
   /* -------------------------------------------- */
@@ -206,13 +172,6 @@ export class InPersonPanel extends HandlebarsApplicationMixin(ApplicationV2) {
   /** Pin or release the scene display. */
   static async #onTogglePin() {
     await setPinned();
-    this.render();
-  }
-
-  /** Remove a battlemap-to-scene pairing. */
-  static async #onUnpair(event, target) {
-    const scene = game.scenes.get(target.dataset.sceneId);
-    if (scene) await setCompanionScene(scene, null);
     this.render();
   }
 

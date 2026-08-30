@@ -80,7 +80,13 @@ export function resolveFor(user) {
     return { active: false, reason: "disabled" };
   }
   const forced = getForcedState(user.id);
-  if (forced !== null) return { active: forced, reason: forced ? "forcedOn" : "forcedOff" };
+  if (forced === true) return { active: true, reason: "forcedOn" };
+  if (forced === false) {
+    // A display is exempt in any case. Reporting a redundant "excluded by the
+    // GM" would send someone hunting for an override that changes nothing -
+    // the display protection is the real reason, so name that.
+    return { active: false, reason: isMonitorUser(user) ? "monitor" : "forcedOff" };
+  }
 
   // A client's own choice is only visible on that client. From the GM's seat we
   // can only report the default, which is what an "auto" client resolves to.
