@@ -1,69 +1,83 @@
-# Hinweis für den Agenten: Release steht, Katalogeintrag fehlt
+# Hinweis für den Agenten: Version eingereicht, Freigabe steht aus
 
-*Angelegt am 29.08.2026. Ersetzt den früheren Hinweis „Table Mode ist nirgends veröffentlicht" —
-der ist vollständig erledigt.*
+*Stand 29.08.2026, 01:45 UTC. Abschnitt zur Sichtbarkeit am 30.08.2026 berichtigt.*
 
-## Was inzwischen erledigt ist
+## Was passiert ist
 
-Der alte Hinweis listete sechs fehlende Dinge. Fünf davon stehen:
+Der frühere Hinweis vermutete, `PACKAGE_TOKEN` fehle. Das war die richtige Spur, aber der
+Grund war ein Zeitproblem:
 
-| | Zustand |
+| | Zeit |
 | --- | --- |
-| Lokales Git-Repository | ✅ vorhanden |
-| GitHub `Niclasp1501/Ninjos-InPerson-Tools` | ✅ öffentlich (HTTP 200) |
-| LICENSE | ✅ MIT |
-| Release-Workflows | ✅ vorhanden |
-| Release `v14.2609.7` mit `module.json` + `module.zip` | ✅ kein Entwurf, keine Vorabversion |
-| Manifest-URL | ✅ antwortet mit HTTP 200 |
-| **Eintrag im Foundry-Paketkatalog** | ❌ **fehlt** |
+| Release-Lauf `v14.2609.7` | 00:15:22 UTC |
+| `PACKAGE_TOKEN` hinterlegt | **00:21:46 UTC** |
 
-Auf [ninjos-forge.web.app/modules/inperson-tools](https://ninjos-forge.web.app/modules/inperson-tools)
-steht das Modul jetzt mit allen vier Bereichen und einer funktionierenden Manifest-URL.
-Die alte Adresse `/modules/table-mode` leitet dorthin weiter.
+Der Lauf war sechs Minuten zu früh. Im Protokoll steht `PACKAGE_TOKEN:` — leer — und der
+Schritt *Publish Module to FoundryVTT Website* übersprang sich still, weil er an
+`if: env.PACKAGE_TOKEN != ''` hängt.
 
-## Punkt 1: Der Foundry-Katalog
+**Ein erneuter Lauf desselben Workflows** (`gh run rerun 33222981224`) hat das behoben. Die
+Einreichung lief durch:
 
-`foundryvtt.com/packages/ninjos-inperson-tools` leitet auf die Paketübersicht um — Foundrys
-Art, „gibt es nicht" zu sagen. FANG, NDRS, Player Wheel und die DnD5e-Übersetzung sind alle
-drin, der Weg ist also bekannt.
+```
+{"id":"ninjos-inperson-tools","release":{"version":"14.2609.7", ...}}
+Response: 200 OK
+{"status": "success", "page": "https://foundryvtt.com/packages/ninjos-inperson-tools/edit/"}
+```
 
-Zwei Dinge prüfen, in dieser Reihenfolge:
+## Was noch fehlt: die Freigabe durch Foundry
 
-1. **Ist das Paket auf foundryvtt.com überhaupt angelegt?** Die Schnittstelle reicht nur
-   *neue Versionen zu einem bestehenden Paket* ein. Den allerersten Eintrag muss man von
-   Hand über das Entwicklerkonto anlegen — solange der fehlt, läuft jeder automatische
-   Publish-Schritt ins Leere, auch mit gültigem Token.
-2. **Ist `PACKAGE_TOKEN` in den Repository-Geheimnissen hinterlegt?** Bei NDRS hängt der
-   Publish-Schritt an `if: env.PACKAGE_TOKEN != ''` und überspringt sich sonst still. Hier
-   die Workflows gegenprüfen, ob dieselbe Bedingung greift.
+> **Berichtigt am 30.08.2026.** Der ursprüngliche Schluss hier war falsch. Er lautete,
+> das Paket werde erst sichtbar, wenn im Entwicklerkonto die Beschreibung
+> vervollständigt und das Paket selbst freigegeben werde. Das ist nicht so — und es
+> hätte zu vergeblichem Suchen nach einem Knopf geführt, den es nicht gibt.
 
-Danach in `F:\KI-Agenten-Workspace\Ninjos-Forge\src\data\modules.js` beim Eintrag
-`inperson-tools` `foundryUrl` setzen — dann erscheint der Katalog-Knopf. Außerdem in
+Nachgesehen auf `foundryvtt.com/community/niclasdm/packages/`. Die Seite nennt zu jedem
+Paket einen **Status**, und der beantwortet die Frage:
+
+| Modul | Status | Version |
+| --- | --- | --- |
+| Ninjo's Foundry MCP | **Pending** | 14.2608.1 |
+| Ninjo's In-Person Tools | **Pending** | 14.2609.7 |
+| Ninjo's DnD Reference Sheet (NDRS) | **Pending** | 14.2608.1 |
+| Ninjo's FANG | Approved | 14.2608.1 |
+| Ninjo's DnD5e5.5 German Translation | Approved | 14.0.30 |
+| Ninjo's Player Wheel | Approved | 14.0.0 |
+
+**Pending heißt: eingereicht und in der Warteschlange.** Die Prüfung machen Menschen bei
+Foundry, und laut deren eigener Dokumentation wird jede Einreichung von Hand angesehen —
+unter anderem daraufhin, ob der Autor die Rechte an allem Enthaltenen hat. Das dauert.
+
+Es ist also **nichts zu tun**. Kein fehlendes Feld, kein Knopf, keine Freischaltung. Die
+302-Weiterleitung der Katalogseite ist die normale Folge des Status, kein Symptom eines
+Fehlers.
+
+### Gegenprobe: zeigen die Manifeste richtig?
+
+Am 30.08.2026 für alle fünf Pakete geprüft — Repo öffentlich, Manifest und Zip unter
+`releases/latest/download/` abrufbar (HTTP 200), Kennung und Version passend zum
+Katalogeintrag. **Kein einziger falscher Verweis.** Das Pending liegt an nichts
+Technischem.
+
+> **Auf der Forge steht bei NDRS bereits ein Katalog-Knopf**, der auf
+> `foundryvtt.com/packages/ndrs` zeigt. Diese Adresse leitet auf die Paketübersicht um; der
+> Knopf führt derzeit also ins Leere. Entweder NDRS ebenfalls freischalten, oder in
+> `Ninjos-Forge/src/data/modules.js` beim Eintrag `ndrs` `foundryUrl` wieder auf `null`
+> setzen, bis es soweit ist.
+
+## Danach
+
+In `F:\KI-Agenten-Workspace\Ninjos-Forge\src\data\modules.js` beim Eintrag `inperson-tools`
+`foundryUrl` auf `https://foundryvtt.com/packages/ninjos-inperson-tools` setzen und in
 `src/content/inperson-tools.md` den Schlusssatz des Abschnitts *Installation* streichen, der
-sagt, dass das Modul noch nicht im Katalog steht.
+sagt, das Modul stehe noch nicht im Katalog.
 
-## Punkt 2: Der CHANGELOG hinkt der Version hinterher
+## Weiterhin offen
 
-Veröffentlicht und getaggt ist **v14.2609.7**. Der oberste Eintrag im `CHANGELOG.md` ist aber
-**14.2608.1**. Was zwischen `.2608.1` und `.2609.7` passiert ist, steht nirgends — und das ist
-gerade der Bereich, in dem laut README die Absturzabfangung für
-`monks-sound-enhancements` dazugekommen ist („seit 14.2609.x").
+**Der CHANGELOG hinkt hinterher.** Getaggt ist `v14.2609.7`, der oberste Eintrag im
+`CHANGELOG.md` ist `14.2608.1`. Ausgerechnet in dieser Lücke steckt laut README die
+Absturzabfangung für `monks-sound-enhancements` („seit 14.2609.x").
 
-Die fehlenden Einträge nachtragen. Bei der DnD5e-Übersetzung wurde am 28.08.2026 genau das
-schon einmal gemacht (Commit „CHANGELOG-Luecken 14.0.20 bis 14.0.23 nachgetragen") — dieselbe
-Sorgfalt hier.
-
-## Punkt 3: Drei der vier Bereiche liefen noch nie in einer Welt
-
-`TESTPLAN.md` sagt es selbst: *„Stand: noch nie in einer Welt gelaufen. Alles unten ist aus dem
-v14-Quellcode abgeleitet, nichts davon ist gemessen."*
-
-Belegt ist nur die **Kartensperre** (58,86 MB → 0,00 MB, auf einem Produktionsserver gemessen).
-Szenen-Monitore, Szenendrehung und Spieler holen sind aus dem Quellcode abgeleitet.
-
-Die Forge sagt das im Abschnitt *Status* ausdrücklich und führt das Modul deshalb als **Beta**.
-Sobald der Testplan durchlaufen ist, dort auf `status: 'stable'` wechseln und den Statusabsatz
-in `inperson-tools.md` anpassen.
-
-**Nicht vorher.** Der Wert der Kartensperre steht und fällt damit, dass die Messungen ehrlich
-beziffert sind — dieselbe Haltung gehört auf die übrigen drei Bereiche.
+**Drei der vier Bereiche liefen noch nie in einer Welt.** `TESTPLAN.md` sagt es selbst.
+Belegt ist nur die Kartensperre (58,86 MB → 0,00 MB, gemessen). Die Forge führt das Modul
+deshalb als **Beta** — erst nach dem Testplan auf `status: 'stable'` wechseln.
