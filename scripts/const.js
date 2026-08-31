@@ -81,7 +81,17 @@ export const SETTINGS = {
    * Off by default: it takes over a button of another module's, and a module
    * that rearranges someone else's interface unasked is a bad guest.
    */
-  ACTOR_PANEL: "actorPanel"
+  ACTOR_PANEL: "actorPanel",
+  /**
+   * Show date and time inside the sheet-only view (client).
+   *
+   * Client-scoped on purpose. It is one of the few switches a player ever
+   * touches, so it belongs in the plain settings list rather than in a window
+   * only the GM can open.
+   */
+  CLOCK_STRIP: "clockStrip",
+  /** Put weather and season on the strip as well, not just the date (world). */
+  CLOCK_WEATHER: "clockWeather"
 };
 
 /** Socket message types. */

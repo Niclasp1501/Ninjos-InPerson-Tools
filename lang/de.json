@@ -187,5 +187,9 @@
   "INPERSON.Displays.PairMade": "„{scene}“ zeigt jetzt „{companion}“ auf dem Szenen-Monitor.",
   "INPERSON.Settings.ActorPanel.Name": "Akteursauswahl von Sheet Only ersetzen",
   "INPERSON.Settings.ActorPanel.Hint": "Ersetzt im Sheet-Only-Modus den Auswahlknopf durch ein Akteursverzeichnis, das rechts am Bildschirmrand aufklappt; das Charakterblatt macht dafür Platz. Braucht das Modul „Sheet Only“ und wirkt nur dort.",
-  "INPERSON.ActorPanel.Button": "Akteure"
+  "INPERSON.ActorPanel.Button": "Akteure",
+  "INPERSON.Settings.ClockStrip.Name": "Datum und Uhrzeit im Sheet-Only-Modus",
+  "INPERSON.Settings.ClockStrip.Hint": "Blendet eine schmale Leiste mit Datum und Uhrzeit ein, wenn nur das Charakterblatt zu sehen ist. Dort gibt es keine Foundry-Oberfläche mehr, also auch kein Kalender-HUD. Gilt nur für dieses Gerät.",
+  "INPERSON.Settings.ClockWeather.Name": "Wetter und Jahreszeit mit anzeigen",
+  "INPERSON.Settings.ClockWeather.Hint": "Ergänzt die Leiste um das aktuelle Wetter mit Temperatur und die Jahreszeit. Braucht ein Kalendermodul, das beides führt — geprüft mit Calendaria. Ohne ein solches zeigt die Leiste nur Datum und Uhrzeit."
 }

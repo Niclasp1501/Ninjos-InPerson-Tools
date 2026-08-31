@@ -1,8 +1,8 @@
 {
   "id": "ninjos-inperson-tools",
   "title": "Ninjo's In-Person Tools",
-  "description": "Werkzeuge fuer Foundry VTT beim Spielen am echten Tisch: Karten-Downloads auf Spieler-Clients unterbinden, zwei Szenen-Monitore mit getrennten Aufgaben steuern, hochkante Karten quer drehen und einzelne Spieler gezielt auf eine Szene holen.",
-  "version": "14.2611.8",
+  "description": "Werkzeuge fuer Foundry VTT beim Spielen am echten Tisch: Karten-Downloads auf Spieler-Clients unterbinden, zwei Szenen-Monitore mit getrennten Aufgaben steuern, hochkante Karten quer drehen und einzelne Spieler gezielt auf eine Szene holen. Arbeitet mit Sheet Only zusammen: Datum, Uhrzeit und Wetter erscheinen als schmale Leiste im Charakterblatt, wo es sonst keine Oberflaeche mehr gibt, und die Akteursauswahl laesst sich durch ein angedocktes Verzeichnis ersetzen. Wetter und Jahreszeit kommen aus Calendaria, wenn es installiert ist.",
+  "version": "14.2611.9",
   "compatibility": {
     "minimum": "13",
     "verified": "14"
@@ -37,6 +37,16 @@
         "id": "lib-wrapper",
         "type": "module",
         "reason": "Konfliktfreies Wrappen des TextureLoaders. Ohne lib-wrapper nutzt Table Mode einen eigenen Fallback-Patch."
+      },
+      {
+        "id": "sheet-only",
+        "type": "module",
+        "reason": "Zwei Erweiterungen setzen darauf auf: Datum und Uhrzeit als schmale Leiste im Charakterblatt, und wahlweise die Akteursauswahl als angedocktes Verzeichnis. Ohne Sheet Only ruhen beide."
+      },
+      {
+        "id": "calendaria",
+        "type": "module",
+        "reason": "Liefert Wetter und Jahreszeit fuer die Zeitleiste im Sheet-Only-Modus. Ohne ein Kalendermodul zeigt die Leiste Datum und Uhrzeit aus Foundrys eigenem Kalender."
       }
     ]
   },

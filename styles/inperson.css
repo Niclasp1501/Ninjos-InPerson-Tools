@@ -1155,3 +1155,78 @@ body:has(.actors-sidebar.sidebar-popout:has(.window-content > *)) #inperson-so-a
   color: #ff3b3b !important;
   text-shadow: 0 0 10px rgb(255 59 59 / 40%);
 }
+
+/* ── Date and time in the sheet-only view ─────────────────────────────────
+   Built to sit next to Calendaria's own bar rather than to copy it: the
+   values were measured off a running one (text rgb(224 224 224), Signika,
+   the clock in a monospace face, 0.75rem radius), but the rules are ours.
+   Copying its stylesheet would have meant dragging in ATLAS's theme engine,
+   253 KB of it, hanging on custom properties that are not even on :root.
+
+   The ATLAS properties are still honoured where they exist, so the strip
+   follows the theme when Calendaria is installed and looks right when it is
+   not. Every fallback is spelled out - a var() without one is a blank strip
+   on any table that has no calendar module at all. */
+
+.inperson-clock {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  z-index: 70;
+  margin: 0.35rem auto 0;
+  border: 1px solid var(--atlas-border, rgb(255 255 255 / 12%));
+  border-radius: 0.75rem;
+  padding: 0.3rem 0.75rem;
+  width: fit-content;
+  color: var(--atlas-text, #e0e0e0);
+  background: var(--atlas-bg, rgb(20 20 24 / 92%));
+  box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 30%);
+  font-family: Signika, sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.inperson-clock-date {
+  color: var(--atlas-text, #e0e0e0);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Monospace so the minutes do not shift the rest of the strip sideways
+   every time they tick over. */
+.inperson-clock-time {
+  color: var(--atlas-text, #e0e0e0);
+  font-family: Consolas, Monaco, monospace;
+  letter-spacing: 0.05em;
+}
+
+.inperson-clock-chip,
+.inperson-clock-season {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  border-radius: 0.5rem;
+  padding: 0.1rem 0.45rem;
+  color: var(--atlas-text, #e0e0e0);
+  background: var(--atlas-bg-lighter, rgb(255 255 255 / 8%));
+  white-space: nowrap;
+}
+
+.inperson-clock-chip i,
+.inperson-clock-season i {
+  opacity: 0.85;
+}
+
+.inperson-clock-temp {
+  opacity: 0.75;
+  color: var(--atlas-text-dim, #b9b9b9);
+  font-size: 0.8em;
+}
+
+/* Sheet Only shrinks everything on small screens; the strip follows so it
+   does not push the sheet down on a phone. */
+.sheet-only-container.small-display .inperson-clock {
+  gap: 0.35rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+}

@@ -187,5 +187,9 @@
   "INPERSON.Displays.PairMade": "\"{scene}\" now shows \"{companion}\" on the scene display.",
   "INPERSON.Settings.ActorPanel.Name": "Replace Sheet Only's actor selector",
   "INPERSON.Settings.ActorPanel.Hint": "In sheet-only mode, replaces the selector button with an actor directory that docks to the right edge; the character sheet makes room for it. Requires the \"Sheet Only\" module and has no effect without it.",
-  "INPERSON.ActorPanel.Button": "Actors"
+  "INPERSON.ActorPanel.Button": "Actors",
+  "INPERSON.Settings.ClockStrip.Name": "Date and time in sheet-only mode",
+  "INPERSON.Settings.ClockStrip.Hint": "Shows a slim strip with the date and time while only the character sheet is visible. There is no Foundry interface left in that mode, and so no calendar HUD either. Applies to this device only.",
+  "INPERSON.Settings.ClockWeather.Name": "Include weather and season",
+  "INPERSON.Settings.ClockWeather.Hint": "Adds the current weather with its temperature and the season to the strip. Needs a calendar module that tracks both - verified with Calendaria. Without one the strip shows date and time only."
 }

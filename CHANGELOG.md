@@ -1,5 +1,48 @@
 # Changelog
 
+## 14.2611.9 — 2026-09-01
+
+**Im Sheet-Only-Modus stehen jetzt Datum und Uhrzeit über dem Charakterblatt** —
+und auf Wunsch Wetter und Jahreszeit dazu. Der Anlass ist eine Lücke, die man
+erst am Tisch bemerkt: Sheet Only blendet die Oberfläche nicht teilweise aus,
+sondern ganz. Damit ist auch die Uhr eines Kalendermoduls weg, und keine
+Einstellung holt sie zurück, weil es nichts mehr gibt, worin sie erscheinen
+könnte. Ausgerechnet am echten Tisch, wo die Leute sitzen, die nach der Uhrzeit
+fragen.
+
+Die Werte werden **gelesen, nicht geliehen.** `game.time` erreicht jeden Client,
+ob er ein Spielfeld hat oder nicht; das Wetter steht in einer Welteinstellung von
+Calendaria. Dessen HUD bleibt unangetastet — es umzuhängen hieße, sich bei jedem
+Zeitschritt mit seinem Neuzeichnen anzulegen, und es erscheint alle ein bis drei
+Wochen neu.
+
+Das hat einen zweiten Nutzen, mit dem ich nicht gerechnet hatte: **Die Worte sind
+unsere.** Calendarias Harptos-Kalender nennt seine Wochentage „Onesday" bis
+„Tenday" als feste Zeichenketten, ohne Übersetzungsschlüssel dahinter — keine
+Sprachdatei käme da heran. Die Leiste formatiert selbst und zeigt Deutsch.
+
+Neu gezeichnet wird nur bei einem Wechsel der **angezeigten Minute**. Läuft die
+Uhr in Echtzeit mit einem Vielfachen — bei mir zwei Spielsekunden je echter
+Sekunde —, feuert `updateWorldTime` im Sekundentakt. Sechzig Neuaufbauten für
+eine sichtbare Änderung, ausgerechnet auf den Tablets, die am wenigsten übrig
+haben.
+
+Ob die Leiste erscheint, entscheidet **jedes Gerät für sich**; ob Wetter und
+Jahreszeit mitlaufen, die Spielleitung. So steht es auch im Werkzeugkasten-
+Konzept: Was ein Spieler je anfasst, gehört in die einfache Liste, nicht in ein
+Fenster, das nur die Spielleitung öffnen kann.
+
+Aussehen und Maße sind an einer laufenden Calendaria-Leiste abgenommen — Text
+`rgb(224 224 224)`, Signika, die Uhr in Monospace, damit die Minuten den Streifen
+nicht seitlich verschieben. Die Regeln sind trotzdem eigene: Calendarias
+Stilvorlage sind 253 KB, die an ATLAS-Farbvariablen hängen, welche nicht einmal
+auf `:root` liegen. Wo es diese Variablen gibt, folgt die Leiste ihnen; wo nicht,
+greifen eigene Werte.
+
+Manifest und README sagen das jetzt auch: `sheet-only` und `calendaria` stehen
+als empfohlene Module drin, mit Begründung, und beide Sprachfassungen der README
+haben einen Abschnitt dazu.
+
 ## 14.2611.8 — 2026-09-01
 
 **Die Akteursauswahl von Sheet Only lässt sich jetzt durch ein Seitenpanel

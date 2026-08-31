@@ -24,6 +24,7 @@ import { buildSceneField } from "./scene-field.js";
 import {
   installActorPanel, removeActorPanel, applySidebarStyle, markPopout, isDirectoryPopoutApp
 } from "./actor-panel.js";
+import { installClock, syncClock, refreshClock } from "./clock.js";
 import {
   installMonitorWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
   getSceneDisplay, getPinnedScene, getCompanionScene, setCompanionScene,
@@ -73,6 +74,29 @@ function registerSettings() {
       if (value) installActorPanel();
       else removeActorPanel();
     }
+  });
+
+  // Date and time in the sheet-only view. Client-scoped, so it sits in the
+  // plain list where a player can reach it - see KONZEPT-werkzeugkasten.md:
+  // settings a player ever touches must not move into a GM-only window.
+  S(SETTINGS.CLOCK_STRIP, {
+    name: "INPERSON.Settings.ClockStrip.Name",
+    hint: "INPERSON.Settings.ClockStrip.Hint",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: () => syncClock()
+  });
+
+  S(SETTINGS.CLOCK_WEATHER, {
+    name: "INPERSON.Settings.ClockWeather.Name",
+    hint: "INPERSON.Settings.ClockWeather.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: () => refreshClock({ force: true })
   });
 
   S(SETTINGS.DEFAULT_PLAYERS, {
@@ -575,6 +599,7 @@ Hooks.once("ready", async () => {
   installActivityListener();
   installScreensaver();
   installActorPanel();
+  installClock();
   // Lock View may not have built its global yet when our `ready` runs; the
   // canvasReady attempt below is the second chance. Both are no-ops without it.
   installLockViewInterop();

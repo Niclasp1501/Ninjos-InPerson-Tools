@@ -215,6 +215,46 @@ display goes back to its old behaviour; nothing breaks.
 > it. Reloading only the GM window leaves the displays on the old code, and the
 > frame stays crooked with no hint as to why.
 
+### Alongside Sheet Only
+
+Sheet Only puts a player in front of nothing but their character sheet, which is
+what you want on a tablet at the table. It gets there by hiding the interface
+outright — `#interface`, `#pause`, `#tooltip`, `#notifications` — and building
+its own container instead. Everything that normally lives in the Foundry UI is
+gone for that player, a calendar's clock included. No setting brings it back,
+because there is nothing left to show it in.
+
+Two additions fill that gap. Both do nothing at all without Sheet Only.
+
+**Date and time as a strip.** A slim bar above the sheet: the date, the clock,
+and — when a calendar module supplies them — the current weather with its
+temperature and the season. The values are read, not borrowed: `game.time`
+reaches every client whether or not it has a canvas, and the weather comes out of
+Calendaria's world setting. Its own HUD is left untouched, which is deliberate;
+re-parenting someone else's element means fighting their re-render on every tick.
+
+Reading rather than borrowing also means the wording is ours. Calendaria's
+bundled Harptos calendar names its weekdays "Onesday" to "Tenday" as plain
+strings with no translation keys behind them, so no language file could reach
+them — the strip formats its own.
+
+Redrawing is tied to the displayed minute, not to the event. With a real-time
+clock running at a multiplier, `updateWorldTime` fires every second; the strip
+would otherwise rebuild sixty times for one visible change, on the clients least
+able to spare it.
+
+Each device decides for itself whether to show the strip. Whether weather and
+season ride along is the GM's call.
+
+**The actor directory as a side panel.** Optional, and **off by default**. It
+hides Sheet Only's own selector and puts one in its place that docks Foundry's
+actor directory to the right edge; the sheet gives up 300 pixels and takes them
+back when the panel closes. It rearranges another module's interface, so it waits
+to be asked.
+
+*Verified with Calendaria for the calendar side. Without any calendar module the
+strip still shows date and time from Foundry's own.*
+
 ### Installation
 
 Install through the Foundry package browser, or by manifest URL:
@@ -439,6 +479,49 @@ still weg und der Monitor verhält sich wie zuvor; kaputt geht dabei nichts.
 > der ihn zeichnet. Lädt man nur das Spielleiter-Fenster neu, bleiben die
 > Monitore auf dem alten Stand — der Rahmen steht weiter schief, ohne dass
 > ersichtlich wäre, warum.
+
+### Zusammen mit Sheet Only
+
+Sheet Only stellt einen Spieler vor nichts als sein Charakterblatt — genau das,
+was man am Tisch auf einem Tablet will. Es erreicht das, indem es die Oberfläche
+schlicht ausblendet: `#interface`, `#pause`, `#tooltip`, `#notifications`, und
+baut sich stattdessen einen eigenen Container. Alles, was sonst in Foundrys
+Oberfläche wohnt, ist für diesen Spieler weg — die Uhr eines Kalendermoduls
+eingeschlossen. Keine Einstellung holt sie zurück, weil es nichts mehr gibt,
+worin sie erscheinen könnte.
+
+Zwei Ergänzungen füllen die Lücke. Beide tun ohne Sheet Only überhaupt nichts.
+
+**Datum und Uhrzeit als Leiste.** Ein schmaler Streifen über dem Blatt: das
+Datum, die Uhr, und — wenn ein Kalendermodul sie liefert — das aktuelle Wetter
+mit Temperatur und die Jahreszeit. Die Werte werden **gelesen, nicht geliehen**:
+`game.time` erreicht jeden Client, ob er ein Spielfeld hat oder nicht, und das
+Wetter steht in einer Welteinstellung von Calendaria. Dessen eigenes HUD bleibt
+unangetastet, und das mit Absicht — das Element eines fremden Moduls umzuhängen
+hieße, sich bei jedem Zeitschritt mit seinem Neuzeichnen anzulegen.
+
+Lesen statt leihen heißt auch: Die Worte sind unsere. Calendarias mitgelieferter
+Harptos-Kalender nennt seine Wochentage „Onesday" bis „Tenday" als feste
+Zeichenketten, ohne Übersetzungsschlüssel dahinter — keine Sprachdatei käme da
+heran. Die Leiste formatiert selbst.
+
+Neu gezeichnet wird nur, wenn sich die **angezeigte Minute** ändert, nicht bei
+jedem Ereignis. Läuft die Uhr in Echtzeit mit einem Vielfachen, feuert
+`updateWorldTime` im Sekundentakt; die Leiste würde sich sonst sechzigmal für
+eine sichtbare Änderung neu aufbauen — ausgerechnet auf den Geräten, die am
+wenigsten übrig haben.
+
+Ob die Leiste erscheint, entscheidet jedes Gerät für sich. Ob Wetter und
+Jahreszeit mitlaufen, entscheidet die Spielleitung.
+
+**Das Akteursverzeichnis als Seitenpanel.** Wahlweise, und **standardmäßig aus**.
+Es blendet Sheet Onlys eigenen Auswahlknopf aus und setzt einen an seine Stelle,
+der Foundrys Akteursverzeichnis rechts andockt; das Blatt gibt dafür 300 Pixel
+her und holt sie zurück, sobald das Panel schließt. Es räumt in der Oberfläche
+eines fremden Moduls um — also wartet es, bis man es darum bittet.
+
+*Für die Kalenderseite mit Calendaria geprüft. Ganz ohne Kalendermodul zeigt die
+Leiste weiterhin Datum und Uhrzeit aus Foundrys eigenem Kalender.*
 
 ### Installation
 
