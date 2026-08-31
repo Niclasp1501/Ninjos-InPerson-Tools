@@ -1,5 +1,31 @@
 # Changelog
 
+## 14.2611.8 — 2026-09-01
+
+**Die Akteursauswahl von Sheet Only lässt sich jetzt durch ein Seitenpanel
+ersetzen** — eine Funktion, die bisher in FANG steckte. Dort war sie am falschen
+Ort: Sie räumt die Oberfläche eines fremden Moduls um, damit man bequemer am
+Tisch spielt. Das ist die Aufgabe dieses Moduls, nicht die eines Werkzeugs für
+Beziehungsgeflechte.
+
+Eingeschaltet blendet sie den Auswahlknopf von Sheet Only aus und setzt einen an
+seine Stelle, der Foundrys Akteursverzeichnis rechts am Rand aufklappt; das
+Charakterblatt gibt dafür 300 Pixel her und holt sie sich danach zurück.
+**Standardmäßig aus** — ein Modul, das ungefragt in der Oberfläche eines anderen
+umräumt, ist ein schlechter Gast.
+
+Die Abwehr gegen Foundrys leere Fensterhüllen ist unverändert mitgezogen. Sie
+ist der Grund, warum der Code so misstrauisch aussieht: Nach dem Schließen bleibt
+in v13 der Rahmen ohne Inhalt stehen. Dann hält die CSS-Bedingung das Blatt
+schmal neben nichts, und der Knopf weigert sich, noch einmal zu öffnen. Deshalb
+wird mehrfach nachgeräumt — als Mikrotask, nach 0, 50 und 250 Millisekunden und
+über fünf Bildwechsel, weil Foundry die Hülle zu keinem festen Zeitpunkt entfernt.
+
+Neu dazu kommt `sheet-only.js`: alles, was dieses Modul über Sheet Onlys Aufbau
+weiß, an einer Stelle. Sheet Only ist für Foundry 13.351 eingetragen, während wir
+auf 14 laufen — wenn dort etwas wandert, ist künftig ein Selektor falsch statt
+vieler.
+
 ## 14.2611.6 — 2026-08-29
 
 **Die Marke gleitet jetzt, statt zu springen** — und mein Grund dagegen war

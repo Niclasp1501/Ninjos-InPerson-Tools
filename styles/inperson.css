@@ -1099,3 +1099,59 @@
   flex-direction: column;
   gap: 2px;
 }
+
+/* ── Sheet Only: the actor directory as a side panel ──────────────────────
+   Moved here from FANG in 14.2609.1 together with actor-panel.js. The three
+   groups belong together: pin the popout, make room for it, and take the room
+   back afterwards.
+
+   The `:has(.window-content > *)` guard is the important part. Foundry v13
+   leaves empty popout frames behind, and a bare `:has(.sidebar-popout)` would
+   keep the sheet narrow next to nothing at all. Asking for content rather than
+   for the frame is what tells a live panel from a ghost.
+
+   The `:not(.fang-app-window):not(.fang-dialog)` exclusions stay: FANG's own
+   windows position themselves and must not be squeezed. They cost nothing when
+   FANG is absent. */
+
+/* 1. Pin the popout to the right edge, even if our JS never ran. */
+.actors-sidebar.sidebar-popout {
+  position: fixed !important;
+  right: 0 !important;
+  top: 0 !important;
+  left: auto !important;
+  width: 300px !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  z-index: 9999 !important;
+}
+
+/* 2. Make room: the sheet and any other window give up 300px. */
+body.inperson-actor-panel-open .sheet-only-sheet,
+body:has(.actors-sidebar.sidebar-popout:has(.window-content > *)) .application.sheet.actor:not(.sidebar-popout) {
+  width: calc(100vw - 300px) !important;
+  max-width: calc(100vw - 300px) !important;
+  transition: none !important;
+}
+
+body.inperson-actor-panel-open .window-app:not(.sidebar-popout):not(.fang-app-window):not(.fang-dialog),
+body.inperson-actor-panel-open .application:not(.sidebar-popout):not(.fang-app-window):not(.fang-dialog) {
+  max-width: calc(100vw - 300px) !important;
+  transition: none !important;
+}
+
+/* 3. Take it back. Without this the sheet keeps the gap and shows black. */
+body:not(.inperson-actor-panel-open):not(:has(.actors-sidebar.sidebar-popout:has(.window-content > *))) .application.sheet.actor:not(.sidebar-popout),
+body:not(.inperson-actor-panel-open) .sheet-only-sheet {
+  width: 100vw !important;
+  max-width: 100vw !important;
+}
+
+/* 4. The button says whether the panel is open. */
+body.inperson-actor-panel-open #inperson-so-actors-btn,
+body:has(.actors-sidebar.sidebar-popout:has(.window-content > *)) #inperson-so-actors-btn {
+  color: #ff3b3b !important;
+  text-shadow: 0 0 10px rgb(255 59 59 / 40%);
+}

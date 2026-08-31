@@ -184,5 +184,8 @@
   "INPERSON.Displays.PairFrom": "Battlemap hierher ziehen",
   "INPERSON.Displays.PairTo": "Begleitszene hierher ziehen",
   "INPERSON.Displays.PairNeedsBoth": "Beide Seiten wählen: erst die Battlemap, dann die Szene, die der Monitor dazu zeigen soll.",
-  "INPERSON.Displays.PairMade": "„{scene}“ zeigt jetzt „{companion}“ auf dem Szenen-Monitor."
+  "INPERSON.Displays.PairMade": "„{scene}“ zeigt jetzt „{companion}“ auf dem Szenen-Monitor.",
+  "INPERSON.Settings.ActorPanel.Name": "Akteursauswahl von Sheet Only ersetzen",
+  "INPERSON.Settings.ActorPanel.Hint": "Ersetzt im Sheet-Only-Modus den Auswahlknopf durch ein Akteursverzeichnis, das rechts am Bildschirmrand aufklappt; das Charakterblatt macht dafür Platz. Braucht das Modul „Sheet Only“ und wirkt nur dort.",
+  "INPERSON.ActorPanel.Button": "Akteure"
 }

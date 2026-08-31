@@ -184,5 +184,8 @@
   "INPERSON.Displays.PairFrom": "Drag the battlemap here",
   "INPERSON.Displays.PairTo": "Drag the companion scene here",
   "INPERSON.Displays.PairNeedsBoth": "Choose both sides: the battlemap first, then the scene the display should show alongside it.",
-  "INPERSON.Displays.PairMade": "\"{scene}\" now shows \"{companion}\" on the scene display."
+  "INPERSON.Displays.PairMade": "\"{scene}\" now shows \"{companion}\" on the scene display.",
+  "INPERSON.Settings.ActorPanel.Name": "Replace Sheet Only's actor selector",
+  "INPERSON.Settings.ActorPanel.Hint": "In sheet-only mode, replaces the selector button with an actor directory that docks to the right edge; the character sheet makes room for it. Requires the \"Sheet Only\" module and has no effect without it.",
+  "INPERSON.ActorPanel.Button": "Actors"
 }

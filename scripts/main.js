@@ -22,6 +22,9 @@ import { openDisplaySettings } from "./displays-settings.js";
 import { openTableModeSettings } from "./tablemode-settings.js";
 import { buildSceneField } from "./scene-field.js";
 import {
+  installActorPanel, removeActorPanel, applySidebarStyle, markPopout, isDirectoryPopoutApp
+} from "./actor-panel.js";
+import {
   installMonitorWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
   getSceneDisplay, getPinnedScene, getCompanionScene, setCompanionScene,
   setDefaultCompanionScene, setScreensaverState,
@@ -54,6 +57,22 @@ function registerSettings() {
     type: Boolean,
     default: false,
     onChange: onRelevantSettingChanged
+  });
+
+  // Sheet Only's own actor selector, replaced by a side panel. Visible in the
+  // list rather than hidden in a tool window: it changes another module's
+  // interface, so whoever installed both should see that we can do it.
+  S(SETTINGS.ACTOR_PANEL, {
+    name: "INPERSON.Settings.ActorPanel.Name",
+    hint: "INPERSON.Settings.ActorPanel.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: value => {
+      if (value) installActorPanel();
+      else removeActorPanel();
+    }
   });
 
   S(SETTINGS.DEFAULT_PLAYERS, {
@@ -555,6 +574,7 @@ Hooks.once("ready", async () => {
   // had thought of.
   installActivityListener();
   installScreensaver();
+  installActorPanel();
   // Lock View may not have built its global yet when our `ready` runs; the
   // canvasReady attempt below is the second chance. Both are no-ops without it.
   installLockViewInterop();
@@ -849,3 +869,17 @@ function onRenderSceneConfig(app, element) {
 
 Hooks.once("setup", () => fillAccountChoices());
 Hooks.on("renderSceneConfig", onRenderSceneConfig);
+
+/**
+ * Lay the actor directory along the right edge once Foundry has rendered it.
+ *
+ * The short delay is not decoration: Foundry positions the popout after the
+ * render hook, so styling it immediately gets overwritten a frame later.
+ */
+Hooks.on("renderActorDirectory", (app) => {
+  if (!game.settings.get(MODULE_ID, SETTINGS.ACTOR_PANEL)) return;
+  if (!document.getElementById("so-main-buttons")) return;
+  if (!isDirectoryPopoutApp(app)) return;
+  markPopout(app);
+  setTimeout(() => applySidebarStyle(app), 50);
+});

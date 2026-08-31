@@ -74,7 +74,14 @@ export const SETTINGS = {
   /** Per-client choice: "auto" | "on" | "off" */
   SELF: "selfMode",
   /** Show the small status pill in the UI (client). */
-  SHOW_PILL: "showPill"
+  SHOW_PILL: "showPill",
+  /**
+   * Replace Sheet Only's actor selector with a side panel (world).
+   *
+   * Off by default: it takes over a button of another module's, and a module
+   * that rearranges someone else's interface unasked is a bad guest.
+   */
+  ACTOR_PANEL: "actorPanel"
 };
 
 /** Socket message types. */
