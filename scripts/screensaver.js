@@ -34,7 +34,11 @@ import { applyPinnedScene } from "./monitor.js";
 /** How often the state is reconsidered. A clock in minutes needs no finer tick. */
 const TICK_MS = 10_000;
 
-/** How often the drifting mark moves while the cover is up. */
+/**
+ * How long the mark takes to glide from one place to the next while the cover
+ * is up. It is also how often a new destination is picked, so the movement never
+ * stops - it only changes direction.
+ */
 const DRIFT_MS = 25_000;
 
 let _timer = null;
@@ -108,8 +112,8 @@ function overlay() {
  * Rebuilt whenever the cover goes up rather than cached, so a logo picked in the
  * settings takes effect at the next cover instead of after a reload.
  */
-function buildMark(el) {
-  const logo = setting(SETTINGS.IDLE_LOGO);
+function buildMark(el, logoOverride) {
+  const logo = logoOverride ?? setting(SETTINGS.IDLE_LOGO);
   const mark = document.createElement("div");
   mark.className = "inperson-screensaver-mark";
   if (logo) {
@@ -124,15 +128,17 @@ function buildMark(el) {
 }
 
 /**
- * Move the mark somewhere else.
+ * Send the mark somewhere else, gliding.
  *
- * By whole steps, not smoothly: a slow glide would light every pixel along the
- * path, which is the opposite of the point. Kept well inside the edges so it
- * never ends up half off-screen at any screen shape.
+ * Kept well inside the edges so it never ends up half off-screen at any screen
+ * shape. The first placement is instant - a glide there would have the mark
+ * slide in from the corner every time the cover goes up.
+ * @param {number} ms How long the glide takes. 0 places it at once.
  */
-function driftMark() {
+function driftMark(ms = DRIFT_MS) {
   const mark = overlay().querySelector(".inperson-screensaver-mark");
   if (!mark) return;
+  mark.style.transitionDuration = `${ms}ms`;
   mark.style.left = `${10 + Math.random() * 80}%`;
   mark.style.top = `${10 + Math.random() * 80}%`;
 }
@@ -148,7 +154,7 @@ function setCovered(on) {
 
   if (on) {
     buildMark(el);
-    driftMark();
+    driftMark(0);          // placed, not glided in
     _driftedAt = now;
     _coveredSince = now;
   } else {
@@ -263,15 +269,24 @@ async function tick() {
  * image reads well against black and sits at a sensible size, and since the mark
  * is sized against the viewport rather than in pixels, it looks the same on a
  * 24-inch monitor as on the television.
+ * The image is passed in rather than read from the settings, because at this
+ * moment it usually is not in the settings yet: someone has just picked a file
+ * and wants to see it before saving. Reading the stored value would show them
+ * the old mark and leave them thinking their choice did not take.
  * @param {number} [seconds]
+ * @param {string} [logo] Path to show instead of the saved one
  */
-export function previewCover(seconds = 8) {
+export function previewCover(seconds = 8, logo) {
   const el = overlay();
-  buildMark(el);
-  driftMark();
+  buildMark(el, logo);
+  driftMark(0);
   el.classList.add("inperson-screensaver-on", "inperson-screensaver-preview");
 
-  const drift = setInterval(driftMark, 2000);
+  // Shorter legs than in real use: eight seconds is not long enough to show a
+  // twenty-five-second glide, and the point here is to see that it moves.
+  const PREVIEW_LEG = 3000;
+  setTimeout(() => driftMark(PREVIEW_LEG), 50);
+  const drift = setInterval(() => driftMark(PREVIEW_LEG), PREVIEW_LEG);
   const stop = () => {
     clearInterval(drift);
     clearTimeout(timer);

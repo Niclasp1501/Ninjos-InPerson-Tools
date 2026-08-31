@@ -706,10 +706,16 @@
 }
 
 /*
- * The drifting mark. Deliberately small and dim: it exists so the screen is not
- * a dead black rectangle that looks like a broken television, not to be read.
- * It jumps rather than glides - a slow glide would light every pixel along the
- * path, which is the opposite of the point.
+ * The drifting mark.
+ *
+ * It glides. An earlier version jumped, on the reasoning that a glide would
+ * light every pixel along the path - which is true and turns out to be the
+ * argument *for* it: burn-in comes from sustained load on the same pixel, so
+ * spreading a faint mark along a path is gentler than parking it somewhere for
+ * half a minute. It is also simply calmer to sit next to.
+ *
+ * The duration is set from JavaScript, because the same mark drifts slowly
+ * during a break and quickly in the preview, where nobody wants to wait.
  */
 .inperson-screensaver-mark {
   position: absolute;
@@ -719,6 +725,8 @@
   background: #D4AF37;      /* the module's gold, at a fraction of full output */
   opacity: 0.35;
   box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
+  transition-property: left, top;
+  transition-timing-function: ease-in-out;
 }
 
 /*
@@ -728,13 +736,19 @@
  * and a 75" television, and held well under half brightness: the mark is there
  * so the screen does not look broken, not to be admired.
  */
+/*
+ * A chosen image is shown as it is, not dimmed. An earlier version held it at
+ * 45 % on burn-in grounds, which was overcautious: the mark is small, it moves
+ * continuously, and everything around it is black. Whoever picks a picture
+ * wants to see their picture.
+ */
 .inperson-screensaver-mark.has-logo {
   width: auto;
   height: auto;
   background: none;
   border-radius: 0;
   box-shadow: none;
-  opacity: 0.45;
+  opacity: 1;
 }
 
 .inperson-screensaver-mark.has-logo img {
@@ -903,4 +917,185 @@
   margin-left: 10px;
   padding-left: 10px;
   border-left: 2px solid var(--tm-gold);
+}
+
+/* -------------------------------------------- */
+/*  Scene field: pick one scene                 */
+/* -------------------------------------------- */
+
+.inperson-scenefield {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+  width: 100%;
+}
+
+/*
+ * The drop target doubles as the display of what is chosen, which is why it has
+ * a height even when empty: a target that only appears once something hovers
+ * over it cannot be aimed at.
+ */
+.inperson-scenefield-drop {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  min-height: 44px;
+  padding: 4px 8px;
+  border: 1px dashed var(--color-border-light-tertiary, #7a7971);
+  border-radius: 3px;
+}
+
+.inperson-scenefield-drop.is-over {
+  border-style: solid;
+  border-color: #D4AF37;
+  background: rgba(212, 175, 55, 0.12);
+}
+
+.inperson-scenefield-drop img {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 34px;
+  object-fit: cover;
+  border: none;
+  border-radius: 2px;
+}
+
+/*
+ * `inherit`, not our own colour: this field is used in two places with opposite
+ * grounds - Foundry's dark scene sheet and our parchment settings pages. Taking
+ * the surrounding colour is right in both, whereas naming ours would be wrong in
+ * the scene sheet. It happened to work before only because `--tm-text` is not
+ * defined outside our panels, so the rule quietly fell through to the same
+ * inheritance. Better to say it than to rely on it.
+ */
+.inperson-scenefield-name {
+  color: inherit;
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.inperson-scenefield-hint {
+  color: inherit;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.inperson-scenefield-buttons {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;
+  align-items: center;
+}
+
+.inperson-scenefield-clear[hidden] {
+  display: none;
+}
+
+/* The list you can type into --------------- */
+
+.inperson-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+}
+
+.inperson-pick-list {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.inperson-pick-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: var(--tm-text);
+  font-family: var(--tm-font);
+  text-align: left;
+  cursor: pointer;
+}
+
+.inperson-pick-row:hover {
+  border-color: #D4AF37;
+  background: rgba(212, 175, 55, 0.12);
+}
+
+/* The one already chosen, so reopening the list starts where you left off. */
+.inperson-pick-row.is-current {
+  border-color: #8B0000;
+  background: rgba(139, 0, 0, 0.1);
+}
+
+.inperson-pick-row img {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 30px;
+  object-fit: cover;
+  border: none;
+  border-radius: 2px;
+}
+
+.inperson-pick-row[hidden] {
+  display: none;
+}
+
+.inperson-pick-filter {
+  flex: 0 0 auto;
+  width: 100%;
+  color: var(--tm-text);
+  background: var(--tm-card);
+}
+
+/*
+ * Two names that exist only so JavaScript and the surrounding form can find
+ * these elements. They are listed here on purpose: the validator checks that
+ * every class in the markup has a rule, which is how a typo gets caught, and a
+ * silent exception would defeat that.
+ */
+.inperson-companion-group,
+.inperson-scenefield-pick {
+  /* appearance comes from .form-group and .inperson-mini respectively */
+}
+
+/* The pair editor at the bottom of the companion list. */
+.inperson-pair-add {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--tm-border);
+}
+
+.inperson-pair-add-from,
+.inperson-pair-add-to {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* The two fields sit side by side, so their pick button would crowd them out. */
+.inperson-pair-add .inperson-scenefield-pick {
+  padding: 0 8px;
+}
+
+.inperson-pair-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }

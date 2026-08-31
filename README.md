@@ -1,6 +1,6 @@
 # Ninjo's In-Person Tools
 
-**Current Version / Aktuelle Version:** `14.2611.1`
+**Current Version / Aktuelle Version:** `14.2611.7`
 
 Tools for running Foundry VTT at a physical table: the map is on a TV, the
 players only need their character sheet, dice and token — and yet every laptop

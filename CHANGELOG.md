@@ -1,5 +1,100 @@
 # Changelog
 
+## 14.2611.6 — 2026-08-29
+
+**Die Marke gleitet jetzt, statt zu springen** — und mein Grund dagegen war
+falsch herum gedacht. Ich hatte geschrieben, ein Gleiten würde „jeden Pixel auf
+dem Weg beleuchten". Das stimmt und ist genau das Argument *dafür*: Einbrennen
+entsteht durch anhaltende Last auf demselben Pixel. Eine Marke über eine Bahn zu
+verteilen ist schonender, als sie eine halbe Minute lang auf einen Fleck zu
+setzen. Ruhiger anzusehen ist es obendrein.
+
+Fünfundzwanzig Sekunden je Wegstrecke, weich ein- und ausklingend. Die erste
+Platzierung bleibt sprunghaft — sonst würde die Marke jedes Mal aus der Ecke
+hereinfahren, wenn die Blende hochgeht. In der Vorschau sind die Wege kürzer,
+sonst sieht man in acht Sekunden keine Bewegung.
+
+**Das gewählte Bild wird nicht mehr abgedunkelt.** Ich hatte es auf 45 % gesetzt,
+mit Verweis auf den Einbrennschutz. Das war übervorsichtig: Die Marke ist klein,
+bewegt sich ständig, und ringsum ist alles schwarz. Wer ein Bild aussucht, will
+sein Bild sehen.
+
+## 14.2611.5 — 2026-08-29
+
+**Die Begleitszenen sind jetzt ein Editor, keine Liste.** Bisher konnte man dort
+nur ansehen und auflösen — angelegt wurde eine Verknüpfung ausschließlich in der
+Szenen-Konfiguration der jeweiligen Battlemap. Das ist der halbe Weg: Wer einen
+Überblick über alle Paare hat, will von dort aus auch eines hinzufügen können.
+
+Unter der Liste stehen jetzt zwei Szenenfelder und ein Knopf. Beide nehmen eine
+gezogene Szene aus der Seitenleiste oder öffnen die Suchliste — dasselbe Feld
+wie in der Szenen-Konfiguration.
+
+Angelegt und aufgelöst wird sofort, nicht erst beim Speichern: Eine Verknüpfung
+ist ein Merkmal der Battlemap, kein Wert dieses Formulars. Sie bis zum Speichern
+zurückzuhalten hieße, dass ein Abbrechen die eine Hälfte rückgängig macht und
+die andere nicht.
+
+**„Blende ansehen" zeigte den Punkt statt des gewählten Bildes.** Der Knopf las
+die *gespeicherte* Einstellung — und die ist in genau dem Moment noch leer, in
+dem man ihn braucht: Man hat eben eine Datei gewählt und will sie sehen, bevor
+man speichert. Wer das tat, sah den Punkt und musste annehmen, seine Wahl sei
+nicht angekommen.
+
+Die Vorschau nimmt jetzt den Pfad, wie er im Formular steht.
+
+Dazu aus dem Test: Die Schriftfarbe im Szenenfeld steht auf `inherit` statt auf
+unserer eigenen. Das Feld erscheint an zwei Orten mit entgegengesetztem Grund —
+Foundrys dunklem Szenenfenster und unseren hellen Seiten — und `inherit` ist in
+beiden richtig. Vorher stimmte es nur zufällig: `--tm-text` ist außerhalb unserer
+Fenster nicht definiert, die Regel griff ins Leere und erbte dasselbe.
+
+## 14.2611.3 — 2026-08-29
+
+Zwei Fehler, im Betrieb gefunden.
+
+**Die Suchliste war kaum lesbar.** Ich hatte den Zeilen Grund und Ausrichtung
+gegeben, aber keine Schriftfarbe — also erbten sie Foundrys helle Themenfarbe auf
+unserem Pergamentgrund. Gemessen: 0,16 Helligkeitsunterschied. Derselbe Fehler
+wie bei „Begleitszenen" in 14.2610.5, diesmal an vier Stellen auf einmal. Steht
+jetzt als Regel in `AGENTS.md`: Wer Schrift oder Grund setzt, setzt auch die
+Farbe.
+
+**Fehlende Vorschaubilder brechen die Anzeige.** Eine Szene trägt einen Pfad zu
+einem Vorschaubild, dessen Datei es nicht mehr gibt — „53. Pirate Ship" zeigt auf
+eines, das der Server mit 404 beantwortet. Das Dokument weiß davon nichts, also
+muss die Prüfung dort passieren, wo es sich zeigt: am Bildelement. Schlägt das
+Laden fehl, tritt jetzt das Ersatzbild an die Stelle.
+
+## 14.2611.2 — 2026-08-29
+
+**Die Begleitszene wird nicht mehr aus einer Liste mit 125 Einträgen gewählt.**
+Ein Auswahlfeld ist dafür in zwei Hinsichten die falsche Form: Einen Namen darin
+zu finden heißt, eine Liste zu durchsuchen, die anders sortiert ist als die
+Erinnerung — und ist er gewählt, steht dort ein Name und sonst nichts. Kein Bild
+der Szene, und „53. Pirate Ship" ist von „53. Pirate Ship (Nacht)" nicht zu
+unterscheiden.
+
+Stattdessen ein Feld mit drei Wegen hinein, weil Leute unterschiedlich ankommen:
+
+| | |
+|---|---|
+| **Ziehen** | eine Szene aus der Seitenleiste auf das Feld — der schnellste Weg, wenn sie ohnehin vor einem liegt |
+| **Wählen** | öffnet eine Liste, in die man tippen kann, für die übrigen 120 |
+| **Leeren** | nimmt sie wieder heraus |
+
+Die gewählte Szene steht mit **ihrem eigenen Vorschaubild** da. Genau das kann
+ein Auswahlfeld nicht, und es ist der Grund, warum ein Fehlgriff bisher erst
+auffiel, wenn die Battlemap aktiviert wurde und der zweite Bildschirm den
+falschen Raum zeigte.
+
+Das Feld liegt als eigenes Stück (`scene-field.js`) vor, denn dieselbe
+125-Einträge-Liste steht auf der Monitor-Seite noch zweimal — Ruhebild und
+Standard-Begleitszene. Die ziehen als Nächstes nach.
+
+Nebenbei: Eine Szene lässt sich nicht mehr als ihre eigene Begleitszene setzen.
+Das Auswahlfeld hatte sie ausgeschlossen, ein Ziehen hätte es zugelassen.
+
 ## 14.2611.1 — 2026-08-29
 
 **Ein Fenster je Werkzeug.** Das Modul ist ein Werkzeugkasten: Downloads am Tisch

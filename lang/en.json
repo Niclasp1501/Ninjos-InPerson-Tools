@@ -149,7 +149,7 @@
   "INPERSON.Settings.IdleLogo.Name": "Image on the cover",
   "INPERSON.Settings.IdleLogo.Hint": "Drifts slowly across the black. Without one a small gold dot appears instead, so the screen does not look broken.",
   "INPERSON.Settings.IdleLogo.Placeholder": "Path to an image",
-  "INPERSON.Displays.PairsHint": "Battlemaps with a companion of their own. A pairing is made in that battlemap's scene configuration; here they are gathered together and can be undone.",
+  "INPERSON.Displays.PairsHint": "Battlemaps with a companion of their own. They can be made and undone here; the same pairing also appears in that battlemap's own scene configuration.",
   "INPERSON.Settings.KeepTokens.Name": "Keep loading token artwork",
   "INPERSON.Settings.KeepTokens.Hint": "Recommended. Token images are small and players need to tell their figures apart. Turning this off leaves tokens black as well.",
   "INPERSON.Settings.HideProgress.Name": "Hide the loading bar for players",
@@ -173,5 +173,16 @@
   "INPERSON.TableMode.StateOff": "Table mode is off. It is switched on and off in the controls, where you can also see who it affects.",
   "INPERSON.TableMode.WhoLegend": "Who it applies to",
   "INPERSON.TableMode.WhatLegend": "What is not loaded",
-  "INPERSON.TableMode.DeviceLegend": "On the affected devices"
+  "INPERSON.TableMode.DeviceLegend": "On the affected devices",
+  "INPERSON.SceneField.Choose": "Choose a scene",
+  "INPERSON.SceneField.Empty": "None — drag a scene here from the sidebar to set one",
+  "INPERSON.SceneField.Filter": "Type a name to filter…",
+  "INPERSON.SceneField.NotAScene": "That was not a scene. Only entries from the scene sidebar can be dropped here.",
+  "INPERSON.SceneField.NotItself": "A scene cannot be its own companion.",
+  "INPERSON.Displays.PairsNone": "No pairing made yet.",
+  "INPERSON.Displays.PairAdd": "Pair",
+  "INPERSON.Displays.PairFrom": "Drag the battlemap here",
+  "INPERSON.Displays.PairTo": "Drag the companion scene here",
+  "INPERSON.Displays.PairNeedsBoth": "Choose both sides: the battlemap first, then the scene the display should show alongside it.",
+  "INPERSON.Displays.PairMade": "\"{scene}\" now shows \"{companion}\" on the scene display."
 }

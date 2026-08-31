@@ -20,6 +20,7 @@ import { installLockViewInterop, onRotationChanged, describeInterop } from "./lo
 import { installScreensaver } from "./screensaver.js";
 import { openDisplaySettings } from "./displays-settings.js";
 import { openTableModeSettings } from "./tablemode-settings.js";
+import { buildSceneField } from "./scene-field.js";
 import {
   installMonitorWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
   getSceneDisplay, getPinnedScene, getCompanionScene, setCompanionScene,
@@ -809,10 +810,6 @@ function onRenderSceneConfig(app, element) {
   // Only says anything when Lock View is installed *and* this scene is turned
   // sideways - otherwise there is no interaction to explain.
   const interop = describeInterop(scene);
-  const others = game.scenes
-    .filter(s => s.id !== scene?.id)
-    .sort((a, b) => a.name.localeCompare(b.name));
-
   // Own fieldset with a legend, the way Foundry groups this tab itself
   // ("Details", "Audio", "Transition"). A bare form-group appended at the end
   // would sit outside every group and read as an afterthought.
@@ -821,14 +818,9 @@ function onRenderSceneConfig(app, element) {
   fieldset.className = "inperson-companion";
   fieldset.innerHTML = `
     <legend>${game.i18n.localize("INPERSON.SceneConfig.Legend")}</legend>
-    <div class="form-group">
+    <div class="form-group inperson-companion-group">
       <label>${game.i18n.localize("INPERSON.SceneConfig.Companion")}</label>
-      <div class="form-fields">
-        <select name="flags.${MODULE_ID}.${COMPANION_FLAG}">
-          <option value="">${game.i18n.localize("INPERSON.SceneConfig.CompanionNone")}</option>
-          ${others.map(s => `<option value="${s.id}"${s.id === current ? " selected" : ""}>${escape(s.name)}</option>`).join("")}
-        </select>
-      </div>
+      <div class="form-fields"></div>
       <p class="hint">${game.i18n.localize("INPERSON.SceneConfig.CompanionHint")}</p>
     </div>
     <div class="form-group">
@@ -841,6 +833,17 @@ function onRenderSceneConfig(app, element) {
       <p class="hint">${game.i18n.localize("INPERSON.SceneConfig.RotationHint")}</p>
       ${interop ? `<p class="notification info inperson-interop">${interop}</p>` : ""}
     </div>`;
+  // The scene field is built rather than written as markup: it carries drag
+  // handling and a picker, and a template string cannot hold listeners.
+  fieldset.querySelector(".inperson-companion-group .form-fields")?.appendChild(
+    buildSceneField({
+      name: `flags.${MODULE_ID}.${COMPANION_FLAG}`,
+      value: current,
+      exclude: scene?.id,
+      emptyLabel: game.i18n.localize("INPERSON.SceneConfig.CompanionNone")
+    })
+  );
+
   tab.appendChild(fieldset);
 }
 

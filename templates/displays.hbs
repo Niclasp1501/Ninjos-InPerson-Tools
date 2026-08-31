@@ -70,24 +70,21 @@
       {{/if}}
     </div>
 
-    {{#if hasPairs}}
-      <div class="inperson-pairs">
-        <h4>{{localize "INPERSON.Panel.PairsTitle"}}</h4>
-        <p class="hint">{{localize "INPERSON.Displays.PairsHint"}}</p>
-        {{#each pairs}}
-          <div class="inperson-pair-row">
-            <span class="inperson-pair-from">{{this.sceneName}}</span>
-            <i class="fa-solid fa-arrow-right"></i>
-            <span class="inperson-pair-to">{{this.companionName}}</span>
-            <button type="button" data-action="unpair" data-scene-id="{{this.sceneId}}"
-                    class="inperson-pair-remove"
-                    data-tooltip="{{localize 'INPERSON.Panel.UnpairTip'}}">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
-        {{/each}}
+    <div class="inperson-pairs">
+      <h4>{{localize "INPERSON.Panel.PairsTitle"}}</h4>
+      <p class="hint">{{localize "INPERSON.Displays.PairsHint"}}</p>
+
+      <div class="inperson-pair-list"></div>
+
+      <div class="inperson-pair-add">
+        <div class="inperson-pair-add-from"></div>
+        <i class="fa-solid fa-arrow-right"></i>
+        <div class="inperson-pair-add-to"></div>
+        <button type="button" class="inperson-mini" data-action="addPair">
+          <i class="fa-solid fa-plus"></i> {{localize "INPERSON.Displays.PairAdd"}}
+        </button>
       </div>
-    {{/if}}
+    </div>
   </fieldset>
 
   <fieldset>

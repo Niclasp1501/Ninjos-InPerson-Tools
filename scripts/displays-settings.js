@@ -19,6 +19,7 @@
 
 import { MODULE_ID, SETTINGS } from "./const.js";
 import { listCompanionPairs, setCompanionScene } from "./monitor.js";
+import { buildSceneField } from "./scene-field.js";
 import { previewCover } from "./screensaver.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -58,7 +59,8 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
       pickLogo: DisplaySettings.#onPickLogo,
       clearLogo: DisplaySettings.#onClearLogo,
       unpair: DisplaySettings.#onUnpair,
-      testCover: DisplaySettings.#onTestCover
+      testCover: DisplaySettings.#onTestCover,
+      addPair: DisplaySettings.#onAddPair
     }
   };
 
@@ -108,15 +110,7 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const idleAfter = get(SETTINGS.IDLE_AFTER);
     const logo = get(SETTINGS.IDLE_LOGO);
-    const pairs = listCompanionPairs().map(p => ({
-      sceneId: p.scene.id,
-      sceneName: p.scene.name,
-      companionName: p.companion.name
-    }));
-
     return {
-      pairs,
-      hasPairs: pairs.length > 0,
       accountsBM: mark(this.#accounts(), get(SETTINGS.MONITOR_BM)),
       accountsSC: mark(this.#accounts(), get(SETTINGS.MONITOR_SC)),
       releaseFollow: get(SETTINGS.MONITOR_RELEASE) === "follow",
@@ -179,6 +173,90 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
+   * Draw the list of pairings.
+   *
+   * Built here rather than in the template because it changes while the window
+   * stays open, and re-rendering would throw away everything else that has been
+   * filled in but not saved. Same reason as the logo preview above.
+   */
+  #paintPairs() {
+    const list = this.element.querySelector(".inperson-pair-list");
+    if (!list) return;
+    list.replaceChildren();
+
+    const pairs = listCompanionPairs();
+    if (!pairs.length) {
+      const empty = document.createElement("p");
+      empty.className = "hint";
+      empty.textContent = game.i18n.localize("INPERSON.Displays.PairsNone");
+      list.appendChild(empty);
+      return;
+    }
+
+    for (const { scene, companion } of pairs) {
+      const row = document.createElement("div");
+      row.className = "inperson-pair-row";
+
+      const from = document.createElement("span");
+      from.className = "inperson-pair-from";
+      from.textContent = scene.name;
+
+      const arrow = document.createElement("i");
+      arrow.className = "fa-solid fa-arrow-right";
+
+      const to = document.createElement("span");
+      to.className = "inperson-pair-to";
+      to.textContent = companion.name;
+
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "inperson-pair-remove";
+      remove.dataset.action = "unpair";
+      remove.dataset.sceneId = scene.id;
+      remove.dataset.tooltip = game.i18n.localize("INPERSON.Panel.UnpairTip");
+      remove.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+
+      row.append(from, arrow, to, remove);
+      list.appendChild(row);
+    }
+  }
+
+  /**
+   * Make a new pairing from the two fields at the bottom of the list.
+   *
+   * Written through at once, like removing one: a pairing is a flag on the
+   * battlemap, not a value of this form, so holding it until Save would mean a
+   * Cancel that undoes some things and not others.
+   */
+  static async #onAddPair() {
+    const el = this.element;
+    const fromId = el.querySelector('.inperson-pair-add-from input[type=hidden]')?.value;
+    const toId = el.querySelector('.inperson-pair-add-to input[type=hidden]')?.value;
+
+    if (!fromId || !toId) {
+      return ui.notifications.warn("INPERSON.Displays.PairNeedsBoth", { localize: true });
+    }
+    if (fromId === toId) {
+      return ui.notifications.warn("INPERSON.SceneField.NotItself", { localize: true });
+    }
+
+    const battlemap = game.scenes.get(fromId);
+    if (!battlemap) return;
+    await setCompanionScene(battlemap, toId);
+
+    // Clear the two fields so the next pairing starts empty, then redraw the
+    // list above them.
+    for (const sel of ['.inperson-pair-add-from', '.inperson-pair-add-to']) {
+      el.querySelector(`${sel} .inperson-scenefield`)?.setScene?.("");
+    }
+    this.#paintPairs();
+    ui.notifications.info(game.i18n.format("INPERSON.Displays.PairMade", {
+      scene: battlemap.name,
+      companion: game.scenes.get(toId)?.name ?? "?"
+    }));
+  }
+
+  /**
    * Remove a battlemap-to-scene pairing.
    *
    * Written through at once rather than held until Save, because a pairing does
@@ -190,18 +268,14 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
     const scene = game.scenes.get(target.dataset.sceneId);
     if (scene) await setCompanionScene(scene, null);
 
-    // The row is taken out by hand, for the same reason as above: re-rendering
-    // would rebuild the form from stored settings and lose whatever has been
-    // filled in below but not saved yet.
-    const row = target.closest(".inperson-pair-row");
-    const list = row?.parentElement;
-    row?.remove();
-    if (list && !list.querySelector(".inperson-pair-row")) list.remove();
+    this.#paintPairs();
   }
 
   /** Show the cover for a few seconds so it can be judged. */
   static #onTestCover() {
-    previewCover();
+    // The path as it stands in the form, not as it stands in the settings - the
+    // whole point is to look at a choice before committing to it.
+    previewCover(8, this.element.querySelector('input[name="idleLogo"]')?.value?.trim() || "");
   }
 
   /**
@@ -237,6 +311,19 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
     // preview too, not only one chosen through the picker.
     el.querySelector('input[name="idleLogo"]')?.addEventListener("input", () => this.#syncLogo());
     sync();
+
+    // The pair editor: two scene fields and the list above them. The field
+    // names start with __ so the save handler ignores them - a pairing does not
+    // belong to this form, it belongs to the battlemap.
+    el.querySelector(".inperson-pair-add-from")?.replaceChildren(buildSceneField({
+      name: "__pairFrom",
+      emptyLabel: game.i18n.localize("INPERSON.Displays.PairFrom")
+    }));
+    el.querySelector(".inperson-pair-add-to")?.replaceChildren(buildSceneField({
+      name: "__pairTo",
+      emptyLabel: game.i18n.localize("INPERSON.Displays.PairTo")
+    }));
+    this.#paintPairs();
   }
 
   /** Save. Every field is written, so the form is the single source of truth. */

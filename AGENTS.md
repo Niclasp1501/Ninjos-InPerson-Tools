@@ -52,6 +52,17 @@ down still hold references; destroying first makes Foundry's teardown throw.
 **Scroll positions** need `PARTS[…].scrollable` declared, otherwise every button
 click jumps the list back to the top.
 
+**Set a colour whenever you set a font or a background.** Our panels use a
+parchment ground, Foundry's theme is dark, and its rules for bare `h4`, `button`
+and the like beat an inherited colour. Leaving `color` out has now produced
+near-invisible text three times: the "Begleitszenen" heading (0.09 brightness
+apart, 14.2610.5) and the scene picker rows (0.16, 14.2611.3). If a rule touches
+`font-*` or `background`, it needs `color: var(--tm-text)` too.
+
+**A thumbnail path is not a thumbnail.** Scenes keep a `thumb` the file may no
+longer back - one in this world answers 404. Anything showing scene pictures
+needs an `error` fallback on the element; the document cannot tell you.
+
 **A removed flag arrives as `-=name`.** `updateScene` reports an unset flag under
 the deletion key, not the plain one. `setRotation` unsets for 0 degrees, so
 checking only `changed.flags[MODULE_ID].rotation` misses exactly the case of

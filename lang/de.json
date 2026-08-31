@@ -149,7 +149,7 @@
   "INPERSON.Settings.IdleLogo.Name": "Bild auf der Blende",
   "INPERSON.Settings.IdleLogo.Hint": "Wandert langsam über das Schwarz. Ohne Angabe erscheint stattdessen ein kleiner goldener Punkt - damit der Bildschirm nicht wie defekt aussieht.",
   "INPERSON.Settings.IdleLogo.Placeholder": "Pfad zu einem Bild",
-  "INPERSON.Displays.PairsHint": "Battlemaps mit eigener Begleitszene. Angelegt wird eine Verknüpfung in der Szenen-Konfiguration der jeweiligen Battlemap; hier stehen sie beisammen und lassen sich wieder auflösen.",
+  "INPERSON.Displays.PairsHint": "Battlemaps mit eigener Begleitszene. Hier lassen sie sich anlegen und auflösen; dieselbe Verknüpfung steht auch in der Szenen-Konfiguration der jeweiligen Battlemap.",
   "INPERSON.Settings.KeepTokens.Name": "Token-Bilder weiter laden",
   "INPERSON.Settings.KeepTokens.Hint": "Empfohlen. Token-Grafiken sind klein, und die Spieler müssen ihre Figuren auseinanderhalten können. Ausschalten lässt auch Tokens schwarz.",
   "INPERSON.Settings.HideProgress.Name": "Ladebalken bei Spielern ausblenden",
@@ -173,5 +173,16 @@
   "INPERSON.TableMode.StateOff": "Der Tischmodus ist aus. Ein- und ausgeschaltet wird er in der Steuerung, dort steht auch, wen es trifft.",
   "INPERSON.TableMode.WhoLegend": "Wen es betrifft",
   "INPERSON.TableMode.WhatLegend": "Was nicht geladen wird",
-  "INPERSON.TableMode.DeviceLegend": "Auf den betroffenen Geräten"
+  "INPERSON.TableMode.DeviceLegend": "Auf den betroffenen Geräten",
+  "INPERSON.SceneField.Choose": "Szene wählen",
+  "INPERSON.SceneField.Empty": "Keine — zum Setzen eine Szene aus der Seitenleiste hierher ziehen",
+  "INPERSON.SceneField.Filter": "Namen eintippen zum Filtern…",
+  "INPERSON.SceneField.NotAScene": "Das war keine Szene. Ziehen lassen sich nur Einträge aus der Szenen-Seitenleiste.",
+  "INPERSON.SceneField.NotItself": "Eine Szene kann nicht ihre eigene Begleitszene sein.",
+  "INPERSON.Displays.PairsNone": "Noch keine Verknüpfung angelegt.",
+  "INPERSON.Displays.PairAdd": "Verknüpfen",
+  "INPERSON.Displays.PairFrom": "Battlemap hierher ziehen",
+  "INPERSON.Displays.PairTo": "Begleitszene hierher ziehen",
+  "INPERSON.Displays.PairNeedsBoth": "Beide Seiten wählen: erst die Battlemap, dann die Szene, die der Monitor dazu zeigen soll.",
+  "INPERSON.Displays.PairMade": "„{scene}“ zeigt jetzt „{companion}“ auf dem Szenen-Monitor."
 }
