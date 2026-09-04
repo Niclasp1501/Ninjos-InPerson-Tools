@@ -1,5 +1,22 @@
 # Changelog
 
+## 14.2611.22 — 2026-09-05
+
+**Sheet Onlys Journal-Knopf sah aus, als täte er nichts.** Er tut etwas: Er
+klappt Foundrys Notiz-Verzeichnis als schmale Spalte am rechten Rand auf. Nur
+war die **201 Pixel hoch** — ein kleiner Kasten in der oberen rechten Ecke, den
+man auf einem Tablet schlicht übersieht.
+
+Der Grund liegt bei uns: Wir heften in diesem Modus das Akteursverzeichnis
+selbst an den rechten Rand, weil Foundry die Lage einer ausgeklappten
+Seitenleiste aus der Position ihres Reiters berechnet — und der steckt in Sheet
+Only im versteckten `#interface`. Für unser eigenes Verzeichnis hatten wir das
+gelöst, für die der Nachbarn nicht. Das war die falsche Hälfte einer Reparatur.
+
+Jetzt gilt dieselbe Verankerung für **jedes** ausgeklappte Seitenleisten-Fenster,
+solange Sheet Only läuft: rechter Rand, volle Höhe. Außerhalb dieses Modus
+ändert sich nichts — dort stimmt Foundrys eigene Platzierung.
+
 ## 14.2611.21 — 2026-09-05
 
 **Der Tausch hat jetzt seine eigene Seite**, wie Tischmodus, Monitore und
