@@ -25,6 +25,7 @@ import {
   installActorPanel, removeActorPanel, applySidebarStyle, markPopout, isDirectoryPopoutApp
 } from "./actor-panel.js";
 import { installClock, syncClock, refreshClock } from "./clock.js";
+import { willkommenEinrichten, willkommenZeigen } from "./willkommen.js";
 import { openClockSettings } from "./clock-settings.js";
 import { openTradeSettings } from "./trade-settings.js";
 import { onTradeSocket } from "./trade.js";
@@ -662,6 +663,7 @@ function registerKeybindings() {
 Hooks.once("init", () => {
   registerSettings();
   registerKeybindings();
+  willkommenEinrichten();
   // Must happen before the first canvas draw, otherwise the opening scene is
   // already on the wire before we get a say.
   installWrappers();
@@ -671,6 +673,10 @@ Hooks.once("init", () => {
 Hooks.once("ready", async () => {
   // First thing: carry over what the previous module id had stored.
   await migrateFromOldId();
+
+  // Ganz am Anfang der Sitzung, aber nach der Migration: sonst stuende das
+  // Fenster vor einer Welt, die ihre Einstellungen noch gar nicht hat.
+  willkommenZeigen();
 
   game.socket.on(SOCKET.NAME, onSocket);
 

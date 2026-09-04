@@ -269,5 +269,15 @@
   "INPERSON.TradeSettings.Group": "Tausch zwischen Spielern",
   "INPERSON.TradeSettings.GroupHint": "Zwei Leute legen Gegenstände und Geld auf einen Tisch; erst wenn beide zustimmen, wird etwas bewegt. Ausgeführt wird es immer auf dem Client des Spielleiters — ohne angemeldeten Spielleiter kommt kein Tausch zustande.",
   "INPERSON.TradeSettings.OpenLog": "Tauschbuch öffnen",
-  "INPERSON.TradeSettings.ItemPiles": "Item Piles ist aktiv. Schalte dessen Tauschknopf ab, sonst stehen zwei nebeneinander."
+  "INPERSON.TradeSettings.ItemPiles": "Item Piles ist aktiv. Schalte dessen Tauschknopf ab, sonst stehen zwei nebeneinander.",
+  "INPERSON.Willkommen.Setting": "Willkommensfenster",
+  "INPERSON.Willkommen.Einleitung": "Werkzeuge für Runden, die am selben Tisch sitzen. Die Tablets der Spieler laden keine Battlemaps mehr herunter, zwei Bildschirme lassen sich getrennt steuern, und hochkante Karten liegen quer.",
+  "INPERSON.Willkommen.Punkt1": "<strong>Tischmodus</strong> — hält Kartendownloads von den Geräten der Spieler fern. Gemessen: ein „Szene vorladen“ übertrug 58,86 MB, mit Tischmodus 0,00 MB.",
+  "INPERSON.Willkommen.Punkt2": "<strong>Szenen-Monitore</strong> — zwei Anzeigekonten mit getrennten Aufgaben: eines folgt jeder Szene, eines lässt sich festhalten. Dazu ein Einbrennschutz für den Fernseher.",
+  "INPERSON.Willkommen.Punkt3": "<strong>Am Charakterblatt</strong> — zusammen mit Sheet Only erscheinen Datum, Uhrzeit und Wetter dort, wo es sonst keine Oberfläche mehr gibt.",
+  "INPERSON.Willkommen.Start": "Zum Anfangen: <strong>Alt+T</strong> öffnet das Bedienfenster mit dem Hauptschalter. Alles Übrige steht in den Moduleinstellungen unter „Tischmodus“ und „Szenen-Monitore“.",
+  "INPERSON.Willkommen.Forge": "Anleitung und weitere Module:",
+  "INPERSON.Willkommen.Nie": "Nicht mehr anzeigen",
+  "INPERSON.Willkommen.Spaeter": "Später",
+  "INPERSON.Willkommen.Untertitel": "Werkzeuge für den echten Spieltisch"
 }

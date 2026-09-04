@@ -269,5 +269,15 @@
   "INPERSON.TradeSettings.Group": "Trading between players",
   "INPERSON.TradeSettings.GroupHint": "Two people put items and money on a table; nothing moves until both agree. It is always carried out on the gamemaster's client - with no gamemaster logged in there is no trade.",
   "INPERSON.TradeSettings.OpenLog": "Open the logbook",
-  "INPERSON.TradeSettings.ItemPiles": "Item Piles is active. Turn its trade button off, or two will sit side by side."
+  "INPERSON.TradeSettings.ItemPiles": "Item Piles is active. Turn its trade button off, or two will sit side by side.",
+  "INPERSON.Willkommen.Setting": "Welcome window",
+  "INPERSON.Willkommen.Einleitung": "Tools for groups playing around one table. Player tablets stop downloading battlemaps, two displays can be steered separately, and portrait maps lie down flat.",
+  "INPERSON.Willkommen.Punkt1": "<strong>Table mode</strong> — keeps map downloads off the players' devices. Measured: one \"preload scene\" transferred 58.86 MB, and 0.00 MB with table mode on.",
+  "INPERSON.Willkommen.Punkt2": "<strong>Scene displays</strong> — two display accounts with separate jobs: one follows every scene, one can be pinned. Plus burn-in protection for the television.",
+  "INPERSON.Willkommen.Punkt3": "<strong>On the character sheet</strong> — together with Sheet Only, the date, time and weather appear where there is otherwise no interface left.",
+  "INPERSON.Willkommen.Start": "To begin: <strong>Alt+T</strong> opens the control panel with the master switch. Everything else lives in the module settings under \"Table Mode\" and \"Scene Displays\".",
+  "INPERSON.Willkommen.Forge": "Documentation and more modules:",
+  "INPERSON.Willkommen.Nie": "Don't show again",
+  "INPERSON.Willkommen.Spaeter": "Later",
+  "INPERSON.Willkommen.Untertitel": "Tools for playing around a real table"
 }
