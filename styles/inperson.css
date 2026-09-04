@@ -1169,6 +1169,14 @@ body:has(.actors-sidebar.sidebar-popout:has(.window-content > *)) #inperson-so-a
    on any table that has no calendar module at all. */
 
 .inperson-clock {
+  /* Sheet Only lays its container out as a flex row over the full window
+     height, and the default `align-items: normal` stretches every child to
+     match. Measured before this line existed: the strip came out 1103px tall
+     instead of 33, a dark slab across the whole sheet. Nothing in our own
+     rules caused it and nothing in theirs names us - it is simply what a flex
+     child does when nobody says otherwise. So we say otherwise. */
+  flex: 0 0 auto;
+  align-self: center;
   display: flex;
   gap: 0.5rem;
   align-items: center;

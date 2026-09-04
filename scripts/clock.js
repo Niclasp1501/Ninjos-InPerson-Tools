@@ -44,8 +44,8 @@ let lastStamp = null;
 /**
  * Day of the year for the current date.
  *
- * Seasons carry `dayStart`/`dayEnd` as days of the year, so the month lengths
- * have to be summed. Month and day components are zero-based.
+ * Month and day components are zero-based, so the day counts from one and the
+ * months before the current one are summed.
  */
 function dayOfYear(calendar, components) {
   const months = calendar.months?.values ?? [];
@@ -54,18 +54,43 @@ function dayOfYear(calendar, components) {
   return day;
 }
 
-/** The season the current date falls in, or null when the calendar names none. */
+/** Does `value` fall inside `from`..`to`, where a range may wrap past the year end? */
+function inRange(value, from, to) {
+  return from <= to ? (value >= from && value <= to) : (value >= from || value <= to);
+}
+
+/**
+ * The season the current date falls in, or null when none can be determined.
+ *
+ * Three shapes have to be handled, because calendars disagree about how a
+ * season is written down - found the hard way, by a strip that showed the
+ * season under Calendaria and nothing at all under Foundry's own calendar:
+ *
+ *   components.season          core calendars hand the index over directly
+ *   dayStart / dayEnd          Calendaria counts days of the *year* (79..170)
+ *   monthStart / monthEnd      CalendarData5e names months, 1-based, days null
+ *
+ * The index is preferred where it exists: it is the calendar's own answer
+ * rather than our reconstruction of it.
+ */
 function currentSeason(calendar, components) {
   const seasons = calendar.seasons?.values ?? [];
   if (!seasons.length) return null;
-  const day = dayOfYear(calendar, components);
-  const hit = seasons.find(s => {
-    const from = s.dayStart, to = s.dayEnd;
-    if (from == null || to == null) return false;
-    // Winter wraps around the turn of the year, so from > to is not an error.
-    return from <= to ? (day >= from && day <= to) : (day >= from || day <= to);
+
+  const benannt = s => ({ name: game.i18n.localize(s.name), icon: s.icon });
+
+  if (Number.isInteger(components.season) && seasons[components.season]) {
+    return benannt(seasons[components.season]);
+  }
+
+  const tag = dayOfYear(calendar, components);
+  const monat = components.month + 1;   // season bounds are 1-based
+  const treffer = seasons.find(s => {
+    if (s.dayStart != null && s.dayEnd != null) return inRange(tag, s.dayStart, s.dayEnd);
+    if (s.monthStart != null && s.monthEnd != null) return inRange(monat, s.monthStart, s.monthEnd);
+    return false;
   });
-  return hit ? { name: game.i18n.localize(hit.name), icon: hit.icon } : null;
+  return treffer ? benannt(treffer) : null;
 }
 
 /**
