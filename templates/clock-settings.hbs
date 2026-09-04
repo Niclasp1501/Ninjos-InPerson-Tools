@@ -1,17 +1,17 @@
 {{!--
-  Two groups, because there are two kinds of switch here: what this device
-  shows, and what the table allows at all. Identical checkboxes in one list
-  would hide that ticking one of them changes the evening for everybody.
+  One group, because all of these belong to the table. There was briefly a
+  second one for per-device choices; the table decided the strip is a
+  presentation choice for the whole group, like the scene everyone looks at.
 --}}
 <section class="inperson-body">
 
   <div class="inperson-scene">
     <div class="inperson-scene-head">
-      <h3><i class="fa-solid fa-clock"></i> {{localize "INPERSON.Clock.Group.Device"}}</h3>
+      <h3><i class="fa-solid fa-clock"></i> {{localize "INPERSON.Clock.Group.Strip"}}</h3>
     </div>
     <p class="inperson-hint">
       <i class="fa-solid fa-circle-info"></i>
-      {{localize "INPERSON.Clock.Group.DeviceHint"}}
+      {{localize "INPERSON.Clock.Group.StripHint"}}
     </p>
   </div>
 
@@ -48,26 +48,6 @@
       <em>{{localize "INPERSON.Clock.Field.SeasonHint"}}</em>
     </span>
   </label>
-
-  {{#if isGM}}
-    <div class="inperson-scene">
-      <div class="inperson-scene-head">
-        <h3><i class="fa-solid fa-globe"></i> {{localize "INPERSON.Clock.Group.World"}}</h3>
-      </div>
-      <p class="inperson-hint">
-        <i class="fa-solid fa-circle-info"></i>
-        {{localize "INPERSON.Clock.Group.WorldHint"}}
-      </p>
-    </div>
-
-    <label class="inperson-pick-row">
-      <input type="checkbox" name="allowed" {{checked allowed}}>
-      <span class="inperson-pick-name">
-        {{localize "INPERSON.Clock.Field.Allowed"}}
-        <em>{{localize "INPERSON.Clock.Field.AllowedHint"}}</em>
-      </span>
-    </label>
-  {{/if}}
 
   <footer class="inperson-foot">
     <button type="submit" class="inperson-master-toggle">

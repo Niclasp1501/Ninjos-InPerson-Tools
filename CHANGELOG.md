@@ -1,5 +1,25 @@
 # Changelog
 
+## 14.2611.20 — 2026-09-05
+
+**Die Leiste ist eine Spielleiter-Sache, keine Geräte-Sache.** Die vier
+Schalter waren pro Gerät gedacht — der Gedanke war, jeder solle über seinen
+eigenen Bildschirm bestimmen. Der Tisch hat anders entschieden, und das ist
+richtig: Was die Leiste trägt, ist eine Darstellungsfrage für die ganze Runde,
+wie die Szene, auf die alle schauen. Alle fünf gelten jetzt weltweit, die Seite
+öffnet nur der Spielleiter, und ein Spieler muss mitten im Spiel durch keine
+Einstellungsseite geführt werden. Der doppelte Wetterschalter ist wieder weg —
+der alte behält die Aufgabe, die er immer hatte.
+
+**Der Wind steht jetzt mit Calendarias eigenem Wort und Zahlenband da**:
+„Wind aus S · Stark, 41–60 km/h". Die *eine* Zahl aus dessen HUD („58 km/h")
+wird bewusst nicht übernommen, und der Grund steht in dessen Quelltext:
+`getWindSpeedKph` würfelt sie bei jedem Aufruf neu zwischen den Grenzen der
+Stufe und speichert sie nirgends. Sie ändert sich, wenn man den Zeiger wegnimmt
+und wieder hinbewegt, und zwei Leute am selben Wind bekommen zwei verschiedene
+Werte. Das Band ist dieselbe Auskunft, nur ohne Würfel — und alle sehen
+dasselbe. Ist bei Calendaria Meilen eingestellt, rechnet die Leiste mit.
+
 ## 14.2611.19 — 2026-09-05
 
 **Jeder Teil der Leiste lässt sich einzeln ein- und ausblenden.** Datum,

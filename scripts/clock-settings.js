@@ -1,21 +1,17 @@
 /**
  * A page of its own for the strip: "Zeit & Wetter".
  *
- * Two reasons it is a page rather than more rows in the settings list.
+ * Five switches for one strip would have made the flat settings list read as
+ * "the settings of the module" again - the exact fault that gave the table mode
+ * and the displays their own pages (see tablemode-settings.js).
  *
- * The obvious one: five switches for one strip would have made the flat list
- * read as "the settings of the module" again - the exact fault that gave the
- * table mode and the displays their own pages (see tablemode-settings.js).
- *
- * The one that matters more: **these switches are not all the same kind.** Four
- * of them are per-device and every player owns theirs - what my tablet shows.
- * One is per-world and only a gamemaster may touch it - whether weather is on
- * offer at this table at all. A flat list shows both as identical checkboxes
- * and gives no hint that ticking one changes the evening for everybody. Here
- * they are two labelled groups, and the world one says so.
- *
- * The master switch stays out in the list. It is the one a player reaches for,
- * and a page is a poor place for the thing you use most.
+ * All of them are the gamemaster's and all of them are world-scoped. That was
+ * not the first arrangement: four were per-device, on the reasoning that a
+ * player should own what their own screen shows. The table decided otherwise,
+ * and on reflection that is right - what the strip carries is a presentation
+ * choice for the whole group, like the scene everyone is looking at. One answer
+ * for the table also means nobody has to be talked through a settings page
+ * mid-session.
  *
  * Nothing is written until Save, and nothing re-renders while the form is being
  * filled in - a render rebuilds every field from stored values and throws away
@@ -53,10 +49,8 @@ export class ClockSettings extends HandlebarsApplicationMixin(ApplicationV2) {
       strip: get(SETTINGS.CLOCK_STRIP),
       date: get(SETTINGS.CLOCK_DATE),
       time: get(SETTINGS.CLOCK_TIME),
-      weather: get(SETTINGS.CLOCK_SHOW_WEATHER),
+      weather: get(SETTINGS.CLOCK_WEATHER),
       season: get(SETTINGS.CLOCK_SHOW_SEASON),
-      allowed: get(SETTINGS.CLOCK_WEATHER),
-      isGM: game.user.isGM,
       // Said plainly rather than left to be discovered: without a weather
       // module the two weather rows do nothing, while the season keeps working
       // out of the world calendar.
@@ -71,13 +65,8 @@ export class ClockSettings extends HandlebarsApplicationMixin(ApplicationV2) {
     await set(SETTINGS.CLOCK_STRIP, !!data.strip);
     await set(SETTINGS.CLOCK_DATE, !!data.date);
     await set(SETTINGS.CLOCK_TIME, !!data.time);
-    await set(SETTINGS.CLOCK_SHOW_WEATHER, !!data.weather);
+    await set(SETTINGS.CLOCK_WEATHER, !!data.weather);
     await set(SETTINGS.CLOCK_SHOW_SEASON, !!data.season);
-
-    // The world switch is not in the form for a player, and a missing field
-    // must not be read as "off" - that would let any player silently turn the
-    // weather off for the whole table by opening this page and saving.
-    if (game.user.isGM) await set(SETTINGS.CLOCK_WEATHER, !!data.allowed);
 
     syncClock();
     refreshClock({ force: true });
@@ -85,5 +74,6 @@ export class ClockSettings extends HandlebarsApplicationMixin(ApplicationV2) {
 }
 
 export function openClockSettings() {
+  if (!game.user.isGM) return;
   return new ClockSettings().render({ force: true });
 }

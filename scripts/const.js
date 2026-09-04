@@ -83,25 +83,26 @@ export const SETTINGS = {
    */
   ACTOR_PANEL: "actorPanel",
   /**
-   * Show date and time inside the sheet-only view (client).
+   * Show the strip inside the sheet-only view (world).
    *
-   * Client-scoped on purpose. It is one of the few switches a player ever
-   * touches, so it belongs in the plain settings list rather than in a window
-   * only the GM can open.
+   * It was client-scoped, on the reasoning that a player should own what their
+   * own screen shows. The table decided otherwise: what the strip carries is a
+   * presentation choice for the whole group, like the scene everyone is looking
+   * at, not a personal preference - so it and the four below are the
+   * gamemaster's, on a page only they can open.
    */
   CLOCK_STRIP: "clockStrip",
   /**
-   * May the strip carry weather and season at all? (world)
+   * Show the weather with its temperature (world).
    *
-   * A gate, not a display choice: a table that keeps its weather secret says so
-   * once, here, and no device can put it back. What each device *shows* of what
-   * is allowed is the four client switches below.
+   * The oldest of these five and still the one that gates the weather. A second
+   * switch was briefly added beside it during the rework; two switches for one
+   * thing is worse than none, so this one kept the job it always had.
    */
   CLOCK_WEATHER: "clockWeather",
-  /** Per-device: which parts of the strip are drawn (all client). */
+  /** Which parts of the strip are drawn (all world - see CLOCK_STRIP). */
   CLOCK_DATE: "clockDate",
   CLOCK_TIME: "clockTime",
-  CLOCK_SHOW_WEATHER: "clockShowWeather",
   CLOCK_SHOW_SEASON: "clockShowSeason",
   /** Offer the trade button at all (world). */
   TRADE: "trade",

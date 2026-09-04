@@ -180,6 +180,58 @@ function buildStrip() {
   return element;
 }
 
+/**
+ * Calendaria's wind scale: the word for each step, and the band it covers.
+ *
+ * Its own tooltip reads "Stark S - 58 km/h". That number is not a measurement:
+ * `getWindSpeedKph` draws it at random between the previous step's bound and
+ * this one's, on every call, and stores it nowhere. Hover away and back and it
+ * changes; two people pointing at the same wind get two different speeds.
+ *
+ * Copying that would mean rolling our own dice and disagreeing with the
+ * gamemaster's screen for no reason. So the step's **band** is shown instead -
+ * "Stark, 41-60 km/h". Same scale, same information, and every client says the
+ * same thing.
+ *
+ * The table is theirs and is repeated here, which is a debt: if they change it,
+ * this drifts. It is six numbers and six keys, and both halves degrade on their
+ * own - a key that stops resolving falls back to "Stärke 3", a missing step
+ * drops the band and keeps the word.
+ */
+const WIND_STEPS = [
+  { key: "CALENDARIA.Weather.Wind.Calm",    bis: 5 },
+  { key: "ATLAS.Common.Light",              bis: 20 },
+  { key: "CALENDARIA.Common.Moderate",      bis: 40 },
+  { key: "CALENDARIA.Weather.Wind.Strong",  bis: 60 },
+  { key: "CALENDARIA.Common.Severe",        bis: 90 },
+  { key: "CALENDARIA.Weather.Wind.Extreme", bis: 250 }
+];
+
+/** Kilometres per hour, or miles if the calendar module is set that way. */
+function speedUnit(kph) {
+  let mph = false;
+  try { mph = game.settings.get("calendaria", "windSpeedUnit") === "mph"; } catch { /* not there */ }
+  return mph
+    ? { von: v => Math.round(v * 0.621371), einheit: "mph" }
+    : { von: v => v, einheit: "km/h" };
+}
+
+/** The word for a wind step, and its band. */
+function windStep(speed) {
+  if (!Number.isFinite(speed)) return null;
+  const step = WIND_STEPS[speed];
+
+  const text = step ? game.i18n.localize(step.key) : null;
+  const wort = (text && text !== step.key)
+    ? text
+    : game.i18n.format("INPERSON.Clock.WindForce", { n: speed });
+
+  if (!step) return wort;
+  const { von, einheit } = speedUnit();
+  const untergrenze = speed > 0 ? von(WIND_STEPS[speed - 1].bis + 1) : 0;
+  return `${wort}, ${untergrenze}–${von(step.bis)} ${einheit}`;
+}
+
 /** The compass point for a bearing in degrees. */
 function compass(degrees) {
   if (!Number.isFinite(degrees)) return null;
@@ -204,9 +256,8 @@ function weatherTooltip(weather) {
     const richtung = compass(weather.wind.direction);
     const teile = [];
     if (richtung) teile.push(game.i18n.format("INPERSON.Clock.WindFrom", { where: richtung }));
-    if (Number.isFinite(weather.wind.speed)) {
-      teile.push(game.i18n.format("INPERSON.Clock.WindForce", { n: weather.wind.speed }));
-    }
+    const stufe = windStep(weather.wind.speed);
+    if (stufe) teile.push(stufe);
     if (teile.length) zeilen.push(teile.join(" &middot; "));
   }
   return zeilen.join("<br>");
@@ -215,9 +266,6 @@ function weatherTooltip(weather) {
 /** Write the current values into an existing strip. */
 function fillStrip(element, now) {
   const get = key => game.settings.get(MODULE_ID, key);
-  // The world gate first: what a table has switched off is not a matter of
-  // taste on any one device.
-  const erlaubt = get(SETTINGS.CLOCK_WEATHER);
   const parts = [];
 
   if (get(SETTINGS.CLOCK_DATE)) {
@@ -227,14 +275,14 @@ function fillStrip(element, now) {
     parts.push(`<span class="inperson-clock-time">${escape(now.time)}</span>`);
   }
 
-  if (erlaubt && get(SETTINGS.CLOCK_SHOW_WEATHER) && now.weather) {
+  if (get(SETTINGS.CLOCK_WEATHER) && now.weather) {
     const degrees = now.weather.temperature === null
       ? ""
       : `<span class="inperson-clock-temp">${now.weather.temperature}&deg;C</span>`;
     parts.push(chip("inperson-clock-chip", now.weather.icon, now.weather.label, degrees,
       weatherTooltip(now.weather)));
   }
-  if (erlaubt && get(SETTINGS.CLOCK_SHOW_SEASON) && now.season) {
+  if (get(SETTINGS.CLOCK_SHOW_SEASON) && now.season) {
     parts.push(chip("inperson-clock-season", (now.season.icon ?? "fa-leaf").replace(/^fas /, ""),
       now.season.name, "", escape(now.season.name)));
   }

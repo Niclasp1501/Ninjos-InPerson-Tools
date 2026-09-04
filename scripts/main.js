@@ -81,22 +81,20 @@ function registerSettings() {
     }
   });
 
-  // Date and time in the sheet-only view. Client-scoped, so it sits in the
-  // plain list where a player can reach it - see KONZEPT-werkzeugkasten.md:
-  // settings a player ever touches must not move into a GM-only window.
+  // The strip and everything on it belong to the "Zeit & Wetter" page and to
+  // the gamemaster. World-scoped so one answer holds for the table: what the
+  // strip carries is a presentation choice for the whole group.
   S(SETTINGS.CLOCK_STRIP, {
     name: "INPERSON.Settings.ClockStrip.Name",
     hint: "INPERSON.Settings.ClockStrip.Hint",
-    scope: "client",
-    config: true,
+    scope: "world",
+    config: false,
     type: Boolean,
     default: true,
     onChange: () => syncClock()
   });
 
-  // Moved off the flat list onto the "Zeit & Wetter" page. It is a world switch
-  // sitting among device switches, and side by side as identical checkboxes
-  // nothing said that this one changes the evening for everybody.
+  // Moved off the flat list onto the "Zeit & Wetter" page with the rest.
   S(SETTINGS.CLOCK_WEATHER, {
     name: "INPERSON.Settings.ClockWeather.Name",
     hint: "INPERSON.Settings.ClockWeather.Hint",
@@ -107,15 +105,16 @@ function registerSettings() {
     onChange: () => refreshClock({ force: true })
   });
 
-  // What each device draws of what the world allows. All four on the page, so
-  // the list keeps one row per tool rather than five for this one.
-  for (const key of [SETTINGS.CLOCK_DATE, SETTINGS.CLOCK_TIME,
-                     SETTINGS.CLOCK_SHOW_WEATHER, SETTINGS.CLOCK_SHOW_SEASON]) {
+  // The four parts of the strip. All on the page, so the list keeps one row per
+  // tool rather than five for this one.
+  for (const key of [SETTINGS.CLOCK_DATE, SETTINGS.CLOCK_TIME, SETTINGS.CLOCK_SHOW_SEASON]) {
     S(key, {
-      scope: "client",
+      scope: "world",
       config: false,
       type: Boolean,
       default: true,
+      // A world setting's onChange runs on every client, so a player's strip
+      // follows the gamemaster's answer without a reload.
       onChange: () => refreshClock({ force: true })
     });
   }
@@ -437,15 +436,14 @@ function registerSettings() {
     restricted: true
   });
 
-  // The strip has its own page too, and it is the only one a player may open:
-  // four of its five switches belong to the device in their hands.
+  // The strip has its own page too, and like the others it is the gamemaster's.
   game.settings.registerMenu(MODULE_ID, "clock", {
     name: "INPERSON.Clock.MenuName",
     label: "INPERSON.Clock.MenuLabel",
     hint: "INPERSON.Clock.MenuHint",
     icon: "fa-solid fa-clock",
     type: ClockSettingsShim,
-    restricted: false
+    restricted: true
   });
 
   // Everything about the two televisions has its own page. Steering displays and
