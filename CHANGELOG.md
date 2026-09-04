@@ -1,5 +1,19 @@
 # Changelog
 
+## 14.2611.16 — 2026-09-05
+
+**Die Zeitleiste zeigte den ganzen Abend ein falsches Datum.** Auf dem ersten
+echten Sheet-Only-Client stand dort „31 Juli, -9", während die Welt auf
+„1 Eleasis, 1492" stand. Calendaria setzt seinen Harptos-Kalender ein, *nachdem*
+unser `ready` gelaufen ist — die erste Zeichnung benutzte also noch Foundrys
+voreingestellten gregorianischen Kalender. Korrigiert hat sich das nie: die
+Leiste zeichnet bei `updateWorldTime` neu, und das Spiel war pausiert.
+
+Ein Datum, das falsch ist und sich nicht bewegt, ist schlimmer als gar keins —
+eine Anzeige, die aussieht wie eine Uhr, zieht niemand in Zweifel. Jetzt schaut
+die Leiste alle zehn Sekunden noch einmal hin. Das ist nur ein Vergleich; gebaut
+wird weiterhin nur, wenn sich die angezeigte Minute wirklich geändert hat.
+
 ## 14.2611.15 — 2026-09-04
 
 **Meldungen erreichten die Spieler nie, für die dieses Modul gebaut ist.**

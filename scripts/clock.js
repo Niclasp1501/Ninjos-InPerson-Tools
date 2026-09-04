@@ -213,6 +213,22 @@ export function installClock() {
 
   Hooks.on("updateWorldTime", () => refreshClock());
 
+  // A slow second look, because the first one can be too early.
+  //
+  // Measured on a real sheet-only client: the strip read "31 Juli, -9" all
+  // evening while the world stood at "1 Eleasis, 1492". Calendaria installs its
+  // Harptos calendar after our `ready` runs, so the first draw used Foundry's
+  // default Gregorian one - and nothing ever corrected it, because the strip
+  // redraws on `updateWorldTime` and the game was paused. A date that is wrong
+  // and never moves is worse than no date at all: nobody doubts a clock that
+  // looks like a clock.
+  //
+  // Ten seconds, and only a comparison - `refreshClock` builds nothing unless
+  // the displayed minute actually changed. That is far below the per-second
+  // redraw this file was written to avoid, and it repairs every late arrival,
+  // not only this one.
+  setInterval(() => refreshClock(), 10_000);
+
   // The weather lives in another module's world setting, so its change arrives
   // as a generic setting update rather than a hook of its own.
   Hooks.on("updateSetting", setting => {
