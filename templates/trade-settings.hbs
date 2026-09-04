@@ -1,0 +1,62 @@
+{{!--
+  Built like the other tool pages: a heading that says what the tool is for, the
+  switches, and the one action that belongs to it - opening the logbook.
+--}}
+<section class="inperson-body">
+
+  <div class="inperson-scene">
+    <div class="inperson-scene-head">
+      <h3><i class="fa-solid fa-right-left"></i> {{localize "INPERSON.TradeSettings.Group"}}</h3>
+      {{#if hasLog}}
+        <div class="inperson-pull-tools">
+          <button type="button" data-action="openLog" class="inperson-mini">
+            {{localize "INPERSON.TradeSettings.OpenLog"}}
+          </button>
+        </div>
+      {{/if}}
+    </div>
+    <p class="inperson-hint">
+      <i class="fa-solid fa-circle-info"></i>
+      {{localize "INPERSON.TradeSettings.GroupHint"}}
+    </p>
+  </div>
+
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="trade" {{checked trade}}>
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.Settings.Trade.Name"}}
+      <em>{{localize "INPERSON.Settings.Trade.Hint"}}</em>
+    </span>
+  </label>
+
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="withGM" {{checked withGM}}>
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.Settings.TradeWithGM.Name"}}
+      <em>{{localize "INPERSON.Settings.TradeWithGM.Hint"}}</em>
+    </span>
+  </label>
+
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="log" {{checked log}}>
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.Settings.TradeLog.Name"}}
+      <em>{{localize "INPERSON.Settings.TradeLog.Hint"}}</em>
+    </span>
+  </label>
+
+  {{#if itemPiles}}
+    <p class="inperson-hint warn">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      {{localize "INPERSON.TradeSettings.ItemPiles"}}
+    </p>
+  {{/if}}
+
+  <footer class="inperson-foot">
+    <button type="submit" class="inperson-master-toggle">
+      <i class="fa-solid fa-floppy-disk"></i>
+      <span>{{localize "INPERSON.Clock.Save"}}</span>
+    </button>
+  </footer>
+
+</section>

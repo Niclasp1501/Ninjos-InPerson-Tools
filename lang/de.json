@@ -261,5 +261,13 @@
   "INPERSON.Clock.WindFrom": "Wind aus {where}",
   "INPERSON.Clock.WindForce": "Stärke {n}",
   "INPERSON.Clock.Group.Strip": "Die Leiste über dem Charakterblatt",
-  "INPERSON.Clock.Group.StripHint": "Gilt für den ganzen Tisch. Was hier steht, sehen alle Spieler im Sheet-Only-Modus."
+  "INPERSON.Clock.Group.StripHint": "Gilt für den ganzen Tisch. Was hier steht, sehen alle Spieler im Sheet-Only-Modus.",
+  "INPERSON.TradeSettings.MenuName": "Tauschen",
+  "INPERSON.TradeSettings.MenuLabel": "Tausch einrichten",
+  "INPERSON.TradeSettings.MenuHint": "Ob Spieler untereinander tauschen dürfen, ob der Spielleiter als Partner erscheint, und ob jeder Tausch im Tauschbuch festgehalten wird.",
+  "INPERSON.TradeSettings.Title": "Tauschen",
+  "INPERSON.TradeSettings.Group": "Tausch zwischen Spielern",
+  "INPERSON.TradeSettings.GroupHint": "Zwei Leute legen Gegenstände und Geld auf einen Tisch; erst wenn beide zustimmen, wird etwas bewegt. Ausgeführt wird es immer auf dem Client des Spielleiters — ohne angemeldeten Spielleiter kommt kein Tausch zustande.",
+  "INPERSON.TradeSettings.OpenLog": "Tauschbuch öffnen",
+  "INPERSON.TradeSettings.ItemPiles": "Item Piles ist aktiv. Schalte dessen Tauschknopf ab, sonst stehen zwei nebeneinander."
 }

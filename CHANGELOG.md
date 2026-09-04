@@ -1,5 +1,18 @@
 # Changelog
 
+## 14.2611.21 — 2026-09-05
+
+**Der Tausch hat jetzt seine eigene Seite**, wie Tischmodus, Monitore und
+Zeitleiste. Seine drei Schalter standen als einzige noch flach in der
+Einstellungsliste und ließen diese aussehen wie die Einstellungen des
+Tischmodus mit Fremden darin.
+
+Auf der Seite steht außerdem der Weg ins **Tauschbuch**. Das Journal liegt zwar
+in der Seitenleiste, aber wer „wo ist das Schwert hin" nachschlägt, schaut in
+diese Einstellungen und nicht in eine Liste von Journalen — also ist die Tür
+dort, wo die Frage gestellt wird. Ist Item Piles aktiv, weist die Seite darauf
+hin, dass dessen Tauschknopf besser abgeschaltet wird.
+
 ## 14.2611.20 — 2026-09-05
 
 **Die Leiste ist eine Spielleiter-Sache, keine Geräte-Sache.** Die vier

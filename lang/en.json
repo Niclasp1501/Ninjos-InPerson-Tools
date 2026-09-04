@@ -261,5 +261,13 @@
   "INPERSON.Clock.WindFrom": "Wind from {where}",
   "INPERSON.Clock.WindForce": "Force {n}",
   "INPERSON.Clock.Group.Strip": "The strip above the character sheet",
-  "INPERSON.Clock.Group.StripHint": "Applies to the whole table. What is set here is what every player in Sheet Only sees."
+  "INPERSON.Clock.Group.StripHint": "Applies to the whole table. What is set here is what every player in Sheet Only sees.",
+  "INPERSON.TradeSettings.MenuName": "Trading",
+  "INPERSON.TradeSettings.MenuLabel": "Set up trading",
+  "INPERSON.TradeSettings.MenuHint": "Whether players may trade with one another, whether the gamemaster appears as a partner, and whether every trade is recorded in the logbook.",
+  "INPERSON.TradeSettings.Title": "Trading",
+  "INPERSON.TradeSettings.Group": "Trading between players",
+  "INPERSON.TradeSettings.GroupHint": "Two people put items and money on a table; nothing moves until both agree. It is always carried out on the gamemaster's client - with no gamemaster logged in there is no trade.",
+  "INPERSON.TradeSettings.OpenLog": "Open the logbook",
+  "INPERSON.TradeSettings.ItemPiles": "Item Piles is active. Turn its trade button off, or two will sit side by side."
 }

@@ -26,6 +26,7 @@ import {
 } from "./actor-panel.js";
 import { installClock, syncClock, refreshClock } from "./clock.js";
 import { openClockSettings } from "./clock-settings.js";
+import { openTradeSettings } from "./trade-settings.js";
 import { onTradeSocket } from "./trade.js";
 import { installTradeWindow } from "./trade-window.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
@@ -119,14 +120,14 @@ function registerSettings() {
     });
   }
 
-  // Trading. In the plain list rather than in a GM window: it decides whether a
-  // button appears in every player's view, and that is the kind of switch
-  // somebody looks for where they looked for the last one.
+  // Trading has its own page, like every other tool here. Three switches in the
+  // flat list made the list look like the table mode's settings with strangers
+  // in it.
   S(SETTINGS.TRADE, {
     name: "INPERSON.Settings.Trade.Name",
     hint: "INPERSON.Settings.Trade.Hint",
     scope: "world",
-    config: true,
+    config: false,
     type: Boolean,
     default: true,
     onChange: () => syncTradeButton()
@@ -136,7 +137,7 @@ function registerSettings() {
     name: "INPERSON.Settings.TradeWithGM.Name",
     hint: "INPERSON.Settings.TradeWithGM.Hint",
     scope: "world",
-    config: true,
+    config: false,
     type: Boolean,
     default: false
   });
@@ -145,7 +146,7 @@ function registerSettings() {
     name: "INPERSON.Settings.TradeLog.Name",
     hint: "INPERSON.Settings.TradeLog.Hint",
     scope: "world",
-    config: true,
+    config: false,
     type: Boolean,
     default: true
   });
@@ -436,6 +437,18 @@ function registerSettings() {
     restricted: true
   });
 
+  // Trading: who may trade with whom, and whether the logbook is kept. The page
+  // also holds the door to that logbook, because a gamemaster asking "where did
+  // the sword go" is looking here, not at the list of journals.
+  game.settings.registerMenu(MODULE_ID, "trade", {
+    name: "INPERSON.TradeSettings.MenuName",
+    label: "INPERSON.TradeSettings.MenuLabel",
+    hint: "INPERSON.TradeSettings.MenuHint",
+    icon: "fa-solid fa-right-left",
+    type: TradeSettingsShim,
+    restricted: true
+  });
+
   // The strip has its own page too, and like the others it is the gamemaster's.
   game.settings.registerMenu(MODULE_ID, "clock", {
     name: "INPERSON.Clock.MenuName",
@@ -464,6 +477,14 @@ class TableModeSettingsShim extends foundry.applications.api.ApplicationV2 {
   constructor(...args) {
     super(...args);
     openTableModeSettings();
+  }
+  async render() { return this; }
+}
+
+class TradeSettingsShim extends foundry.applications.api.ApplicationV2 {
+  constructor(...args) {
+    super(...args);
+    openTradeSettings();
   }
   async render() { return this; }
 }
