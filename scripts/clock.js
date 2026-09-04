@@ -227,6 +227,17 @@ export function installClock() {
   // the displayed minute actually changed. That is far below the per-second
   // redraw this file was written to avoid, and it repairs every late arrival,
   // not only this one.
+  // Quickly at first, slowly afterwards. Ten seconds of a wrong date is worst
+  // exactly when it happens: the screen has just loaded and somebody is looking
+  // straight at it. A once-a-second check for the first quarter minute costs a
+  // string comparison and closes that window; after that the slow watch is
+  // enough, because by then only a real change can move the display.
+  let schnell = 0;
+  const aufwaermen = setInterval(() => {
+    refreshClock();
+    if (++schnell >= 15) clearInterval(aufwaermen);
+  }, 1000);
+
   setInterval(() => refreshClock(), 10_000);
 
   // The weather lives in another module's world setting, so its change arrives

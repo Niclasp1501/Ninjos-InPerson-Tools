@@ -1,5 +1,20 @@
 # Changelog
 
+## 14.2611.18 — 2026-09-05
+
+**Die Leiste läuft auch ohne Calendaria** — geprüft, nicht angenommen. Foundrys
+eigener Kalender „Simplified Gregorian" schreibt seine Jahreszeiten
+ausschließlich über `monthStart`/`monthEnd` auf, 1-basiert, und sein Winter läuft
+von Monat 12 bis Monat 2, also über den Jahreswechsel. Neun Fälle gegen beide
+Kalender laufen jetzt als `tools/test-clock-seasons.mjs` durch, beide
+Jahreswechsel eingeschlossen. Ohne Kalendermodul fehlt nur das Wetter; Datum,
+Uhrzeit und Jahreszeit stehen weiterhin da. Der Einstellungstext behauptete das
+Gegenteil und ist berichtigt.
+
+**Beim Laden steht nicht mehr zehn Sekunden lang das falsche Datum.** Die
+Nachschau läuft in der ersten Viertelminute im Sekundentakt und danach langsam —
+ein Zeichenkettenvergleich, gebaut wird weiterhin nur bei echtem Minutenwechsel.
+
 ## 14.2611.17 — 2026-09-05
 
 **Die Zeitleiste war da, nur nicht zu sehen.** Sheet Only hängt in seinen
