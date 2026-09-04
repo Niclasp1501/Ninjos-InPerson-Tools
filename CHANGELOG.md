@@ -1,5 +1,180 @@
 # Changelog
 
+## 14.2611.15 — 2026-09-04
+
+**Meldungen erreichten die Spieler nie, für die dieses Modul gebaut ist.**
+Sheet Only blendet die Oberfläche nicht teilweise aus, sondern ganz — Foundrys
+`#notifications` eingeschlossen (dessen index.js:902). Jedes „Roxy hat
+abgelehnt", jedes „kein Spielleiter angemeldet", jedes „Tausch abgeschlossen"
+wurde erzeugt, protokolliert und von niemandem gesehen.
+
+**Der Tausch endet jetzt mit einem Bild statt mit einer Meldung.** Das Fenster
+verschwindet nicht mehr wortlos, sondern wird zur Antwort: Porträt des anderen,
+ein Satz, ein Knopf. Wer selbst abgelehnt hat, liest, was er getan hat; die
+andere Seite liest, was ihr geschehen ist — „Roxy hat abgelehnt" ist für Roxy
+der falsche Satz. Nach zwölf Sekunden schließt es sich von selbst, außer wenn
+etwas schiefging: das ist die eine Nachricht, die gelesen worden sein muss.
+
+**Warnungen vor dem Tausch** — kein Charakter zugewiesen, kein Spielleiter da,
+schon in einem Tausch — erscheinen im Sheet-Only-Modus jetzt als Streifen in
+dessen eigenem Behälter, dem einzigen Teil der Seite, der dort noch sichtbar
+ist. Außerhalb bleibt es bei Foundrys Meldungen.
+
+## 14.2611.14 — 2026-09-04
+
+**Das Tauschfenster ließ sich nicht zurückholen.** Wer im Sheet-Only-Modus
+danebentippte, schob es in den Hintergrund — und dort gibt es keine Leiste,
+keine Fensterliste, überhaupt keine sichtbare Oberfläche, mit der man es wieder
+nach vorn holen könnte. Eine Sackgasse, kein Schönheitsfehler. Sheet Only kennt
+das Problem selbst und löst es mit einem festen `z-index` (dessen style.css 65
+und 173); sein Behälter setzt Kinder auf 1000 und die Akteursliste auf 1001,
+genau das lag über uns. Das Tauschfenster steht jetzt auf 9000 — über allem
+davon, aber unter dem Würfelauflöser, der einen Wurf blockiert und gewinnen
+muss. Zusätzlich holt der Tauschknopf ein laufendes Fenster wieder nach vorn.
+
+**Auf dem Tablet hing es unten heraus.** 640 Pixel Höhe, darüber die
+Browserleiste — und ganz unten die zwei Knöpfe, die den Tausch beenden. Die
+waren schlicht nicht da. Die Größe ist jetzt ein Wunsch, der auf den
+tatsächlichen Bildschirm heruntergerechnet wird, auch beim Drehen des Geräts.
+
+Unter 620 Pixeln Breite stehen die beiden Seiten des Tischs übereinander statt
+nebeneinander.
+
+## 14.2611.13 — 2026-09-04
+
+**Die Gegenstandssymbole sind jetzt wirklich da.** Der letzte Versuch — den SVG
+als CSS-Maske zu verwenden — hat nicht getragen. dnd5e löst dasselbe Problem für
+sich, indem es die Datei holt und den SVG in die Seite einsetzt, wo `--icon-fill`
+greift (`dnd5e.mjs:64044`, sein `<dnd5e-icon>`). Genau diesen Weg gehen wir
+jetzt auch: einmal je Pfad geholt, Skripte herausgeworfen, in unserem Rot
+gezeichnet. Das braucht dnd5e nicht — es funktioniert für jedes System.
+
+**Bilder der Beteiligten.** Wessen Spalte welche ist, war eine graue Zeile mit
+einem Namen darin. Jetzt steht das Porträt des Charakters darüber, in der
+Partnerliste, und groß auf der Anfrage — quer über den Tisch erkennbar, ohne zu
+lesen. Name und Konto stehen untereinander, damit zwei ähnliche Namen
+unterscheidbar bleiben.
+
+**Zustimmung sieht man an der ganzen Spalte**, nicht an einem Wort in der
+Kopfzeile: goldener Rahmen, warmer Grund. Es ist die eine Angabe auf diesem
+Bildschirm, die darüber entscheidet, ob der nächste Fingertipp fremdes Eigentum
+bewegt.
+
+## 14.2611.12 — 2026-09-04
+
+Drei Fehler, zwei davon hätten Sachen verschieben können, ohne dass jemand
+zugestimmt hat.
+
+**Ein Spielleiter konnte nichts beantworten.** Alle Nachrichten laufen über den
+Spielleiter-Client — aber ein Socket liefert nie an den eigenen Absender zurück.
+War der Spielleiter selbst einer der beiden Tauschenden, redete er also ins
+Leere: sein „Ablehnen" wurde nie verarbeitet, kein Fenster schloss sich, niemand
+bekam eine Meldung. Betraf genauso Zustimmen, Ändern und Abbrechen.
+
+**Zwei angemeldete Spielleiter hätten jeden Tausch doppelt ausgeführt.** Jeder
+Gegenstand zweimal angelegt, jede Münze zweimal verschoben. Diese Welt hat zwei
+Spielleiterkonten, es hätte also nur beider Anwesenheit bedurft. Jetzt ist genau
+einer zuständig: `game.users.activeGM` — den bestimmt jeder Client gleich, ohne
+Absprache.
+
+**Geld in Behältern stand nicht auf dem Tisch.** Es wanderte mit dem Behälter
+mit, was richtig ist, aber angezeigt wurde nur der Inhalt an Gegenständen. Damit
+wechselte Geld den Besitzer, das keiner der beiden je gesehen hatte — genau das,
+was dieses Fenster verhindern soll. Steht jetzt in der Zeile unter dem Behälter,
+verschachtelte Behälter eingerechnet.
+
+Dazu: Eine Ablehnung nennt jetzt den Namen dessen, der abgelehnt hat.
+
+Der Zustandsautomat wird ab jetzt ohne Browser geprüft — drei Foundry-Clients
+werden nachgebaut, samt der Regel, dass ein Socket nicht an den Absender
+zurückliefert. Genau diese Regel war der Fehler oben, und ein Test, der sie nicht
+nachbildet, hätte ihn nie gefunden.
+
+## 14.2611.11 — 2026-09-04
+
+Vier Dinge am Tausch, nachdem er das erste Mal am Tisch lief.
+
+**Die Gegenstandssymbole waren unsichtbar, nicht abwesend.** dnd5e zeichnet sie
+als SVG mit `fill: var(--icon-fill, #fff)`. Ein `<img>` ist ein eigenes
+Dokument, unsere Variablen kommen dort nicht an, also gewinnt der Rückfallwert:
+weiß auf Pergament. SVGs werden jetzt als Maske verwendet statt als Bild
+geladen, die Farbe kommt von uns. Das gilt für jedes System und färbt die
+Symbole nebenbei in unser Rot statt in das, was das System zufällig mitbringt.
+
+**Mengen bei Gegenständen wie beim Geld.** Vorher hatten Münzen 0/−10/−/+/+10/alles
+und Gegenstände nur Minus und Plus. Acht von zwanzig Pfeilen zu übergeben ist
+derselbe Vorgang wie acht von zwanzig Goldmünzen; jetzt sind es dieselben Knöpfe.
+Bei Dingen, die es nur einmal gibt, bleibt es beim Antippen.
+
+**Der Fensterrahmen ist jetzt auch D&D.** Bisher war nur das Innere unserer
+Fenster gestaltet, der Rahmen darum blieb Foundrys Dunkelgrau — ein
+Pergamentblatt in einer schwarzen Kiste. Kopfzeile dunkelrot mit goldener Linie,
+Gold um das ganze Fenster, wie FANG es macht. Gilt für **alle** Fenster des
+Moduls, nicht nur die des Tauschs; zwei Aussehen in einem Modul war genau das
+Problem.
+
+**Ziehen und Ablegen** kommt später. Auf dem Tablet kann es ohnehin nicht der
+Hauptweg sein — dass `drop` dort nicht feuert, war der Anlass für die ganze
+Funktion —, aber am Rechner wäre es bequem.
+
+## 14.2611.10 — 2026-09-04
+
+**Spieler können jetzt untereinander tauschen** — mit dem Finger, im
+Sheet-Only-Modus, ohne ein weiteres Modul. Zwei Leute legen Gegenstände und Geld
+auf einen Tisch, und erst wenn beide zustimmen, wird etwas bewegt.
+
+Der Anlass ist, dass es dafür bereits eine Lösung gibt, die am echten Tisch nicht
+funktioniert. Item Piles zieht Gegenstände per Maus von einer Liste in die
+andere, und **das HTML5-Ereignis `drop` feuert auf einem Touchscreen überhaupt
+nicht.** Auf dem Tablet, für das dieses Modul existiert, ist dieser Tausch also
+nicht bedienbar — unabhängig davon, wie er eingestellt ist.
+
+Hier ist deshalb alles ein Tippen. Zeilen sind 44 Pixel hoch, Mengen haben ein
+Minus und ein Plus, und nichts braucht eine zweite Hand.
+
+**Der Tisch ist das Fenster, die Auswahl legt sich darüber.** Ein Charakter mit
+sechzig Gegenständen würde beide Seiten sonst auf eine Liste starren lassen, in
+der niemand mehr sieht, worauf man sich eigentlich einigt. Der Tisch zeigt darum
+nur, was daraufliegt; das Aussuchen passiert in einer Fläche, die ihn verdeckt
+und wieder verschwindet. Solange ausgesucht wird, geht nichts über die Leitung —
+der Partner sieht die Änderung einmal, am Ende, und nicht bei jedem Tippen.
+
+**Der Spielleiter hält die Wahrheit.** Jede Änderung geht an seinen Client, der
+die eine echte Fassung des Tauschs führt und sie an beide zurückschickt. Das
+klingt nach einem Umweg und bringt dreierlei auf einmal: Die beiden Angebote
+können nicht auseinanderlaufen, weil es nur eines gibt; niemand kann behaupten,
+der andere habe etwas anderes zugesagt; und die Regel „ohne Spielleiter kein
+Tausch" — die ohnehin gilt, weil nur er auf einem fremden Charakter Gegenstände
+anlegen und löschen darf — ist keine Sonderbehandlung mehr, sondern einfach die
+Funktionsweise.
+
+**Jede Änderung setzt beide Zustimmungen zurück.** Ohne das könnte eine Seite
+zustimmen, auf die andere warten und im letzten Moment etwas vom Tisch nehmen.
+
+Beim Verschieben selbst gelten drei Regeln, und sie sind der Grund, warum das
+Ganze ein eigenes Modul-Kapitel bekommen hat: **erst aufschreiben, dann
+anfassen** — der Eintrag im Tagebuch „Tauschbuch" entsteht, solange beide
+Inventare noch unberührt sind, und sagt deshalb immer, was *gemeint* war, auch
+wenn das Verschieben auf halber Strecke umfällt. **Erst anlegen, dann löschen** —
+bricht es dazwischen ab, existiert der Gegenstand zweimal statt gar nicht.
+**Nichts anfassen, was nicht auf dem Tisch lag** — insbesondere wird nichts in
+vorhandene Stapel des Empfängers einsortiert; ein Stapel, der mit dem Tausch
+nichts zu tun hat, wird nicht verändert.
+
+**Behälter wandern ganz.** Ein Beutel nimmt seinen Inhalt mit, samt der
+verschachtelten Behälter darin und samt des Geldes, das im Beutel liegt. Was
+darin ist, steht auf dem Tisch als Zeile unter dem Beutel — „Beutel" allein sagt
+nicht, was übergeben wird.
+
+Angeboten werden kann nur **Mitspielern, die gerade angemeldet sind.** Ein
+Angebot an jemanden, der nicht da ist, kann niemand beantworten.
+
+Drei Einstellungen: ob getauscht werden darf, ob der Spielleiter als Partner
+erscheint (aus), und ob das Tauschbuch geführt wird (an).
+
+*Wer Item Piles ebenfalls einsetzt, schaltet dessen `showTradeButton` besser ab —
+sonst stehen zwei Tauschknöpfe nebeneinander.*
+
 ## 14.2611.9 — 2026-09-01
 
 **Im Sheet-Only-Modus stehen jetzt Datum und Uhrzeit über dem Charakterblatt** —

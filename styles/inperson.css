@@ -1230,3 +1230,728 @@ body:has(.actors-sidebar.sidebar-popout:has(.window-content > *)) #inperson-so-a
   padding: 0.2rem 0.5rem;
   font-size: 0.75rem;
 }
+
+/* -------------------------------------------- */
+/*  Trading                                     */
+/* -------------------------------------------- */
+
+/*
+ * Everything here is sized for a finger, not a mouse pointer: rows and buttons
+ * are at least 44 px tall, which is the smallest target that can be hit
+ * reliably on a tablet held in one hand.
+ *
+ * `color` is set on every block that sets a background or a font. Leaving it
+ * out lets Foundry's own dark-theme colour through onto our parchment ground -
+ * three separate contrast bugs in this file came from exactly that.
+ */
+
+.inperson-trade .window-content {
+  padding: 0;
+  overflow: hidden;
+}
+
+.inperson-trade-body {
+  position: relative;          /* the picking sheet is laid over this */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px;
+  gap: 10px;
+  color: var(--tm-text);
+}
+
+.inperson-trade-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.inperson-trade-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border: 1px solid var(--tm-border);
+  border-radius: 3px;
+  background: var(--tm-card);
+  color: var(--tm-text);
+  overflow: hidden;
+}
+
+.inperson-trade-col > h3 {
+  margin: 0;
+  padding: 8px 10px;
+  border: none;
+  border-bottom: 1px solid var(--tm-border);
+  background: var(--tm-nav);
+  color: var(--tm-text);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* The gold line is the only thing separating "mine" from "theirs" at a glance.
+   Both columns are otherwise identical on purpose - a trade has no owner. */
+.inperson-trade-col.mine > h3 {
+  border-bottom: 2px solid var(--tm-gold);
+}
+
+.inperson-trade-side {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inperson-trade-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 5px 8px;
+  border: 1px solid var(--tm-border);
+  border-radius: 3px;
+  background: var(--tm-bg);
+  color: var(--tm-text);
+}
+
+.inperson-trade-row.coins i {
+  width: 34px;
+  text-align: center;
+  color: var(--tm-gold);
+  font-size: 20px;
+}
+
+.inperson-trade-name {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: var(--tm-text);
+}
+
+.inperson-trade-name em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--tm-red);
+}
+
+/* What is inside a bag. Written out because the bag travels whole - see
+   trade-mover.js - and "Beutel" alone does not say what is being handed over. */
+.inperson-trade-inside {
+  font-size: 11px;
+  line-height: 1.3;
+  opacity: 0.75;
+  color: var(--tm-text);
+}
+
+.inperson-trade-tools {
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border-top: 1px solid var(--tm-border);
+  background: var(--tm-nav);
+}
+
+.inperson-trade-tools .inperson-big {
+  flex: 1 1 0;
+}
+
+.inperson-trade-foot {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+.inperson-tag.ok {
+  background: rgba(var(--tm-gold-rgb), 0.25);
+  border-color: var(--tm-gold);
+  color: var(--tm-text);
+}
+
+/* -- The one button size used everywhere here -------------------- */
+
+.inperson-big {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--tm-border);
+  border-radius: 3px;
+  background: var(--tm-card);
+  color: var(--tm-text);
+  font-family: var(--tm-font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.inperson-big:hover {
+  border-color: var(--tm-gold);
+}
+
+.inperson-big.go {
+  background: var(--tm-red);
+  border-color: var(--tm-red);
+  color: var(--tm-onred);
+}
+
+.inperson-big.warn {
+  background: rgba(var(--tm-red-rgb), 0.1);
+  border-color: var(--tm-red);
+  color: var(--tm-red);
+}
+
+.inperson-big.ghost {
+  background: transparent;
+  color: var(--tm-text);
+}
+
+/* -- Waiting, being asked, being carried out --------------------- */
+
+.inperson-trade-wait {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+  color: var(--tm-text);
+}
+
+.inperson-trade-wait > i {
+  font-size: 44px;
+  color: var(--tm-red);
+}
+
+.inperson-trade-ask {
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.inperson-trade-answer {
+  display: flex;
+  gap: 12px;
+}
+
+.inperson-trade-answer .inperson-big {
+  min-width: 150px;
+  justify-content: center;
+}
+
+/* -- The picking sheet ------------------------------------------- */
+
+/*
+ * Covers the table completely rather than sitting beside it. A tablet has no
+ * room for both, and while somebody is choosing, the table is not what they
+ * are looking at - it comes back the moment they are done.
+ */
+.inperson-pick {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  background: var(--tm-bg);
+  color: var(--tm-text);
+}
+
+.inperson-pick-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--tm-gold);
+  background: var(--tm-nav);
+  color: var(--tm-text);
+}
+
+.inperson-pick-head h3 {
+  margin: 0;
+  border: none;
+  font-size: 16px;
+  color: var(--tm-text);
+}
+
+.inperson-pick-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.inperson-pick-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 4px 10px;
+  border: 1px solid var(--tm-border);
+  border-radius: 3px;
+  background: var(--tm-card);
+  color: var(--tm-text);
+}
+
+.inperson-pick-row.on {
+  border-color: var(--tm-gold);
+  background: rgba(var(--tm-gold-rgb), 0.12);
+}
+
+/* The whole left half is the tap target, not a checkbox in it. */
+.inperson-pick-tap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.inperson-pick-name {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--tm-text);
+}
+
+.inperson-pick-name em {
+  font-style: normal;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.inperson-pick-mark {
+  font-size: 22px;
+  color: var(--tm-border);
+}
+
+.inperson-pick-row.on .inperson-pick-mark {
+  color: var(--tm-red);
+}
+
+.inperson-step {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.inperson-step button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--tm-border);
+  border-radius: 3px;
+  background: var(--tm-card);
+  color: var(--tm-text);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.inperson-step button:hover {
+  border-color: var(--tm-gold);
+}
+
+.inperson-step > span {
+  min-width: 42px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--tm-red);
+}
+
+.inperson-step.wide button {
+  min-width: 48px;
+}
+
+.inperson-pick-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--tm-border);
+  background: var(--tm-nav);
+}
+
+/* -- Choosing a partner ------------------------------------------ */
+
+.inperson-partner-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.inperson-partner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 12px;
+  border: 1px solid var(--tm-border);
+  border-radius: 3px;
+  background: var(--tm-card);
+  color: var(--tm-text);
+  font-family: var(--tm-font);
+  text-align: left;
+  cursor: pointer;
+}
+
+.inperson-partner:hover {
+  border-color: var(--tm-gold);
+  background: rgba(var(--tm-gold-rgb), 0.1);
+}
+
+.inperson-partner > i:first-child {
+  font-size: 20px;
+  color: var(--tm-red);
+}
+
+.inperson-partner-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inperson-partner-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--tm-text);
+}
+
+.inperson-partner-note {
+  font-size: 11px;
+  opacity: 0.7;
+  color: var(--tm-text);
+}
+
+.inperson-hint.warn {
+  color: var(--tm-red);
+}
+
+/* -- The button that starts it ----------------------------------- */
+
+/*
+ * Sits above the player list, outside anything of ours, so it carries its
+ * colours literally instead of through the custom properties - those are
+ * declared on `.inperson-panel` and do not reach here.
+ */
+#inperson-trade-button {
+  /* Belt and braces alongside the placement in `#players-active`: whatever it
+     ends up inside, it stays clickable through `#ui-left`'s pointer-events rule. */
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 34px;
+  margin-bottom: 4px;
+  border: 1px solid #D4AF37;
+  border-radius: 3px;
+  background: #fdfbf7;
+  color: #1a1a1a;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#inperson-trade-button:hover {
+  background: #ffffff;
+  border-color: #8B0000;
+}
+
+/* Wide enough that a character name and the account under it stay on one line
+   each - the two together are what tells two players with similar names apart. */
+.inperson-trade-partner .window-content {
+  min-width: 400px;
+}
+
+/* -- The chat card at the end ------------------------------------ */
+
+.inperson-trade-card p {
+  margin: 2px 0;
+}
+
+/* Somebody who is here but cannot trade. Shown rather than omitted - the reason
+   under the name is the whole point of the row. */
+.inperson-partner.blocked {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.inperson-partner.blocked > i:first-child {
+  color: var(--tm-text);
+}
+
+/* -------------------------------------------- */
+/*  The window frame                            */
+/* -------------------------------------------- */
+
+/*
+ * Until now only the *inside* of our windows was D&D; the frame around them
+ * stayed Foundry's dark grey, so a parchment panel sat in a black box. FANG
+ * paints the header instead (fang.css 1609): dark red ground, white lettering,
+ * a gold line under it, gold around the whole window. That is what makes the
+ * windows recognisable as one family, and it is three rules.
+ *
+ * Applied to every window of this module, not just the trading ones - having
+ * two looks inside one module is the thing being fixed here.
+ */
+
+.ninjos-inperson-tools {
+  border: 1px solid var(--tm-gold, #D4AF37);
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ninjos-inperson-tools > .window-header {
+  background: var(--tm-red, #8B0000);
+  color: #ffffff;
+  border-bottom: 2px solid var(--tm-gold, #D4AF37);
+  border-radius: 3px 3px 0 0;
+  font-family: var(--tm-font, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif);
+}
+
+/* The title and the close/menu buttons sit in that header and would otherwise
+   keep the theme's own light-grey lettering on our dark red. */
+.ninjos-inperson-tools > .window-header .window-title,
+.ninjos-inperson-tools > .window-header button,
+.ninjos-inperson-tools > .window-header i {
+  color: #ffffff;
+}
+
+.ninjos-inperson-tools > .window-header button:hover {
+  color: var(--tm-gold, #D4AF37);
+  background: transparent;
+}
+
+.ninjos-inperson-tools > .window-content {
+  background: var(--tm-bg, #fdfbf7);
+  color: var(--tm-text, #1a1a1a);
+}
+
+/* -------------------------------------------- */
+/*  Item icons                                  */
+/* -------------------------------------------- */
+
+/*
+ * Two kinds of icon, two elements. A raster picture is an `<img>` and needs
+ * nothing. An SVG is a `<span>` that icon.js fills with the real thing, because
+ * an SVG inside an `<img>` is a document of its own and our `--icon-fill` never
+ * reaches it - the file's own fallback wins and dnd5e's icons come out white on
+ * parchment. Inlined, the variable applies and they come out in our ink.
+ */
+.inperson-icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--tm-border);
+  border-radius: 3px;
+  background: var(--tm-nav);
+  object-fit: cover;
+  overflow: hidden;
+  --icon-fill: var(--tm-red);
+}
+
+span.inperson-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: var(--icon-fill);
+}
+
+/* -------------------------------------------- */
+/*  Portraits                                   */
+/* -------------------------------------------- */
+
+/*
+ * A trade is between two people, and until now the window showed two names in
+ * a grey line. The portrait is what makes it obvious at a glance whose column
+ * is whose - across a table, from the other side, without reading.
+ */
+.inperson-portrait {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border: 2px solid var(--tm-gold);
+  border-radius: 50%;
+  background: var(--tm-nav);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.inperson-portrait.big {
+  width: 108px;
+  height: 108px;
+  border-width: 3px;
+}
+
+.inperson-trade-who {
+  margin: -8px 0 0;
+  font-size: 12px;
+  opacity: 0.7;
+  color: var(--tm-text);
+}
+
+.inperson-trade-who-name {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  line-height: 1.15;
+}
+
+.inperson-trade-who-name em {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+/* -------------------------------------------- */
+/*  Agreement, shown on the whole column        */
+/* -------------------------------------------- */
+
+/*
+ * The word "einverstanden" in a header is easy to miss, and it is the single
+ * most important thing on this screen: it decides whether the next tap moves
+ * somebody's belongings. So the column itself changes - gold frame, warm
+ * ground - and is legible without reading a word.
+ */
+.inperson-trade-col.agreed {
+  border-color: var(--tm-gold);
+  box-shadow: 0 0 0 1px rgba(var(--tm-gold-rgb), 0.5) inset;
+}
+
+.inperson-trade-col.agreed > h3 {
+  background: rgba(var(--tm-gold-rgb), 0.18);
+}
+
+.inperson-trade-col > h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* -------------------------------------------- */
+/*  Staying reachable                           */
+/* -------------------------------------------- */
+
+/*
+ * A trade window that slips behind something is not an inconvenience, it is a
+ * dead end: in Sheet Only there is no taskbar, no window list and no visible
+ * interface at all, so a player who taps next to the window has no way of ever
+ * getting it back. On the tablet the same thing happened.
+ *
+ * Sheet Only hits this itself and answers it the same way - `z-index: 600
+ * !important` for dialogs, `10000 !important` for the roll resolver (its
+ * style.css 65 and 173). Its own container puts children at 1000 and the actor
+ * list at 1001, which is what was covering us. 9000 clears all of that and
+ * still leaves the roll resolver on top, which is right: that one blocks a roll
+ * and has to win.
+ *
+ * The cost is that this window cannot be pushed behind anything while it is
+ * open. For a trade that is the wanted behaviour - it is short, and it is the
+ * thing being done.
+ */
+.ninjos-inperson-tools.inperson-trade,
+.ninjos-inperson-tools.inperson-trade-partner {
+  z-index: 9000 !important;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100dvh - 16px);
+}
+
+/* Small screens: the two columns stop being columns. Side by side they are
+   190 px wide on a phone, which fits a name and nothing else. */
+@media (max-width: 620px) {
+  .inperson-trade-table {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+/* -------------------------------------------- */
+/*  How it ended                                */
+/* -------------------------------------------- */
+
+/*
+ * The last screen of a trade. It exists because Sheet Only hides Foundry's
+ * notifications together with the rest of the interface, so the sentence
+ * "Roxy declined your request" had nowhere to appear for exactly the players
+ * this module is for. The window they are already looking at says it instead.
+ */
+.inperson-trade-over > i {
+  font-size: 40px;
+}
+
+.inperson-trade-over.yes > i { color: var(--tm-gold); }
+.inperson-trade-over.no > i  { color: var(--tm-text); opacity: 0.5; }
+.inperson-trade-over.bad > i { color: var(--tm-red); }
+
+.inperson-trade-over .inperson-trade-ask {
+  max-width: 34em;
+  line-height: 1.35;
+}
+
+/* -------------------------------------------- */
+/*  Saying something without an interface       */
+/* -------------------------------------------- */
+
+/*
+ * A message for a player in Sheet Only, where `#notifications` is hidden.
+ * Placed in Sheet Only's own container - the only part of the page still on
+ * screen - and above the trade window, since it is usually about it.
+ */
+.inperson-note {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(560px, 92vw);
+  padding: 12px 18px;
+  border: 1px solid var(--tm-gold, #D4AF37);
+  border-left: 4px solid var(--tm-red, #8B0000);
+  border-radius: 3px;
+  background: #fdfbf7;
+  color: #1a1a1a;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  line-height: 1.35;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+}
+
+.inperson-note i {
+  font-size: 18px;
+  color: #8B0000;
+}
+
+.inperson-note.error {
+  border-left-color: #8B0000;
+  background: #fff5f5;
+}

@@ -1,0 +1,264 @@
+{{!--
+  The trade table.
+
+  Three quite different things share this template because they are three
+  moments of the same conversation - asking, laying things out, waiting - and a
+  separate window for each would mean two of them appearing and vanishing while
+  people are looking at the third.
+--}}
+<section class="inperson-body inperson-trade-body">
+
+{{#if over}}
+  {{!-- How it ended. Said here rather than as a notification, because Sheet
+        Only hides Foundry's notifications along with the rest of the
+        interface - see trade-window.js #outcome. --}}
+  <div class="inperson-trade-wait inperson-trade-over {{outcomeKind}}">
+    <img class="inperson-portrait big" src="{{themImg}}" alt="">
+    <i class="fa-solid {{outcomeIcon}}"></i>
+    <p class="inperson-trade-ask">{{outcome}}</p>
+    <button type="button" data-action="dismiss" class="inperson-big go">
+      {{localize "INPERSON.Trade.Close"}}
+    </button>
+  </div>
+
+{{else if waiting}}
+  <div class="inperson-trade-wait">
+    <img class="inperson-portrait big" src="{{themImg}}" alt="">
+    <p>{{localize "INPERSON.Trade.WaitingFor" who=themName}}</p>
+    <button type="button" data-action="cancel" class="inperson-big ghost">
+      {{localize "INPERSON.Trade.Cancel"}}
+    </button>
+  </div>
+
+{{else if asked}}
+  <div class="inperson-trade-wait">
+    <img class="inperson-portrait big" src="{{themImg}}" alt="">
+    <p class="inperson-trade-ask">{{localize "INPERSON.Trade.AsksYou" who=themName}}</p>
+    <p class="inperson-trade-who">{{themUser}}</p>
+    <div class="inperson-trade-answer">
+      <button type="button" data-action="answerYes" class="inperson-big">
+        <i class="fa-solid fa-check"></i> {{localize "INPERSON.Trade.Yes"}}
+      </button>
+      <button type="button" data-action="answerNo" class="inperson-big ghost">
+        <i class="fa-solid fa-xmark"></i> {{localize "INPERSON.Trade.No"}}
+      </button>
+    </div>
+  </div>
+
+{{else if running}}
+  <div class="inperson-trade-wait">
+    <i class="fa-solid fa-spinner fa-spin"></i>
+    <p>{{localize "INPERSON.Trade.Running"}}</p>
+  </div>
+
+{{else}}
+
+  <div class="inperson-trade-table">
+
+    {{!-- My side --}}
+    <div class="inperson-trade-col mine {{#if meAccepted}}agreed{{/if}}">
+      <h3>
+        <img class="inperson-portrait" src="{{meImg}}" alt="">
+        <span class="inperson-trade-who-name">
+          {{meName}}
+          <em>{{meUser}}</em>
+        </span>
+        {{#if meAccepted}}<em class="inperson-tag ok"><i class="fa-solid fa-check"></i> {{localize "INPERSON.Trade.Accepted"}}</em>{{/if}}
+      </h3>
+
+      <div class="inperson-trade-side">
+        {{#if meOffer.empty}}
+          <p class="inperson-hint">{{localize "INPERSON.Trade.NothingYet"}}</p>
+        {{/if}}
+        {{#each meOffer.items}}
+          <div class="inperson-trade-row">
+            {{#if this.svg}}
+              <span class="inperson-icon" data-icon="{{this.img}}"></span>
+            {{else}}
+              <img class="inperson-icon" src="{{this.img}}" alt="">
+            {{/if}}
+            <span class="inperson-trade-name">
+              {{this.name}}{{#if this.stack}} <em>&times;{{this.quantity}}</em>{{/if}}
+              {{#if this.contents.length}}
+                <span class="inperson-trade-inside">
+                  {{localize "INPERSON.Trade.Inside"}}: {{#each this.contents}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}
+                </span>
+              {{/if}}
+            </span>
+          </div>
+        {{/each}}
+        {{#each meOffer.coins}}
+          <div class="inperson-trade-row coins">
+            <i class="fa-solid fa-coins"></i>
+            <span class="inperson-trade-name">{{this.amount}} {{this.label}}</span>
+          </div>
+        {{/each}}
+      </div>
+
+      <div class="inperson-trade-tools">
+        <button type="button" data-action="pickItems" class="inperson-big">
+          <i class="fa-solid fa-box-open"></i> {{localize "INPERSON.Trade.PickItems"}}
+        </button>
+        <button type="button" data-action="pickCoins" class="inperson-big">
+          <i class="fa-solid fa-coins"></i> {{localize "INPERSON.Trade.PickCoins"}}
+        </button>
+      </div>
+    </div>
+
+    {{!-- Their side --}}
+    <div class="inperson-trade-col theirs {{#if themAccepted}}agreed{{/if}}">
+      <h3>
+        <img class="inperson-portrait" src="{{themImg}}" alt="">
+        <span class="inperson-trade-who-name">
+          {{themName}}
+          <em>{{themUser}}</em>
+        </span>
+        {{#if themAccepted}}<em class="inperson-tag ok"><i class="fa-solid fa-check"></i> {{localize "INPERSON.Trade.Accepted"}}</em>{{/if}}
+      </h3>
+
+      <div class="inperson-trade-side">
+        {{#if themOffer.empty}}
+          <p class="inperson-hint">{{localize "INPERSON.Trade.NothingYet"}}</p>
+        {{/if}}
+        {{#each themOffer.items}}
+          <div class="inperson-trade-row">
+            {{#if this.svg}}
+              <span class="inperson-icon" data-icon="{{this.img}}"></span>
+            {{else}}
+              <img class="inperson-icon" src="{{this.img}}" alt="">
+            {{/if}}
+            <span class="inperson-trade-name">
+              {{this.name}}{{#if this.stack}} <em>&times;{{this.quantity}}</em>{{/if}}
+              {{#if this.contents.length}}
+                <span class="inperson-trade-inside">
+                  {{localize "INPERSON.Trade.Inside"}}: {{#each this.contents}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}
+                </span>
+              {{/if}}
+            </span>
+          </div>
+        {{/each}}
+        {{#each themOffer.coins}}
+          <div class="inperson-trade-row coins">
+            <i class="fa-solid fa-coins"></i>
+            <span class="inperson-trade-name">{{this.amount}} {{this.label}}</span>
+          </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  <footer class="inperson-foot inperson-trade-foot">
+    <button type="button" data-action="cancel" class="inperson-big ghost">
+      <i class="fa-solid fa-xmark"></i> {{localize "INPERSON.Trade.Cancel"}}
+    </button>
+    {{#if meAccepted}}
+      <button type="button" data-action="withdraw" class="inperson-big warn">
+        <i class="fa-solid fa-rotate-left"></i> {{localize "INPERSON.Trade.Withdraw"}}
+      </button>
+    {{else}}
+      <button type="button" data-action="accept" class="inperson-big go">
+        <i class="fa-solid fa-check"></i> {{localize "INPERSON.Trade.Accept"}}
+      </button>
+    {{/if}}
+  </footer>
+
+  {{!-- The picking sheet, laid over the table --}}
+  {{#unless (eq mode "table")}}
+    <div class="inperson-pick">
+      <div class="inperson-pick-head">
+        <h3>
+          {{#if (eq mode "items")}}
+            <i class="fa-solid fa-box-open"></i> {{localize "INPERSON.Trade.PickItems"}}
+          {{else}}
+            <i class="fa-solid fa-coins"></i> {{localize "INPERSON.Trade.PickCoins"}}
+          {{/if}}
+        </h3>
+        <button type="button" data-action="backToTable" class="inperson-mini">
+          {{localize "INPERSON.Trade.Back"}}
+        </button>
+      </div>
+
+      <div class="inperson-pick-list">
+        {{#if (eq mode "items")}}
+          {{#if hasRows}}
+            {{#each rows}}
+              <div class="inperson-pick-row {{#if this.on}}on{{/if}}">
+                <div class="inperson-pick-tap" data-action="toggleItem" data-item-id="{{this.id}}">
+                  {{#if this.svg}}
+                    <span class="inperson-icon" data-icon="{{this.img}}"></span>
+                  {{else}}
+                    <img class="inperson-icon" src="{{this.img}}" alt="">
+                  {{/if}}
+                  <span class="inperson-pick-name">
+                    {{this.name}}
+                    {{#if this.stack}}<em>({{localize "INPERSON.Trade.Have"}} {{this.max}})</em>{{/if}}
+                    {{#if this.contents.length}}
+                      <span class="inperson-trade-inside">
+                        {{localize "INPERSON.Trade.Inside"}}: {{#each this.contents}}{{this}}{{#unless @last}}, {{/unless}}{{/each}}
+                      </span>
+                    {{/if}}
+                  </span>
+                </div>
+                {{#if this.stack}}
+                  {{!-- The same controls as the coins below. Handing over eight
+                        of twenty arrows is the same act as handing over eight of
+                        twenty gold pieces, so it gets the same buttons. --}}
+                  <div class="inperson-step wide">
+                    <button type="button" data-action="itemNone" data-item-id="{{this.id}}" class="inperson-mini">0</button>
+                    <button type="button" data-action="less" data-item-id="{{this.id}}" data-max="{{this.max}}" data-step="10">&minus;10</button>
+                    <button type="button" data-action="less" data-item-id="{{this.id}}" data-max="{{this.max}}">&minus;</button>
+                    <span>{{this.picked}}</span>
+                    <button type="button" data-action="more" data-item-id="{{this.id}}" data-max="{{this.max}}">+</button>
+                    <button type="button" data-action="more" data-item-id="{{this.id}}" data-max="{{this.max}}" data-step="10">+10</button>
+                    <button type="button" data-action="itemAll" data-item-id="{{this.id}}" data-max="{{this.max}}" class="inperson-mini">
+                      {{localize "INPERSON.Trade.AllOfIt"}}
+                    </button>
+                  </div>
+                {{else}}
+                  <i class="fa-solid {{#if this.on}}fa-circle-check{{else}}fa-circle{{/if}} inperson-pick-mark"></i>
+                {{/if}}
+              </div>
+            {{/each}}
+          {{else}}
+            <p class="inperson-hint">{{localize "INPERSON.Trade.NoItems"}}</p>
+          {{/if}}
+        {{else}}
+          {{#if hasCoins}}
+            {{#each coinRows}}
+              <div class="inperson-pick-row {{#if this.picked}}on{{/if}}">
+                <span class="inperson-pick-name">
+                  {{this.label}} <em>({{localize "INPERSON.Trade.Have"}} {{this.have}})</em>
+                </span>
+                <div class="inperson-step wide">
+                  <button type="button" data-action="coinNone" data-coin="{{this.key}}" class="inperson-mini">0</button>
+                  <button type="button" data-action="coinLess" data-coin="{{this.key}}" data-step="10">&minus;10</button>
+                  <button type="button" data-action="coinLess" data-coin="{{this.key}}">&minus;</button>
+                  <span>{{this.picked}}</span>
+                  <button type="button" data-action="coinMore" data-coin="{{this.key}}">+</button>
+                  <button type="button" data-action="coinMore" data-coin="{{this.key}}" data-step="10">+10</button>
+                  <button type="button" data-action="coinAll" data-coin="{{this.key}}" class="inperson-mini">
+                    {{localize "INPERSON.Trade.AllOfIt"}}
+                  </button>
+                </div>
+              </div>
+            {{/each}}
+          {{else}}
+            <p class="inperson-hint">{{localize "INPERSON.Trade.NoCoins"}}</p>
+          {{/if}}
+        {{/if}}
+      </div>
+
+      <footer class="inperson-pick-foot">
+        <button type="button" data-action="backToTable" class="inperson-big ghost">
+          {{localize "INPERSON.Trade.Cancel"}}
+        </button>
+        <button type="button" data-action="applyPick" class="inperson-big go">
+          <i class="fa-solid fa-check"></i> {{localize "INPERSON.Trade.PutOnTable"}}
+        </button>
+      </footer>
+    </div>
+  {{/unless}}
+
+{{/if}}
+
+</section>

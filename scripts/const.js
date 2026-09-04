@@ -91,7 +91,19 @@ export const SETTINGS = {
    */
   CLOCK_STRIP: "clockStrip",
   /** Put weather and season on the strip as well, not just the date (world). */
-  CLOCK_WEATHER: "clockWeather"
+  CLOCK_WEATHER: "clockWeather",
+  /** Offer the trade button at all (world). */
+  TRADE: "trade",
+  /**
+   * May a player offer a trade to the gamemaster? (world)
+   *
+   * Off by default. A GM hands things out and takes them away directly; a
+   * request they have to answer in a window is a detour for them and clutters
+   * the partner list for everyone else.
+   */
+  TRADE_WITH_GM: "tradeWithGM",
+  /** Write every trade into the "Tauschbuch" journal (world). */
+  TRADE_LOG: "tradeLog"
 };
 
 /** Socket message types. */
@@ -106,7 +118,15 @@ export const SOCKET = {
    * display belongs" and the pin target would be lost the first time the table
    * took a break.
    */
-  SCREENSAVER: "screensaver"
+  SCREENSAVER: "screensaver",
+  /**
+   * Everything belonging to a trade - request, offer, accept, cancel, and the
+   * gamemaster's answer with the whole session.
+   *
+   * One type for all of it, with an `action` inside. The alternative, six socket
+   * types, would spread one conversation over six places in the dispatcher.
+   */
+  TRADE: "trade"
 };
 
 /**

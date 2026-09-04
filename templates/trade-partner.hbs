@@ -1,0 +1,67 @@
+{{!--
+  Who is at the table right now.
+
+  One large row per person, tapped as a whole - no radio button to hit and no
+  confirm button afterwards. Choosing a partner is the one place where a mis-tap
+  costs nothing: the other side still has to say yes.
+
+  People who cannot trade are listed as well, greyed out, with the reason. The
+  first version left them out, and the result was "there is nobody here to trade
+  with" while two players sat at the table - a list that omits the answer is
+  worse than one that shows it and says why.
+--}}
+<section class="inperson-body">
+
+  {{#if noGM}}
+    <p class="inperson-hint warn">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+      {{localize "INPERSON.Trade.NoGM"}}
+    </p>
+  {{else}}
+
+    {{#if hasPartners}}
+      <p class="inperson-hint">
+        <i class="fa-solid fa-circle-info"></i>
+        {{localize "INPERSON.Trade.AskHint" who=myActorName}}
+      </p>
+    {{else if nobody}}
+      <p class="inperson-hint">
+        <i class="fa-solid fa-circle-info"></i>
+        {{localize "INPERSON.Trade.NobodyOnline"}}
+      </p>
+    {{else}}
+      <p class="inperson-hint warn">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        {{localize "INPERSON.Trade.NobodyReady"}}
+      </p>
+    {{/if}}
+
+    <div class="inperson-partner-list">
+      {{#each partners}}
+        <button type="button" class="inperson-partner"
+                data-action="choose"
+                data-user-id="{{this.userId}}"
+                data-actor-id="{{this.actorId}}">
+          <img class="inperson-portrait" src="{{this.actorImg}}" alt="">
+          <span class="inperson-partner-main">
+            <span class="inperson-partner-name">{{this.actorName}}</span>
+            <span class="inperson-partner-note">{{this.userName}}</span>
+          </span>
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      {{/each}}
+
+      {{#each blocked}}
+        <div class="inperson-partner blocked">
+          <i class="fa-solid fa-user-slash"></i>
+          <span class="inperson-partner-main">
+            <span class="inperson-partner-name">{{this.userName}}</span>
+            <span class="inperson-partner-note">{{this.why}}</span>
+          </span>
+        </div>
+      {{/each}}
+    </div>
+
+  {{/if}}
+
+</section>

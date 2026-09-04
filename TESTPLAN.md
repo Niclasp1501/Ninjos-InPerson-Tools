@@ -167,3 +167,47 @@ Kein Testthema, aber offen:
 - **`ParticleEffect#lookupTexture`** bleibt eine bewusst offene Lücke
   (`particle-generator.mjs:2986`, ~68 KB Partikelbilder). Nicht behebbar ohne
   einen zweiten Wrapper, und die Größe rechtfertigt ihn nicht.
+
+---
+
+## Tausch — der Durchlauf zum Nachspielen
+
+Stand 14.2611.10. Der Beweger (`trade-mover.js`) und das Tauschbuch sind an
+Wegwerf-Akteuren in `farun4` gemessen; alles darüber — Anfrage, Tisch, Zustimmen
+— ist bisher nur statisch geprüft: alle Skripte parsen, alle Vorlagen
+übersetzen und rendern in allen sechs Zuständen, beide Sprachen vollständig.
+**Im Spiel gelaufen ist es noch nicht.**
+
+Gebraucht werden drei Fenster: Spielleiter, Spieler A, Spieler B. Beide Spieler
+brauchen einen zugewiesenen Charakter.
+
+| # | Handlung | Erwartung |
+|---|---|---|
+| 1 | Spieler A: Knopf **Tauschen** über der Spielerliste (im Sheet-Only-Modus in dessen Knopfleiste) | Liste der angemeldeten Mitspieler, jeder Eintrag eine große Zeile |
+| 2 | Spielleiter abmelden, dann Schritt 1 | Hinweis „Ein Tausch braucht einen angemeldeten Spielleiter"; keine Liste |
+| 3 | A wählt B | Bei A „Warte auf Antwort", bei B „A möchte mit dir tauschen" |
+| 4 | B lehnt ab | Beide Fenster schließen, beide sehen „Der Tausch wurde abgelehnt" |
+| 5 | Neu anfragen, B stimmt zu | Bei beiden der Tisch: links der eigene Name mit Goldlinie, rechts der andere |
+| 6 | A: **Gegenstände**, einen Stapel auf 3 stellen, **Auf den Tisch legen** | Auswahlfläche verschwindet, Zeile „Name ×3" steht bei beiden auf A's Seite |
+| 7 | A: **Geld**, 12 Gold, auf den Tisch | Zweite Zeile mit Münzsymbol, ebenfalls bei beiden |
+| 8 | A einen Behälter mit Inhalt auf den Tisch legen | Unter dem Behälter steht klein „darin: …" mit allen Sachen, auch verschachtelten |
+| 9 | Beide **Einverstanden** … | … aber vorher: B stimmt zu, dann ändert A das Angebot |
+| 10 | ↑ nach der Änderung | B's Häkchen „einverstanden" ist weg — **das ist die wichtigste Zeile in dieser Tabelle** |
+| 11 | Beide stimmen zu | Kurz „Der Tausch wird ausgeführt", dann schließen beide Fenster, Meldung „abgeschlossen", Chatkarte im Chat |
+| 12 | Inventare prüfen | Stapel bei A um 3 kleiner, bei B ein neuer Eintrag mit 3; Gold verschoben; Behälter samt Inhalt **und samt des Geldes im Behälter** bei B, verschachtelte Ebenen erhalten |
+| 13 | Ausrüstung prüfen | Nichts ist bei B als angelegt oder eingestimmt markiert |
+| 14 | Stapel prüfen | Hatte B den Gegenstand schon, liegt er jetzt **zweimal** da. Das ist Absicht: nichts wird in einen Stapel einsortiert, der mit dem Tausch nichts zu tun hat |
+| 15 | Spielleiter: Journal **Tauschbuch** | Eine Seite je Tausch, Stand „erledigt", beide Angebote vollständig, darunter was angelegt und entfernt wurde |
+| 16 | Während eines laufenden Tauschs das Fenster mit dem X schließen | Der Tausch wird abgebrochen, der andere bekommt „… hat den Tausch abgebrochen" |
+| 17 | Zweite Anfrage an jemanden, der schon tauscht | Hinweis „Einer von euch beiden ist bereits in einem Tausch"; der laufende bleibt unberührt |
+
+Fällt Schritt 11 auf halber Strecke um, ist genau dafür das Tauschbuch da: die
+Seite steht schon da, bevor irgendetwas bewegt wurde, und sagt danach, was
+tatsächlich passiert ist.
+
+**Auf dem Tablet gesondert prüfen:** dass die Auswahlfläche mit dem Finger
+bedienbar ist und nichts gezogen werden muss. Das war der Anlass für die ganze
+Funktion.
+
+**Wer Item Piles einsetzt:** dessen `showTradeButton` abschalten, sonst stehen
+zwei Tauschknöpfe nebeneinander.

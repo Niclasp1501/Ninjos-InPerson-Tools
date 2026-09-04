@@ -25,6 +25,10 @@ import {
   installActorPanel, removeActorPanel, applySidebarStyle, markPopout, isDirectoryPopoutApp
 } from "./actor-panel.js";
 import { installClock, syncClock, refreshClock } from "./clock.js";
+import { onTradeSocket } from "./trade.js";
+import { installTradeWindow } from "./trade-window.js";
+import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
+import { openLog as openTradeLog } from "./trade-log.js";
 import {
   installMonitorWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
   getSceneDisplay, getPinnedScene, getCompanionScene, setCompanionScene,
@@ -97,6 +101,37 @@ function registerSettings() {
     type: Boolean,
     default: true,
     onChange: () => refreshClock({ force: true })
+  });
+
+  // Trading. In the plain list rather than in a GM window: it decides whether a
+  // button appears in every player's view, and that is the kind of switch
+  // somebody looks for where they looked for the last one.
+  S(SETTINGS.TRADE, {
+    name: "INPERSON.Settings.Trade.Name",
+    hint: "INPERSON.Settings.Trade.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    onChange: () => syncTradeButton()
+  });
+
+  S(SETTINGS.TRADE_WITH_GM, {
+    name: "INPERSON.Settings.TradeWithGM.Name",
+    hint: "INPERSON.Settings.TradeWithGM.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+  });
+
+  S(SETTINGS.TRADE_LOG, {
+    name: "INPERSON.Settings.TradeLog.Name",
+    hint: "INPERSON.Settings.TradeLog.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
   });
 
   S(SETTINGS.DEFAULT_PLAYERS, {
@@ -531,6 +566,10 @@ function onSocket(payload) {
     applyStateChange();
     return;
   }
+  if (payload?.type === SOCKET.TRADE) {
+    onTradeSocket(payload);
+    return;
+  }
   if (payload?.type === SOCKET.SCREENSAVER) {
     if (!game.user.isGM) return;
     setScreensaverState(payload.userId, !!payload.active);
@@ -585,7 +624,9 @@ Hooks.once("ready", async () => {
     isActive,
     getStats,
     resetStats,
-    refresh: applyStateChange
+    refresh: applyStateChange,
+    openTrade,
+    openTradeLog
   };
 
   refreshTokenSources();
@@ -600,6 +641,8 @@ Hooks.once("ready", async () => {
   installScreensaver();
   installActorPanel();
   installClock();
+  installTradeWindow();
+  installTradeButton();
   // Lock View may not have built its global yet when our `ready` runs; the
   // canvasReady attempt below is the second chance. Both are no-ops without it.
   installLockViewInterop();
