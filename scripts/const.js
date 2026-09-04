@@ -90,8 +90,19 @@ export const SETTINGS = {
    * only the GM can open.
    */
   CLOCK_STRIP: "clockStrip",
-  /** Put weather and season on the strip as well, not just the date (world). */
+  /**
+   * May the strip carry weather and season at all? (world)
+   *
+   * A gate, not a display choice: a table that keeps its weather secret says so
+   * once, here, and no device can put it back. What each device *shows* of what
+   * is allowed is the four client switches below.
+   */
   CLOCK_WEATHER: "clockWeather",
+  /** Per-device: which parts of the strip are drawn (all client). */
+  CLOCK_DATE: "clockDate",
+  CLOCK_TIME: "clockTime",
+  CLOCK_SHOW_WEATHER: "clockShowWeather",
+  CLOCK_SHOW_SEASON: "clockShowSeason",
   /** Offer the trade button at all (world). */
   TRADE: "trade",
   /**

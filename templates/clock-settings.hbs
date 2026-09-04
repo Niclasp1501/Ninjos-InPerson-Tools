@@ -1,0 +1,79 @@
+{{!--
+  Two groups, because there are two kinds of switch here: what this device
+  shows, and what the table allows at all. Identical checkboxes in one list
+  would hide that ticking one of them changes the evening for everybody.
+--}}
+<section class="inperson-body">
+
+  <div class="inperson-scene">
+    <div class="inperson-scene-head">
+      <h3><i class="fa-solid fa-clock"></i> {{localize "INPERSON.Clock.Group.Device"}}</h3>
+    </div>
+    <p class="inperson-hint">
+      <i class="fa-solid fa-circle-info"></i>
+      {{localize "INPERSON.Clock.Group.DeviceHint"}}
+    </p>
+  </div>
+
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="strip" {{checked strip}}>
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.Clock.Field.Strip"}}
+      <em>{{localize "INPERSON.Clock.Field.StripHint"}}</em>
+    </span>
+  </label>
+
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="date" {{checked date}}>
+    <span class="inperson-pick-name">{{localize "INPERSON.Clock.Field.Date"}}</span>
+  </label>
+
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="time" {{checked time}}>
+    <span class="inperson-pick-name">{{localize "INPERSON.Clock.Field.Time"}}</span>
+  </label>
+
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="weather" {{checked weather}}>
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.Clock.Field.Weather"}}
+      {{#unless hasWeatherSource}}<em>{{localize "INPERSON.Clock.NoWeatherSource"}}</em>{{/unless}}
+    </span>
+  </label>
+
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="season" {{checked season}}>
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.Clock.Field.Season"}}
+      <em>{{localize "INPERSON.Clock.Field.SeasonHint"}}</em>
+    </span>
+  </label>
+
+  {{#if isGM}}
+    <div class="inperson-scene">
+      <div class="inperson-scene-head">
+        <h3><i class="fa-solid fa-globe"></i> {{localize "INPERSON.Clock.Group.World"}}</h3>
+      </div>
+      <p class="inperson-hint">
+        <i class="fa-solid fa-circle-info"></i>
+        {{localize "INPERSON.Clock.Group.WorldHint"}}
+      </p>
+    </div>
+
+    <label class="inperson-pick-row">
+      <input type="checkbox" name="allowed" {{checked allowed}}>
+      <span class="inperson-pick-name">
+        {{localize "INPERSON.Clock.Field.Allowed"}}
+        <em>{{localize "INPERSON.Clock.Field.AllowedHint"}}</em>
+      </span>
+    </label>
+  {{/if}}
+
+  <footer class="inperson-foot">
+    <button type="submit" class="inperson-master-toggle">
+      <i class="fa-solid fa-floppy-disk"></i>
+      <span>{{localize "INPERSON.Clock.Save"}}</span>
+    </button>
+  </footer>
+
+</section>

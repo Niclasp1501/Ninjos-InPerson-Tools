@@ -111,9 +111,18 @@ function currentWeather() {
   const zone = raw?.temperate ?? Object.values(raw ?? {})[0];
   if (!zone) return null;
   return {
-    label: game.i18n.localize(zone.label ?? ""),
+    label: game.i18n.localize(String(zone.label ?? "")),
+    // The long form, for the tooltip. Calendaria's own HUD shows it as
+    // "Windig - Starke Winde", and the strip has room for the first half only.
+    description: zone.description ? game.i18n.localize(String(zone.description)) : null,
     icon: zone.icon ?? "fa-cloud",
-    temperature: Number.isFinite(zone.temperature) ? zone.temperature : null
+    temperature: Number.isFinite(zone.temperature) ? zone.temperature : null,
+    // Direction is degrees, speed a step on Calendaria's own scale. The degrees
+    // are turned into a compass point because that is stable arithmetic; the
+    // step is shown as a step, because converting it to km/h would mean copying
+    // a table that belongs to another module and rots when they change it.
+    wind: zone.wind ? { direction: zone.wind.direction, speed: zone.wind.speed } : null,
+    precipitation: zone.precipitation?.type ? zone.precipitation : null
   };
 }
 
@@ -148,9 +157,16 @@ export function readClock() {
 
 /* ── Drawing ─────────────────────────────────────────────────────── */
 
-/** One chip: an icon and a label, used for weather and season alike. */
-function chip(className, icon, text, extra = "") {
-  return `<span class="${className}"><i class="fa-solid ${icon}"></i><span>${text}</span>${extra}</span>`;
+/**
+ * One chip: an icon and a label, used for weather and season alike.
+ *
+ * `tooltip` is HTML and goes in as `data-tooltip-html`, which is the attribute
+ * Foundry's tooltip manager reads first (tooltip-manager.mjs:138).
+ */
+function chip(className, icon, text, extra = "", tooltip = "") {
+  const hint = tooltip ? ` data-tooltip-html="${foundry.utils.escapeHTML(tooltip)}"` : "";
+  return `<span class="${className}"${hint}><i class="fa-solid ${icon}"></i>`
+    + `<span>${escape(text)}</span>${extra}</span>`;
 }
 
 /** Build the strip, or null when there is nothing to show. */
@@ -164,25 +180,68 @@ function buildStrip() {
   return element;
 }
 
+/** The compass point for a bearing in degrees. */
+function compass(degrees) {
+  if (!Number.isFinite(degrees)) return null;
+  const punkte = ["N", "NO", "O", "SO", "S", "SW", "W", "NW"];
+  return punkte[Math.round(((degrees % 360) + 360) % 360 / 45) % 8];
+}
+
+const escape = s => foundry.utils.escapeHTML?.(String(s ?? "")) ?? String(s ?? "");
+
+/**
+ * What the weather chip says when you rest on it.
+ *
+ * The strip has room for one word. Everything the calendar module actually
+ * knows - the long description, the wind, what is falling out of the sky - fits
+ * here instead of being thrown away.
+ */
+function weatherTooltip(weather) {
+  const zeilen = [`<strong>${escape(weather.label)}</strong>`];
+  if (weather.description) zeilen.push(escape(weather.description));
+  if (weather.temperature !== null) zeilen.push(`${weather.temperature}&nbsp;&deg;C`);
+  if (weather.wind) {
+    const richtung = compass(weather.wind.direction);
+    const teile = [];
+    if (richtung) teile.push(game.i18n.format("INPERSON.Clock.WindFrom", { where: richtung }));
+    if (Number.isFinite(weather.wind.speed)) {
+      teile.push(game.i18n.format("INPERSON.Clock.WindForce", { n: weather.wind.speed }));
+    }
+    if (teile.length) zeilen.push(teile.join(" &middot; "));
+  }
+  return zeilen.join("<br>");
+}
+
 /** Write the current values into an existing strip. */
 function fillStrip(element, now) {
-  const withWeather = game.settings.get(MODULE_ID, SETTINGS.CLOCK_WEATHER);
-  const parts = [
-    `<span class="inperson-clock-date">${now.date}</span>`,
-    `<span class="inperson-clock-time">${now.time}</span>`
-  ];
+  const get = key => game.settings.get(MODULE_ID, key);
+  // The world gate first: what a table has switched off is not a matter of
+  // taste on any one device.
+  const erlaubt = get(SETTINGS.CLOCK_WEATHER);
+  const parts = [];
 
-  if (withWeather && now.weather) {
+  if (get(SETTINGS.CLOCK_DATE)) {
+    parts.push(`<span class="inperson-clock-date">${escape(now.date)}</span>`);
+  }
+  if (get(SETTINGS.CLOCK_TIME)) {
+    parts.push(`<span class="inperson-clock-time">${escape(now.time)}</span>`);
+  }
+
+  if (erlaubt && get(SETTINGS.CLOCK_SHOW_WEATHER) && now.weather) {
     const degrees = now.weather.temperature === null
       ? ""
       : `<span class="inperson-clock-temp">${now.weather.temperature}&deg;C</span>`;
-    parts.push(chip("inperson-clock-chip", now.weather.icon, now.weather.label, degrees));
+    parts.push(chip("inperson-clock-chip", now.weather.icon, now.weather.label, degrees,
+      weatherTooltip(now.weather)));
   }
-  if (withWeather && now.season) {
-    parts.push(chip("inperson-clock-season", (now.season.icon ?? "fa-leaf").replace(/^fas /, ""), now.season.name));
+  if (erlaubt && get(SETTINGS.CLOCK_SHOW_SEASON) && now.season) {
+    parts.push(chip("inperson-clock-season", (now.season.icon ?? "fa-leaf").replace(/^fas /, ""),
+      now.season.name, "", escape(now.season.name)));
   }
 
   element.innerHTML = parts.join("");
+  // Everything switched off is not an empty box in the corner of the screen.
+  element.toggleAttribute("hidden", parts.length === 0);
 }
 
 /** Redraw the mounted strip if - and only if - the displayed minute moved. */

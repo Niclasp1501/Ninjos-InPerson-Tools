@@ -25,6 +25,7 @@ import {
   installActorPanel, removeActorPanel, applySidebarStyle, markPopout, isDirectoryPopoutApp
 } from "./actor-panel.js";
 import { installClock, syncClock, refreshClock } from "./clock.js";
+import { openClockSettings } from "./clock-settings.js";
 import { onTradeSocket } from "./trade.js";
 import { installTradeWindow } from "./trade-window.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
@@ -93,15 +94,31 @@ function registerSettings() {
     onChange: () => syncClock()
   });
 
+  // Moved off the flat list onto the "Zeit & Wetter" page. It is a world switch
+  // sitting among device switches, and side by side as identical checkboxes
+  // nothing said that this one changes the evening for everybody.
   S(SETTINGS.CLOCK_WEATHER, {
     name: "INPERSON.Settings.ClockWeather.Name",
     hint: "INPERSON.Settings.ClockWeather.Hint",
     scope: "world",
-    config: true,
+    config: false,
     type: Boolean,
     default: true,
     onChange: () => refreshClock({ force: true })
   });
+
+  // What each device draws of what the world allows. All four on the page, so
+  // the list keeps one row per tool rather than five for this one.
+  for (const key of [SETTINGS.CLOCK_DATE, SETTINGS.CLOCK_TIME,
+                     SETTINGS.CLOCK_SHOW_WEATHER, SETTINGS.CLOCK_SHOW_SEASON]) {
+    S(key, {
+      scope: "client",
+      config: false,
+      type: Boolean,
+      default: true,
+      onChange: () => refreshClock({ force: true })
+    });
+  }
 
   // Trading. In the plain list rather than in a GM window: it decides whether a
   // button appears in every player's view, and that is the kind of switch
@@ -420,6 +437,17 @@ function registerSettings() {
     restricted: true
   });
 
+  // The strip has its own page too, and it is the only one a player may open:
+  // four of its five switches belong to the device in their hands.
+  game.settings.registerMenu(MODULE_ID, "clock", {
+    name: "INPERSON.Clock.MenuName",
+    label: "INPERSON.Clock.MenuLabel",
+    hint: "INPERSON.Clock.MenuHint",
+    icon: "fa-solid fa-clock",
+    type: ClockSettingsShim,
+    restricted: false
+  });
+
   // Everything about the two televisions has its own page. Steering displays and
   // stopping downloads are separate jobs that merely share a module, and one
   // flat list made them read as a heap of unrelated switches.
@@ -438,6 +466,14 @@ class TableModeSettingsShim extends foundry.applications.api.ApplicationV2 {
   constructor(...args) {
     super(...args);
     openTableModeSettings();
+  }
+  async render() { return this; }
+}
+
+class ClockSettingsShim extends foundry.applications.api.ApplicationV2 {
+  constructor(...args) {
+    super(...args);
+    openClockSettings();
   }
   async render() { return this; }
 }

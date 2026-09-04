@@ -1,5 +1,28 @@
 # Changelog
 
+## 14.2611.19 — 2026-09-05
+
+**Jeder Teil der Leiste lässt sich einzeln ein- und ausblenden.** Datum,
+Uhrzeit, Wetter, Jahreszeit — auf einer eigenen Seite „Zeit & Wetter", nicht als
+fünf weitere Zeilen in der Einstellungsliste. Zwei Gruppen, weil es zwei Arten
+von Schalter sind: vier gehören dem Gerät in deiner Hand, einer der ganzen
+Runde. Nebeneinander als gleich aussehende Häkchen hätte nichts verraten, dass
+einer davon den Abend für alle ändert. Die Weltzeile sieht nur der Spielleiter —
+und wird beim Speichern nicht angefasst, wenn sie gar nicht im Formular stand,
+sonst könnte jeder Spieler das Wetter stillschweigend für den Tisch abschalten.
+
+**Die Chips zeigen jetzt, was das Kalendermodul wirklich weiß.** Auf der Leiste
+ist Platz für ein Wort; im Tooltip stehen die lange Beschreibung, die Temperatur
+und der Wind: „Windig / Starke Winde / 11 °C / Wind aus S · Stärke 3". Die
+Windrichtung wird aus Grad in eine Himmelsrichtung gerechnet — das ist stabile
+Arithmetik. Die Windstärke bleibt eine Stufe und wird nicht in km/h umgerechnet:
+dafür müsste man eine Tabelle abschreiben, die einem anderen Modul gehört.
+
+**Und die Greifhand ist weg.** Die Leiste hatte `pointer-events: none` — das
+klang richtig, sie ist ja eine Beschriftung. Nur reicht das den Zeiger an das
+weiter, was darunter liegt, und das ist Sheet Onlys ziehbare Knopfleiste: eine
+Greifhand, die nichts greifen konnte, und Tooltips, die nie auslösen konnten.
+
 ## 14.2611.18 — 2026-09-05
 
 **Die Leiste läuft auch ohne Calendaria** — geprüft, nicht angenommen. Foundrys

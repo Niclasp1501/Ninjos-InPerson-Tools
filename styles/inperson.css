@@ -1186,16 +1186,21 @@ body:has(.actors-sidebar.sidebar-popout:has(.window-content > *)) #inperson-so-a
    * lifted again.
    *
    * z-index 1000 matches Sheet Only's own bar, so the two pieces of chrome sit
-   * on the same layer above the sheet. `pointer-events: none` because it is a
-   * label, not a control - it must never swallow a tap meant for the sheet
-   * underneath it.
+   * on the same layer above the sheet.
+   *
+   * It does take pointer events, and briefly did not. `pointer-events: none`
+   * looked right - it is a label, not a control - but it hands the pointer to
+   * whatever lies beneath, which here is Sheet Only's draggable bar: hovering
+   * the strip produced a grab hand that could not grab anything, and the
+   * tooltips could never fire. So it takes the pointer and says plainly that
+   * there is nothing to drag.
    */
   position: absolute;
   top: 6px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  pointer-events: none;
+  cursor: default;
   flex: 0 0 auto;
   align-self: center;
   display: flex;
@@ -1982,4 +1987,11 @@ span.inperson-icon svg {
 .inperson-note.error {
   border-left-color: #8B0000;
   background: #fff5f5;
+}
+
+/* The two chips carry a tooltip, so they may show a pointer's interest even
+   though there is nothing to click. */
+.inperson-clock-chip,
+.inperson-clock-season {
+  cursor: help;
 }
