@@ -67,7 +67,7 @@ Technischem.
 
 ## Danach
 
-In `F:\KI-Agenten-Workspace\Ninjos-Forge\src\data\modules.js` beim Eintrag `inperson-tools`
+In `F:\KI-Agenten-Workspace\Webapps\Ninjos-Forge\src\data\modules.js` beim Eintrag `inperson-tools`
 `foundryUrl` auf `https://foundryvtt.com/packages/ninjos-inperson-tools` setzen und in
 `src/content/inperson-tools.md` den Schlusssatz des Abschnitts *Installation* streichen, der
 sagt, das Modul stehe noch nicht im Katalog.

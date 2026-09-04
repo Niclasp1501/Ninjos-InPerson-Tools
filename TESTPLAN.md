@@ -17,7 +17,7 @@ Server: `foundry-testv14` (198 Module, `test`-Welt, lib-wrapper vorhanden).
 Produktion bleibt außen vor, bis Stufe 6 durch ist.
 
 ```powershell
-cd "F:\KI-Agenten-Workspace\Ninjos-InPerson-Tools"
+cd "F:\KI-Agenten-Workspace\Foundry-Module\Ninjos-InPerson-Tools"
 .\tools\deploy-inperson.ps1 -Target testv14 -DryRun
 .\tools\deploy-inperson.ps1 -Target testv14
 ```
