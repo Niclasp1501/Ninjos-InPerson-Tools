@@ -197,8 +197,55 @@ async function openPanel({ reason = "unknown" } = {}) {
   if (app) {
     popoutRef = app;
     attachCloseListener(app);
-  } else {
-    console.warn("In-Person | actor directory popout did not open", { reason });
+    setPanelOpen(true);
+    return;
+  }
+
+  // Still nothing. Build the popout ourselves.
+  const own = await buildPopout(directory);
+  if (own) {
+    popoutRef = own;
+    attachCloseListener(own);
+    setPanelOpen(true);
+    return;
+  }
+
+  console.warn("In-Person | actor directory popout did not open", { reason });
+}
+
+/**
+ * Open the directory as a popout without going through `renderPopout`.
+ *
+ * Because `renderPopout` cannot be relied on to do it. Monks Little Details
+ * wraps `ActorDirectory.prototype.renderPopout` and, with its "open-actor"
+ * setting on, opens the user's own character sheet instead - returning nothing
+ * and never calling through (monks-little-details.js:293). For a player with an
+ * assigned character in Sheet Only that sheet is already the only thing on
+ * screen, so the button appeared to do nothing at all.
+ *
+ * That is a fair thing for them to do to the sidebar tab, where clicking
+ * "Actors" plausibly means "my character". It is not what our button means: it
+ * says Akteure and it has to show the directory. So when the polite route comes
+ * back empty we do what core's `renderPopout` does (sidebar-tab.mjs:140-153) -
+ * same options, same `sidebar-popout` class - and leave their setting alone.
+ *
+ * @param {Application} directory
+ * @returns {Promise<Application|null>}
+ */
+async function buildPopout(directory) {
+  try {
+    const options = foundry.utils.mergeObject(directory.options, {
+      id: `${directory.tabName ?? "actors"}-popout`,
+      window: { frame: true, positioned: true, minimizable: true, controls: [] }
+    }, { inplace: false });
+    options.classes = [...(options.classes ?? []), "sidebar-popout"];
+
+    const popout = new directory.constructor(options);
+    await popout.render({ force: true });
+    return domNodeOf(popout) ? popout : null;
+  } catch (error) {
+    console.error("In-Person | building the actor directory popout failed", error);
+    return null;
   }
 }
 

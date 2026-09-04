@@ -1,5 +1,21 @@
 # Changelog
 
+## 14.2611.23 — 2026-09-05
+
+**Der Akteure-Knopf öffnete das Verzeichnis nicht mehr.** Die Ursache liegt
+nicht bei uns, landet aber auf unserem Knopf: Monks Little Details umwickelt
+`ActorDirectory.prototype.renderPopout` und öffnet bei eingeschalteter Option
+„open-actor" stattdessen das eigene Charakterblatt — ohne das Original
+aufzurufen und ohne etwas zurückzugeben (dessen Zeile 293). Für einen Spieler
+mit zugewiesenem Charakter im Sheet-Only-Modus ist dieses Blatt ohnehin das
+Einzige auf dem Schirm. Also passierte sichtbar nichts.
+
+Für deren Seitenleisten-Reiter ist das eine vertretbare Idee — ein Klick auf
+„Akteure" heißt dort plausibel „mein Charakter". Für unseren Knopf nicht: Er
+heißt Akteure und muss das Verzeichnis zeigen. Kommt der höfliche Weg leer
+zurück, bauen wir das Fenster jetzt selbst, genau wie Foundrys eigener Code es
+tut — und lassen deren Einstellung in Ruhe.
+
 ## 14.2611.22 — 2026-09-05
 
 **Sheet Onlys Journal-Knopf sah aus, als täte er nichts.** Er tut etwas: Er
