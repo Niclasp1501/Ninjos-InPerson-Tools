@@ -211,3 +211,58 @@ Funktion.
 
 **Wer Item Piles einsetzt:** dessen `showTradeButton` abschalten, sonst stehen
 zwei Tauschknöpfe nebeneinander.
+
+---
+
+## Zeitleiste und Akteurspanel — der Durchlauf am Sheet-Only-Client
+
+Stand 14.2611.15. Beides ist bisher nur an einem **künstlich erzeugten**
+Container geprüft worden: Datenquelle, Einhängen, Wiederkehr nach Neuaufbau,
+keine Doppelung, Minutenbremse. Auf einem Client, der wirklich im
+Sheet-Only-Modus läuft, hat es **noch nie jemand gesehen.** Genau darum geht es
+hier.
+
+Gebraucht wird ein Fenster, das tatsächlich in diesem Modus ist — ein zweites
+Browserfenster mit einem Spielerkonto oder das Tablet.
+
+### Die Leiste
+
+| # | Handlung | Erwartung |
+|---|---|---|
+| 1 | Sheet-Only-Client öffnen | Über dem Charakterblatt eine schmale Leiste mit Datum und Uhrzeit |
+| 2 | Höhe ansehen | Etwa 33 Pixel. **Nicht** über die ganze Fensterhöhe gezogen — siehe unten |
+| 3 | Ein paar Minuten Spielzeit weiterdrehen | Die Zeit ändert sich; die Leiste wird nicht bei jedem Tick neu gezeichnet, sondern erst beim Minutenwechsel |
+| 4 | Wetter und Jahreszeit | Zwei Chips rechts. Der Jahreszeit-Chip muss auch dann gefüllt sein, wenn Calendaria **aus** ist und Foundrys eigener Kalender läuft |
+| 5 | Charakter wechseln (Sheet Onlys Akteursliste) | Leiste ist danach wieder da, **genau einmal** |
+| 6 | Einstellung „Datum und Uhrzeit im Charakterblatt" aus | Leiste verschwindet, ohne Neuladen |
+
+Schritt 2 ist der wichtige. Sheet Only baut seinen Behälter als Flex-Zeile über
+die volle Fensterhöhe, und ein Flex-Kind wird darin standardmäßig auf diese Höhe
+gestreckt: gemessen **1103 statt 33 Pixel**, ein dunkler Balken über das ganze
+Blatt. Keine Regel — weder unsere noch Sheet Onlys — nennt dabei unsere Klasse;
+es ist reines Flex-Verhalten. Behoben mit `flex: 0 0 auto` und
+`align-self: center`. Wenn der Balken je wiederkommt, ist das die Stelle.
+
+Schritt 4 ebenso: Kalender schreiben Jahreszeiten in drei verschiedenen Formen
+auf (`components.season` als fertiger Index, `dayStart`/`dayEnd` als Tag im Jahr
+bei Calendaria, `monthStart`/`monthEnd` bei `CalendarData5e`). Vorher war nur die
+mittlere behandelt, und unter Foundrys eigenem Kalender blieb der Chip leer.
+
+### Das Akteurspanel
+
+Dafür muss die Welteinstellung **„Akteursauswahl als Seitenpanel"** einmal
+eingeschaltet werden; sie ist bewusst aus, weil sie einen Knopf eines fremden
+Moduls übernimmt.
+
+| # | Handlung | Erwartung |
+|---|---|---|
+| 7 | Einstellung an, Sheet-Only-Client neu laden | Statt Sheet Onlys eigener Akteursliste ein angedocktes Verzeichnis |
+| 8 | Anderen Charakter wählen | Blatt wechselt, Panel bleibt stehen |
+| 9 | Einstellung wieder aus | Sheet Onlys eigene Liste ist zurück, ohne Reste von uns |
+
+### Wenn etwas nicht erscheint
+
+Sheet Only blendet die Oberfläche **nicht teilweise, sondern ganz** aus —
+Foundrys Meldungsbereich eingeschlossen (`$("#notifications").addClass(
+"sheet-only-hide")`, dessen `index.js:902`). Eine Fehlermeldung siehst du auf so
+einem Client also nicht. Für die Konsole ist das egal: `F12` zeigt sie weiterhin.
