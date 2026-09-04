@@ -1,5 +1,19 @@
 # Changelog
 
+## 14.2611.17 — 2026-09-05
+
+**Die Zeitleiste war da, nur nicht zu sehen.** Sheet Only hängt in seinen
+Container ausschließlich die Akteursliste und die eigene Knopfleiste; das
+Charakterblatt ist eine gewöhnliche Foundry-Anwendung am `body` und wird darüber
+gemalt. Eine Leiste, die im Flex-Fluss dieses Containers bleibt, landet, wo Flex
+sie hinlegt — auf einem echten Client gemessen: links 1001, oben 538 eines
+2333×1104-Fensters. Mitten auf dem Schirm und hinter dem Blatt. Vorhanden, 34
+Pixel hoch, in jeder Hinsicht richtig, außer dass niemand sie sehen konnte.
+
+Sie steht jetzt oben in der Mitte, auf derselben Ebene wie Sheet Onlys eigene
+Knöpfe, und nimmt keine Fingertipps an — sie ist eine Beschriftung, kein
+Bedienelement, und darf dem Blatt darunter nichts wegnehmen.
+
 ## 14.2611.16 — 2026-09-05
 
 **Die Zeitleiste zeigte den ganzen Abend ein falsches Datum.** Auf dem ersten

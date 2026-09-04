@@ -1169,19 +1169,39 @@ body:has(.actors-sidebar.sidebar-popout:has(.window-content > *)) #inperson-so-a
    on any table that has no calendar module at all. */
 
 .inperson-clock {
-  /* Sheet Only lays its container out as a flex row over the full window
-     height, and the default `align-items: normal` stretches every child to
-     match. Measured before this line existed: the strip came out 1103px tall
-     instead of 33, a dark slab across the whole sheet. Nothing in our own
-     rules caused it and nothing in theirs names us - it is simply what a flex
-     child does when nobody says otherwise. So we say otherwise. */
+  /*
+   * Taken out of the flex row entirely, and that is the whole point.
+   *
+   * Sheet Only's container holds only the actor list and its own button bar
+   * (its index.js:888) - the character sheet is an ordinary Foundry application
+   * on `body`, painted over the container. A strip left in the flex row lands
+   * wherever flex puts it: measured on a real client at left 1001, top 538 of a
+   * 2333x1104 window, dead centre and behind the sheet. Present in the DOM, 34
+   * pixels tall, correct in every respect except that nobody could see it.
+   *
+   * Before that it had the opposite fault - `align-items: normal` stretched it
+   * to 1103px, a dark slab across the sheet. Positioning it absolutely settles
+   * both at once: a positioned element is not stretched by its flex parent
+   * either. `flex`/`align-self` stay as a belt in case the position is ever
+   * lifted again.
+   *
+   * z-index 1000 matches Sheet Only's own bar, so the two pieces of chrome sit
+   * on the same layer above the sheet. `pointer-events: none` because it is a
+   * label, not a control - it must never swallow a tap meant for the sheet
+   * underneath it.
+   */
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  pointer-events: none;
   flex: 0 0 auto;
   align-self: center;
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  z-index: 70;
-  margin: 0.35rem auto 0;
+  margin: 0;
   border: 1px solid var(--atlas-border, rgb(255 255 255 / 12%));
   border-radius: 0.75rem;
   padding: 0.3rem 0.75rem;
