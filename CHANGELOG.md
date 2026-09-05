@@ -1,5 +1,21 @@
 # Changelog
 
+## 14.2611.42 — 2026-09-06
+
+**Hochformat: Leisten unten.** Hochkant sitzen die Attribute im Kopf des
+Blatts genau dort, wo die Leisten quer noch über dem Banner schweben —
+gemessen: die Knopfleiste lag auf STÄ, GES und KON. Im Hochformat stehen
+beide jetzt unten in der Mitte, die Zeitleiste über der Knopfleiste; beim
+Drehen ordnen sie sich neu. Gezogene Plätze gewinnen weiterhin.
+
+**Das Blatt kommt wieder, wenn es geschlossen wird.** Escape schließt in
+Foundry das oberste Fenster — in dieser Ansicht das Blatt, und der Schirm
+war schwarz. Jetzt öffnet es sich sofort wieder; Escape im Lautstärkefeld
+bleibt beim Feld.
+
+**Einstellungsseite entschlackt.** Drei Erklärkästen sind raus, die Texte
+stecken hinter (i); die Kontenliste ist das Erste, was man sieht.
+
 ## 14.2611.41 — 2026-09-06
 
 **Lautstärke in der Leiste.** Ein Knopf in der zweiten Gruppe öffnet drei

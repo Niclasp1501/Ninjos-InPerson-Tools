@@ -1,46 +1,32 @@
 {{!--
-  Ein Schalter und eine Liste. Wer angehakt ist, sieht nur sein Blatt - sobald
-  der Schalter oben an ist. Spielleiter fehlen absichtlich.
+  Ein Schalter, die Liste, drei Zeilen Verhalten. Die Erklärungen stecken in
+  Tooltips (i) - sichtbar war das eine Textwand, in der die Konten untergingen.
 --}}
-<section class="inperson-body">
+<section class="inperson-body inperson-sv-settings">
 
-  <div class="inperson-scene">
-    <div class="inperson-scene-head">
-      <h3><i class="fa-solid fa-tablet-screen-button"></i> {{localize "INPERSON.SheetView.Group"}}</h3>
-    </div>
-    <p class="inperson-hint">
-      <i class="fa-solid fa-circle-info"></i>
-      {{localize "INPERSON.SheetView.GroupHint"}}
-    </p>
-  </div>
-
-  <label class="inperson-pick-row">
+  <label class="inperson-pick-row {{#if enabled}}on{{/if}}">
     <input type="checkbox" name="enabled" {{checked enabled}}>
     <span class="inperson-pick-name">
       {{localize "INPERSON.SheetView.Name"}}
       <em>{{localize "INPERSON.SheetView.EnabledHint"}}</em>
     </span>
+    <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize "INPERSON.SheetView.GroupHint"}}"></i>
   </label>
 
-  <div class="inperson-scene">
-    <div class="inperson-scene-head">
-      <h3><i class="fa-solid fa-users"></i> {{localize "INPERSON.SheetView.Who"}}</h3>
-    </div>
-    <p class="inperson-hint">
-      <i class="fa-solid fa-circle-info"></i>
-      {{localize "INPERSON.SheetView.WhoListHint"}}
-    </p>
-  </div>
+  <h3 class="inperson-sv-sub">
+    <i class="fa-solid fa-users"></i> {{localize "INPERSON.SheetView.Who"}}
+    <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize "INPERSON.SheetView.WhoListHint"}}"></i>
+  </h3>
 
   {{#if hasUsers}}
-    <div class="inperson-partner-list">
+    <div class="inperson-partner-list inperson-sv-users">
       {{#each users}}
         <label class="inperson-pick-row {{#if this.checked}}on{{/if}}">
           <input type="checkbox" name="user.{{this.id}}" {{checked this.checked}}>
           <img class="inperson-portrait" src="{{this.actorImg}}" alt="">
           <span class="inperson-pick-name">
             {{this.name}}
-            <em>{{#if this.actorName}}{{this.actorName}}{{else}}{{localize "INPERSON.Trade.Why.none"}}{{/if}}</em>
+            {{#if this.actorName}}<em>{{this.actorName}}</em>{{/if}}
           </span>
           {{#if this.online}}<span class="inperson-tag ok">{{localize "INPERSON.SheetView.Online"}}</span>{{/if}}
         </label>
@@ -50,35 +36,27 @@
     <p class="inperson-hint">{{localize "INPERSON.SheetView.NoUsers"}}</p>
   {{/if}}
 
-  <div class="inperson-scene">
-    <div class="inperson-scene-head">
-      <h3><i class="fa-solid fa-sliders"></i> {{localize "INPERSON.SheetView.Behaviour"}}</h3>
-    </div>
-  </div>
+  <h3 class="inperson-sv-sub"><i class="fa-solid fa-sliders"></i> {{localize "INPERSON.SheetView.Behaviour"}}</h3>
 
-  <label class="inperson-pick-row">
-    <input type="checkbox" name="noCanvas" {{checked noCanvas}}>
-    <span class="inperson-pick-name">
-      {{localize "INPERSON.SheetView.NoCanvas"}}
-      <em>{{localize "INPERSON.SheetView.NoCanvasHint"}}</em>
-    </span>
-  </label>
+  <div class="inperson-sv-verhalten">
+    <label class="inperson-pick-row {{#if noCanvas}}on{{/if}}">
+      <input type="checkbox" name="noCanvas" {{checked noCanvas}}>
+      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.NoCanvas"}}</span>
+      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize "INPERSON.SheetView.NoCanvasHint"}}"></i>
+    </label>
 
-  <label class="inperson-pick-row">
-    <input type="checkbox" name="chatOnUse" {{checked chatOnUse}}>
-    <span class="inperson-pick-name">
-      {{localize "INPERSON.SheetView.ChatOnUse"}}
-      <em>{{localize "INPERSON.SheetView.ChatOnUseHint"}}</em>
-    </span>
-  </label>
+    <label class="inperson-pick-row {{#if chatOnUse}}on{{/if}}">
+      <input type="checkbox" name="chatOnUse" {{checked chatOnUse}}>
+      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ChatOnUse"}}</span>
+      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize "INPERSON.SheetView.ChatOnUseHint"}}"></i>
+    </label>
 
-  <div class="form-group">
-    <label>{{localize "INPERSON.SheetView.HoldMs"}}</label>
-    <div class="form-fields">
-      <input type="number" name="holdMs" value="{{holdMs}}" min="150" max="1500" step="50">
+    <label class="inperson-pick-row">
+      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.HoldMs"}}</span>
+      <input type="number" name="holdMs" value="{{holdMs}}" min="150" max="1500" step="50" class="inperson-sv-zahl">
       <span class="units">ms</span>
-    </div>
-    <p class="hint">{{localize "INPERSON.SheetView.HoldMsHint"}}</p>
+      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize "INPERSON.SheetView.HoldMsHint"}}"></i>
+    </label>
   </div>
 
   <footer class="inperson-foot">

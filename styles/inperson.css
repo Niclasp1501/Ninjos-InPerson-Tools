@@ -2404,3 +2404,63 @@ body.inperson-sheetview .sidebar-popout {
   border-left: 2px solid #D4AF37 !important;
   z-index: 9999 !important;
 }
+
+/* ── Die Seite der Blattansicht ──────────────────────────────────────
+   Kurz gehalten: Die erste Fassung hatte drei Erklärkästen, und in der
+   Textwand waren die Konten - der eigentliche Inhalt - kaum zu finden. Die
+   Erklärungen stecken jetzt hinter (i). */
+.inperson-sv-settings .inperson-pick-row {
+  min-height: 46px;
+  cursor: pointer;
+}
+
+.inperson-sv-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--tm-text);
+  opacity: .85;
+}
+
+.inperson-sv-info {
+  flex: 0 0 auto;
+  margin-left: auto;
+  font-size: 14px;
+  opacity: .55;
+  cursor: help;
+}
+
+.inperson-sv-info:hover {
+  opacity: 1;
+}
+
+.inperson-sv-users {
+  max-height: 50vh;
+}
+
+.inperson-sv-users .inperson-portrait {
+  width: 36px;
+  height: 36px;
+}
+
+.inperson-sv-verhalten {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inperson-sv-zahl {
+  width: 84px;
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+.inperson-sv-settings .units {
+  font-size: 12px;
+  opacity: .7;
+}

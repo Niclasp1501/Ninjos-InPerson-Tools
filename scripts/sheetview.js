@@ -264,10 +264,33 @@ function uhrBauen() {
 function leisteUnterDieUhr() {
   const bar = document.getElementById(BAR_ID);
   const uhr = document.getElementById(UHR_ID);
-  if (!bar || !uhr) return;
-  if (localStorage.getItem(PLATZ_KEY)) return;   // gezogen - Finger weg
-  const u = uhr.getBoundingClientRect();
-  bar.style.top = `${Math.round(u.bottom + 12)}px`;
+  if (!bar) return;
+
+  // Hochkant sitzen die Attribute im Kopf des Blatts genau dort, wo die
+  // Leisten quer noch über dem Banner schweben - gemessen an 804 × 1105: die
+  // Knopfleiste lag auf STÄ, GES und KON. Also unten, wo das Blatt nur noch
+  // ausläuft; die Zeitleiste direkt darüber. Gezogene Plätze gewinnen.
+  const hochkant = window.innerHeight > window.innerWidth;
+  const unten = (element, abstand) => {
+    element.style.top = "auto";
+    element.style.bottom = `calc(env(safe-area-inset-bottom, 0px) + ${abstand}px)`;
+  };
+  const oben = element => {
+    element.style.removeProperty("top");
+    element.style.removeProperty("bottom");
+  };
+
+  if (!localStorage.getItem(PLATZ_KEY)) {
+    if (hochkant) unten(bar, 12);
+    else {
+      oben(bar);
+      if (uhr) bar.style.top = `${Math.round(uhr.getBoundingClientRect().bottom + 12)}px`;
+    }
+  }
+  if (uhr && !localStorage.getItem(UHR_PLATZ_KEY)) {
+    if (hochkant) unten(uhr, 12 + bar.offsetHeight + 12);
+    else oben(uhr);
+  }
 }
 
 /* ── Verschieben ─────────────────────────────────────────────────── */
@@ -512,11 +535,16 @@ function lautstaerke() {
   const breite = feld.offsetWidth;
   const links = Math.min(window.innerWidth - breite - 8, Math.max(8, b.left + b.width / 2 - breite / 2));
   feld.style.left = `${Math.round(links)}px`;
-  feld.style.top = `${Math.round(b.bottom + 8)}px`;
+  // Unter der Leiste, wenn dort Platz ist; sonst darüber (Leiste steht unten).
+  const passtUnten = b.bottom + 8 + feld.offsetHeight < window.innerHeight;
+  feld.style.top = `${Math.round(passtUnten ? b.bottom + 8 : b.top - 8 - feld.offsetHeight)}px`;
 
   const zu = event => {
     if (event.type === "keydown" && event.key !== "Escape") return;
     if (event.type === "pointerdown" && (feld.contains(event.target) || bar.contains(event.target))) return;
+    // Escape gehört uns: Foundry würde damit sonst das oberste Fenster
+    // schließen - und das ist in dieser Ansicht das Blatt.
+    if (event.type === "keydown") event.stopPropagation();
     feld.remove();
     document.removeEventListener("pointerdown", zu, true);
     document.removeEventListener("keydown", zu, true);
@@ -768,6 +796,8 @@ async function starten() {
   leisteBauen();
   uhrBauen();
   leisteUnterDieUhr();
+  // Das Tablet wird gedreht: neu einordnen, sofern niemand gezogen hat.
+  window.addEventListener("resize", leisteUnterDieUhr);
   await blattZeigen();
   console.log(`${MODULE_ID} | Blattansicht läuft (Beta)`);
 }
@@ -785,6 +815,7 @@ async function beenden() {
   geoeffnet.clear();
   removeShells(".sidebar-popout", { onlyGhost: false });
   document.body.classList.remove(BODY_CLASS);
+  window.removeEventListener("resize", leisteUnterDieUhr);
   document.getElementById(BAR_ID)?.remove();
   document.getElementById(UHR_ID)?.remove();
   document.getElementById(LAUT_ID)?.remove();
@@ -817,6 +848,18 @@ export function installSheetView() {
   syncSheetView();
 
   Hooks.on("createChatMessage", message => chatBeiBenutzung(message));
+
+  // Das Blatt ist die Bühne; ohne es ist der Schirm schwarz. Foundry schließt
+  // es auf Escape, mancher Modulknopf schließt es auch - dann kommt es wieder,
+  // sobald das Schließen durch ist. Gemessen: Escape im Lautstärkefeld nahm
+  // das Blatt gleich mit.
+  const wiederZeigen = app => {
+    if (!laufend) return;
+    if (app?.actor?.id !== characterOf(game.user)?.id && app?.document?.id !== characterOf(game.user)?.id) return;
+    setTimeout(() => { if (laufend) blattZeigen(); }, 50);
+  };
+  Hooks.on("closeActorSheet", wiederZeigen);
+  Hooks.on("closeApplicationV2", wiederZeigen);
 
   // Das Blatt wird bei jedem Akteurswechsel neu gezeichnet und verliert dabei
   // unsere Klasse.

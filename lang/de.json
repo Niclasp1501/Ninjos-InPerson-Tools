@@ -301,7 +301,6 @@
   "INPERSON.SheetView.MenuLabel": "Blattansicht einrichten",
   "INPERSON.SheetView.MenuHint": "Welche Konten nur ihr Charakterblatt sehen, ob deren Spielfeld abgeschaltet wird, und wie sich die Leiste verhält. Spielleiter sind nie betroffen.",
   "INPERSON.SheetView.Title": "Blattansicht (Beta)",
-  "INPERSON.SheetView.Group": "Der Bildschirm gehört dem Charakterblatt",
   "INPERSON.SheetView.GroupHint": "Foundrys Oberfläche verschwindet, das Blatt füllt den Schirm, eine kleine Leiste hält Charaktere, Chat, Notizen und Tausch bereit. Für Tablets am Tisch. Beta: erst einschalten, wenn du dabei bist.",
   "INPERSON.SheetView.EnabledHint": "Der Hauptschalter. Aus heißt: niemand bekommt die Ansicht, egal wer unten angehakt ist.",
   "INPERSON.SheetView.Who": "Wer sie bekommt",

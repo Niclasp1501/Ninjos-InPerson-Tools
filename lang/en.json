@@ -301,7 +301,6 @@
   "INPERSON.SheetView.MenuLabel": "Set up the sheet view",
   "INPERSON.SheetView.MenuHint": "Which accounts see only their character sheet, whether their canvas is switched off, and how the bar behaves. Gamemasters are never affected.",
   "INPERSON.SheetView.Title": "Sheet view (beta)",
-  "INPERSON.SheetView.Group": "The screen belongs to the character sheet",
   "INPERSON.SheetView.GroupHint": "Foundry's interface disappears, the sheet fills the screen, and a small bar keeps characters, chat, journal and trading at hand. For tablets at the table. Beta: switch it on while you are there.",
   "INPERSON.SheetView.EnabledHint": "The master switch. Off means nobody gets the view, whoever is ticked below.",
   "INPERSON.SheetView.Who": "Who gets it",
