@@ -1132,23 +1132,27 @@ export function installSheetView() {
   Hooks.on("closeActorSheet", wiederZeigen);
   Hooks.on("closeApplicationV2", wiederZeigen);
 
-  // Über das eigene Kreuz geschlossen: Das DOM-Ereignis "close" kam nicht
-  // verlässlich, der Rahmen blieb als Geist stehen - über unsere Knöpfe nie,
-  // weil dort hideShells vor dem Schließen läuft. Also dasselbe hier: sofort
-  // unsichtbar, dann aufräumen, und was nach gut einer Sekunde noch steht,
-  // ist eine Leiche.
-  Hooks.on("closeApplicationV2", app => {
+  // Über das eigene Kreuz geschlossen. Gemessen: Nach dem Klick steht das
+  // Fenster eine volle Sekunde im Zustand "schließt" - Foundry wartet auf das
+  // Ende eines CSS-Übergangs, den unser festes Fenster nicht hat, und fällt
+  // erst nach 1000 ms auf einen Timeout zurück. Die close-Hooks feuern erst
+  // danach. Also wird der Klick selbst abgefangen, und das Fenster ist im
+  // selben Augenblick unsichtbar - wie über unsere Knöpfe.
+  document.addEventListener("click", event => {
     if (!laufend) return;
-    const el = app?.element;
-    if (!el?.classList?.contains("sidebar-popout")) return;
+    const kreuz = event.target?.closest?.(".sidebar-popout .header-control[data-action=close]");
+    const el = kreuz?.closest(".sidebar-popout");
+    if (!el) return;
     el.style.setProperty("display", "none", "important");
+    const app = foundry.applications.instances?.get(el.id)
+      ?? [...geoeffnet.values()].find(a => a?.element === el);
     for (const [name, a] of geoeffnet) if (a === app) geoeffnet.delete(name);
     const soll = offeneFlaeche ? KLASSEN[offeneFlaeche] : null;
     if (soll && el.classList.contains(soll)) offeneFlaeche = null;
     markieren();
-    queueSweep(".sidebar-popout", { reason: "closeApplicationV2", force: true });
+    queueSweep(".sidebar-popout", { reason: "Kreuz", force: true });
     setTimeout(() => { if (el.isConnected && isGhost(el)) el.remove(); }, 1200);
-  });
+  }, true);
 
   // Das Blatt wird bei jedem Akteurswechsel neu gezeichnet und verliert dabei
   // unsere Klasse.
