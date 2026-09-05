@@ -26,6 +26,7 @@ import { MODULE_ID, SETTINGS } from "./const.js";
 import { characterOf } from "./trade.js";
 import { openTrade } from "./trade-start.js";
 import { mountClockInto } from "./clock.js";
+import { queueSweep, removeShells } from "./shells.js";
 
 const BODY_CLASS = "inperson-sheetview";
 const BAR_ID = "inperson-sheetview-bar";
@@ -88,24 +89,30 @@ async function blattZeigen() {
  */
 const GRUPPEN = {
   haupt: [
-    { text: "INPERSON.SheetView.Who",   titel: "INPERSON.SheetView.WhoHint",   flaeche: "chars" },
-    { text: "INPERSON.SheetView.Chat",  titel: "INPERSON.SheetView.ChatHint",  flaeche: "chat" },
-    { text: "INPERSON.SheetView.Notes", titel: "INPERSON.SheetView.NotesHint", flaeche: "journal" },
-    { text: "INPERSON.SheetView.Trade", titel: "INPERSON.SheetView.TradeHint", tun: () => openTrade() }
+    { icon: "fa-users",        titel: "INPERSON.SheetView.WhoHint",   flaeche: "chars" },
+    { icon: "fa-comments",     titel: "INPERSON.SheetView.ChatHint",  flaeche: "chat" },
+    { icon: "fa-book-open",    titel: "INPERSON.SheetView.NotesHint", flaeche: "journal" },
+    { icon: "fa-right-left",   titel: "INPERSON.SheetView.TradeHint", tun: () => openTrade() }
   ],
   extra: [
-    { zeichen: "A−", titel: "INPERSON.SheetView.Smaller",    tun: () => zoomen(-0.1) },
-    { zeichen: "A+",       titel: "INPERSON.SheetView.Bigger",     tun: () => zoomen(0.1) },
-    { zeichen: "⛶",  titel: "INPERSON.SheetView.Fullscreen", tun: vollbild },
-    { zeichen: "⏻",  titel: "INPERSON.SheetView.LogOut",     tun: abmelden }
+    { icon: "fa-magnifying-glass-minus", titel: "INPERSON.SheetView.Smaller",    tun: () => zoomen(-0.1) },
+    { icon: "fa-magnifying-glass-plus",  titel: "INPERSON.SheetView.Bigger",     tun: () => zoomen(0.1) },
+    { icon: "fa-expand",                 titel: "INPERSON.SheetView.Fullscreen", tun: vollbild },
+    { icon: "fa-right-from-bracket",     titel: "INPERSON.SheetView.LogOut",     tun: abmelden }
   ]
 };
 
-/** Ein Knopf. `flaeche` ruft eine Fläche, `tun` macht sofort etwas. */
-function knopf({ text, titel, flaeche = null, tun = null }) {
+/**
+ * Ein Knopf: ein Zeichen, kein Wort.
+ *
+ * Wörter machen die Leiste breit und sind in acht Sprachen acht verschiedene
+ * Breiten. Das Zeichen bleibt gleich groß, der Name steht im Tooltip und in der
+ * Bedienhilfe — dort, wo ihn braucht, wer ihn braucht.
+ */
+function knopf({ icon, titel, flaeche = null, tun = null }) {
   const b = document.createElement("button");
   b.type = "button";
-  b.textContent = text;
+  b.innerHTML = `<i class="fa-solid ${icon}"></i>`;
   b.title = titel;
   b.setAttribute("aria-label", titel);
   if (flaeche) {
@@ -128,7 +135,7 @@ function gruppeZeichnen(bar) {
   reihe.replaceChildren();
   for (const k of GRUPPEN[gruppe]) {
     reihe.append(knopf({
-      text: k.zeichen ?? game.i18n.localize(k.text),
+      icon: k.icon,
       titel: game.i18n.localize(k.titel),
       flaeche: k.flaeche,
       tun: k.tun
@@ -151,7 +158,7 @@ function leisteBauen() {
   const wechsel = document.createElement("button");
   wechsel.type = "button";
   wechsel.className = "inperson-sv-wechsel";
-  wechsel.textContent = "☰";
+  wechsel.innerHTML = `<i class="fa-solid fa-bars"></i>`;
   wechsel.title = game.i18n.localize("INPERSON.SheetView.More");
   wechsel.setAttribute("aria-label", game.i18n.localize("INPERSON.SheetView.More"));
   wechsel.addEventListener("click", () => {
@@ -253,14 +260,24 @@ function ziehbarMachen(bar, key) {
   document.addEventListener("touchend", ende);
 }
 
-/** Setzen und dabei im Bild halten. */
+/**
+ * Setzen und dabei im Bild halten.
+ *
+ * `right` und `bottom` müssen mit weg. Das Stylesheet stellt die Uhrleiste über
+ * `right: 14px` an den rechten Rand; wer dann nur `left` setzt, hat beides
+ * gesetzt, und das Element wird gedehnt statt verschoben. Gemessen: 552 Pixel
+ * breit bei Position 1585 auf einem 2030 Pixel breiten Schirm — 107 Pixel
+ * hingen hinaus, obwohl hier geklemmt wird.
+ */
 function setzen(bar, x, y) {
+  bar.style.right = "auto";
+  bar.style.bottom = "auto";
+  bar.style.transform = "none";
   const r = bar.getBoundingClientRect();
   const maxX = Math.max(0, window.innerWidth - r.width);
   const maxY = Math.max(0, window.innerHeight - r.height);
   bar.style.left = `${Math.min(maxX, Math.max(0, x))}px`;
   bar.style.top = `${Math.min(maxY, Math.max(0, y))}px`;
-  bar.style.transform = "none";
 }
 
 /**
@@ -349,6 +366,15 @@ async function flaecheUmschalten(name) {
 
   offeneFlaeche = name;
   markieren();
+
+  // Wenn der Spieler das Fenster über dessen eigenes Kreuz schließt, erfahren
+  // wir es nur hier.
+  const node = popout.element;
+  node?.addEventListener?.("close", () => {
+    offeneFlaeche = null;
+    queueSweep(".sidebar-popout", { reason: "vom Spieler geschlossen", force: true });
+    markieren();
+  }, { once: true });
 }
 
 /**
@@ -389,6 +415,10 @@ async function flaecheSchliessen() {
     if (app?.close) await app.close();
     else node.remove();
   }
+  // Und danach die Leichen. Foundry lässt die Hülle stehen — siehe shells.js;
+  // ohne das bleibt ein leerer Rahmen am Rand kleben und der Knopf glaubt
+  // weiterhin, die Fläche sei offen.
+  queueSweep(".sidebar-popout", { reason: "Fläche geschlossen", force: true });
   markieren();
 }
 
@@ -415,6 +445,7 @@ async function beenden() {
   if (!laufend) return;
   laufend = false;
   await flaecheSchliessen();
+  removeShells(".sidebar-popout", { onlyGhost: false });
   document.body.classList.remove(BODY_CLASS);
   document.getElementById(BAR_ID)?.remove();
   document.getElementById(UHR_ID)?.remove();

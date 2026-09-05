@@ -2106,9 +2106,12 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
  */
 .inperson-sheetview-bar {
   position: fixed;
-  top: env(safe-area-inset-top, 0px);
-  left: 50%;
-  transform: translateX(-50%);
+  /* Nicht ganz oben und nicht mittig: Dort sitzt bei den meisten Blättern das
+     Banner mit dem Namen, und die Zeitleiste stand direkt darunter, sodass die
+     beiden wie ein Block aussahen. Links oben mit Abstand, und wer es anders
+     will, zieht sie hin. */
+  top: calc(env(safe-area-inset-top, 0px) + 10px);
+  left: 14px;
   /* Über dem Blatt (20), unter den Flächen (9999) — sonst verdeckte sie den
      Rückweg aus dem Chat. */
   z-index: 40;
@@ -2116,12 +2119,12 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
   align-items: center;
   gap: 4px;
   padding: 4px;
-  background: rgb(244 241 234 / 62%);
-  backdrop-filter: blur(6px);
+  background: rgb(244 241 234 / 58%);
+  backdrop-filter: blur(8px) saturate(1.1);
   color: #1a1a1a;
-  border: 1px solid rgb(212 175 55 / 70%);
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgb(0 0 0 / 25%);
+  border: 1px solid rgb(212 175 55 / 65%);
+  border-radius: 26px;
+  box-shadow: 0 2px 12px rgb(0 0 0 / 22%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   /* Beim langen Druck soll das Gerät nicht scrollen oder Text markieren. */
   touch-action: none;
@@ -2144,15 +2147,26 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
 
 .inperson-sheetview-bar button {
   flex: none;
-  min-width: 46px;
-  min-height: 44px;
-  padding: 0 8px;
-  border: 1px solid rgb(220 214 204 / 70%);
-  border-radius: 4px;
-  background: rgb(255 255 255 / 70%);
-  color: #1a1a1a;
-  font: 600 14px/1 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgb(220 214 204 / 60%);
+  border-radius: 6px;
+  background: rgb(255 255 255 / 55%);
+  color: #5d1414;
+  font-size: 17px;
+  line-height: 1;
   cursor: pointer;
+  transition: background-color .12s, color .12s, border-color .12s;
+}
+
+.inperson-sheetview-bar button:hover {
+  background: rgb(255 255 255 / 90%);
+  border-color: rgb(212 175 55 / 90%);
+  color: #8B0000;
 }
 
 .inperson-sheetview-bar button[aria-pressed="true"] {
@@ -2162,19 +2176,38 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
 }
 
 /* Der Umschalter setzt sich ab: er wechselt die Gruppe, er tut nichts im Spiel. */
+/* Der Umschalter setzt sich ab: er wechselt die Gruppe, er tut nichts im Spiel.
+   Deshalb steht er hinter einem Trennstrich und trägt die Modulfarbe. */
 .inperson-sv-wechsel {
-  background: rgb(139 0 0 / 12%) !important;
-  border-color: rgb(139 0 0 / 40%) !important;
-  font-size: 18px !important;
+  margin-left: 4px;
+  background: rgb(139 0 0 / 88%) !important;
+  border-color: rgb(139 0 0) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 0 0 1px rgb(212 175 55 / 45%);
+}
+
+.inperson-sv-wechsel:hover {
+  background: #8B0000 !important;
+  color: #ffffff !important;
+}
+
+.inperson-sv-reihe::after {
+  content: "";
+  width: 1px;
+  height: 26px;
+  margin-left: 4px;
+  background: rgb(139 0 0 / 25%);
 }
 
 /* Die Zeitleiste steht für sich, ebenfalls verschiebbar. Sie wird angeschaut,
    die Knöpfe werden bedient — zwei Dinge, zwei Elemente. */
 .inperson-sheetview-uhr {
   position: fixed;
-  top: calc(env(safe-area-inset-top, 0px) + 56px);
-  left: 50%;
-  transform: translateX(-50%);
+  /* Rechts oben, gegenüber der Knopfleiste. Unter ihr sahen die beiden wie ein
+     einziger Block aus, was sie nicht sind. */
+  top: calc(env(safe-area-inset-top, 0px) + 10px);
+  right: 14px;
+  left: auto;
   z-index: 39;
   touch-action: none;
   user-select: none;

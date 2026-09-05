@@ -1,5 +1,26 @@
 # Changelog
 
+## 14.2611.29 — 2026-09-05
+
+**Symbole statt Wörter** in der Leiste der Blattansicht. Wörter machen sie breit
+und sind in jeder Sprache anders lang; das Symbol bleibt gleich groß, der Name
+steht im Tooltip und in der Bedienhilfe. Dazu ein runder, durchscheinender
+Rahmen und ein abgesetzter Umschalter in Modulrot.
+
+**Die Leiste klebt nicht mehr an der Zeitleiste.** Sie stand mittig oben, die
+Zeit direkt darunter — zwei Dinge, die wie ein Block aussahen. Jetzt links oben
+und rechts oben, mit Abstand.
+
+**Das Geisterfenster ist weg.** Wer eine Fläche öffnete und schloss, ließ einen
+leeren Rahmen zurück — dasselbe Problem, das das Akteurspanel schon einmal
+hatte. Dessen Lösung lag dort vergraben; sie steht jetzt in `shells.js`, und
+beide benutzen sie. Foundry räumt die Hülle zu keinem festen Zeitpunkt weg,
+deshalb wird mehrfach nachgesehen.
+
+**Und ein Fehler beim Verschieben:** Wer `left` setzt, ohne `right` zu löschen,
+hat beides gesetzt — das Element wird gedehnt statt verschoben. Gemessen: 107
+Pixel hingen über den rechten Rand hinaus, obwohl der Code klemmt.
+
 ## 14.2611.28 — 2026-09-05
 
 **Zeitleiste und Knopfleiste sind getrennt.** Mit dem Himmelsbogen darin wurde

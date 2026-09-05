@@ -24,12 +24,12 @@
 
 import { MODULE_ID, SETTINGS } from "./const.js";
 import { mountButtonInSheetOnly, styleAsSheetOnlyButton } from "./sheet-only.js";
+import { queueSweep, removeShells as sweepShells } from "./shells.js";
 
 const POPOUT_SELECTOR = ".actors-sidebar.sidebar-popout";
 const BUTTON_ID = "inperson-so-actors-btn";
 const BODY_CLASS = "inperson-actor-panel-open";
 
-let sweepQueued = false;
 let popoutRef = null;
 
 /* ── The open/closed state the stylesheet reads ──────────────────── */
@@ -40,50 +40,26 @@ function setPanelOpen(isOpen) {
 
 /* ── Ghost shells ────────────────────────────────────────────────── */
 
+/*
+ * The machinery moved to shells.js when the sheet view turned out to open the
+ * same popouts and inherit the same fault. What stays here is the one part that
+ * is specific to a directory: a shell whose list is gone is a corpse even if it
+ * still has a `.window-content`.
+ */
+
+const alsoGhost = shell =>
+  !shell.querySelector(".directory, .directory-header, .directory-list, .directory-item");
+
 function popoutShells() {
   return Array.from(document.querySelectorAll(POPOUT_SELECTOR));
 }
 
-function isGhostShell(shell) {
-  if (!shell) return false;
-  const content = shell.querySelector(".window-content");
-  // A ghost reports itself: the header remains, the inner content is gone.
-  if (!content) return true;
-  if (content.childElementCount === 0) return true;
-  if (!shell.querySelector(".directory, .directory-header, .directory-list, .directory-item")) return true;
-  return false;
-}
-
 function removeShells({ onlyGhost = false } = {}) {
-  const shells = popoutShells();
-  for (const shell of shells) {
-    if (!onlyGhost || isGhostShell(shell)) shell.remove();
-  }
-  return shells.length;
+  return sweepShells(POPOUT_SELECTOR, { onlyGhost, alsoGhost });
 }
 
 function queueShellSweep(reason = "unknown", { onlyGhost = true, force = false } = {}) {
-  if (sweepQueued && !force) return;
-  sweepQueued = true;
-
-  const sweep = () => removeShells({ onlyGhost });
-
-  queueMicrotask(() => {
-    sweep();
-    sweepQueued = false;
-  });
-  setTimeout(sweep, 0);
-  setTimeout(sweep, 50);
-  setTimeout(sweep, 250);
-
-  let frames = 0;
-  const frameSweep = () => {
-    sweep();
-    if (++frames < 5) requestAnimationFrame(frameSweep);
-  };
-  requestAnimationFrame(frameSweep);
-
-  console.debug(`In-Person | actor directory shell sweep (${reason})`);
+  queueSweep(POPOUT_SELECTOR, { reason, onlyGhost, force, alsoGhost });
 }
 
 /* ── Finding the directory and its popout ────────────────────────── */
