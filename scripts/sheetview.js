@@ -32,6 +32,25 @@ const BODY_CLASS = "inperson-sheetview";
 const BAR_ID = "inperson-sheetview-bar";
 const UHR_ID = "inperson-sheetview-uhr";
 
+/**
+ * Jede Leiste hängt in einem Anker, und nur der Anker wird verschoben.
+ *
+ * Die Leisten selbst sind über `zoom` verkleinert, und ein gezoomtes Element
+ * misst sein left/top in eigenen Pixeln - Chrome und Safari nicht einmal
+ * gleich. Eine Zeit lang habe ich beim Setzen durch den Faktor geteilt; das
+ * war richtig gerechnet und trotzdem am Tablet ein Flattern. Der Anker ist
+ * nicht gezoomt: Was am Zeiger gemessen wird, wird ungerechnet geschrieben.
+ */
+const BAR_ANKER = `${BAR_ID}-anker`;
+const UHR_ANKER = `${UHR_ID}-anker`;
+
+function ankerBauen(id, klasse) {
+  const anker = document.createElement("div");
+  anker.id = id;
+  anker.className = `inperson-sv-anker ${klasse}`;
+  return anker;
+}
+
 /** Schriftgröße als Faktor, je Gerät gemerkt. */
 const ZOOM_KEY = `${MODULE_ID}.sheetviewZoom`;
 
@@ -228,10 +247,12 @@ function leisteBauen() {
   });
   bar.append(wechsel);
 
-  document.body.appendChild(bar);
+  const anker = ankerBauen(BAR_ANKER, "inperson-sv-anker-bar");
+  anker.append(bar);
+  document.body.appendChild(anker);
   gruppeZeichnen(bar);
-  ziehbarMachen(bar, PLATZ_KEY);
-  platzWiederherstellen(bar, PLATZ_KEY);
+  ziehbarMachen(anker, PLATZ_KEY);
+  platzWiederherstellen(anker, PLATZ_KEY);
 }
 
 /**
@@ -247,52 +268,56 @@ function uhrBauen() {
   const halter = document.createElement("div");
   halter.id = UHR_ID;
   halter.className = "inperson-sheetview-uhr";
-  document.body.appendChild(halter);
+  const anker = ankerBauen(UHR_ANKER, "inperson-sv-anker-uhr");
+  anker.append(halter);
+  document.body.appendChild(anker);
   mountClockInto(halter);
-  if (!halter.firstChild) return halter.remove();   // Leiste ist abgeschaltet
-  ziehbarMachen(halter, UHR_PLATZ_KEY);
-  platzWiederherstellen(halter, UHR_PLATZ_KEY);
+  if (!halter.firstChild) return anker.remove();   // Leiste ist abgeschaltet
+  ziehbarMachen(anker, UHR_PLATZ_KEY);
+  platzWiederherstellen(anker, UHR_PLATZ_KEY);
 }
 
 /**
- * Die Knopfleiste zum Start direkt unter die Zeitleiste setzen.
+ * Die beiden Leisten zum Start anordnen: die Zeit oben, die Knöpfe darunter.
  *
- * Nur die Höhe, und nur, wenn niemand sie schon woandershin gezogen hat: Die
- * Zeitleiste ist mit Kuppel deutlich höher als ohne, und ein fester Wert im
- * Stylesheet ließe die beiden im einen Fall überlappen und im anderen
- * auseinanderklaffen.
+ * Quer: Zeitleiste mit Kuppel am oberen Rand, die Knopfleiste direkt
+ * darunter - über dem Banner des Blatts, wo es sonst nichts zu bedienen gibt.
+ * Hochkant sitzen die Attribute im Kopf des Blatts genau dort (gemessen an
+ * 804 × 1105: die Knopfleiste lag auf STÄ, GES und KON), also unten: die
+ * Knöpfe am unteren Rand, die Zeitleiste darüber.
+ *
+ * Nur, wenn niemand die jeweilige Leiste woandershin gezogen hat. Alles in
+ * Bildschirmpixeln, weil nur die ungezoomten Anker gesetzt werden.
  */
 function leisteUnterDieUhr() {
-  const bar = document.getElementById(BAR_ID);
-  const uhr = document.getElementById(UHR_ID);
+  const bar = document.getElementById(BAR_ANKER);
+  const uhr = document.getElementById(UHR_ANKER);
   if (!bar) return;
-
-  // Hochkant sitzen die Attribute im Kopf des Blatts genau dort, wo die
-  // Leisten quer noch über dem Banner schweben - gemessen an 804 × 1105: die
-  // Knopfleiste lag auf STÄ, GES und KON. Also unten, wo das Blatt nur noch
-  // ausläuft; die Zeitleiste direkt darüber. Gezogene Plätze gewinnen.
-  const hochkant = window.innerHeight > window.innerWidth;
-  const unten = (element, abstand) => {
-    const faktor = Number(getComputedStyle(element).zoom) || 1;
-    element.style.top = "auto";
-    element.style.bottom = `calc((env(safe-area-inset-bottom, 0px) + ${abstand}px) / ${faktor})`;
-  };
+  const hochkant = lage() === "hoch";
+  const barFrei = !localStorage.getItem(lageKey(PLATZ_KEY));
+  const uhrFrei = !!uhr && !localStorage.getItem(lageKey(UHR_PLATZ_KEY));
   const oben = element => {
     element.style.removeProperty("top");
     element.style.removeProperty("bottom");
   };
 
-  if (!localStorage.getItem(lageKey(PLATZ_KEY))) {
-    if (hochkant) unten(bar, 12);
-    else {
-      oben(bar);
-      const faktor = Number(getComputedStyle(bar).zoom) || 1;
-      if (uhr) bar.style.top = `${Math.round((uhr.getBoundingClientRect().bottom + 12) / faktor)}px`;
+  if (hochkant) {
+    if (barFrei) {
+      bar.style.top = "auto";
+      bar.style.bottom = "calc(env(safe-area-inset-bottom, 0px) + 12px)";
     }
+    if (uhrFrei) {
+      const dach = window.innerHeight - bar.getBoundingClientRect().top;
+      uhr.style.top = "auto";
+      uhr.style.bottom = `${Math.round(dach + 12)}px`;
+    }
+    return;
   }
-  if (uhr && !localStorage.getItem(lageKey(UHR_PLATZ_KEY))) {
-    if (hochkant) unten(uhr, 12 + bar.getBoundingClientRect().height + 12);
-    else oben(uhr);
+
+  if (uhrFrei) oben(uhr);
+  if (barFrei) {
+    oben(bar);
+    if (uhr) bar.style.top = `${Math.round(uhr.getBoundingClientRect().bottom + 12)}px`;
   }
 }
 
@@ -356,7 +381,7 @@ function resetPruefen() {
 /** Plätze und Größen der aktuellen Lage anwenden - beim Start und beim Drehen. */
 function lageAnwenden({ behalten = false } = {}) {
   groesseAnwenden();
-  for (const [id, key] of [[BAR_ID, PLATZ_KEY], [UHR_ID, UHR_PLATZ_KEY]]) {
+  for (const [id, key] of [[BAR_ANKER, PLATZ_KEY], [UHR_ANKER, UHR_PLATZ_KEY]]) {
     const element = document.getElementById(id);
     if (!element) continue;
     for (const p of ["left", "top", "right", "bottom", "transform"]) element.style.removeProperty(p);
@@ -472,11 +497,8 @@ function setzen(bar, x, y) {
   const r = bar.getBoundingClientRect();
   const maxX = Math.max(0, window.innerWidth - r.width);
   const maxY = Math.max(0, window.innerHeight - r.height);
-  // Auf kleinen Schirmen sind die Leisten über `zoom` verkleinert, und ein
-  // gezoomtes Element misst sein left/top in eigenen, kleineren Pixeln.
-  const faktor = Number(getComputedStyle(bar).zoom) || 1;
-  bar.style.left = `${Math.min(maxX, Math.max(0, x)) / faktor}px`;
-  bar.style.top = `${Math.min(maxY, Math.max(0, y)) / faktor}px`;
+  bar.style.left = `${Math.round(Math.min(maxX, Math.max(0, x)))}px`;
+  bar.style.top = `${Math.round(Math.min(maxY, Math.max(0, y)))}px`;
 }
 
 /**
@@ -497,7 +519,7 @@ function platzWiederherstellen(bar, key, { behalten = false } = {}) {
   const vorher = bar.getBoundingClientRect();
   setzen(bar, platz.x, platz.y);
 
-  const andere = document.getElementById(bar.id === BAR_ID ? UHR_ID : BAR_ID);
+  const andere = document.getElementById(bar.id === BAR_ANKER ? UHR_ANKER : BAR_ANKER);
   // `behalten`: Beim Größenregler dürfen sich die beiden kurz berühren - wer
   // gerade schiebt, sieht es und zieht danach weiter. Nur beim Laden wird ein
   // überdeckender Platz verworfen.
@@ -580,16 +602,24 @@ const GROESSE_ID = "inperson-sv-groesse";
  * @param {string} id
  * @param {(feld: HTMLElement) => void} fuellen
  */
+function feldSchliessen(id) {
+  const feld = document.getElementById(id);
+  if (!feld) return false;
+  (feld.parentElement?.classList.contains("inperson-sv-anker") ? feld.parentElement : feld).remove();
+  return true;
+}
+
 function feldOeffnen(id, fuellen) {
-  const alt = document.getElementById(id);
-  if (alt) return alt.remove();
+  if (feldSchliessen(id)) return;
 
   const bar = document.getElementById(BAR_ID);
   const feld = document.createElement("div");
   feld.id = id;
   feld.className = "inperson-sv-feld";
   fuellen(feld);
-  document.body.append(feld);
+  const anker = ankerBauen(`${id}-anker`, "inperson-sv-anker-feld");
+  anker.append(feld);
+  document.body.append(anker);
 
   feldPlatzieren(feld);
 
@@ -597,7 +627,7 @@ function feldOeffnen(id, fuellen) {
     if (event.type === "keydown" && event.key !== "Escape") return;
     if (event.type === "pointerdown" && (feld.contains(event.target) || bar.contains(event.target))) return;
     if (event.type === "keydown") event.stopPropagation();
-    feld.remove();
+    feldSchliessen(id);
     document.removeEventListener("pointerdown", zu, true);
     document.removeEventListener("keydown", zu, true);
   };
@@ -614,20 +644,22 @@ function feldOeffnen(id, fuellen) {
  * umzoomt und das Feld dann neu hin muss.
  */
 function feldPlatzieren(feld) {
-  const bar = document.getElementById(BAR_ID);
-  if (!bar || !feld) return;
-  const faktor = Number(getComputedStyle(feld).zoom) || 1;
+  const bar = document.getElementById(BAR_ANKER);
+  const anker = feld?.parentElement;
+  if (!bar || !anker) return;
   const b = bar.getBoundingClientRect();
-  const f = feld.getBoundingClientRect();
+  const f = anker.getBoundingClientRect();
+  const u = document.getElementById(UHR_ANKER)?.getBoundingClientRect();
   const links = Math.min(window.innerWidth - f.width - 8, Math.max(8, b.left + b.width / 2 - f.width / 2));
-  // Steht die Zeitleiste direkt über der Knopfleiste (hochkant), gehört das
-  // Feld über beide - sonst läge es auf der Uhr.
-  const u = document.getElementById(UHR_ID)?.getBoundingClientRect();
-  const dach = u && u.top < b.top && u.bottom <= b.top + 24 ? u.top : b.top;
-  const passtUnten = b.bottom + 8 + f.height < window.innerHeight;
-  const oben = passtUnten ? b.bottom + 8 : dach - 8 - f.height;
-  feld.style.left = `${Math.round(links / faktor)}px`;
-  feld.style.top = `${Math.round(oben / faktor)}px`;
+  // Quer liegt die Zeitleiste unter den Knöpfen: dann unter beide. Hochkant
+  // liegt sie darunter am Rand und die Knöpfe stehen darüber: dann über die
+  // Knöpfe. Kurz: unter die Gruppe, wenn dort Platz ist, sonst darüber.
+  const boden = u && u.top >= b.bottom - 4 && u.top <= b.bottom + 90 ? u.bottom : b.bottom;
+  const dach = u && u.bottom <= b.top + 4 && u.bottom >= b.top - 90 ? u.top : b.top;
+  const passtUnten = boden + 8 + f.height < window.innerHeight;
+  const oben = passtUnten ? boden + 8 : dach - 8 - f.height;
+  anker.style.left = `${Math.round(links)}px`;
+  anker.style.top = `${Math.round(oben)}px`;
 }
 
 /** Eine Zeile Symbol + Name + Schieberegler. */
@@ -693,9 +725,11 @@ function groesseAnwenden() {
 
 function leistengroesse() {
   feldOeffnen(GROESSE_ID, feld => {
+    // Erst die Zeit, dann die Knöpfe - in der Reihenfolge, in der sie auf dem
+    // Schirm stehen.
     for (const [key, icon, titel] of [
-      [GROESSE_KEY,     "fa-grip",  "INPERSON.SheetView.BarSizeButtons"],
-      [GROESSE_UHR_KEY, "fa-clock", "INPERSON.SheetView.BarSizeClock"]
+      [GROESSE_UHR_KEY, "fa-clock", "INPERSON.SheetView.BarSizeClock"],
+      [GROESSE_KEY,     "fa-grip",  "INPERSON.SheetView.BarSizeButtons"]
     ]) feld.append(reglerZeile({
       icon, titel,
       min: 0.6, max: 1.4, step: 0.05,
@@ -970,7 +1004,8 @@ async function beenden() {
   // Leisten über der normalen Oberfläche, obwohl die Ansicht dort nie laufen
   // darf - wie auch immer sie dorthin kamen, das Aufräumen muss greifen, auch
   // wenn dieses Modul selbst glaubt, es sei nie gestartet worden.
-  const spuren = document.getElementById(BAR_ID) || document.getElementById(UHR_ID)
+  const spuren = document.getElementById(BAR_ANKER) || document.getElementById(UHR_ANKER)
+    || document.getElementById(BAR_ID) || document.getElementById(UHR_ID)
     || document.body.classList.contains(BODY_CLASS);
   if (!laufend && !spuren) return;
   laufend = false;
@@ -979,10 +1014,9 @@ async function beenden() {
   removeShells(".sidebar-popout", { onlyGhost: false });
   document.body.classList.remove(BODY_CLASS);
   window.removeEventListener("resize", beimDrehen);
-  document.getElementById(BAR_ID)?.remove();
-  document.getElementById(UHR_ID)?.remove();
-  document.getElementById(LAUT_ID)?.remove();
-  document.getElementById(GROESSE_ID)?.remove();
+  for (const id of [BAR_ANKER, UHR_ANKER, BAR_ID, UHR_ID]) document.getElementById(id)?.remove();
+  feldSchliessen(LAUT_ID);
+  feldSchliessen(GROESSE_ID);
   document.documentElement.style.removeProperty("--inperson-sv-leiste");
   document.documentElement.style.removeProperty("--inperson-sv-uhr");
   blattApp()?.element?.classList.remove("inperson-stage-sheet");

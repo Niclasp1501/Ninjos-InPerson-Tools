@@ -322,9 +322,31 @@ export function refreshClock({ force = false } = {}) {
  * Blattansicht hat einen Behälter, den sie selbst besitzt, und braucht keine
  * Beobachtung des DOM. Zweimal derselbe Aufbau, zwei Wege hinein.
  */
+/**
+ * Erklärkästen auch ohne Maus.
+ *
+ * Foundry zeigt sie bei pointerenter - ein Finger löst das zwar aus, aber
+ * je nach Gerät flüchtig oder gar nicht. Ein Tipp auf Wetter oder Kuppel
+ * zeigt den Kasten daher ausdrücklich, ein paar Sekunden lang.
+ */
+let tippTimer = null;
+function tippenErklaeren(container) {
+  if (container.dataset.inpersonTipp) return;
+  container.dataset.inpersonTipp = "1";
+  container.addEventListener("pointerup", event => {
+    if (event.pointerType !== "touch") return;
+    const ziel = event.target.closest?.("[data-tooltip-html], [data-tooltip]");
+    if (!ziel || !game.tooltip) return;
+    game.tooltip.activate(ziel, { html: ziel.dataset.tooltipHtml, text: ziel.dataset.tooltip });
+    clearTimeout(tippTimer);
+    tippTimer = setTimeout(() => game.tooltip.deactivate(), 6000);
+  });
+}
+
 export function mountClockInto(container) {
   if (!container || !game.settings.get(MODULE_ID, SETTINGS.CLOCK_STRIP)) return;
   if (container.querySelector(".inperson-clock")) return;
+  tippenErklaeren(container);
   lastStamp = null;
   const strip = buildStrip();
   if (strip) container.appendChild(strip);

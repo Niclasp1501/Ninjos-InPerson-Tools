@@ -1,5 +1,18 @@
 # Changelog
 
+## 14.2611.48 — 2026-09-06
+
+**Im Größenfeld steht die Zeitleiste zuerst**, dann die Knopfleiste — so wie
+beide auf dem Schirm stehen.
+
+**Kein Flattern beim Ziehen.** Jede Leiste hängt jetzt in einem ungezoomten
+Anker; nur der wird verschoben, der Zoom wirkt innen. Vorher wurde die
+gezoomte Leiste selbst gesetzt, und ihre Pixel waren nicht die des
+Bildschirms — Chrome und Safari legen das sogar verschieden aus.
+
+**Erklärkästen per Antippen.** Ein Finger auf Wetter oder Kuppel zeigt den
+Kasten sechs Sekunden lang; auf Maus-Hover war kein Verlass am Tablet.
+
 ## 14.2611.47 — 2026-09-06
 
 **Größe je Leiste, und kein Flattern mehr.** Knopfleiste und Zeitleiste haben

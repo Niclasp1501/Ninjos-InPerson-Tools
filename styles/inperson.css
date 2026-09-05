@@ -2208,19 +2208,45 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
  * die Zeitleiste, damit die beiden als ein Paar lesbar sind; und die Rundung
  * der Leiste nur wenig größer als die der Knöpfe, damit nichts anschneidet.
  */
-.inperson-sheetview-bar {
+/*
+ * Die Anker: ungezoomt, verschiebbar, in Bildschirmpixeln. Die Leisten darin
+ * sind gezoomt. Zum Start oben in der Mitte über dem Banner des Blatts, wo es
+ * sonst nichts zu bedienen gibt: die Zeit mit Kuppel, darunter die Knöpfe.
+ * sheetview.js setzt die genaue Höhe der Knopfleiste unter die Zeit und
+ * dreht hochkant beides nach unten. Wer zieht, gewinnt.
+ */
+.inperson-sv-anker {
   position: fixed;
-  /*
-   * Zum Start oben in der Mitte, direkt unter der Zeitleiste - über dem Banner
-   * des Blatts, wo es sonst nichts zu bedienen gibt. So hat der Tisch es sich
-   * hingeschoben; jetzt ist es der Ausgangspunkt. Die genaue Höhe setzt
-   * sheetview.js beim Start unter die Zeitleiste, damit die beiden auch ohne
-   * Kuppel zusammenbleiben. Wer zieht, gewinnt trotzdem.
-   */
-  top: calc(env(safe-area-inset-top, 0px) + 48px);
   left: 50%;
   transform: translateX(-50%);
+  right: auto;
+  bottom: auto;
+  touch-action: none;
+  user-select: none;
+}
+
+.inperson-sv-anker-uhr {
+  top: calc(env(safe-area-inset-top, 0px) + 6px);
+  z-index: 39;
+}
+
+.inperson-sv-anker-bar {
+  top: calc(env(safe-area-inset-top, 0px) + 118px);
   z-index: 40;
+}
+
+.inperson-sv-anker-feld {
+  left: auto;
+  transform: none;
+  z-index: 41;
+}
+
+.inperson-sv-anker.wird-gezogen > * {
+  transform: scale(1.04);
+  filter: drop-shadow(0 6px 20px rgb(0 0 0 / 45%));
+}
+
+.inperson-sheetview-bar {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -2236,12 +2262,6 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
   touch-action: none;
   user-select: none;
   overflow: visible;
-}
-
-.inperson-sheetview-bar.wird-gezogen {
-  transform: scale(1.06);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 60%);
-  cursor: grabbing;
 }
 
 .inperson-sv-reihe {
@@ -2302,8 +2322,6 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
 
 /* Die Lautstärke: drei Regler unter der Knopfleiste, im selben HUD-Ton. */
 .inperson-sv-feld {
-  position: fixed;
-  z-index: 41;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -2343,22 +2361,7 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
 /* Die Zeitleiste steht für sich, ebenfalls verschiebbar. Sie wird angeschaut,
    die Knöpfe werden bedient — zwei Dinge, zwei Elemente. */
 .inperson-sheetview-uhr {
-  position: fixed;
-  /* Zum Start oben in der Mitte; die Kuppel ragt darüber hinaus. */
-  top: calc(env(safe-area-inset-top, 0px) + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  right: auto;
-  bottom: auto;
-  z-index: 39;
-  touch-action: none;
-  user-select: none;
   cursor: default;
-}
-
-.inperson-sheetview-uhr.wird-gezogen {
-  transform: scale(1.06);
-  filter: drop-shadow(0 6px 20px rgb(0 0 0 / 45%));
 }
 
 .inperson-sheetview-uhr .inperson-clock {
