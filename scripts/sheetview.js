@@ -104,6 +104,7 @@ const GRUPPEN = {
     { icon: "fa-magnifying-glass-plus",  titel: "INPERSON.SheetView.Bigger",     tun: () => zoomen(0.1) },
     // Lautstärke, Sprache, die eigenen Moduleinstellungen: Ohne diesen Knopf
     // käme ein Spieler in der Ansicht an nichts davon heran.
+    { icon: "fa-volume-high",            titel: "INPERSON.SheetView.Volume",     tun: lautstaerke },
     { icon: "fa-gear",                   titel: "INPERSON.SheetView.Settings",   tun: einstellungen },
     { icon: "fa-expand",                 titel: "INPERSON.SheetView.Fullscreen", tun: vollbild },
     { icon: "fa-right-from-bracket",     titel: "INPERSON.SheetView.LogOut",     tun: abmelden }
@@ -467,6 +468,63 @@ async function vollbild() {
  * Fenster stünde dazwischen und wäre sichtbar - nur hinter einer offenen
  * Fläche nicht. Also erst die Fläche zu.
  */
+const LAUT_ID = "inperson-sv-lautstaerke";
+
+/**
+ * Drei Regler unter der Leiste: Playlist, Umgebung, Oberfläche.
+ *
+ * Foundrys eigene Regler stecken in der Playlist-Seitenleiste, und die ist in
+ * dieser Ansicht weg. Es sind Foundrys Client-Einstellungen, also gilt der
+ * Wert nur für dieses Gerät - genau das, was man an einem Tablet will, das
+ * neben dem Fernseher steht und stumm sein soll.
+ *
+ * Ein zweiter Druck auf den Knopf, ein Tipp daneben oder Escape schließt.
+ */
+const REGLER = [
+  { key: "globalPlaylistVolume",  icon: "fa-music",     titel: "INPERSON.SheetView.VolumePlaylist" },
+  { key: "globalAmbientVolume",   icon: "fa-tree",      titel: "INPERSON.SheetView.VolumeAmbient" },
+  { key: "globalInterfaceVolume", icon: "fa-bell",      titel: "INPERSON.SheetView.VolumeInterface" }
+];
+
+function lautstaerke() {
+  const alt = document.getElementById(LAUT_ID);
+  if (alt) return alt.remove();
+
+  const bar = document.getElementById(BAR_ID);
+  const feld = document.createElement("div");
+  feld.id = LAUT_ID;
+  feld.className = "inperson-sv-lautstaerke";
+  for (const regler of REGLER) {
+    const zeile = document.createElement("label");
+    const wert = Number(game.settings.get("core", regler.key));
+    zeile.innerHTML = `<i class="fa-solid ${regler.icon}"></i>
+      <span>${game.i18n.localize(regler.titel)}</span>
+      <input type="range" min="0" max="1" step="0.05" value="${Number.isFinite(wert) ? wert : 1}">`;
+    zeile.querySelector("input").addEventListener("input", event => {
+      game.settings.set("core", regler.key, Number(event.target.value));
+    });
+    feld.append(zeile);
+  }
+  document.body.append(feld);
+
+  // Unter die Leiste, mittig dazu; am Rand eingeklemmt, falls sie dort steht.
+  const b = bar.getBoundingClientRect();
+  const breite = feld.offsetWidth;
+  const links = Math.min(window.innerWidth - breite - 8, Math.max(8, b.left + b.width / 2 - breite / 2));
+  feld.style.left = `${Math.round(links)}px`;
+  feld.style.top = `${Math.round(b.bottom + 8)}px`;
+
+  const zu = event => {
+    if (event.type === "keydown" && event.key !== "Escape") return;
+    if (event.type === "pointerdown" && (feld.contains(event.target) || bar.contains(event.target))) return;
+    feld.remove();
+    document.removeEventListener("pointerdown", zu, true);
+    document.removeEventListener("keydown", zu, true);
+  };
+  document.addEventListener("pointerdown", zu, true);
+  document.addEventListener("keydown", zu, true);
+}
+
 async function einstellungen() {
   await flaecheSchliessen();
   game.settings.sheet.render({ force: true });
@@ -729,6 +787,7 @@ async function beenden() {
   document.body.classList.remove(BODY_CLASS);
   document.getElementById(BAR_ID)?.remove();
   document.getElementById(UHR_ID)?.remove();
+  document.getElementById(LAUT_ID)?.remove();
   blattApp()?.element?.classList.remove("inperson-stage-sheet");
   document.documentElement.style.removeProperty("--inperson-sv-zoom");
 }

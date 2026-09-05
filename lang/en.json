@@ -316,5 +316,9 @@
   "INPERSON.SheetView.HoldMs": "Hold time to move a bar",
   "INPERSON.SheetView.HoldMsHint": "How long a bar has to be held before it drags. Shorter drags by accident, longer feels broken.",
   "INPERSON.SheetView.ResetZoom": "Reset text size",
-  "INPERSON.SheetView.Settings": "Settings"
+  "INPERSON.SheetView.Settings": "Settings",
+  "INPERSON.SheetView.Volume": "Volume",
+  "INPERSON.SheetView.VolumePlaylist": "Music",
+  "INPERSON.SheetView.VolumeAmbient": "Ambient",
+  "INPERSON.SheetView.VolumeInterface": "Interface"
 }

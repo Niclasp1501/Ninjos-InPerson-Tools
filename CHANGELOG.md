@@ -1,5 +1,15 @@
 # Changelog
 
+## 14.2611.41 — 2026-09-06
+
+**Lautstärke in der Leiste.** Ein Knopf in der zweiten Gruppe öffnet drei
+Regler — Musik, Umgebung, Oberfläche — unter der Leiste. Es sind Foundrys
+Geräte-Einstellungen; das Tablet neben dem Fernseher kann stumm sein, ohne
+dass der Tisch etwas merkt.
+
+Entschieden: Seitenfenster bleiben **über** dem Blatt (kein Schmalermachen),
+Sheet Only bleibt vorerst installiert, kein Konto bekommt beides.
+
 ## 14.2611.40 — 2026-09-05
 
 **Die Blattansicht bekommt ihre eigene Seite — und wählt Konten einzeln.** Der

@@ -316,5 +316,9 @@
   "INPERSON.SheetView.HoldMs": "Haltezeit zum Verschieben",
   "INPERSON.SheetView.HoldMsHint": "So lange muss man eine Leiste halten, bevor sie sich ziehen lässt. Kürzer zieht versehentlich, länger fühlt sich kaputt an.",
   "INPERSON.SheetView.ResetZoom": "Schrift zurücksetzen",
-  "INPERSON.SheetView.Settings": "Einstellungen"
+  "INPERSON.SheetView.Settings": "Einstellungen",
+  "INPERSON.SheetView.Volume": "Lautstärke",
+  "INPERSON.SheetView.VolumePlaylist": "Musik",
+  "INPERSON.SheetView.VolumeAmbient": "Umgebung",
+  "INPERSON.SheetView.VolumeInterface": "Oberfläche"
 }
