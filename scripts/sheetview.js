@@ -258,7 +258,7 @@ function leisteBauen() {
 /**
  * Die Zeitleiste steht für sich.
  *
- * Sie steckte zuerst in der Knopfleiste — mit dem Himmelsbogen darin wurde die
+ * Sie steckte zuerst in der Menüleiste — mit dem Himmelsbogen darin wurde die
  * 833 Pixel breit und 96 hoch, also alles andere als klein. Es sind auch zwei
  * verschiedene Dinge: die eine wird bedient, die andere angeschaut. Beide sind
  * verschiebbar, jede mit ihrem eigenen gemerkten Platz.
@@ -280,10 +280,10 @@ function uhrBauen() {
 /**
  * Die beiden Leisten zum Start anordnen: die Zeit oben, die Knöpfe darunter.
  *
- * Quer: Zeitleiste mit Kuppel am oberen Rand, die Knopfleiste direkt
+ * Quer: Zeitleiste mit Kuppel am oberen Rand, die Menüleiste direkt
  * darunter - über dem Banner des Blatts, wo es sonst nichts zu bedienen gibt.
  * Hochkant sitzen die Attribute im Kopf des Blatts genau dort (gemessen an
- * 804 × 1105: die Knopfleiste lag auf STÄ, GES und KON), also unten: die
+ * 804 × 1105: die Menüleiste lag auf STÄ, GES und KON), also unten: die
  * Knöpfe am unteren Rand, die Zeitleiste darüber.
  *
  * Nur, wenn niemand die jeweilige Leiste woandershin gezogen hat. Alles in
@@ -390,10 +390,28 @@ function lageAnwenden({ behalten = false } = {}) {
   leisteUnterDieUhr();
 }
 
+/**
+ * Nur bei einem echten Drehen neu anordnen.
+ *
+ * Auf dem Tablet feuert `resize` auch, wenn die Browserleiste beim Ziehen
+ * ein- oder ausklappt - und dann räumte das hier mitten im Ziehen beide
+ * Leisten um: die gezogene sprang zurück, die andere wanderte mit. Das war
+ * das Flattern. Also: Während gezogen wird, passiert nichts; und ohne
+ * Wechsel zwischen hoch und quer auch nicht.
+ */
 let drehTimer = null;
+let letzteLage = null;
+let ziehtGerade = 0;
+
 function beimDrehen() {
   clearTimeout(drehTimer);
-  drehTimer = setTimeout(lageAnwenden, 150);
+  drehTimer = setTimeout(() => {
+    if (ziehtGerade > 0) { beimDrehen(); return; }
+    const jetzt = lage();
+    if (jetzt === letzteLage) return;
+    letzteLage = jetzt;
+    lageAnwenden();
+  }, 150);
 }
 /**
  * Wie lange halten, bevor die Leiste zieht.
@@ -441,6 +459,7 @@ function ziehbarMachen(element, key) {
     timer = setTimeout(() => {
       aktiv = true;
       gezogen = true;
+      ziehtGerade++;
       // Erst messen, dann die Klasse: `wird-gezogen` setzt ein eigenes
       // transform und verdrängt damit das translateX(-50%) der Startlage -
       // die Leiste sprang beim ersten Ziehen nach dem Laden um eine halbe
@@ -463,6 +482,7 @@ function ziehbarMachen(element, key) {
     clearTimeout(timer);
     if (!aktiv) return;
     aktiv = false;
+    ziehtGerade = Math.max(0, ziehtGerade - 1);
     element.classList.remove("wird-gezogen");
     const r = element.getBoundingClientRect();
     localStorage.setItem(lageKey(key), JSON.stringify({ x: Math.round(r.left), y: Math.round(r.top) }));
@@ -712,7 +732,7 @@ const GROESSE_KEY = `${MODULE_ID}.sheetviewLeiste`;
 const GROESSE_UHR_KEY = `${MODULE_ID}.sheetviewUhrGroesse`;
 
 /**
- * Zwei Faktoren, nicht einer: Knopfleiste und Zeitleiste wachsen getrennt.
+ * Zwei Faktoren, nicht einer: Menüleiste und Zeitleiste wachsen getrennt.
  * Mit einem gemeinsamen Regler wirkten sie ungleich - die eine hat Knöpfe,
  * die andere Text und Kuppel, und dieselbe Zahl sieht verschieden groß aus.
  */
@@ -993,6 +1013,7 @@ async function starten() {
   leisteBauen();
   uhrBauen();
   lageAnwenden();
+  letzteLage = lage();
   // Das Tablet wird gedreht: Plätze und Größe der neuen Lage holen.
   window.addEventListener("resize", beimDrehen);
   await blattZeigen();

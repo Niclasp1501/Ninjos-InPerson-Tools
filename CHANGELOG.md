@@ -1,5 +1,14 @@
 # Changelog
 
+## 14.2611.49 — 2026-09-06
+
+**Kein Flattern mehr beim Ziehen der Menüleiste.** Auf dem Tablet feuert
+`resize`, wenn die Browserleiste beim Ziehen ein- oder ausklappt — und darauf
+wurden beide Leisten neu angeordnet, mitten im Ziehen. Jetzt: während gezogen
+wird nichts, und ohne Wechsel zwischen hoch und quer auch nichts.
+
+Die Knopfleiste heißt jetzt überall **Menüleiste**.
+
 ## 14.2611.48 — 2026-09-06
 
 **Im Größenfeld steht die Zeitleiste zuerst**, dann die Knopfleiste — so wie

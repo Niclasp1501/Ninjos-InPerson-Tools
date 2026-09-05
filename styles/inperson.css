@@ -2212,7 +2212,7 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
  * Die Anker: ungezoomt, verschiebbar, in Bildschirmpixeln. Die Leisten darin
  * sind gezoomt. Zum Start oben in der Mitte über dem Banner des Blatts, wo es
  * sonst nichts zu bedienen gibt: die Zeit mit Kuppel, darunter die Knöpfe.
- * sheetview.js setzt die genaue Höhe der Knopfleiste unter die Zeit und
+ * sheetview.js setzt die genaue Höhe der Menüleiste unter die Zeit und
  * dreht hochkant beides nach unten. Wer zieht, gewinnt.
  */
 .inperson-sv-anker {
@@ -2320,7 +2320,7 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
   background: #a51414 !important;
 }
 
-/* Die Lautstärke: drei Regler unter der Knopfleiste, im selben HUD-Ton. */
+/* Die Lautstärke: drei Regler unter der Menüleiste, im selben HUD-Ton. */
 .inperson-sv-feld {
   display: flex;
   flex-direction: column;
