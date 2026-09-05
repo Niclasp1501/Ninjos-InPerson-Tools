@@ -1,5 +1,15 @@
 # Changelog
 
+## 14.2611.47 — 2026-09-06
+
+**Größe je Leiste, und kein Flattern mehr.** Knopfleiste und Zeitleiste haben
+jetzt je einen eigenen Regler — mit einem gemeinsamen wirkten sie ungleich.
+Und ein gezogener Platz bleibt beim Schieben des Reglers stehen: Vorher
+standen seine Koordinaten in gezoomten Pixeln und wanderten mit jedem Schritt.
+
+Behoben: Wetter und Mond zeigten in der Blattansicht keinen Erklärkasten mehr
+(`#tooltip` war mit ausgeblendet).
+
 ## 14.2611.46 — 2026-09-06
 
 **Der Mond zeigt jetzt die richtige Phase.** Die Rechnung stimmte (Calendaria

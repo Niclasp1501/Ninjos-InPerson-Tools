@@ -320,5 +320,7 @@
   "INPERSON.SheetView.VolumeInterface": "Interface",
   "INPERSON.SheetView.BarSize": "Bar size",
   "INPERSON.SheetView.ResetHint": "Reset this account's bars to their defaults - position, size, text size, on all of its devices. A device that is off catches up on its next load.",
-  "INPERSON.SheetView.ResetDone": "{name}: bars are being reset to their defaults."
+  "INPERSON.SheetView.ResetDone": "{name}: bars are being reset to their defaults.",
+  "INPERSON.SheetView.BarSizeButtons": "Button bar",
+  "INPERSON.SheetView.BarSizeClock": "Time strip"
 }

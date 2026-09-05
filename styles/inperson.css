@@ -2425,11 +2425,14 @@ body.inperson-sheetview .sidebar-popout {
   :root { --inperson-sv-leiste-auto: 0.72; }
 }
 
-/* Stufe mal Spielerwunsch (Regler in der zweiten Knopfgruppe). */
+/* Stufe mal Spielerwunsch (Regler in der zweiten Knopfgruppe) - je Leiste. */
 .inperson-sheetview-bar,
-.inperson-sheetview-uhr,
 .inperson-sv-feld {
   zoom: calc(var(--inperson-sv-leiste-auto) * var(--inperson-sv-leiste, 1));
+}
+
+.inperson-sheetview-uhr {
+  zoom: calc(var(--inperson-sv-leiste-auto) * var(--inperson-sv-uhr, 1));
 }
 
 /* ── Die Seite der Blattansicht ──────────────────────────────────────

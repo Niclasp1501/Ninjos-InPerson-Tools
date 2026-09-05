@@ -326,7 +326,7 @@ function lageKey(key) {
 /** Alle Schlüssel, die diese Ansicht im Gerätespeicher anlegt. */
 function alleGeraeteSchluessel() {
   const aus = [];
-  for (const key of [PLATZ_KEY, UHR_PLATZ_KEY, GROESSE_KEY]) aus.push(key, `${key}.hoch`, `${key}.quer`);
+  for (const key of [PLATZ_KEY, UHR_PLATZ_KEY, GROESSE_KEY, GROESSE_UHR_KEY]) aus.push(key, `${key}.hoch`, `${key}.quer`);
   // Dazu die Namen früherer Fassungen, die auf alten Tablets noch liegen.
   aus.push(ZOOM_KEY, `${MODULE_ID}.sheetviewBar`, `${MODULE_ID}.sheetviewUhr`);
   return aus;
@@ -354,13 +354,13 @@ function resetPruefen() {
 }
 
 /** Plätze und Größen der aktuellen Lage anwenden - beim Start und beim Drehen. */
-function lageAnwenden() {
+function lageAnwenden({ behalten = false } = {}) {
   groesseAnwenden();
   for (const [id, key] of [[BAR_ID, PLATZ_KEY], [UHR_ID, UHR_PLATZ_KEY]]) {
     const element = document.getElementById(id);
     if (!element) continue;
     for (const p of ["left", "top", "right", "bottom", "transform"]) element.style.removeProperty(p);
-    platzWiederherstellen(element, key);
+    platzWiederherstellen(element, key, { behalten });
   }
   leisteUnterDieUhr();
 }
@@ -488,7 +488,7 @@ function setzen(bar, x, y) {
  * überdecken — genau das war zu sehen, ein gespeicherter Platz aus früheren
  * Zeiten legte die Knöpfe mitten auf die Uhr.
  */
-function platzWiederherstellen(bar, key) {
+function platzWiederherstellen(bar, key, { behalten = false } = {}) {
   let platz = null;
   try { platz = JSON.parse(localStorage.getItem(lageKey(key)) ?? "null"); } catch { /* egal */ }
   if (!platz) return;
@@ -498,7 +498,10 @@ function platzWiederherstellen(bar, key) {
   setzen(bar, platz.x, platz.y);
 
   const andere = document.getElementById(bar.id === BAR_ID ? UHR_ID : BAR_ID);
-  if (andere && ueberlappen(bar, andere)) {
+  // `behalten`: Beim Größenregler dürfen sich die beiden kurz berühren - wer
+  // gerade schiebt, sieht es und zieht danach weiter. Nur beim Laden wird ein
+  // überdeckender Platz verworfen.
+  if (!behalten && andere && ueberlappen(bar, andere)) {
     // Zurück auf den Platz aus dem Stylesheet.
     bar.style.removeProperty("left");
     bar.style.removeProperty("top");
@@ -674,23 +677,40 @@ function lautstaerke() {
  * und multipliziert sich mit der Stufe.
  */
 const GROESSE_KEY = `${MODULE_ID}.sheetviewLeiste`;
+const GROESSE_UHR_KEY = `${MODULE_ID}.sheetviewUhrGroesse`;
 
+/**
+ * Zwei Faktoren, nicht einer: Knopfleiste und Zeitleiste wachsen getrennt.
+ * Mit einem gemeinsamen Regler wirkten sie ungleich - die eine hat Knöpfe,
+ * die andere Text und Kuppel, und dieselbe Zahl sieht verschieden groß aus.
+ */
 function groesseAnwenden() {
-  const faktor = Number(localStorage.getItem(lageKey(GROESSE_KEY))) || 1;
-  document.documentElement.style.setProperty("--inperson-sv-leiste", String(faktor));
+  const leiste = Number(localStorage.getItem(lageKey(GROESSE_KEY))) || 1;
+  const uhr = Number(localStorage.getItem(lageKey(GROESSE_UHR_KEY))) || 1;
+  document.documentElement.style.setProperty("--inperson-sv-leiste", String(leiste));
+  document.documentElement.style.setProperty("--inperson-sv-uhr", String(uhr));
 }
 
 function leistengroesse() {
   feldOeffnen(GROESSE_ID, feld => {
-    feld.append(reglerZeile({
-      icon: "fa-up-right-and-down-left-from-center", titel: "INPERSON.SheetView.BarSize",
+    for (const [key, icon, titel] of [
+      [GROESSE_KEY,     "fa-grip",  "INPERSON.SheetView.BarSizeButtons"],
+      [GROESSE_UHR_KEY, "fa-clock", "INPERSON.SheetView.BarSizeClock"]
+    ]) feld.append(reglerZeile({
+      icon, titel,
       min: 0.6, max: 1.4, step: 0.05,
-      wert: Number(localStorage.getItem(lageKey(GROESSE_KEY))) || 1,
+      wert: Number(localStorage.getItem(lageKey(key))) || 1,
       bei: v => {
-        localStorage.setItem(lageKey(GROESSE_KEY), String(v));
+        localStorage.setItem(lageKey(key), String(v));
         groesseAnwenden();
-        leisteUnterDieUhr();
-        feldPlatzieren(document.getElementById(GROESSE_ID));
+        // Ein gezogener Platz steht in gezoomten Pixeln in left/top; mit
+        // neuem Faktor wanderte die Leiste beim Schieben weg und flatterte.
+        // Also den Platz nach jedem Schritt neu anwenden - im nächsten Bild,
+        // wenn der Zoom schon gilt.
+        requestAnimationFrame(() => {
+          lageAnwenden({ behalten: true });
+          feldPlatzieren(document.getElementById(GROESSE_ID));
+        });
       }
     }));
   });
@@ -965,6 +985,7 @@ async function beenden() {
   document.getElementById(LAUT_ID)?.remove();
   document.getElementById(GROESSE_ID)?.remove();
   document.documentElement.style.removeProperty("--inperson-sv-leiste");
+  document.documentElement.style.removeProperty("--inperson-sv-uhr");
   blattApp()?.element?.classList.remove("inperson-stage-sheet");
   document.documentElement.style.removeProperty("--inperson-sv-zoom");
 }

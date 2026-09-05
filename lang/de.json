@@ -320,5 +320,7 @@
   "INPERSON.SheetView.VolumeInterface": "Oberfläche",
   "INPERSON.SheetView.BarSize": "Leistengröße",
   "INPERSON.SheetView.ResetHint": "Leisten dieses Kontos auf die Startwerte zurücksetzen — Lage, Größe, Schrift, auf allen seinen Geräten. Ein ausgeschaltetes Gerät holt es beim nächsten Laden nach.",
-  "INPERSON.SheetView.ResetDone": "{name}: Leisten werden auf die Startwerte zurückgesetzt."
+  "INPERSON.SheetView.ResetDone": "{name}: Leisten werden auf die Startwerte zurückgesetzt.",
+  "INPERSON.SheetView.BarSizeButtons": "Knopfleiste",
+  "INPERSON.SheetView.BarSizeClock": "Zeitleiste"
 }
