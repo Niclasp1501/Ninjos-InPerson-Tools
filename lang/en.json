@@ -312,8 +312,6 @@
   "INPERSON.SheetView.NoCanvasHint": "The tablet stops rendering scenes altogether - the same machinery as table mode. The device asks once to reload.",
   "INPERSON.SheetView.ChatOnUse": "Open the chat on a roll",
   "INPERSON.SheetView.ChatOnUseHint": "As soon as the player rolls or uses something themselves, the chat opens so they see the result. Other people's rolls open nothing.",
-  "INPERSON.SheetView.HoldMs": "Hold time to move a bar",
-  "INPERSON.SheetView.HoldMsHint": "How long a bar has to be held before it drags. Shorter drags by accident, longer feels broken.",
   "INPERSON.SheetView.ResetZoom": "Reset text size",
   "INPERSON.SheetView.Settings": "Settings",
   "INPERSON.SheetView.Volume": "Volume",

@@ -1,5 +1,12 @@
 # Changelog
 
+## 14.2611.45 — 2026-09-06
+
+**Haltezeit-Einstellung wieder raus.** Sie stand einen Tag auf der Seite des
+Spielleiters und war dort eine Entwicklerschraube: Wer die Ansicht einrichtet,
+will nicht über Millisekunden entscheiden. Fest 400 ms, wie es am Tisch
+funktioniert hat.
+
 ## 14.2611.44 — 2026-09-06
 
 **Leistengröße vom Spieler einstellbar.** Ein Regler in der zweiten

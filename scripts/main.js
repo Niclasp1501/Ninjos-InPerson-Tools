@@ -142,12 +142,6 @@ function registerSettings() {
     type: Boolean,
     default: true
   });
-  S(SETTINGS.SHEETVIEW_HOLD_MS, {
-    scope: "world",
-    config: false,
-    type: Number,
-    default: 400
-  });
 
   // Der Bogen ist standardmäßig aus: er ist neu, und eine Leiste, die sich beim
   // Aktualisieren von selbst verändert, will man selbst einschalten.

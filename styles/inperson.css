@@ -2477,14 +2477,3 @@ body.inperson-sheetview .sidebar-popout {
   flex-direction: column;
   gap: 6px;
 }
-
-.inperson-sv-zahl {
-  width: 84px;
-  flex: 0 0 auto;
-  text-align: right;
-}
-
-.inperson-sv-settings .units {
-  font-size: 12px;
-  opacity: .7;
-}

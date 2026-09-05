@@ -307,14 +307,13 @@ function leisteUnterDieUhr() {
 const PLATZ_KEY = `${MODULE_ID}.sheetviewBar2`;
 const UHR_PLATZ_KEY = `${MODULE_ID}.sheetviewUhr2`;
 /**
- * Wie lange halten, bevor die Leiste zieht. Einstellbar, weil das Gefühl dafür
- * am Tisch verschieden ist: Wer fest drückt, zieht mit 300 ms versehentlich;
- * wer vorsichtig tippt, wartet bei 800 ms vergeblich.
+ * Wie lange halten, bevor die Leiste zieht.
+ *
+ * War kurz eine Einstellung auf der Seite des Spielleiters - und genau dort
+ * gehört sie nicht hin: Wer die Ansicht einrichtet, will nicht über
+ * Millisekunden entscheiden. 400 hat am Tisch funktioniert; das reicht.
  */
-function haltezeit() {
-  const ms = Number(game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_HOLD_MS));
-  return Number.isFinite(ms) && ms >= 150 ? ms : 400;
-}
+const HALTEN_MS = 400;
 
 /**
  * Ob gerade gezogen wurde — die einzige Angabe, die beide Leisten teilen.
@@ -361,7 +360,7 @@ function ziehbarMachen(element, key) {
       griffX = punkt.clientX - r.left;
       griffY = punkt.clientY - r.top;
       element.classList.add("wird-gezogen");
-    }, haltezeit());
+    }, HALTEN_MS);
   };
 
   const bewegen = event => {

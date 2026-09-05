@@ -312,8 +312,6 @@
   "INPERSON.SheetView.NoCanvasHint": "Das Tablet rechnet keine Szene mehr durch — dieselbe Maschinerie wie im Tischmodus. Das Gerät fragt einmal nach einem Neuladen.",
   "INPERSON.SheetView.ChatOnUse": "Chat beim Würfeln aufklappen",
   "INPERSON.SheetView.ChatOnUseHint": "Sobald der Spieler selbst würfelt oder etwas benutzt, öffnet sich der Chat, damit er das Ergebnis sieht. Würfe anderer öffnen nichts.",
-  "INPERSON.SheetView.HoldMs": "Haltezeit zum Verschieben",
-  "INPERSON.SheetView.HoldMsHint": "So lange muss man eine Leiste halten, bevor sie sich ziehen lässt. Kürzer zieht versehentlich, länger fühlt sich kaputt an.",
   "INPERSON.SheetView.ResetZoom": "Schrift zurücksetzen",
   "INPERSON.SheetView.Settings": "Einstellungen",
   "INPERSON.SheetView.Volume": "Lautstärke",

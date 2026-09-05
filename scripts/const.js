@@ -126,8 +126,6 @@ export const SETTINGS = {
   SHEETVIEW_NO_CANVAS: "sheetViewNoCanvas",
   /** Chat aufklappen, sobald der Spieler selbst etwas würfelt oder benutzt (world). */
   SHEETVIEW_CHAT_ON_USE: "sheetViewChatOnUse",
-  /** Wie lange man eine Leiste halten muss, bevor sie sich ziehen lässt, in ms (world). */
-  SHEETVIEW_HOLD_MS: "sheetViewHoldMs",
   /** Offer the trade button at all (world). */
   TRADE: "trade",
   /**

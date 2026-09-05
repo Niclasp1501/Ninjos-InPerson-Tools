@@ -54,7 +54,6 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
       enabled: game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW),
       noCanvas: game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_NO_CANVAS),
       chatOnUse: game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_CHAT_ON_USE),
-      holdMs: game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_HOLD_MS),
       users,
       hasUsers: users.length > 0
     };
@@ -66,8 +65,6 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
     for (const [key, value] of Object.entries(data)) {
       if (key.startsWith("user.") && value) chosen[key.slice(5)] = true;
     }
-    const halten = Math.min(1500, Math.max(150, Number(data.holdMs) || 400));
-    await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_HOLD_MS, halten);
     await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_CHAT_ON_USE, !!data.chatOnUse);
     await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_NO_CANVAS, !!data.noCanvas);
     await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_USERS, chosen);
