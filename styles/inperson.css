@@ -2130,9 +2130,16 @@ body.inperson-sheetview .inperson-stage-sheet {
   z-index: 20 !important;
 }
 
-/* Kopfzeile bleibt; nur was auf einem Tablet nichts zu suchen hat, geht. */
-body.inperson-sheetview .inperson-stage-sheet > .window-header [data-action="close"],
-body.inperson-sheetview .inperson-stage-sheet > .window-header .header-control[data-action="close"],
+/*
+ * Kopfzeile bleibt; ihre Knöpfe gehen bis auf einen.
+ *
+ * Bildpfad kopieren, Fenster ausklappen, Porträt/Token tauschen, UUID kopieren,
+ * Schließen: alles Schreibtisch-Werkzeug, auf einem Tablet ohne Zwischenablage
+ * und ohne zweites Fenster nur Ziele für Fehlgriffe. Der ⋮ (`toggleControls`)
+ * bleibt - hinter ihm liegen die Blatt-Einstellungen, und die braucht man auch
+ * am Tisch.
+ */
+body.inperson-sheetview .inperson-stage-sheet > .window-header .header-control:not([data-action="toggleControls"]),
 body.inperson-sheetview .inperson-stage-sheet .window-resize-handle {
   display: none !important;
 }

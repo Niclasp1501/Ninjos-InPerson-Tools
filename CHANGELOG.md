@@ -1,5 +1,12 @@
 # Changelog
 
+## 14.2611.36 — 2026-09-05
+
+**Die Kopfzeilen-Knöpfe des Blatts sind in der Blattansicht weg** — bis auf
+den ⋮ mit den Blatt-Einstellungen. Bildpfad kopieren, Fenster ausklappen,
+Porträt/Token, UUID kopieren: Schreibtisch-Werkzeug, auf einem Tablet ohne
+Zwischenablage und zweites Fenster nur Ziele für Fehlgriffe.
+
 ## 14.2611.35 — 2026-09-05
 
 **Das Blatt füllt den Schirm Kante an Kante, wie bei Sheet Only.** Zwei Umwege
