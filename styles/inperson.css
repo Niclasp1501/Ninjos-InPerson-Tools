@@ -2043,7 +2043,7 @@ span.inperson-icon svg {
      ein `relative` an dieser Stelle hätte ihr das `left: 50%` als Versatz
      angerechnet - genau das war in der Blattansicht zu sehen. Eine absolut
      gesetzte Pille ist für die Kuppel ohnehin der richtige Bezug. */
-  margin-top: 66px;
+  margin-top: 70px;
   overflow: visible;
   /*
    * Die Kuppel muss HINTER der Pille stehen: Ihr Fuß verschwindet unter der
@@ -2084,8 +2084,8 @@ span.inperson-icon svg {
   bottom: calc(100% - 14px);
   transform: translateX(-50%);
   display: block;
-  width: 152px;
-  height: 78px;
+  width: 160px;
+  height: 82px;
   line-height: 0;
   cursor: help;
   filter: drop-shadow(0 2px 5px rgb(0 0 0 / 50%));
@@ -2093,8 +2093,8 @@ span.inperson-icon svg {
 
 .inperson-clock-sky svg.inperson-sky {
   display: block;
-  width: 152px;
-  height: 78px;
+  width: 160px;
+  height: 82px;
 }
 
 /* -------------------------------------------- */
@@ -2440,7 +2440,7 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
    stand 60 Pixel über dem oberen Bildschirmrand. Hier noch einmal, damit die
    Regel für die Kuppel auch in der Blattansicht gewinnt. */
 .inperson-sheetview-uhr .inperson-clock:has(.inperson-clock-sky) {
-  margin-top: 66px;
+  margin-top: 70px;
   /* `relative`, sonst hängt die Kuppel am Behälter statt an der Pille und
      steht um genau diese 66 Pixel zu hoch. Und `left: auto`, sonst wirkt das
      geerbte `left: 50%` als Versatz nach rechts. */

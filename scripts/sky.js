@@ -33,10 +33,12 @@ import { MODULE_ID } from "./const.js";
  *
  * Halbkreis mit Radius 60: 120 breit, 62 hoch, der Horizont ist die Unterkante.
  */
-const RADIUS = 76;
+const RADIUS = 80;
 const BREITE = RADIUS * 2;
 const HOEHE = RADIUS + 2;
 const GESTIRN = 14;
+/** Dämmerung: so lange vor Aufgang bzw. nach Untergang blendet der Himmel, in Stunden. */
+const DAEMMERUNG = 1;
 
 /* ── Rechnen ─────────────────────────────────────────────────────── */
 
@@ -66,6 +68,21 @@ function tagImJahr(calendar, k) {
 function sonnenzeiten(calendar) {
   const licht = calendar?.daylight;
   const stunden = calendar?.days?.hoursPerDay ?? 24;
+
+  // Calendaria hängt dem Weltkalender sunrise()/sunset() an. Dann gilt
+  // dessen Antwort - der Spielleiter sieht Calendarias Kuppel, und beide
+  // sollen zur selben Minute hell werden. Gemessen: 04:41 dort, 04:34 bei
+  // unserer eigenen Welle.
+  try {
+    if (typeof calendar?.sunrise === "function" && typeof calendar?.sunset === "function") {
+      const auf = Number(calendar.sunrise());
+      const unter = Number(calendar.sunset());
+      if (Number.isFinite(auf) && Number.isFinite(unter) && unter > auf) {
+        return { aufgang: auf, untergang: unter, geschaetzt: false };
+      }
+    }
+  } catch { /* dann selbst rechnen */ }
+
   if (!licht?.enabled || licht.longestDay == null || licht.shortestDay == null) {
     return { aufgang: stunden / 4, untergang: (stunden * 3) / 4, geschaetzt: true };
   }
@@ -171,14 +188,14 @@ const STERNE = [
  * am Himmel steht), die beleuchtete Fläche mit einem Verlauf, der zum
  * Schattenrand hin leicht abdunkelt, und ein feiner heller Rand.
  */
-function mondBild(cx, cy, mond) {
+function mondBild(cx, cy, mond, deckkraft = 1) {
   const x = Number(cx);
   const y = Number(cy);
   const anteil = mond?.anteil ?? 0.5;
   const farbe = mond?.farbe ?? "#e9e9e4";
   const id = `${MODULE_ID}-moon`;
   const lichtSeite = anteil < 0.5 ? "70%" : "30%";
-  return `
+  return `<g opacity="${deckkraft.toFixed(2)}">
     <defs><radialGradient id="${id}" cx="${lichtSeite}" cy="35%" r="75%">
       <stop offset="0" stop-color="#ffffff"/><stop offset="0.55" stop-color="${farbe}"/><stop offset="1" stop-color="${farbe}" stop-opacity="0.82"/>
     </radialGradient></defs>
@@ -186,7 +203,7 @@ function mondBild(cx, cy, mond) {
     <circle cx="${cx}" cy="${cy}" r="${GESTIRN * 1.25}" fill="#dfe8ff" opacity="0.1"/>
     <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="#1f2635"/>
     <path d="${mondPfad(x, y, GESTIRN, anteil)}" fill="url(#${id})"/>
-    <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="none" stroke="#ffffff" stroke-opacity="0.3" stroke-width="0.7"/>`;
+    <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="none" stroke="#ffffff" stroke-opacity="0.3" stroke-width="0.7"/></g>`;
 }
 
 /**
@@ -233,50 +250,91 @@ export function himmelsbogen() {
   const { aufgang, untergang, geschaetzt } = sonnenzeiten(calendar);
   const tag = jetzt >= aufgang && jetzt < untergang;
 
-  // Anteil des zurückgelegten Wegs: tagsüber von Auf- bis Untergang, nachts
-  // von Unter- bis Aufgang über Mitternacht hinweg.
-  const anteil = tag
-    ? (jetzt - aufgang) / Math.max(0.001, untergang - aufgang)
-    : ((jetzt < aufgang ? jetzt + stunden : jetzt) - untergang)
-      / Math.max(0.001, stunden - (untergang - aufgang));
+  // Wie hell ist es? 0 Nacht, 1 Tag, dazwischen Dämmerung: eine Stunde vor
+  // dem Aufgang beginnt der Himmel zu blauen, eine Stunde nach dem Untergang
+  // ist er wieder dunkel. Calendaria blendet ebenso - um 05:00, kurz nach
+  // dem Aufgang, war seine Kuppel noch dunkel, unsere schon Tag.
+  const nachAufgang = jetzt - aufgang;
+  const vorUntergang = untergang - jetzt;
+  const helligkeit = Math.max(0, Math.min(1,
+    Math.min(nachAufgang + DAEMMERUNG, vorUntergang + DAEMMERUNG) / (2 * DAEMMERUNG)
+  ));
+  const daemmert = helligkeit > 0 && helligkeit < 1;
 
-  // Die Bahn ist ein innerer Halbkreis um den Mittelpunkt der Kuppel: links am
-  // Horizont auf, oben im Scheitel, rechts wieder unter.
+  // Anteil des zurückgelegten Wegs: tagsüber von Auf- bis Untergang, nachts
+  // von Unter- bis Aufgang über Mitternacht hinweg. In der Dämmerung steht die
+  // Sonne knapp unter dem Horizont - die Kuppel schneidet sie ab, ihr Schein
+  // bleibt.
+  const tagesanteil = (jetzt - aufgang) / Math.max(0.001, untergang - aufgang);
+  const nachtanteil = ((jetzt < aufgang ? jetzt + stunden : jetzt) - untergang)
+    / Math.max(0.001, stunden - (untergang - aufgang));
+
   const boden = RADIUS;
   const bahn = RADIUS - GESTIRN - 5;
-  const x = RADIUS - bahn * Math.cos(Math.PI * anteil);
-  const y = boden - bahn * Math.sin(Math.PI * anteil);
+  const ort = anteil => ({
+    x: RADIUS - bahn * Math.cos(Math.PI * anteil),
+    y: boden - bahn * Math.sin(Math.PI * anteil)
+  });
 
-  const mond = tag ? null : mondphase(calendar);
-  // Nacht: tiefes Blau oben, ein Schimmer Grün am Horizont - so sieht ein
-  // Nachthimmel über einer Landschaft aus und nicht wie ein schwarzer Kasten.
-  const himmel = tag
-    ? ["#7db9e0", "#d9ecf6"]
-    : ["#171526", "#2c2942"];
+  const mischen = (a, b, t) => {
+    const c = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+    const [p, q] = [c(a), c(b)];
+    return "#" + p.map((v, i) => Math.round(v + (q[i] - v) * t).toString(16).padStart(2, "0")).join("");
+  };
+  // Nacht wie Calendarias Sternenfeld (tiefes Nachtblau nach fast Schwarz),
+  // Tag aus dessen Kuppel abgelesen (Himmelblau nach Dunst am Horizont).
+  const nacht = ["#0d1033", "#0a0a1a", "#05050f"];
+  const tagfarben = ["#8ec6ee", "#b9dcf3", "#dcebf5"];
+  const himmel = nacht.map((f, i) => mischen(f, tagfarben[i], helligkeit));
+  // Morgen- und Abendrot am Horizont, am stärksten mitten in der Dämmerung.
+  const rot = Math.sin(Math.PI * helligkeit);
 
-  const sterne = tag ? "" : STERNE
-    .map(([sx, sy], i) => `<circle cx="${sx}" cy="${sy}" r="${i % 3 === 0 ? 1.6 : 1.1}" fill="#ffffff" opacity="${i % 2 ? 0.85 : 0.5}"/>`)
+  const sterne = helligkeit >= 1 ? "" : STERNE
+    .map(([sx, sy], i) => `<circle cx="${sx}" cy="${sy}" r="${i % 3 === 0 ? 1.4 : 1}" fill="#ffffff" opacity="${((i % 2 ? 0.85 : 0.5) * (1 - helligkeit)).toFixed(2)}"/>`)
     .join("");
 
-  const cx = x.toFixed(1);
-  const cy = y.toFixed(1);
-  const gestirn = tag
-    ? `<circle cx="${cx}" cy="${cy}" r="${GESTIRN * 1.7}" fill="#ffd76a" opacity="0.22"/>
-       <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="#ffdd7a"/>`
-    // Der Mond bekommt einen Hof und eine helle Sichel. Die unbeleuchtete
-    // Scheibe bleibt als dunkler Kreis stehen, sonst schwebt bei Neumond nichts
-    // mehr am Himmel und man weiß nicht, ob der Bogen kaputt ist.
-    : mondBild(cx, cy, mond);
-
   const id = `${MODULE_ID}-sky`;
+  let gestirn = "";
+
+  // Sonne: sichtbar von einer Stunde vor Aufgang bis eine Stunde nach
+  // Untergang; darunter hält der Kuppelrand sie auf.
+  if (helligkeit > 0) {
+    const { x, y } = ort(tagesanteil);
+    gestirn += `
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${GESTIRN * 3.2}" fill="url(#${id}-sonnenschein)"/>
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${GESTIRN}" fill="#ffe58a"/>`;
+  }
+  // Mond: solange es nicht voller Tag ist.
+  const mond = helligkeit < 1 ? mondphase(calendar) : null;
+  if (helligkeit < 1) {
+    const { x, y } = ort(nachtanteil);
+    gestirn += mondBild(x.toFixed(1), y.toFixed(1), mond, 1 - helligkeit);
+  }
+
   const svg = `<svg class="inperson-sky" viewBox="0 0 ${BREITE} ${HOEHE}" width="${BREITE}" height="${HOEHE}" role="img" aria-label="${escape(hinweisText(aufgang, untergang, mond, geschaetzt))}">
-    <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="${himmel[0]}"/><stop offset="1" stop-color="${himmel[1]}"/>
-    </linearGradient></defs>
-    <path d="M 0 ${boden} A ${RADIUS} ${RADIUS} 0 0 1 ${BREITE} ${boden} Z" fill="url(#${id})"/>
-    ${sterne}
-    <path d="M 0 ${boden} A ${RADIUS} ${RADIUS} 0 0 1 ${BREITE} ${boden}" fill="none" stroke="#D4AF37" stroke-opacity="0.45" stroke-width="1"/>
-    ${gestirn}
+    <defs>
+      <linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${himmel[0]}"/><stop offset="0.55" stop-color="${himmel[1]}"/><stop offset="1" stop-color="${himmel[2]}"/>
+      </linearGradient>
+      <linearGradient id="${id}-rot" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0.45" stop-color="#ff9a4a" stop-opacity="0"/><stop offset="1" stop-color="#ff9a4a" stop-opacity="${(0.55 * rot).toFixed(2)}"/>
+      </linearGradient>
+      <radialGradient id="${id}-sonnenschein">
+        <stop offset="0" stop-color="#ffe7a0" stop-opacity="0.9"/><stop offset="0.35" stop-color="#ffd76a" stop-opacity="0.45"/><stop offset="1" stop-color="#ffd76a" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="${id}-rand" cx="50%" cy="100%" r="100%">
+        <stop offset="0.7" stop-color="#000000" stop-opacity="0"/><stop offset="1" stop-color="#000000" stop-opacity="0.45"/>
+      </radialGradient>
+      <clipPath id="${id}-kuppel"><path d="M 0 ${boden} A ${RADIUS} ${RADIUS} 0 0 1 ${BREITE} ${boden} Z"/></clipPath>
+    </defs>
+    <g clip-path="url(#${id}-kuppel)">
+      <rect x="0" y="0" width="${BREITE}" height="${HOEHE}" fill="url(#${id})"/>
+      ${daemmert ? `<rect x="0" y="0" width="${BREITE}" height="${HOEHE}" fill="url(#${id}-rot)"/>` : ""}
+      ${sterne}
+      ${gestirn}
+      <rect x="0" y="0" width="${BREITE}" height="${HOEHE}" fill="url(#${id}-rand)"/>
+    </g>
+    <path d="M 0 ${boden} A ${RADIUS} ${RADIUS} 0 0 1 ${BREITE} ${boden}" fill="none" stroke="#4a4a4a" stroke-width="1.8"/>
   </svg>`;
 
   return { svg, hinweis: hinweisText(aufgang, untergang, mond, geschaetzt) };

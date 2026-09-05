@@ -1,5 +1,22 @@
 # Changelog
 
+## 14.2611.56 — 2026-09-06
+
+**Die Kuppel dämmert.** Eine Stunde vor Sonnenaufgang beginnt der Himmel zu
+blauen, mit Morgenrot am Horizont; die Sterne verblassen, der Mond auch, und
+die Sonne steigt mit ihrem Schein hinter dem Horizont herauf. Abends dasselbe
+zurück. Vorher schaltete die Kuppel hart am Aufgang um — um 05:00 war
+Calendarias Kuppel noch dunkel, unsere schon Tag.
+
+Dazu: Sonnenauf- und -untergang kommen jetzt aus dem Weltkalender
+(`sunrise()`/`sunset()`, wenn Calendaria sie anhängt) statt aus der eigenen
+Näherung — 04:41 statt 04:34. Und die Kuppel hat Calendarias Maße (160 × 80),
+dessen Nachtblau, einen Innenschatten und einen Rand in der Farbe der Pille.
+
+Was bewusst nicht kommt: Regen, Schnee, Nebel und die übrigen Partikel. Das
+ist bei Calendaria eine PixiJS-Szene; auf einem Tablet, dessen Spielfeld wir
+abschalten, wäre eine zweite Grafik-Engine für eine Kuppel der falsche Preis.
+
 ## 14.2611.55 — 2026-09-06
 
 **Hochkant starten die Leisten 80 px höher.** Ganz unten liegt im Inventar die
