@@ -323,5 +323,5 @@
   "INPERSON.SheetView.ResetDone": "{name}: Leisten werden auf die Startwerte zurückgesetzt.",
   "INPERSON.SheetView.BarSizeButtons": "Menüleiste",
   "INPERSON.SheetView.BarSizeClock": "Zeitleiste",
-  "INPERSON.SheetView.LockPosition": "Leisten festhalten"
+  "INPERSON.SheetView.LockPosition": "Position festhalten"
 }

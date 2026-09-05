@@ -323,5 +323,5 @@
   "INPERSON.SheetView.ResetDone": "{name}: bars are being reset to their defaults.",
   "INPERSON.SheetView.BarSizeButtons": "Menu bar",
   "INPERSON.SheetView.BarSizeClock": "Time strip",
-  "INPERSON.SheetView.LockPosition": "Lock the bars in place"
+  "INPERSON.SheetView.LockPosition": "Lock position"
 }

@@ -1,5 +1,10 @@
 # Changelog
 
+## 14.2611.53 — 2026-09-06
+
+**„Position festhalten“ als Kippschalter.** Das dunkle Häkchen-Kästchen war
+auf dem dunklen Feld nicht als solches zu erkennen.
+
 ## 14.2611.52 — 2026-09-06
 
 **Kein Geist mehr nach dem Kreuz.** Wer Charaktere oder Notizen über das
