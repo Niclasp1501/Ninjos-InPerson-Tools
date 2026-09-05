@@ -28,6 +28,7 @@ import { installClock, syncClock, refreshClock } from "./clock.js";
 import { willkommenEinrichten, willkommenZeigen } from "./willkommen.js";
 import { openClockSettings } from "./clock-settings.js";
 import { openTradeSettings } from "./trade-settings.js";
+import { installSheetView, syncSheetView } from "./sheetview.js";
 import { onTradeSocket } from "./trade.js";
 import { installTradeWindow } from "./trade-window.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
@@ -105,6 +106,17 @@ function registerSettings() {
     type: Boolean,
     default: true,
     onChange: () => refreshClock({ force: true })
+  });
+
+  // Die Blattansicht. Beta, weltweit, standardmäßig aus — siehe const.js.
+  S(SETTINGS.SHEETVIEW, {
+    name: "INPERSON.SheetView.Name",
+    hint: "INPERSON.SheetView.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+    onChange: () => syncSheetView()
   });
 
   // Der Bogen ist standardmäßig aus: er ist neu, und eine Leiste, die sich beim
@@ -714,6 +726,7 @@ Hooks.once("ready", async () => {
   installClock();
   installTradeWindow();
   installTradeButton();
+  installSheetView();
   // Lock View may not have built its global yet when our `ready` runs; the
   // canvasReady attempt below is the second chance. Both are no-ops without it.
   installLockViewInterop();

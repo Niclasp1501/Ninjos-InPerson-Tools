@@ -106,6 +106,14 @@ export const SETTINGS = {
   CLOCK_SHOW_SEASON: "clockShowSeason",
   /** Sonnen- und Mondbogen statt oder neben der Uhrzeit (world). */
   CLOCK_SKY: "clockSky",
+  /**
+   * Eigene Blattansicht statt Foundrys Oberfläche (world, Beta).
+   *
+   * Die einzige Funktion des Moduls, die einem Spieler den ganzen Bildschirm
+   * nimmt. Standardmäßig aus, und solange sie aus ist, wird nichts davon
+   * geladen — eine abgeschaltete Beta darf nicht messbar sein.
+   */
+  SHEETVIEW: "sheetView",
   /** Offer the trade button at all (world). */
   TRADE: "trade",
   /**

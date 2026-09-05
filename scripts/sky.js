@@ -22,7 +22,26 @@
 import { MODULE_ID } from "./const.js";
 
 const BREITE = 190;
-const HOEHE = 46;
+
+/**
+ * Eine Kuppel, kein Band.
+ *
+ * Die Vorlage ist deutlich höher als breit gedacht: ein gewölbter Himmel über
+ * einer geraden Horizontlinie. Zweimal habe ich den Bogen als flachen Streifen
+ * gebaut, weil ich ihn als Teil der Leiste gedacht habe — er ist aber ein Bild
+ * und bestimmt seine eigene Größe.
+ */
+const HOEHE = 76;
+
+/**
+ * Wie groß das Gestirn ist.
+ *
+ * Die erste Fassung hatte Radius 6 bei 46 Einheiten Höhe, heruntergerechnet auf
+ * 30 Pixel Leistenhöhe: **vier Pixel auf dem Schirm.** Die Mondphase — der
+ * eigentliche Zweck des Bogens — war damit nicht zu erkennen. Jetzt ist er
+ * knapp ein Fünftel der Höhe und die Leiste selbst höher.
+ */
+const GESTIRN = 11;
 
 /* ── Rechnen ─────────────────────────────────────────────────────── */
 
@@ -93,10 +112,26 @@ function mondphase(calendar) {
 
   return {
     anteil,
+    bild: treffer?.icon ?? null,
     name: treffer?.name ? game.i18n.localize(treffer.name) : null,
     mondname: mond.name ? game.i18n.localize(mond.name) : null,
-    farbe: mond.color || "#C0C0C0"
+    farbe: aufhellen(mond.color) || "#e9e9e4"
   };
+}
+
+/**
+ * Die Mondfarbe fürs Dunkle aufhellen.
+ *
+ * Calendaria gibt für Selûne `#C0C0C0` an - auf einem tiefblauen Himmel wirkt
+ * das grau statt mondhell. Der Farbton bleibt, die Helligkeit steigt.
+ */
+function aufhellen(hex) {
+  if (!/^#[0-9a-f]{6}$/i.test(hex ?? "")) return null;
+  const kanal = i => {
+    const wert = parseInt(hex.slice(1 + i * 2, 3 + i * 2), 16);
+    return Math.round(wert + (255 - wert) * 0.55).toString(16).padStart(2, "0");
+  };
+  return `#${kanal(0)}${kanal(1)}${kanal(2)}`;
 }
 
 /* ── Zeichnen ────────────────────────────────────────────────────── */
@@ -108,9 +143,34 @@ function mondphase(calendar) {
  * und Sterne, die dabei springen, sind das Erste, was am Tisch auffällt.
  */
 const STERNE = [
-  [18, 26], [34, 15], [52, 22], [63, 11], [79, 18], [95, 9],
-  [112, 20], [126, 13], [142, 24], [158, 16], [172, 27], [88, 28]
+  [16, 48], [33, 28], [51, 38], [64, 20], [80, 33], [96, 16],
+  [113, 36], [128, 22], [144, 44], [160, 29], [174, 50], [88, 52],
+  [24, 33], [104, 47], [136, 32], [58, 55], [150, 58], [40, 58]
 ];
+
+/**
+ * Der Mond, mit dem Bild des Kalendermoduls wenn es eines gibt.
+ *
+ * Zuerst hatte ich die Sichel selbst gezeichnet, um nicht an fremden Dateien zu
+ * hängen. Am Tisch sah das schlechter aus als das Original - und das Original
+ * *ist* das Bild, das in den Phasendaten steht. Also wird es genommen, wenn es
+ * da ist, und selbst gezeichnet, wenn nicht. Die Leiste läuft weiterhin ohne
+ * jedes Kalendermodul; sie sieht dann nur etwas schlichter aus.
+ */
+function mondBild(cx, cy, mond) {
+  const hof = `<circle cx="${cx}" cy="${cy}" r="${GESTIRN * 1.7}" fill="#e8f0ff" opacity="0.16"/>`;
+  const d = GESTIRN * 2;
+
+  if (mond?.bild) {
+    return `${hof}<image href="${escape(mond.bild)}" x="${(cx - GESTIRN).toFixed(1)}" y="${(cy - GESTIRN).toFixed(1)}"
+      width="${d}" height="${d}" preserveAspectRatio="xMidYMid meet"/>`;
+  }
+
+  return `${hof}
+    <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="#25313f"/>
+    <path d="${mondPfad(Number(cx), Number(cy), GESTIRN, mond?.anteil ?? 0.5)}" fill="${mond?.farbe ?? "#e9e9e4"}"/>
+    <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="0.6"/>`;
+}
 
 /** Der beleuchtete Teil des Mondes als Pfad. */
 function mondPfad(cx, cy, r, anteil) {
@@ -147,35 +207,41 @@ export function himmelsbogen() {
     : ((jetzt < aufgang ? jetzt + stunden : jetzt) - untergang)
       / Math.max(0.001, stunden - (untergang - aufgang));
 
-  const rand = 16;
+  const rand = 20;
   const x = rand + anteil * (BREITE - 2 * rand);
-  const boden = HOEHE - 8;
-  const scheitel = 8;
+  const boden = HOEHE - 10;
+  const scheitel = 16;
   // Halbkreisbahn: y aus dem Kreis über der Grundlinie.
   const t = (x - rand) / (BREITE - 2 * rand);
   const y = boden - Math.sin(Math.PI * t) * (boden - scheitel);
 
   const mond = tag ? null : mondphase(calendar);
+  // Nacht: tiefes Blau oben, ein Schimmer Grün am Horizont - so sieht ein
+  // Nachthimmel über einer Landschaft aus und nicht wie ein schwarzer Kasten.
   const himmel = tag
-    ? ["#8fc6e8", "#cfe6f2"]
-    : ["#0d1b2a", "#1f4b4b"];
+    ? ["#7db9e0", "#d9ecf6"]
+    : ["#0a1622", "#1d4a45"];
 
   const sterne = tag ? "" : STERNE
-    .map(([sx, sy], i) => `<circle cx="${sx}" cy="${sy}" r="${i % 3 === 0 ? 1.3 : 0.9}" fill="#ffffff" opacity="${i % 2 ? 0.75 : 0.45}"/>`)
+    .map(([sx, sy], i) => `<circle cx="${sx}" cy="${sy}" r="${i % 3 === 0 ? 1.6 : 1.1}" fill="#ffffff" opacity="${i % 2 ? 0.85 : 0.5}"/>`)
     .join("");
 
+  const cx = x.toFixed(1);
+  const cy = y.toFixed(1);
   const gestirn = tag
-    ? `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6.5" fill="#ffd76a"/>
-       <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="#ffd76a" opacity="0.25"/>`
-    : `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6" fill="#2b3a4a"/>
-       <path d="${mondPfad(x, y, 6, mond?.anteil ?? 0.5)}" fill="${mond?.farbe ?? "#C0C0C0"}"/>`;
+    ? `<circle cx="${cx}" cy="${cy}" r="${GESTIRN * 1.7}" fill="#ffd76a" opacity="0.22"/>
+       <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="#ffdd7a"/>`
+    // Der Mond bekommt einen Hof und eine helle Sichel. Die unbeleuchtete
+    // Scheibe bleibt als dunkler Kreis stehen, sonst schwebt bei Neumond nichts
+    // mehr am Himmel und man weiß nicht, ob der Bogen kaputt ist.
+    : mondBild(cx, cy, mond);
 
   const id = `${MODULE_ID}-sky`;
   const svg = `<svg class="inperson-sky" viewBox="0 0 ${BREITE} ${HOEHE}" width="${BREITE}" height="${HOEHE}" role="img" aria-label="${escape(hinweisText(aufgang, untergang, mond, geschaetzt))}">
     <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="${himmel[0]}"/><stop offset="1" stop-color="${himmel[1]}"/>
     </linearGradient></defs>
-    <path d="M 0 ${boden} L 0 ${scheitel + 2} Q ${BREITE / 2} ${-scheitel} ${BREITE} ${scheitel + 2} L ${BREITE} ${boden} Z" fill="url(#${id})"/>
+    <path d="M 0 ${boden} L 0 ${HOEHE * 0.42} Q ${BREITE / 2} ${-HOEHE * 0.22} ${BREITE} ${HOEHE * 0.42} L ${BREITE} ${boden} Z" fill="url(#${id})"/>
     ${sterne}
     <line x1="0" y1="${boden}" x2="${BREITE}" y2="${boden}" stroke="#D4AF37" stroke-width="1.5"/>
     ${gestirn}

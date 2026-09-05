@@ -283,5 +283,21 @@
   "INPERSON.Clock.Field.Sky": "Sun and moon arc",
   "INPERSON.Clock.Field.SkyHint": "Shows where the sun or moon stands right now, with the moon's phase. Computed from the world calendar; without those figures it falls back to 06:00/18:00.",
   "INPERSON.Clock.SunTimes": "Sun: up {up}, down {down}",
-  "INPERSON.Clock.SunGuessed": "estimated - the calendar gives no figures"
+  "INPERSON.Clock.SunGuessed": "estimated - the calendar gives no figures",
+  "INPERSON.SheetView.Name": "Sheet view (beta)",
+  "INPERSON.SheetView.Hint": "Gives players the whole screen for their character sheet and replaces Foundry's interface with a bar of a few large buttons. For tablets at the table. Beta: switch it on while you are there - gamemasters are never affected.",
+  "INPERSON.SheetView.Who": "Who",
+  "INPERSON.SheetView.WhoHint": "Your characters",
+  "INPERSON.SheetView.Chat": "Chat",
+  "INPERSON.SheetView.ChatHint": "Rolls and messages",
+  "INPERSON.SheetView.Notes": "Notes",
+  "INPERSON.SheetView.NotesHint": "Journal directory",
+  "INPERSON.SheetView.Trade": "Trade",
+  "INPERSON.SheetView.TradeHint": "Trade with somebody",
+  "INPERSON.SheetView.Smaller": "Smaller text",
+  "INPERSON.SheetView.Bigger": "Larger text",
+  "INPERSON.SheetView.Fullscreen": "Fullscreen",
+  "INPERSON.SheetView.NoFullscreen": "This device does not allow fullscreen. On iPhone and iPad, use “Add to Home Screen”.",
+  "INPERSON.SheetView.LogOut": "Log out",
+  "INPERSON.SheetView.LogOutAsk": "Really log out?"
 }

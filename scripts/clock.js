@@ -315,6 +315,21 @@ export function refreshClock({ force = false } = {}) {
 
 /* ── Wiring ──────────────────────────────────────────────────────── */
 
+/**
+ * Die Leiste in einen beliebigen Behälter hängen.
+ *
+ * Sheet Only bekommt sie über die Anmeldung in `sheet-only.js`; unsere eigene
+ * Blattansicht hat einen Behälter, den sie selbst besitzt, und braucht keine
+ * Beobachtung des DOM. Zweimal derselbe Aufbau, zwei Wege hinein.
+ */
+export function mountClockInto(container) {
+  if (!container || !game.settings.get(MODULE_ID, SETTINGS.CLOCK_STRIP)) return;
+  if (container.querySelector(".inperson-clock")) return;
+  lastStamp = null;
+  const strip = buildStrip();
+  if (strip) container.appendChild(strip);
+}
+
 /** Show or hide the strip according to this client's own setting. */
 export function syncClock() {
   if (game.settings.get(MODULE_ID, SETTINGS.CLOCK_STRIP)) {

@@ -283,5 +283,21 @@
   "INPERSON.Clock.Field.Sky": "Sonnen- und Mondbogen",
   "INPERSON.Clock.Field.SkyHint": "Zeigt, wo Sonne oder Mond gerade stehen, mit Mondphase. Wird aus dem Weltkalender gerechnet; ohne Angaben dort fällt er auf 06:00/18:00 zurück.",
   "INPERSON.Clock.SunTimes": "Sonne: {up} auf, {down} unter",
-  "INPERSON.Clock.SunGuessed": "geschätzt — der Kalender macht keine Angabe"
+  "INPERSON.Clock.SunGuessed": "geschätzt — der Kalender macht keine Angabe",
+  "INPERSON.SheetView.Name": "Blattansicht (Beta)",
+  "INPERSON.SheetView.Hint": "Gibt Spielern den ganzen Bildschirm für ihr Charakterblatt und ersetzt Foundrys Oberfläche durch eine Leiste mit wenigen großen Knöpfen. Für Tablets am Tisch. Beta: erst einschalten, wenn du dabei bist — Spielleiter sind nie betroffen.",
+  "INPERSON.SheetView.Who": "Wer",
+  "INPERSON.SheetView.WhoHint": "Deine Charaktere",
+  "INPERSON.SheetView.Chat": "Chat",
+  "INPERSON.SheetView.ChatHint": "Würfe und Nachrichten",
+  "INPERSON.SheetView.Notes": "Notiz",
+  "INPERSON.SheetView.NotesHint": "Notiz-Verzeichnis",
+  "INPERSON.SheetView.Trade": "Tausch",
+  "INPERSON.SheetView.TradeHint": "Mit jemandem tauschen",
+  "INPERSON.SheetView.Smaller": "Schrift kleiner",
+  "INPERSON.SheetView.Bigger": "Schrift größer",
+  "INPERSON.SheetView.Fullscreen": "Vollbild",
+  "INPERSON.SheetView.NoFullscreen": "Dieses Gerät erlaubt kein Vollbild. Auf iPhone und iPad geht es über „Zum Home-Bildschirm hinzufügen“.",
+  "INPERSON.SheetView.LogOut": "Abmelden",
+  "INPERSON.SheetView.LogOutAsk": "Wirklich abmelden?"
 }

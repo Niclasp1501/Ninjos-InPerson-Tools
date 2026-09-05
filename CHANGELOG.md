@@ -1,5 +1,38 @@
 # Changelog
 
+## 14.2611.26 — 2026-09-05
+
+**Der Himmelsbogen nimmt jetzt Calendarias eigene Mondbilder.** Zuerst hatte ich
+die Sichel selbst gezeichnet, um nicht an fremden Dateien zu hängen — am Tisch
+sah das schlechter aus als das Vorbild, und das Vorbild *ist* das Bild, dessen
+Pfad ohnehin in den Phasendaten steht. Also wird es genommen, wenn es da ist,
+und selbst gezeichnet, wenn nicht.
+
+Außerdem ist der Bogen eine **Kuppel** statt eines flachen Streifens und wird
+eins zu eins dargestellt: 190 × 76 Pixel. Zweimal war er zu klein geraten, beide
+Male aus demselben Denkfehler — ich hatte ihn als Teil der Leiste gedacht und
+auf deren Höhe gestaucht. Er ist aber ein Bild und bestimmt seine eigene Größe.
+
+## 14.2611.25 — 2026-09-05
+
+**Erste Fassung der eigenen Blattansicht — als Beta, standardmäßig aus.**
+Sie gibt Spielern den ganzen Bildschirm für ihr Charakterblatt und ersetzt
+Foundrys Oberfläche durch eine schwebende Leiste: Wer, Chat, Notiz, Tausch,
+Schrift kleiner und größer, Vollbild, Abmelden — dazu die Zeitleiste. Entwurf
+und Begründungen in `KONZEPT-blattansicht.md`.
+
+**Verdecken statt umbauen.** Foundrys Oberfläche bleibt vollständig da und
+funktionsfähig; sie wird nur nicht gezeigt. Module, die Teile davon
+voraussetzen, laufen weiter, und der Weg zurück ist eine Klasse am `body`.
+
+**Die Meldungen bleiben sichtbar** — der eine Punkt, an dem wir es bewusst
+anders machen. Wer `#notifications` mit ausblendet, nimmt sich die Möglichkeit,
+dem Spieler überhaupt noch etwas zu sagen; genau dafür brauchte es im
+Sheet-Only-Modus einen eigenen Streifen.
+
+Spielleiter sind nie betroffen: Sie brauchen die Oberfläche, die hier
+verschwindet.
+
 ## 14.2611.24 — 2026-09-05
 
 **Ein Sonnen- und Mondbogen in der Zeitleiste.** Er zeigt, wo Sonne oder Mond
