@@ -1,5 +1,10 @@
 # Changelog
 
+## 14.2611.55 — 2026-09-06
+
+**Hochkant starten die Leisten 80 px höher.** Ganz unten liegt im Inventar die
+Münzzeile, und die Menüleiste lag genau darauf.
+
 ## 14.2611.54 — 2026-09-06
 
 **Der Bearbeiten-Schalter des Blatts ist wieder da.** Tidys Spielen/Bearbeiten

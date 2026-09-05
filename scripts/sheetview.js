@@ -304,7 +304,11 @@ function leisteUnterDieUhr() {
   if (hochkant) {
     if (barFrei) {
       bar.style.top = "auto";
-      bar.style.bottom = "calc(env(safe-area-inset-bottom, 0px) + 12px)";
+      // 92 statt 12: Ganz unten liegt im Inventar die Münzzeile (gemessen 77 px
+      // hoch samt Rand), und die
+      // Menüleiste lag genau darauf. Eine Leiste höher deckt nur Listenzeilen,
+      // die man scrollen kann - Münzen kann man nicht scrollen.
+      bar.style.bottom = "calc(env(safe-area-inset-bottom, 0px) + 92px)";
     }
     if (uhrFrei) {
       const dach = window.innerHeight - bar.getBoundingClientRect().top;
