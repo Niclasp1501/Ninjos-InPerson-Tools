@@ -705,12 +705,11 @@ function leistengroesse() {
         groesseAnwenden();
         // Ein gezogener Platz steht in gezoomten Pixeln in left/top; mit
         // neuem Faktor wanderte die Leiste beim Schieben weg und flatterte.
-        // Also den Platz nach jedem Schritt neu anwenden - im nächsten Bild,
-        // wenn der Zoom schon gilt.
-        requestAnimationFrame(() => {
-          lageAnwenden({ behalten: true });
-          feldPlatzieren(document.getElementById(GROESSE_ID));
-        });
+        // Also den Platz nach jedem Schritt neu anwenden. Synchron, nicht im
+        // nächsten Bild: getComputedStyle erzwingt die Neuberechnung, und ein
+        // Tab im Hintergrund bekommt gar keine Bilder - dort blieb es liegen.
+        lageAnwenden({ behalten: true });
+        feldPlatzieren(document.getElementById(GROESSE_ID));
       }
     }));
   });
