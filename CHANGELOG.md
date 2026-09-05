@@ -1,5 +1,27 @@
 # Changelog
 
+## 14.2611.30 — 2026-09-05
+
+Drei Fehler in der Blattansicht, die ich hätte sehen müssen, statt Zahlen aus
+dem DOM zu lesen.
+
+**Die Schriftknöpfe taten nichts.** Sie setzten eine Schriftgröße, und Tidy5e
+setzt seine Maße selbst — unsere Variable erreichte keines davon. Gemessen: eine
+Schaltfläche blieb bei 140 × 28 Pixeln, egal wie oft man drückte. Jetzt über
+`zoom`, damit werden daraus 196 × 39. Und weil `zoom` auch den Kasten skaliert
+— aus `100vw` wurden bei Faktor 1,4 dreitausend Pixel auf einem
+zweitausend-Pixel-Schirm —, wird die Größe des Blattes gegen den Zoom gerechnet.
+Es füllt jetzt bei jedem Faktor genau das Fenster.
+
+**Die beiden Leisten lagen aufeinander.** Ein gespeicherter Platz aus früheren
+Fassungen legte die Knöpfe mitten auf die Uhr. Ein gemerkter Platz wird jetzt
+verworfen, wenn er die andere Leiste überdeckt.
+
+**Und sie schnitten das Blatt oben ab.** Dort steht bei jedem Charakterblatt die
+Kopfzeile mit Name, Bild und Werten. Beide sind an den unteren Rand gezogen —
+links die Knöpfe, rechts die Zeit. Das ist der leerste Teil jedes Blattes, und
+auf einem Tablet der, den der Daumen erreicht.
+
 ## 14.2611.29 — 2026-09-05
 
 **Symbole statt Wörter** in der Leiste der Blattansicht. Wörter machen sie breit

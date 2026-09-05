@@ -196,8 +196,11 @@ function uhrBauen() {
 
 /* ── Verschieben ─────────────────────────────────────────────────── */
 
-const PLATZ_KEY = `${MODULE_ID}.sheetviewBar`;
-const UHR_PLATZ_KEY = `${MODULE_ID}.sheetviewUhr`;
+// Version 2 der Schlüssel: Die alten enthalten Plätze aus der Zeit, als beide
+// Leisten oben standen und sich überdeckten. Ein neuer Name wirft sie weg,
+// ohne dass jemand etwas löschen muss.
+const PLATZ_KEY = `${MODULE_ID}.sheetviewBar2`;
+const UHR_PLATZ_KEY = `${MODULE_ID}.sheetviewUhr2`;
 const HALTEN_MS = 400;
 
 let gezogen = false;
@@ -281,18 +284,40 @@ function setzen(bar, x, y) {
 }
 
 /**
- * Den gemerkten Platz zurückholen — aber nur, wenn er auf diesem Schirm liegt.
+ * Den gemerkten Platz zurückholen — aber nur, wenn er taugt.
  *
- * Wer die Leiste am 27-Zoll-Bildschirm nach rechts außen schiebt und dann das
- * Tablet nimmt, fände sie sonst nicht wieder.
+ * Zwei Prüfungen, beide aus einem echten Fall. Er muss auf *diesem* Schirm
+ * liegen: Wer die Leiste am 27-Zoll-Bildschirm nach außen schiebt, fände sie
+ * auf dem Tablet sonst nicht wieder. Und er darf die andere Leiste nicht
+ * überdecken — genau das war zu sehen, ein gespeicherter Platz aus früheren
+ * Zeiten legte die Knöpfe mitten auf die Uhr.
  */
 function platzWiederherstellen(bar, key) {
   let platz = null;
   try { platz = JSON.parse(localStorage.getItem(key) ?? "null"); } catch { /* egal */ }
   if (!platz) return;
-  const r = bar.getBoundingClientRect();
   if (platz.x > window.innerWidth - 40 || platz.y > window.innerHeight - 40) return;
+
+  const vorher = bar.getBoundingClientRect();
   setzen(bar, platz.x, platz.y);
+
+  const andere = document.getElementById(bar.id === BAR_ID ? UHR_ID : BAR_ID);
+  if (andere && ueberlappen(bar, andere)) {
+    // Zurück auf den Platz aus dem Stylesheet.
+    bar.style.removeProperty("left");
+    bar.style.removeProperty("top");
+    bar.style.removeProperty("right");
+    bar.style.removeProperty("bottom");
+    bar.style.removeProperty("transform");
+    localStorage.removeItem(key);
+    console.warn(`${MODULE_ID} | gemerkter Platz überdeckte die andere Leiste, verworfen`, platz, vorher);
+  }
+}
+
+function ueberlappen(a, b) {
+  const x = a.getBoundingClientRect();
+  const y = b.getBoundingClientRect();
+  return !(x.right < y.left || y.right < x.left || x.bottom < y.top || y.bottom < x.top);
 }
 
 /* ── Die drei, die sofort etwas tun ──────────────────────────────── */
@@ -312,6 +337,12 @@ function zoomen(schritt) {
   zoomAnwenden();
 }
 
+/**
+ * Den Faktor setzen. Wirkt über `zoom` auf dem Blatt, nicht über `font-size`.
+ *
+ * Der erste Versuch ging über die Schriftgröße und tat nachweislich nichts:
+ * Tidy5e setzt seine Maße selbst, unsere Variable erreichte keines davon.
+ */
 function zoomAnwenden() {
   const faktor = Number(localStorage.getItem(ZOOM_KEY)) || 1;
   document.documentElement.style.setProperty("--inperson-sv-zoom", String(faktor));
