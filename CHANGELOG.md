@@ -1,5 +1,13 @@
 # Changelog
 
+## 14.2611.50 — 2026-09-06
+
+**Flackern beim Ziehen, zweiter Anlauf.** Während des Ziehens lagen auf der
+Leiste eine Skalierung und ein `drop-shadow`-Filter — auf einem gezoomten
+Element rastert das Tablet damit jedes Bild neu. Jetzt nur ein heller Rand.
+Dazu wird das Kontextmenü unterdrückt, das Android nach langem Druck öffnet
+und das die Berührung genau beim Beginn des Ziehens abbricht.
+
 ## 14.2611.49 — 2026-09-06
 
 **Kein Flattern mehr beim Ziehen der Menüleiste.** Auf dem Tablet feuert

@@ -492,6 +492,9 @@ function ziehbarMachen(element, key) {
 
   element.addEventListener("mousedown", start);
   element.addEventListener("touchstart", start, { passive: true });
+  // Android öffnet nach langem Druck ein Kontextmenü und bricht die Berührung
+  // ab - genau in dem Moment, in dem das Ziehen beginnen soll.
+  element.addEventListener("contextmenu", event => event.preventDefault());
   document.addEventListener("mousemove", bewegen);
   document.addEventListener("touchmove", bewegen, { passive: false });
   document.addEventListener("mouseup", ende);

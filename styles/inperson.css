@@ -2241,9 +2241,17 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
   z-index: 41;
 }
 
+/* Beim Ziehen nur ein heller Rand. Skalierung und drop-shadow-Filter auf
+   einem gezoomten Element ließen die Leiste auf dem Tablet bei jedem Bild
+   neu rastern - das war das Flackern. */
 .inperson-sv-anker.wird-gezogen > * {
-  transform: scale(1.04);
-  filter: drop-shadow(0 6px 20px rgb(0 0 0 / 45%));
+  outline: 2px solid rgb(255 255 255 / 55%);
+  outline-offset: 2px;
+}
+
+.inperson-sv-anker {
+  -webkit-touch-callout: none;
+  will-change: left, top;
 }
 
 .inperson-sheetview-bar {
