@@ -47,6 +47,20 @@ const EINSTELLUNG = "willkommenGesehen";
 
 /* ── Identical in every module from here on ───────────────────────── */
 
+/**
+ * Address of this module's page on the Forge, in the reader's language.
+ *
+ * The site carries an English tree under /en. Sending an English client to the
+ * German page would undo the point of the window - it is meant to explain, not
+ * to be admired.
+ */
+function forgeAdresse() {
+  const en = game.i18n.lang?.startsWith("en") ? "/en" : "";
+  // Ohne slug gibt es noch keine Modulseite - dann auf die Uebersicht, nie
+  // auf eine 404. Der Eintrag auf der Forge gehoert dann nachgeholt.
+  return MODUL.slug ? `${FORGE}${en}/modules/${MODUL.slug}` : `${FORGE}${en}/modules`;
+}
+
 /** Localise when it looks like a translation key, otherwise pass through. */
 function text(wert) {
   return /^[A-Z0-9]+\.[A-Za-z0-9.]+$/.test(wert) ? game.i18n.localize(wert) : wert;
@@ -101,14 +115,32 @@ function stilEinhaengen() {
       border-left: 3px solid #D4AF37;
       background: rgb(212 175 55 / 10%); color: inherit;
     }
-    .ninjo-willkommen-forge {
-      display: flex; gap: 0.6rem; align-items: center;
-      margin-top: 0.4rem; padding-top: 0.7rem;
-      border-top: 1px solid rgb(212 175 55 / 35%);
-      font-size: 0.85rem; color: inherit;
+    /* Die Werbeflaeche. Eine Zeile mit Link war zu leise - wer das Fenster
+       einmal sieht, soll wissen, dass es mehr davon gibt. Als ganze Karte
+       anklickbar, in denselben Farben wie der Kopf: das Fenster ist damit
+       oben und unten von der Marke eingefasst. */
+    a.ninjo-willkommen-forge {
+      display: flex; gap: 0.8rem; align-items: center;
+      margin: 1rem -0.5rem -0.5rem; padding: 0.75rem 0.9rem;
+      border-top: 2px solid #D4AF37;
+      background: linear-gradient(180deg, #5e0000 0%, #8B0000 100%);
+      color: #fff; text-decoration: none;
+      transition: filter 0.15s;
     }
-    .ninjo-willkommen-forge i { color: #D4AF37; }
-    .ninjo-willkommen-forge a { font-weight: 600; }
+    a.ninjo-willkommen-forge:hover { filter: brightness(1.18); text-decoration: none; }
+    a.ninjo-willkommen-forge img {
+      flex: 0 0 auto; width: 38px; height: 38px; object-fit: contain;
+      filter: drop-shadow(0 2px 3px rgb(0 0 0 / 45%));
+    }
+    .ninjo-willkommen-forge-text { flex: 1 1 auto; min-width: 0; }
+    .ninjo-willkommen-forge-titel {
+      display: block; color: #D4AF37; font-size: 0.95rem; font-weight: 700; line-height: 1.2;
+    }
+    .ninjo-willkommen-forge-zeile {
+      display: block; margin-top: 0.1rem;
+      color: rgb(255 255 255 / 88%); font-size: 0.8rem; line-height: 1.35;
+    }
+    a.ninjo-willkommen-forge > i:last-child { flex: 0 0 auto; color: #D4AF37; font-size: 1rem; }
   `;
   document.head.appendChild(s);
 }
@@ -132,12 +164,14 @@ export async function willkommenZeigen() {
       <p>${text(MODUL.einleitung)}</p>
       <ul>${punkte}</ul>
       <p class="ninjo-willkommen-start">${text(MODUL.start)}</p>
-      <div class="ninjo-willkommen-forge">
-        <i class="fa-solid fa-hammer"></i>
-        <span>${game.i18n.localize("INPERSON.Willkommen.Forge")}
-          <a href="${FORGE}/modules/${MODUL.slug}" target="_blank" rel="noopener">Ninjo's Forge</a>
+      <a class="ninjo-willkommen-forge" href="${forgeAdresse()}" target="_blank" rel="noopener">
+        <img src="${logo}" alt="">
+        <span class="ninjo-willkommen-forge-text">
+          <span class="ninjo-willkommen-forge-titel">Ninjo's Forge</span>
+          <span class="ninjo-willkommen-forge-zeile">${text("INPERSON.Willkommen.ForgeZeile")}</span>
         </span>
-      </div>
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      </a>
     </div>`;
 
   const antwort = await foundry.applications.api.DialogV2.wait({
