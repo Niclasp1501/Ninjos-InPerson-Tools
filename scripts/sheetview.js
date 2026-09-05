@@ -618,7 +618,13 @@ async function starten() {
 }
 
 async function beenden() {
-  if (!laufend) return;
+  // Nicht an `laufend` hängen. Auf einem Spielleiter-Client standen beide
+  // Leisten über der normalen Oberfläche, obwohl die Ansicht dort nie laufen
+  // darf - wie auch immer sie dorthin kamen, das Aufräumen muss greifen, auch
+  // wenn dieses Modul selbst glaubt, es sei nie gestartet worden.
+  const spuren = document.getElementById(BAR_ID) || document.getElementById(UHR_ID)
+    || document.body.classList.contains(BODY_CLASS);
+  if (!laufend && !spuren) return;
   laufend = false;
   await flaecheSchliessen();
   geoeffnet.clear();
@@ -632,8 +638,8 @@ async function beenden() {
 
 /** Zustand herstellen, wie die Einstellung ihn verlangt. */
 export function syncSheetView() {
-  if (sheetViewWanted()) starten();
-  else beenden();
+  if (sheetViewWanted()) return starten();
+  return beenden();
 }
 
 export function installSheetView() {
