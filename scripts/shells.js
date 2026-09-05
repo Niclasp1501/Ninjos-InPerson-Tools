@@ -71,6 +71,22 @@ export function removeShells(selector, { onlyGhost = false, alsoGhost = null } =
   return shells.length;
 }
 
+/**
+ * Sofort unsichtbar machen — vor dem Schließen, nicht danach.
+ *
+ * `close()` ist asynchron, und bis es fertig ist, steht der Rahmen im Bild.
+ * Das waren die „paar Millisekunden Geisterbild" nach dem Schließen: kein
+ * Fehler im Aufräumen, sondern die Lücke zwischen Entscheidung und Vollzug.
+ * Wer den Rahmen im selben Augenblick versteckt, in dem er das Schließen
+ * anstößt, lässt dem Auge nichts zum Sehen.
+ * @param {string} selector
+ */
+export function hideShells(selector) {
+  for (const shell of document.querySelectorAll(selector)) {
+    shell.style.setProperty("display", "none", "important");
+  }
+}
+
 const laufend = new Set();
 
 /**

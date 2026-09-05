@@ -26,7 +26,7 @@ import { MODULE_ID, SETTINGS } from "./const.js";
 import { characterOf } from "./trade.js";
 import { openTrade } from "./trade-start.js";
 import { mountClockInto } from "./clock.js";
-import { queueSweep, removeShells } from "./shells.js";
+import { queueSweep, removeShells, hideShells } from "./shells.js";
 
 const BODY_CLASS = "inperson-sheetview";
 const BAR_ID = "inperson-sheetview-bar";
@@ -432,6 +432,17 @@ function nacheinander(arbeit) {
 }
 
 function flaecheUmschalten(name) {
+  // Synchron, noch im Klick: alles aus dem Bild, was gleich zugehen soll.
+  // Die Kette darunter läuft erst nach dem Handler an - und in dieser Lücke
+  // stand der Rahmen sonst für ein, zwei Bilder sichtbar da. Gemessen: die
+  // erste Probe 0 ms nach dem Klick zeigte ihn noch.
+  const bleibt = offeneFlaeche === name ? null : name;
+  for (const node of document.querySelectorAll(".sidebar-popout")) {
+    if (!(bleibt && KLASSEN[bleibt] && node.classList.contains(KLASSEN[bleibt]))) {
+      node.classList.remove("inperson-offen");
+    }
+  }
+
   return nacheinander(async () => {
     const wollen = offeneFlaeche === name ? null : name;
     offeneFlaeche = wollen;
@@ -453,7 +464,13 @@ function flaecheUmschalten(name) {
       return abgleichen();
     }
     if (!popout) offeneFlaeche = null;
-    else geoeffnet.set(wollen, popout);
+    else {
+      geoeffnet.set(wollen, popout);
+      // Sichtbar wird ein Fenster erst mit dieser Klasse (siehe CSS). Alles
+      // andere, was als Seitenleisten-Fenster auftaucht, bleibt unsichtbar —
+      // Geister eingeschlossen.
+      popout.element?.classList.add("inperson-offen");
+    }
 
     markieren();
     abgleichen();
@@ -510,6 +527,13 @@ const KLASSEN = {
  * die Foundry stehen lässt (siehe shells.js).
  */
 async function allesSchliessenAusser(behalten) {
+  // Zuerst, synchron: alles Unerwünschte aus dem Bild nehmen. Das eigentliche
+  // Schließen dauert, und in dieser Zeit stand der Rahmen sonst sichtbar da.
+  for (const node of document.querySelectorAll(".sidebar-popout")) {
+    const soll = behalten && KLASSEN[behalten] && node.classList.contains(KLASSEN[behalten]);
+    if (!soll) node.classList.remove("inperson-offen");
+  }
+
   // Erst über die Anwendung schließen, nicht über das Element. Wer den Knoten
   // wegnimmt, lässt eine Anwendung zurück, die sich für offen hält — und die
   // zeichnet sich bei der nächsten Gelegenheit wieder hin.

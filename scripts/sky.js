@@ -21,26 +21,20 @@
 
 import { MODULE_ID } from "./const.js";
 
-const BREITE = 190;
-
 /**
- * Eine Kuppel, kein Band.
+ * Eine Halbkuppel, die über die Leiste hinausragt.
  *
- * Die Vorlage ist deutlich höher als breit gedacht: ein gewölbter Himmel über
- * einer geraden Horizontlinie. Zweimal habe ich den Bogen als flachen Streifen
- * gebaut, weil ich ihn als Teil der Leiste gedacht habe — er ist aber ein Bild
- * und bestimmt seine eigene Größe.
- */
-const HOEHE = 76;
-
-/**
- * Wie groß das Gestirn ist.
+ * Das war der Punkt, den ich dreimal falsch hatte: Der Bogen gehört nicht *in*
+ * die Leiste, sondern *auf* sie. Im Original ist die Leiste dünn und die Kuppel
+ * steht oben darauf wie ein Uhrglas — so bleibt die Leiste flach und der
+ * Himmel bekommt trotzdem seine Höhe. Ein Bogen in der Leiste hatte sie auf 86
+ * Pixel aufgeblasen.
  *
- * Die erste Fassung hatte Radius 6 bei 46 Einheiten Höhe, heruntergerechnet auf
- * 30 Pixel Leistenhöhe: **vier Pixel auf dem Schirm.** Die Mondphase — der
- * eigentliche Zweck des Bogens — war damit nicht zu erkennen. Jetzt ist er
- * knapp ein Fünftel der Höhe und die Leiste selbst höher.
+ * Halbkreis mit Radius 60: 120 breit, 62 hoch, der Horizont ist die Unterkante.
  */
+const RADIUS = 60;
+const BREITE = RADIUS * 2;
+const HOEHE = RADIUS + 2;
 const GESTIRN = 11;
 
 /* ── Rechnen ─────────────────────────────────────────────────────── */
@@ -143,9 +137,8 @@ function aufhellen(hex) {
  * und Sterne, die dabei springen, sind das Erste, was am Tisch auffällt.
  */
 const STERNE = [
-  [16, 48], [33, 28], [51, 38], [64, 20], [80, 33], [96, 16],
-  [113, 36], [128, 22], [144, 44], [160, 29], [174, 50], [88, 52],
-  [24, 33], [104, 47], [136, 32], [58, 55], [150, 58], [40, 58]
+  [22, 50], [30, 34], [42, 22], [56, 14], [70, 12], [84, 20],
+  [96, 34], [104, 50], [48, 40], [76, 30], [62, 28], [36, 48], [88, 46]
 ];
 
 /**
@@ -207,13 +200,12 @@ export function himmelsbogen() {
     : ((jetzt < aufgang ? jetzt + stunden : jetzt) - untergang)
       / Math.max(0.001, stunden - (untergang - aufgang));
 
-  const rand = 20;
-  const x = rand + anteil * (BREITE - 2 * rand);
-  const boden = HOEHE - 10;
-  const scheitel = 16;
-  // Halbkreisbahn: y aus dem Kreis über der Grundlinie.
-  const t = (x - rand) / (BREITE - 2 * rand);
-  const y = boden - Math.sin(Math.PI * t) * (boden - scheitel);
+  // Die Bahn ist ein innerer Halbkreis um den Mittelpunkt der Kuppel: links am
+  // Horizont auf, oben im Scheitel, rechts wieder unter.
+  const boden = RADIUS;
+  const bahn = RADIUS - GESTIRN - 5;
+  const x = RADIUS - bahn * Math.cos(Math.PI * anteil);
+  const y = boden - bahn * Math.sin(Math.PI * anteil);
 
   const mond = tag ? null : mondphase(calendar);
   // Nacht: tiefes Blau oben, ein Schimmer Grün am Horizont - so sieht ein
@@ -241,9 +233,9 @@ export function himmelsbogen() {
     <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="${himmel[0]}"/><stop offset="1" stop-color="${himmel[1]}"/>
     </linearGradient></defs>
-    <path d="M 0 ${boden} L 0 ${HOEHE * 0.42} Q ${BREITE / 2} ${-HOEHE * 0.22} ${BREITE} ${HOEHE * 0.42} L ${BREITE} ${boden} Z" fill="url(#${id})"/>
+    <path d="M 0 ${boden} A ${RADIUS} ${RADIUS} 0 0 1 ${BREITE} ${boden} Z" fill="url(#${id})"/>
     ${sterne}
-    <line x1="0" y1="${boden}" x2="${BREITE}" y2="${boden}" stroke="#D4AF37" stroke-width="1.5"/>
+    <path d="M 0 ${boden} A ${RADIUS} ${RADIUS} 0 0 1 ${BREITE} ${boden}" fill="none" stroke="#D4AF37" stroke-opacity="0.85" stroke-width="1.5"/>
     ${gestirn}
   </svg>`;
 

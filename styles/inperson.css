@@ -2025,28 +2025,43 @@ span.inperson-icon svg {
   cursor: help;
 }
 
-/* Der Himmelsbogen in der Zeitleiste. Eigene Ecken, damit er als Bild lesbar
-   bleibt und nicht wie ein Teil des dunklen Chips wirkt. */
-.inperson-clock-sky {
-  display: inline-flex;
-  border-radius: 6px;
-  overflow: hidden;
-  line-height: 0;
-  cursor: help;
+/*
+ * Die Himmelskuppel sitzt AUF der Zeitleiste, nicht in ihr.
+ *
+ * Dreimal hatte ich den Bogen in die Leiste gesetzt und sie damit auf 86 Pixel
+ * aufgeblasen. Im Original ist die Leiste dünn, und die Kuppel steht oben
+ * darauf wie ein Uhrglas. Also: Die Leiste bleibt eine flache Pille, bekommt
+ * links Platz frei, und die Kuppel ragt aus ihrer Oberkante heraus.
+ *
+ * Das obere Drittel der Kuppel liegt außerhalb der Pille - deshalb der
+ * `margin-top`, damit sie nirgendwo abgeschnitten wird, wo die Leiste am Rand
+ * klebt.
+ */
+.inperson-clock:has(.inperson-clock-sky) {
+  position: relative;
+  margin-top: 44px;
+  padding-left: 136px;
+  overflow: visible;
 }
 
-/*
- * Eins zu eins gezeichnet: Der Bogen misst 190x54 Einheiten, und genau so groß
- * wird er dargestellt. Damit ist der Mond zehn Pixel breit statt vier.
- *
- * Zweimal zu klein geraten, beide Male aus demselben Grund: Der Bogen wurde als
- * Teil der Leiste gedacht und auf deren Höhe gestaucht. Er ist aber ein Bild
- * und braucht seine Größe — die Leiste richtet sich nach ihm, nicht umgekehrt.
- */
-.inperson-clock-sky svg.inperson-sky { display: block; height: 76px; width: 190px; }
+.inperson-clock-sky {
+  position: absolute;
+  left: 8px;
+  bottom: 4px;
+  display: block;
+  width: 120px;
+  height: 62px;
+  line-height: 0;
+  cursor: help;
+  border-radius: 60px 60px 0 0;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 45%));
+}
 
-/* Die Leiste wird dadurch höher; die Zahlen daneben rücken mittig dazu. */
-.inperson-clock:has(.inperson-clock-sky) { padding: 0.25rem 0.75rem 0.25rem 0.25rem; }
+.inperson-clock-sky svg.inperson-sky {
+  display: block;
+  width: 120px;
+  height: 62px;
+}
 
 /* -------------------------------------------- */
 /*  Blattansicht (Beta)                         */
@@ -2088,19 +2103,45 @@ body.inperson-sheetview {
  * Breite ergibt wieder genau das Fenster.
  */
 body.inperson-sheetview .inperson-stage-sheet {
+  --inperson-sv-oben: calc(env(safe-area-inset-top, 0px) + 10px);
   position: fixed !important;
-  top: 0 !important;
+  top: var(--inperson-sv-oben) !important;
   left: 0 !important;
   right: auto !important;
   bottom: auto !important;
   zoom: var(--inperson-sv-zoom, 1);
   width: calc(100vw / var(--inperson-sv-zoom, 1)) !important;
-  height: calc(100dvh / var(--inperson-sv-zoom, 1)) !important;
+  /* Oben ein Stück Luft: Bei `inset: 0` saß das Porträt auf dem allerersten
+     Pixel und die Kopfzeile wirkte abgeschnitten. Sheet Only lässt dort aus
+     demselben Grund einen Rand. */
+  height: calc((100dvh - var(--inperson-sv-oben)) / var(--inperson-sv-zoom, 1)) !important;
   max-width: none !important;
   max-height: none !important;
   margin: 0 !important;
   border-radius: 0 !important;
   z-index: 20 !important;
+}
+
+/* Was Sheet Only am Blatt für den Finger ändert, gilt hier ebenso: dünne
+   Rollbalken, kein Größengriff, und unten Platz für die beiden Leisten, damit
+   die letzte Zeile nicht darunter verschwindet. */
+body.inperson-sheetview .inperson-stage-sheet * {
+  scrollbar-width: thin;
+}
+
+body.inperson-sheetview .inperson-stage-sheet .window-resize-handle {
+  display: none !important;
+}
+
+body.inperson-sheetview .inperson-stage-sheet .window-content {
+  padding-bottom: 72px !important;
+}
+
+/* Tidy5e hält seine Reiter-Ränder in Variablen; enger, weil ein Tablet die
+   Breite nicht hat. */
+body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
+  --t5e-tab-contents-padding-left: 0.5rem;
+  --t5e-tab-contents-padding-right: 0.5rem;
 }
 
 body.inperson-sheetview .inperson-stage-sheet > .window-header {
@@ -2260,6 +2301,13 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
 /* Rechter Rand, volle Höhe — dieselbe Verankerung wie im Sheet-Only-Modus,
    und aus demselben Grund: Foundry rechnet die Lage aus der Position eines
    Reiters, den es hier nicht zu sehen gibt. */
+/* Ein Seitenleisten-Fenster ist nur zu sehen, wenn WIR es geöffnet haben.
+   Der Rahmen, den Foundry beim Schließen stehen lässt, hat die Klasse nicht
+   mehr und bleibt unsichtbar - kein Aufblitzen, keine Geister. */
+body.inperson-sheetview .sidebar-popout:not(.inperson-offen) {
+  display: none !important;
+}
+
 body.inperson-sheetview .sidebar-popout {
   position: fixed !important;
   right: 0 !important;

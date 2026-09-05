@@ -24,7 +24,7 @@
 
 import { MODULE_ID, SETTINGS } from "./const.js";
 import { mountButtonInSheetOnly, styleAsSheetOnlyButton } from "./sheet-only.js";
-import { queueSweep, removeShells as sweepShells } from "./shells.js";
+import { queueSweep, removeShells as sweepShells, hideShells } from "./shells.js";
 
 const POPOUT_SELECTOR = ".actors-sidebar.sidebar-popout";
 const BUTTON_ID = "inperson-so-actors-btn";
@@ -228,6 +228,9 @@ async function buildPopout(directory) {
 async function closePanel({ reason = "unknown" } = {}) {
   // Collapse the layout at once; the technical cleanup may take its time.
   setPanelOpen(false);
+  // And take the frame out of sight in the same instant - close() is async and
+  // the frame stayed visible for a few frames otherwise (see shells.js).
+  hideShells(POPOUT_SELECTOR);
 
   if (hasLivePopout() && typeof popoutRef?.close === "function") {
     try {

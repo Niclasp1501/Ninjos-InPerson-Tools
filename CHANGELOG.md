@@ -1,5 +1,31 @@
 # Changelog
 
+## 14.2611.33 — 2026-09-05
+
+**Die Himmelskuppel sitzt jetzt auf der Zeitleiste, nicht in ihr.** Dreimal
+hatte ich den Bogen in die Leiste gesetzt und sie damit auf 86 Pixel
+aufgeblasen. Im Original ist die Leiste dünn und die Kuppel steht oben darauf
+wie ein Uhrglas. Genau so ist es jetzt: eine 34 Pixel flache Pille, links eine
+Halbkuppel mit Goldrand, die darüber hinausragt, der Mond darin gut erkennbar.
+
+**Das Blatt hat oben Luft.** Bei `inset: 0` saß das Porträt auf dem ersten
+Pixel und die Kopfzeile wirkte abgeschnitten. Zehn Pixel Rand, wie Sheet Only
+ihn aus demselben Grund lässt.
+
+**Was Sheet Only am Blatt für den Finger ändert, gilt hier ebenso:** dünne
+Rollbalken, kein Größengriff, engere Reiter-Ränder bei Tidy5e, und unten Platz
+für die beiden Leisten, damit die letzte Zeile nicht darunter verschwindet.
+
+**Das Aufblitzen beim Schließen ist weg — gemessen, nicht vermutet.** `close()`
+ist asynchron; bis es fertig war, stand der Rahmen ein, zwei Bilder lang da.
+Das Verstecken passiert jetzt synchron im Klick selbst, das Schließen danach.
+Alle 16 Millisekunden nachgesehen, 700 Millisekunden lang, drei Flächen: null
+Proben, in denen noch ein Rahmen zu sehen war. Vorher zeigte ihn schon die
+erste. Ein Seitenleisten-Fenster ist in der Blattansicht überhaupt nur dann
+sichtbar, wenn wir es geöffnet haben — alles andere, Geister eingeschlossen,
+bleibt unsichtbar. Der Akteure-Knopf im Sheet-Only-Modus versteckt den Rahmen
+ebenfalls, bevor er ihn schließt.
+
 ## 14.2611.32 — 2026-09-05
 
 **Beim Ziehen flog alles mit.** Wer die Knopfleiste anfasste, verschob auch die
