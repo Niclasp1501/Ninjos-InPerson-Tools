@@ -319,5 +319,6 @@
   "INPERSON.SheetView.Volume": "Lautstärke",
   "INPERSON.SheetView.VolumePlaylist": "Musik",
   "INPERSON.SheetView.VolumeAmbient": "Umgebung",
-  "INPERSON.SheetView.VolumeInterface": "Oberfläche"
+  "INPERSON.SheetView.VolumeInterface": "Oberfläche",
+  "INPERSON.SheetView.BarSize": "Leistengröße"
 }

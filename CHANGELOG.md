@@ -1,11 +1,15 @@
 # Changelog
 
-## 14.2611.43 — 2026-09-06
+## 14.2611.44 — 2026-09-06
 
-**Kleinere Leisten auf kleinen Schirmen.** Unter 1100 Pixeln Breite schrumpfen
-Knopfleiste, Zeitleiste und Lautstärkefeld auf 85 %, unter 850 auf 72 % —
-Knöpfe, Kuppel und Pille im selben Verhältnis. Die Stufen sind geschätzt,
-bis ein kleines Tablet am Tisch war.
+**Leistengröße vom Spieler einstellbar.** Ein Regler in der zweiten
+Knopfgruppe (60–140 %), je Gerät gemerkt. Die automatischen Stufen nach
+Bildschirmbreite (85 % unter 1100 px, 72 % unter 850 px) sind nur noch der
+Ausgangspunkt — hochkant war die volle Größe gerade richtig, quer zu groß,
+und das entscheidet besser, wer das Tablet in der Hand hat.
+
+Behoben: Beim ersten Ziehen nach dem Laden sprang die Knopfleiste um eine
+halbe Breite zur Seite (Griff nach dem Wechsel des transforms gemessen).
 
 ## 14.2611.42 — 2026-09-06
 

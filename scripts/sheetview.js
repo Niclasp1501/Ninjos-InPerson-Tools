@@ -105,6 +105,7 @@ const GRUPPEN = {
     // Lautstärke, Sprache, die eigenen Moduleinstellungen: Ohne diesen Knopf
     // käme ein Spieler in der Ansicht an nichts davon heran.
     { icon: "fa-volume-high",            titel: "INPERSON.SheetView.Volume",     tun: lautstaerke },
+    { icon: "fa-up-right-and-down-left-from-center", titel: "INPERSON.SheetView.BarSize", tun: leistengroesse },
     { icon: "fa-gear",                   titel: "INPERSON.SheetView.Settings",   tun: einstellungen },
     { icon: "fa-expand",                 titel: "INPERSON.SheetView.Fullscreen", tun: vollbild },
     { icon: "fa-right-from-bracket",     titel: "INPERSON.SheetView.LogOut",     tun: abmelden }
@@ -352,10 +353,14 @@ function ziehbarMachen(element, key) {
     timer = setTimeout(() => {
       aktiv = true;
       gezogen = true;
-      element.classList.add("wird-gezogen");
+      // Erst messen, dann die Klasse: `wird-gezogen` setzt ein eigenes
+      // transform und verdrängt damit das translateX(-50%) der Startlage -
+      // die Leiste sprang beim ersten Ziehen nach dem Laden um eine halbe
+      // Breite zur Seite, weil der Griff nach dem Sprung gemessen wurde.
       const r = element.getBoundingClientRect();
       griffX = punkt.clientX - r.left;
       griffY = punkt.clientY - r.top;
+      element.classList.add("wird-gezogen");
     }, haltezeit());
   };
 
@@ -497,16 +502,85 @@ async function vollbild() {
  * Fläche nicht. Also erst die Fläche zu.
  */
 const LAUT_ID = "inperson-sv-lautstaerke";
+const GROESSE_ID = "inperson-sv-groesse";
 
 /**
- * Drei Regler unter der Leiste: Playlist, Umgebung, Oberfläche.
+ * Ein kleines Feld unter (oder über) der Leiste, das sich von selbst schließt.
+ *
+ * Ein zweiter Druck auf den Knopf, ein Tipp daneben oder Escape schließt.
+ * Escape gehört dabei uns: Foundry würde damit sonst das oberste Fenster
+ * schließen - und das ist in dieser Ansicht das Blatt.
+ *
+ * @param {string} id
+ * @param {(feld: HTMLElement) => void} fuellen
+ */
+function feldOeffnen(id, fuellen) {
+  const alt = document.getElementById(id);
+  if (alt) return alt.remove();
+
+  const bar = document.getElementById(BAR_ID);
+  const feld = document.createElement("div");
+  feld.id = id;
+  feld.className = "inperson-sv-feld";
+  fuellen(feld);
+  document.body.append(feld);
+
+  feldPlatzieren(feld);
+
+  const zu = event => {
+    if (event.type === "keydown" && event.key !== "Escape") return;
+    if (event.type === "pointerdown" && (feld.contains(event.target) || bar.contains(event.target))) return;
+    if (event.type === "keydown") event.stopPropagation();
+    feld.remove();
+    document.removeEventListener("pointerdown", zu, true);
+    document.removeEventListener("keydown", zu, true);
+  };
+  document.addEventListener("pointerdown", zu, true);
+  document.addEventListener("keydown", zu, true);
+}
+
+/**
+ * Unter die Leiste, mittig dazu; am Rand eingeklemmt, falls sie dort steht.
+ *
+ * Das Feld ist auf kleinen Schirmen genauso gezoomt wie die Leiste, seine
+ * left/top sind also in eigenen Pixeln - daher der Faktor. Eigene Funktion,
+ * weil der Größenregler die Leiste *und* das Feld während des Schiebens
+ * umzoomt und das Feld dann neu hin muss.
+ */
+function feldPlatzieren(feld) {
+  const bar = document.getElementById(BAR_ID);
+  if (!bar || !feld) return;
+  const faktor = Number(getComputedStyle(feld).zoom) || 1;
+  const b = bar.getBoundingClientRect();
+  const f = feld.getBoundingClientRect();
+  const links = Math.min(window.innerWidth - f.width - 8, Math.max(8, b.left + b.width / 2 - f.width / 2));
+  // Steht die Zeitleiste direkt über der Knopfleiste (hochkant), gehört das
+  // Feld über beide - sonst läge es auf der Uhr.
+  const u = document.getElementById(UHR_ID)?.getBoundingClientRect();
+  const dach = u && u.top < b.top && u.bottom <= b.top + 24 ? u.top : b.top;
+  const passtUnten = b.bottom + 8 + f.height < window.innerHeight;
+  const oben = passtUnten ? b.bottom + 8 : dach - 8 - f.height;
+  feld.style.left = `${Math.round(links / faktor)}px`;
+  feld.style.top = `${Math.round(oben / faktor)}px`;
+}
+
+/** Eine Zeile Symbol + Name + Schieberegler. */
+function reglerZeile({ icon, titel, min, max, step, wert, bei }) {
+  const zeile = document.createElement("label");
+  zeile.innerHTML = `<i class="fa-solid ${icon}"></i>
+    <span>${game.i18n.localize(titel)}</span>
+    <input type="range" min="${min}" max="${max}" step="${step}" value="${wert}">`;
+  zeile.querySelector("input").addEventListener("input", event => bei(Number(event.target.value)));
+  return zeile;
+}
+
+/**
+ * Drei Regler: Playlist, Umgebung, Oberfläche.
  *
  * Foundrys eigene Regler stecken in der Playlist-Seitenleiste, und die ist in
  * dieser Ansicht weg. Es sind Foundrys Client-Einstellungen, also gilt der
  * Wert nur für dieses Gerät - genau das, was man an einem Tablet will, das
  * neben dem Fernseher steht und stumm sein soll.
- *
- * Ein zweiter Druck auf den Knopf, ein Tipp daneben oder Escape schließt.
  */
 const REGLER = [
   { key: "globalPlaylistVolume",  icon: "fa-music",     titel: "INPERSON.SheetView.VolumePlaylist" },
@@ -515,47 +589,48 @@ const REGLER = [
 ];
 
 function lautstaerke() {
-  const alt = document.getElementById(LAUT_ID);
-  if (alt) return alt.remove();
+  feldOeffnen(LAUT_ID, feld => {
+    for (const regler of REGLER) {
+      const wert = Number(game.settings.get("core", regler.key));
+      feld.append(reglerZeile({
+        icon: regler.icon, titel: regler.titel, min: 0, max: 1, step: 0.05,
+        wert: Number.isFinite(wert) ? wert : 1,
+        bei: v => game.settings.set("core", regler.key, v)
+      }));
+    }
+  });
+}
 
-  const bar = document.getElementById(BAR_ID);
-  const feld = document.createElement("div");
-  feld.id = LAUT_ID;
-  feld.className = "inperson-sv-lautstaerke";
-  for (const regler of REGLER) {
-    const zeile = document.createElement("label");
-    const wert = Number(game.settings.get("core", regler.key));
-    zeile.innerHTML = `<i class="fa-solid ${regler.icon}"></i>
-      <span>${game.i18n.localize(regler.titel)}</span>
-      <input type="range" min="0" max="1" step="0.05" value="${Number.isFinite(wert) ? wert : 1}">`;
-    zeile.querySelector("input").addEventListener("input", event => {
-      game.settings.set("core", regler.key, Number(event.target.value));
-    });
-    feld.append(zeile);
-  }
-  document.body.append(feld);
+/**
+ * Wie groß die Leisten sind - je Gerät, vom Spieler.
+ *
+ * Die automatischen Stufen nach Bildschirmbreite (Stylesheet) sind nur der
+ * Ausgangspunkt: Auf dem Tablet hochkant war die volle Größe gerade richtig,
+ * quer wirkte sie zu groß - und was "richtig" ist, hängt an Augen, Fingern
+ * und Zoll. Der Faktor liegt daher neben der Schriftgröße im Gerätespeicher
+ * und multipliziert sich mit der Stufe.
+ */
+const GROESSE_KEY = `${MODULE_ID}.sheetviewLeiste`;
 
-  // Unter die Leiste, mittig dazu; am Rand eingeklemmt, falls sie dort steht.
-  const b = bar.getBoundingClientRect();
-  const breite = feld.offsetWidth;
-  const links = Math.min(window.innerWidth - breite - 8, Math.max(8, b.left + b.width / 2 - breite / 2));
-  feld.style.left = `${Math.round(links)}px`;
-  // Unter der Leiste, wenn dort Platz ist; sonst darüber (Leiste steht unten).
-  const passtUnten = b.bottom + 8 + feld.offsetHeight < window.innerHeight;
-  feld.style.top = `${Math.round(passtUnten ? b.bottom + 8 : b.top - 8 - feld.offsetHeight)}px`;
+function groesseAnwenden() {
+  const faktor = Number(localStorage.getItem(GROESSE_KEY)) || 1;
+  document.documentElement.style.setProperty("--inperson-sv-leiste", String(faktor));
+}
 
-  const zu = event => {
-    if (event.type === "keydown" && event.key !== "Escape") return;
-    if (event.type === "pointerdown" && (feld.contains(event.target) || bar.contains(event.target))) return;
-    // Escape gehört uns: Foundry würde damit sonst das oberste Fenster
-    // schließen - und das ist in dieser Ansicht das Blatt.
-    if (event.type === "keydown") event.stopPropagation();
-    feld.remove();
-    document.removeEventListener("pointerdown", zu, true);
-    document.removeEventListener("keydown", zu, true);
-  };
-  document.addEventListener("pointerdown", zu, true);
-  document.addEventListener("keydown", zu, true);
+function leistengroesse() {
+  feldOeffnen(GROESSE_ID, feld => {
+    feld.append(reglerZeile({
+      icon: "fa-up-right-and-down-left-from-center", titel: "INPERSON.SheetView.BarSize",
+      min: 0.6, max: 1.4, step: 0.05,
+      wert: Number(localStorage.getItem(GROESSE_KEY)) || 1,
+      bei: v => {
+        localStorage.setItem(GROESSE_KEY, String(v));
+        groesseAnwenden();
+        leisteUnterDieUhr();
+        feldPlatzieren(document.getElementById(GROESSE_ID));
+      }
+    }));
+  });
 }
 
 async function einstellungen() {
@@ -798,6 +873,7 @@ async function starten() {
   laufend = true;
   document.body.classList.add(BODY_CLASS);
   zoomAnwenden();
+  groesseAnwenden();
   leisteBauen();
   uhrBauen();
   leisteUnterDieUhr();
@@ -824,6 +900,8 @@ async function beenden() {
   document.getElementById(BAR_ID)?.remove();
   document.getElementById(UHR_ID)?.remove();
   document.getElementById(LAUT_ID)?.remove();
+  document.getElementById(GROESSE_ID)?.remove();
+  document.documentElement.style.removeProperty("--inperson-sv-leiste");
   blattApp()?.element?.classList.remove("inperson-stage-sheet");
   document.documentElement.style.removeProperty("--inperson-sv-zoom");
 }
