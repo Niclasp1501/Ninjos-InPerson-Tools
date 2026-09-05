@@ -2151,62 +2151,48 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
 /* ── Die Leiste ─────────────────────────────────────────────────── */
 
 /*
- * Klein, durchscheinend, verschiebbar.
+ * Deckend, dunkel, Goldrand - wie die Zeitleiste daneben.
  *
- * Klein, weil sie umschaltet statt alles nebeneinanderzustellen: eine Gruppe
- * zur Zeit, der ☰ wechselt. Durchscheinend, weil sie auf dem Blatt liegt und
- * nicht verdecken soll, was darunter steht. Verschiebbar, weil jeder Tisch
- * anders sitzt und niemand sagen kann, wo sie stören wird.
+ * Die erste Fassung war eine halbdurchsichtige helle Pille mit Weichzeichner.
+ * Auf einem einfarbigen Grund sieht das gut aus; hier liegt sie über der Kante
+ * zwischen dem roten Sockel des Blatts und dem dunkelblauen Seitenhintergrund,
+ * und beides schimmerte durch - oben rot, unten blau, dazwischen matsch. Und
+ * eckige Knöpfe in einer runden Form wurden an den Enden angeschnitten.
  *
- * `left`/`top` werden beim Ziehen gesetzt; bis dahin steht sie mittig oben.
+ * Also: undurchsichtig, damit der Untergrund keine Rolle spielt; dunkel wie
+ * die Zeitleiste, damit die beiden als ein Paar lesbar sind; und die Rundung
+ * der Leiste nur wenig größer als die der Knöpfe, damit nichts anschneidet.
  */
 .inperson-sheetview-bar {
   position: fixed;
-  /*
-   * Unten links, nicht oben.
-   *
-   * Oben sitzt bei jedem Charakterblatt die Kopfzeile mit Namen, Bild und
-   * Werten — die Leiste schnitt sie ab. Unten ist der Schirm frei, und auf
-   * einem Tablet ist der untere Rand ohnehin der, den der Daumen erreicht.
-   * Sheet Only legt seine Leiste auf kleinen Schirmen aus demselben Grund nach
-   * unten.
-   *
-   * Die Uhr steht oben rechts. Zwei Ecken, die sich nicht treffen können —
-   * vorher lagen beide oben und überdeckten einander.
-   */
   bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
   left: 14px;
-  /* Über dem Blatt (20), unter den Flächen (9999) — sonst verdeckte sie den
-     Rückweg aus dem Chat. */
   z-index: 40;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px;
-  background: rgb(244 241 234 / 58%);
-  backdrop-filter: blur(8px) saturate(1.1);
-  color: #1a1a1a;
-  border: 1px solid rgb(212 175 55 / 65%);
-  border-radius: 26px;
-  box-shadow: 0 2px 12px rgb(0 0 0 / 22%);
+  gap: 6px;
+  padding: 6px;
+  background: #16161a;
+  color: #e6e2d8;
+  border: 1px solid #D4AF37;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 45%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  /* Beim langen Druck soll das Gerät nicht scrollen oder Text markieren. */
   touch-action: none;
   user-select: none;
+  overflow: visible;
 }
 
-/* Beim Ziehen etwas größer: die einzige Rückmeldung, dass sie jetzt folgt. */
 .inperson-sheetview-bar.wird-gezogen {
   transform: scale(1.06);
-  background: rgb(244 241 234 / 92%);
-  box-shadow: 0 6px 20px rgb(0 0 0 / 40%);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 60%);
   cursor: grabbing;
 }
 
 .inperson-sv-reihe {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .inperson-sheetview-bar button {
@@ -2214,53 +2200,49 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 46px;
+  width: 44px;
   height: 44px;
   padding: 0;
-  border: 1px solid rgb(220 214 204 / 60%);
-  border-radius: 6px;
-  background: rgb(255 255 255 / 55%);
-  color: #5d1414;
-  font-size: 17px;
+  border: 1px solid rgb(212 175 55 / 35%);
+  border-radius: 9px;
+  background: #26262c;
+  color: #e6e2d8;
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
   transition: background-color .12s, color .12s, border-color .12s;
 }
 
 .inperson-sheetview-bar button:hover {
-  background: rgb(255 255 255 / 90%);
-  border-color: rgb(212 175 55 / 90%);
-  color: #8B0000;
+  background: #33333a;
+  border-color: #D4AF37;
+  color: #ffffff;
 }
 
 .inperson-sheetview-bar button[aria-pressed="true"] {
   background: #8B0000;
-  border-color: #8B0000;
+  border-color: #D4AF37;
   color: #ffffff;
 }
 
-/* Der Umschalter setzt sich ab: er wechselt die Gruppe, er tut nichts im Spiel. */
 /* Der Umschalter setzt sich ab: er wechselt die Gruppe, er tut nichts im Spiel.
-   Deshalb steht er hinter einem Trennstrich und trägt die Modulfarbe. */
-.inperson-sv-wechsel {
-  margin-left: 4px;
-  background: rgb(139 0 0 / 88%) !important;
-  border-color: rgb(139 0 0) !important;
-  color: #ffffff !important;
-  box-shadow: inset 0 0 0 1px rgb(212 175 55 / 45%);
-}
-
-.inperson-sv-wechsel:hover {
-  background: #8B0000 !important;
-  color: #ffffff !important;
-}
-
+   Deshalb hinter einem Trennstrich und in Modulrot. */
 .inperson-sv-reihe::after {
   content: "";
   width: 1px;
-  height: 26px;
-  margin-left: 4px;
-  background: rgb(139 0 0 / 25%);
+  height: 28px;
+  margin: 0 2px;
+  background: rgb(212 175 55 / 35%);
+}
+
+.inperson-sv-wechsel {
+  background: #8B0000 !important;
+  border-color: #D4AF37 !important;
+  color: #ffffff !important;
+}
+
+.inperson-sv-wechsel:hover {
+  background: #a51414 !important;
 }
 
 /* Die Zeitleiste steht für sich, ebenfalls verschiebbar. Sie wird angeschaut,
@@ -2294,6 +2276,9 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
   transform: none;
   margin: 0;
   z-index: auto;
+  border: 1px solid #D4AF37;
+  background: #16161a;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 45%);
 }
 
 /* ── Die Flächen ────────────────────────────────────────────────── */

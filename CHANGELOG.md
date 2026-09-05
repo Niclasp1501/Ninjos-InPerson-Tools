@@ -1,5 +1,19 @@
 # Changelog
 
+## 14.2611.34 — 2026-09-05
+
+**Die Knopfleiste ist deckend, dunkel und passt zur Zeitleiste.** Vorher war
+sie eine halbdurchsichtige helle Pille mit Weichzeichner — auf einfarbigem
+Grund hübsch, hier aber über der Kante zwischen dem roten Sockel des Blatts
+und dem dunkelblauen Seitenhintergrund, und beides schimmerte durch: oben rot,
+unten blau, dazwischen Matsch. Dazu eckige Knöpfe in einer runden Form, die sie
+an den Enden anschnitt.
+
+Jetzt undurchsichtig, damit der Untergrund keine Rolle spielt; dunkel mit
+Goldrand wie die Zeitleiste daneben, damit die beiden als Paar lesbar sind; und
+abgerundete Quadrate in einer nur wenig runderen Leiste, damit nichts
+anschneidet. Die Zeitleiste hat denselben Goldrand bekommen.
+
 ## 14.2611.33 — 2026-09-05
 
 **Die Himmelskuppel sitzt jetzt auf der Zeitleiste, nicht in ihr.** Dreimal
