@@ -37,6 +37,10 @@ Entscheidung.
 
 ## 2. Was uns fehlt — nach Gewicht
 
+**Stand 14.2611.40:** 1, 2, 3, 4 und 5 sind gebaut, dazu Ziehzeit und
+Schrift-Zurücksetzen. Offen aus 6: Nur-Mobil und Lautstärke — Entscheidung
+steht aus. Der Seitenfenster-Punkt (Abschnitt 3) ebenfalls.
+
 1. **Benutzerauswahl.** Ohne sie ist der Beta-Schalter ein Alles-oder-nichts.
    Aufwand klein, Muster im Tischmodus vorhanden.
 2. **Knöpfe fremder Module.** FANG und NDRS suchen `#so-main-buttons`. Zwei
