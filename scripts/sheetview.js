@@ -194,6 +194,23 @@ function uhrBauen() {
   platzWiederherstellen(halter, UHR_PLATZ_KEY);
 }
 
+/**
+ * Die Knopfleiste zum Start direkt unter die Zeitleiste setzen.
+ *
+ * Nur die Höhe, und nur, wenn niemand sie schon woandershin gezogen hat: Die
+ * Zeitleiste ist mit Kuppel deutlich höher als ohne, und ein fester Wert im
+ * Stylesheet ließe die beiden im einen Fall überlappen und im anderen
+ * auseinanderklaffen.
+ */
+function leisteUnterDieUhr() {
+  const bar = document.getElementById(BAR_ID);
+  const uhr = document.getElementById(UHR_ID);
+  if (!bar || !uhr) return;
+  if (localStorage.getItem(PLATZ_KEY)) return;   // gezogen - Finger weg
+  const u = uhr.getBoundingClientRect();
+  bar.style.top = `${Math.round(u.bottom + 12)}px`;
+}
+
 /* ── Verschieben ─────────────────────────────────────────────────── */
 
 // Version 2 der Schlüssel: Die alten enthalten Plätze aus der Zeit, als beide
@@ -613,6 +630,7 @@ async function starten() {
   zoomAnwenden();
   leisteBauen();
   uhrBauen();
+  leisteUnterDieUhr();
   await blattZeigen();
   console.log(`${MODULE_ID} | Blattansicht läuft (Beta)`);
 }

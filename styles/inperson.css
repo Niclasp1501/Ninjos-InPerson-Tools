@@ -2038,29 +2038,63 @@ span.inperson-icon svg {
  * klebt.
  */
 .inperson-clock:has(.inperson-clock-sky) {
-  position: relative;
-  margin-top: 44px;
-  padding-left: 136px;
+  /* Platz für die Kuppel, die über die Oberkante hinausragt. Kein `position`
+     hier: Im Sheet-Only-Modus ist die Pille absolut gesetzt und zentriert, und
+     ein `relative` an dieser Stelle hätte ihr das `left: 50%` als Versatz
+     angerechnet - genau das war in der Blattansicht zu sehen. Eine absolut
+     gesetzte Pille ist für die Kuppel ohnehin der richtige Bezug. */
+  margin-top: 66px;
   overflow: visible;
+  /*
+   * Die Kuppel muss HINTER der Pille stehen: Ihr Fuß verschwindet unter der
+   * Leiste, wie im Original - vorn aufgelegt sah es aus wie ein Aufkleber.
+   * Ein Kind kann aber nicht hinter den Hintergrund seines Elternteils. Also
+   * wandert der Hintergrund der Pille auf ein Pseudoelement, das über der
+   * Kuppel liegt, und der Text darüber.
+   */
+  background: transparent;
+  border-color: transparent;
 }
 
+.inperson-clock:has(.inperson-clock-sky)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 0.75rem;
+  border: 1px solid var(--atlas-border, rgb(255 255 255 / 12%));
+  background: var(--atlas-bg, rgb(20 20 24 / 92%));
+}
+
+.inperson-clock:has(.inperson-clock-sky) > :not(.inperson-clock-sky) {
+  position: relative;
+  z-index: 2;
+}
+
+/*
+ * Mittig AUF der Leiste, der Text darunter - wie im Original. Zuvor stand die
+ * Kuppel links und der Text daneben; das war die falsche Anordnung, nicht nur
+ * die falsche Größe. Die Kuppel sitzt mit ihrem Fuß zwölf Pixel in der Pille,
+ * damit sie auf ihr steht statt darüber zu schweben.
+ */
 .inperson-clock-sky {
   position: absolute;
-  left: 8px;
-  bottom: 4px;
+  z-index: 0;
+  left: 50%;
+  bottom: calc(100% - 14px);
+  transform: translateX(-50%);
   display: block;
-  width: 120px;
-  height: 62px;
+  width: 152px;
+  height: 78px;
   line-height: 0;
   cursor: help;
-  border-radius: 60px 60px 0 0;
-  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 45%));
+  filter: drop-shadow(0 2px 5px rgb(0 0 0 / 50%));
 }
 
 .inperson-clock-sky svg.inperson-sky {
   display: block;
-  width: 120px;
-  height: 62px;
+  width: 152px;
+  height: 78px;
 }
 
 /* -------------------------------------------- */
@@ -2173,8 +2207,16 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
  */
 .inperson-sheetview-bar {
   position: fixed;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
-  left: 14px;
+  /*
+   * Zum Start oben in der Mitte, direkt unter der Zeitleiste - über dem Banner
+   * des Blatts, wo es sonst nichts zu bedienen gibt. So hat der Tisch es sich
+   * hingeschoben; jetzt ist es der Ausgangspunkt. Die genaue Höhe setzt
+   * sheetview.js beim Start unter die Zeitleiste, damit die beiden auch ohne
+   * Kuppel zusammenbleiben. Wer zieht, gewinnt trotzdem.
+   */
+  top: calc(env(safe-area-inset-top, 0px) + 48px);
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 40;
   display: flex;
   align-items: center;
@@ -2259,17 +2301,12 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
    die Knöpfe werden bedient — zwei Dinge, zwei Elemente. */
 .inperson-sheetview-uhr {
   position: fixed;
-  /*
-   * Unten rechts, gegenüber den Knöpfen unten links.
-   *
-   * Oben rechts lag sie über der Erfahrungsanzeige des Blattes. Der untere Rand
-   * ist bei jedem Charakterblatt der leerste Platz — dort verdeckt nichts von
-   * beidem etwas, und beide bleiben mit dem Daumen erreichbar.
-   */
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
-  right: 14px;
-  top: auto;
-  left: auto;
+  /* Zum Start oben in der Mitte; die Kuppel ragt darüber hinaus. */
+  top: calc(env(safe-area-inset-top, 0px) + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  right: auto;
+  bottom: auto;
   z-index: 39;
   touch-action: none;
   user-select: none;
@@ -2287,6 +2324,19 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
   margin: 0;
   z-index: auto;
   box-shadow: 0 4px 14px rgb(0 0 0 / 45%);
+}
+
+/* Das `margin: 0` darüber hatte den Platz für die Kuppel geschluckt - sie
+   stand 60 Pixel über dem oberen Bildschirmrand. Hier noch einmal, damit die
+   Regel für die Kuppel auch in der Blattansicht gewinnt. */
+.inperson-sheetview-uhr .inperson-clock:has(.inperson-clock-sky) {
+  margin-top: 66px;
+  /* `relative`, sonst hängt die Kuppel am Behälter statt an der Pille und
+     steht um genau diese 66 Pixel zu hoch. Und `left: auto`, sonst wirkt das
+     geerbte `left: 50%` als Versatz nach rechts. */
+  position: relative;
+  left: auto;
+  transform: none;
 }
 
 /* ── Die Flächen ────────────────────────────────────────────────── */

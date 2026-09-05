@@ -1,5 +1,34 @@
 # Changelog
 
+## 14.2611.39 — 2026-09-05
+
+**Die Kuppel steht hinter der Zeitleiste**, ihr Fuß verschwindet unter der
+Pille — wie im Original. Vorn aufgelegt sah sie aus wie ein Aufkleber. Ein Kind
+kann nicht hinter den Hintergrund seines Elternteils; also liegt der
+Hintergrund der Pille jetzt auf einem Pseudoelement über der Kuppel, der Text
+darüber. Dazu zwei Positionsfehler, die erst am Bildschirm auffielen: Die Kuppel
+stand 66 Pixel über dem oberen Rand (falscher Bezug), und die Pille war nach
+rechts verrutscht (geerbtes `left: 50%` als Versatz).
+
+Neu dabei: `ANALYSE-blattansicht-vs-sheet-only.md` — was Sheet Only kann, wo
+wir stehen, was fehlt, und die offene Frage, ob ein Seitenfenster das Blatt
+schmaler macht oder es überdeckt.
+
+## 14.2611.38 — 2026-09-05
+
+**Die Kuppel sitzt mittig auf der Zeitleiste, der Text darunter** — wie im
+Original. Zuvor stand sie links und der Text daneben; das war die falsche
+Anordnung, nicht nur die falsche Größe. Dazu größer (152 × 78) und der Himmel
+in dunklem Nachtblau statt Türkis.
+
+## 14.2611.37 — 2026-09-05
+
+**Die Leisten starten oben in der Mitte**, über dem Banner des Blatts: die
+Zeitleiste mit Kuppel oben, die Knopfleiste direkt darunter — so, wie der Tisch
+sie sich hingeschoben hatte. Die Knopfleiste setzt sich beim Start unter die
+Zeitleiste, weil die mit Kuppel deutlich höher ist als ohne. Verschobene Plätze
+gewinnen weiterhin.
+
 ## 14.2611.36 — 2026-09-05
 
 **Die Kopfzeilen-Knöpfe des Blatts sind in der Blattansicht weg** — bis auf

@@ -32,10 +32,10 @@ import { MODULE_ID } from "./const.js";
  *
  * Halbkreis mit Radius 60: 120 breit, 62 hoch, der Horizont ist die Unterkante.
  */
-const RADIUS = 60;
+const RADIUS = 76;
 const BREITE = RADIUS * 2;
 const HOEHE = RADIUS + 2;
-const GESTIRN = 11;
+const GESTIRN = 13;
 
 /* ── Rechnen ─────────────────────────────────────────────────────── */
 
@@ -137,8 +137,9 @@ function aufhellen(hex) {
  * und Sterne, die dabei springen, sind das Erste, was am Tisch auffällt.
  */
 const STERNE = [
-  [22, 50], [30, 34], [42, 22], [56, 14], [70, 12], [84, 20],
-  [96, 34], [104, 50], [48, 40], [76, 30], [62, 28], [36, 48], [88, 46]
+  [28, 62], [40, 42], [56, 26], [74, 16], [92, 14], [110, 24],
+  [124, 42], [134, 62], [64, 50], [98, 38], [80, 34], [46, 60],
+  [116, 58], [70, 66], [104, 66], [86, 52], [36, 72], [120, 72]
 ];
 
 /**
@@ -212,7 +213,7 @@ export function himmelsbogen() {
   // Nachthimmel über einer Landschaft aus und nicht wie ein schwarzer Kasten.
   const himmel = tag
     ? ["#7db9e0", "#d9ecf6"]
-    : ["#0a1622", "#1d4a45"];
+    : ["#171526", "#2c2942"];
 
   const sterne = tag ? "" : STERNE
     .map(([sx, sy], i) => `<circle cx="${sx}" cy="${sy}" r="${i % 3 === 0 ? 1.6 : 1.1}" fill="#ffffff" opacity="${i % 2 ? 0.85 : 0.5}"/>`)
