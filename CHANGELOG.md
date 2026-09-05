@@ -1,5 +1,12 @@
 # Changelog
 
+## 14.2611.51 — 2026-09-06
+
+**Der Größenregler flackert nicht mehr.** Das Regler-Feld zoomte mit dem
+Faktor der Menüleiste mit und wurde bei jedem Schritt neu platziert — der
+Regler rutschte unter dem Finger weg. Das Feld nimmt jetzt nur noch die
+Bildschirmstufe und wird erst beim Loslassen nachgesetzt.
+
 ## 14.2611.50 — 2026-09-06
 
 **Flackern beim Ziehen, zweiter Anlauf.** Während des Ziehens lagen auf der

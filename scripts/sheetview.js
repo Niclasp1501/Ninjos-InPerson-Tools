@@ -686,12 +686,14 @@ function feldPlatzieren(feld) {
 }
 
 /** Eine Zeile Symbol + Name + Schieberegler. */
-function reglerZeile({ icon, titel, min, max, step, wert, bei }) {
+function reglerZeile({ icon, titel, min, max, step, wert, bei, fertig = null }) {
   const zeile = document.createElement("label");
   zeile.innerHTML = `<i class="fa-solid ${icon}"></i>
     <span>${game.i18n.localize(titel)}</span>
     <input type="range" min="${min}" max="${max}" step="${step}" value="${wert}">`;
-  zeile.querySelector("input").addEventListener("input", event => bei(Number(event.target.value)));
+  const input = zeile.querySelector("input");
+  input.addEventListener("input", event => bei(Number(event.target.value)));
+  if (fertig) input.addEventListener("change", () => fertig());
   return zeile;
 }
 
@@ -766,8 +768,10 @@ function leistengroesse() {
         // nächsten Bild: getComputedStyle erzwingt die Neuberechnung, und ein
         // Tab im Hintergrund bekommt gar keine Bilder - dort blieb es liegen.
         lageAnwenden({ behalten: true });
-        feldPlatzieren(document.getElementById(GROESSE_ID));
-      }
+      },
+      // Das Feld erst beim Loslassen nachsetzen - während des Schiebens
+      // bleibt es, wo der Finger ist.
+      fertig: () => feldPlatzieren(document.getElementById(GROESSE_ID))
     }));
   });
 }

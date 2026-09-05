@@ -2437,9 +2437,15 @@ body.inperson-sheetview .sidebar-popout {
 }
 
 /* Stufe mal Spielerwunsch (Regler in der zweiten Knopfgruppe) - je Leiste. */
-.inperson-sheetview-bar,
-.inperson-sv-feld {
+.inperson-sheetview-bar {
   zoom: calc(var(--inperson-sv-leiste-auto) * var(--inperson-sv-leiste, 1));
+}
+
+/* Die Felder nur mit der Bildschirmstufe - nicht mit dem Regler, den man
+   gerade darin schiebt. Sonst wächst das Feld unter dem Finger und der
+   Regler rutscht weg: das war das Flackern beim Größenregler. */
+.inperson-sv-feld {
+  zoom: var(--inperson-sv-leiste-auto);
 }
 
 .inperson-sheetview-uhr {
