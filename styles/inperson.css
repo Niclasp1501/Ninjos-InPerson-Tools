@@ -2359,6 +2359,29 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
   opacity: 0.8;
 }
 
+.inperson-sv-schalter {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid rgb(255 255 255 / 10%);
+}
+
+.inperson-sv-schalter span {
+  flex: 1 1 auto;
+}
+
+.inperson-sv-schalter input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: #8B0000;
+}
+
+.inperson-sv-anker.fest {
+  cursor: default;
+}
+
 .inperson-sv-feld input[type="range"] {
   width: 100%;
   margin: 0;
@@ -2425,15 +2448,16 @@ body.inperson-sheetview .sidebar-popout {
    Knöpfe - im selben Verhältnis bleibt; sheetview.js rechnet die Plätze
    durch denselben Faktor. */
 :root {
-  --inperson-sv-leiste-auto: 1;
+  /* 0,9 statt 1: In voller Größe waren beide Leisten dem Tisch zu groß. */
+  --inperson-sv-leiste-auto: 0.9;
 }
 
 @media (max-width: 1100px) {
-  :root { --inperson-sv-leiste-auto: 0.85; }
+  :root { --inperson-sv-leiste-auto: 0.8; }
 }
 
 @media (max-width: 850px) {
-  :root { --inperson-sv-leiste-auto: 0.72; }
+  :root { --inperson-sv-leiste-auto: 0.7; }
 }
 
 /* Stufe mal Spielerwunsch (Regler in der zweiten Knopfgruppe) - je Leiste. */

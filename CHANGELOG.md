@@ -1,5 +1,19 @@
 # Changelog
 
+## 14.2611.52 — 2026-09-06
+
+**Kein Geist mehr nach dem Kreuz.** Wer Charaktere oder Notizen über das
+Kreuz des Fensters schloss, behielt den Rahmen als Geist; über die Menüleiste
+nie. Jetzt greift beim Schließen über Foundry derselbe Weg: sofort unsichtbar,
+dann aufräumen.
+
+**Leisten festhalten.** Im Größenfeld ein Schalter: festgehaltene Leisten
+lassen sich nicht mehr ziehen. Je Gerät; der ↺-Knopf des Spielleiters hebt
+es mit auf.
+
+**Kleinere Startgröße.** Beide Leisten beginnen bei 90 % statt 100 %
+(unter 1100 px 80 %, unter 850 px 70 %).
+
 ## 14.2611.51 — 2026-09-06
 
 **Der Größenregler flackert nicht mehr.** Das Regler-Feld zoomte mit dem

@@ -26,7 +26,7 @@ import { MODULE_ID, SETTINGS } from "./const.js";
 import { characterOf } from "./trade.js";
 import { openTrade } from "./trade-start.js";
 import { mountClockInto } from "./clock.js";
-import { queueSweep, removeShells, hideShells } from "./shells.js";
+import { queueSweep, removeShells, hideShells, isGhost } from "./shells.js";
 
 const BODY_CLASS = "inperson-sheetview";
 const BAR_ID = "inperson-sheetview-bar";
@@ -353,7 +353,7 @@ function alleGeraeteSchluessel() {
   const aus = [];
   for (const key of [PLATZ_KEY, UHR_PLATZ_KEY, GROESSE_KEY, GROESSE_UHR_KEY]) aus.push(key, `${key}.hoch`, `${key}.quer`);
   // Dazu die Namen früherer Fassungen, die auf alten Tablets noch liegen.
-  aus.push(ZOOM_KEY, `${MODULE_ID}.sheetviewBar`, `${MODULE_ID}.sheetviewUhr`);
+  aus.push(ZOOM_KEY, SPERRE_KEY, `${MODULE_ID}.sheetviewBar`, `${MODULE_ID}.sheetviewUhr`);
   return aus;
 }
 
@@ -366,6 +366,21 @@ function alleGeraeteSchluessel() {
  * Drücken des Knopfs aus war - beim nächsten Laden.
  */
 const RESET_KEY = `${MODULE_ID}.sheetviewReset`;
+
+/**
+ * Leisten festhalten: Wer seinen Platz gefunden hat, will ihn nicht beim
+ * nächsten langen Druck versehentlich verlieren. Je Gerät, ohne Lage.
+ */
+const SPERRE_KEY = `${MODULE_ID}.sheetviewFest`;
+
+function festgehalten() {
+  return localStorage.getItem(SPERRE_KEY) === "1";
+}
+
+function sperreAnwenden() {
+  const fest = festgehalten();
+  for (const id of [BAR_ANKER, UHR_ANKER]) document.getElementById(id)?.classList.toggle("fest", fest);
+}
 
 function resetPruefen() {
   const stempel = Number(game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_RESET)?.[game.user.id] ?? 0);
@@ -454,6 +469,7 @@ function ziehbarMachen(element, key) {
   let griffY = 0;
 
   const start = event => {
+    if (festgehalten()) return;
     const punkt = event.touches?.[0] ?? event;
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -685,6 +701,17 @@ function feldPlatzieren(feld) {
   anker.style.top = `${Math.round(oben)}px`;
 }
 
+/** Eine Zeile Symbol + Name + Schalter. */
+function schalterZeile({ icon, titel, wert, bei }) {
+  const zeile = document.createElement("label");
+  zeile.className = "inperson-sv-schalter";
+  zeile.innerHTML = `<i class="fa-solid ${icon}"></i>
+    <span>${game.i18n.localize(titel)}</span>
+    <input type="checkbox" ${wert ? "checked" : ""}>`;
+  zeile.querySelector("input").addEventListener("change", event => bei(event.target.checked));
+  return zeile;
+}
+
 /** Eine Zeile Symbol + Name + Schieberegler. */
 function reglerZeile({ icon, titel, min, max, step, wert, bei, fertig = null }) {
   const zeile = document.createElement("label");
@@ -772,6 +799,16 @@ function leistengroesse() {
       // Das Feld erst beim Loslassen nachsetzen - während des Schiebens
       // bleibt es, wo der Finger ist.
       fertig: () => feldPlatzieren(document.getElementById(GROESSE_ID))
+    }));
+
+    feld.append(schalterZeile({
+      icon: "fa-lock", titel: "INPERSON.SheetView.LockPosition",
+      wert: festgehalten(),
+      bei: an => {
+        if (an) localStorage.setItem(SPERRE_KEY, "1");
+        else localStorage.removeItem(SPERRE_KEY);
+        sperreAnwenden();
+      }
     }));
   });
 }
@@ -1020,6 +1057,7 @@ async function starten() {
   leisteBauen();
   uhrBauen();
   lageAnwenden();
+  sperreAnwenden();
   letzteLage = lage();
   // Das Tablet wird gedreht: Plätze und Größe der neuen Lage holen.
   window.addEventListener("resize", beimDrehen);
@@ -1093,6 +1131,24 @@ export function installSheetView() {
   };
   Hooks.on("closeActorSheet", wiederZeigen);
   Hooks.on("closeApplicationV2", wiederZeigen);
+
+  // Über das eigene Kreuz geschlossen: Das DOM-Ereignis "close" kam nicht
+  // verlässlich, der Rahmen blieb als Geist stehen - über unsere Knöpfe nie,
+  // weil dort hideShells vor dem Schließen läuft. Also dasselbe hier: sofort
+  // unsichtbar, dann aufräumen, und was nach gut einer Sekunde noch steht,
+  // ist eine Leiche.
+  Hooks.on("closeApplicationV2", app => {
+    if (!laufend) return;
+    const el = app?.element;
+    if (!el?.classList?.contains("sidebar-popout")) return;
+    el.style.setProperty("display", "none", "important");
+    for (const [name, a] of geoeffnet) if (a === app) geoeffnet.delete(name);
+    const soll = offeneFlaeche ? KLASSEN[offeneFlaeche] : null;
+    if (soll && el.classList.contains(soll)) offeneFlaeche = null;
+    markieren();
+    queueSweep(".sidebar-popout", { reason: "closeApplicationV2", force: true });
+    setTimeout(() => { if (el.isConnected && isGhost(el)) el.remove(); }, 1200);
+  });
 
   // Das Blatt wird bei jedem Akteurswechsel neu gezeichnet und verliert dabei
   // unsere Klasse.
