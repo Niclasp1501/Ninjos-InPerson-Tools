@@ -90,6 +90,20 @@ function mondphase(calendar) {
   const mond = monde.find(m => m?.visibility !== "hidden") ?? monde[0];
   if (!mond?.cycleLength) return null;
 
+  // Läuft Calendaria, ist dessen Antwort die richtige - nicht, weil unsere
+  // Rechnung falsch wäre (sie traf dieselbe Phase), sondern weil der
+  // Spielleiter dessen Anzeige sieht und beide dasselbe zeigen müssen. Ohne
+  // Calendaria rechnen wir aus denselben Kalenderdaten selbst.
+  const fremd = globalThis.CALENDARIA?.api?.getMoonPhase?.();
+  if (Number.isFinite(fremd?.position)) {
+    return {
+      anteil: ((fremd.position % 1) + 1) % 1,
+      name: fremd.name ?? null,
+      mondname: mond.name ? game.i18n.localize(mond.name) : null,
+      farbe: aufhellen(mond.color) || "#e9e9e4"
+    };
+  }
+
   const jahr = tageProJahr(calendar);
   const k = game.time.components;
   const heute = (k.year ?? 0) * jahr + tagImJahr(calendar, k)
@@ -99,15 +113,17 @@ function mondphase(calendar) {
   const bezugstag = (bezug.year ?? 0) * jahr
     + tagImJahr(calendar, { month: bezug.month ?? 0, dayOfMonth: bezug.dayOfMonth ?? 0 });
 
-  const roh = (heute - bezugstag) / mond.cycleLength + (mond.referencePhase ?? 0);
-  const anteil = ((roh % 1) + 1) % 1;
-
   const phasen = Object.values(mond.phases ?? {});
+  // referencePhase ist ein Index in die Phasenliste (so führt Calendaria es),
+  // cycleDayAdjust eine Verschiebung in Tagen.
+  const startphase = phasen[mond.referencePhase ?? 0]?.start ?? 0;
+  const versatz = Number.isFinite(mond.cycleDayAdjust) ? mond.cycleDayAdjust : 0;
+  const roh = (heute - bezugstag + versatz) / mond.cycleLength + startphase;
+  const anteil = ((roh % 1) + 1) % 1;
   const treffer = phasen.find(p => anteil >= (p.start ?? 0) && anteil < (p.end ?? 1));
 
   return {
     anteil,
-    bild: treffer?.icon ?? null,
     name: treffer?.name ? game.i18n.localize(treffer.name) : null,
     mondname: mond.name ? game.i18n.localize(mond.name) : null,
     farbe: aufhellen(mond.color) || "#e9e9e4"
@@ -173,14 +189,30 @@ function mondBild(cx, cy, mond) {
     <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="none" stroke="#ffffff" stroke-opacity="0.3" stroke-width="0.7"/>`;
 }
 
-/** Der beleuchtete Teil des Mondes als Pfad. */
+/**
+ * Der beleuchtete Teil des Mondes als Pfad.
+ *
+ * Anteil 0 ist Neumond, 0,5 Vollmond; zunehmend (< 0,5) ist rechts hell,
+ * abnehmend links. Der Rand ist ein Halbkreis auf der hellen Seite, der
+ * Schattenrand eine Halbellipse mit Breite |cos|·r: bei einer Sichel wölbt sie
+ * sich zur hellen Seite, bei mehr als halb zur dunklen.
+ *
+ * Die Bogenrichtung war falsch herum - bei 0,64 (abnehmend, 82 % hell) stand
+ * eine Sichel rechts. In SVG heißt sweep=1 im Uhrzeigersinn: von oben nach
+ * unten über die rechte Seite. Von unten zurück nach oben über die rechte
+ * Seite ist dann sweep=0.
+ */
 function mondPfad(cx, cy, r, anteil) {
   const k = Math.cos(2 * Math.PI * anteil);        // 1 bei Neumond, -1 bei Vollmond
   const rx = Math.abs(k) * r;
-  const aussen = anteil < 0.5 ? 1 : 0;
-  const innen = k > 0 ? aussen : 1 - aussen;
+  const zunehmend = anteil < 0.5;
+  const aussen = zunehmend ? 1 : 0;                // Halbkreis über die helle Seite
+  // Sichel (k > 0): Schattenrand wölbt sich zur hellen Seite - also zurück
+  // über dieselbe Seite wie der Außenbogen, was die entgegengesetzte
+  // sweep-Richtung ist. Mehr als halb: über die dunkle Seite.
+  const innen = k > 0 ? 1 - aussen : aussen;
   return `M ${cx} ${cy - r} A ${r} ${r} 0 0 ${aussen} ${cx} ${cy + r}`
-    + ` A ${rx} ${r} 0 0 ${innen} ${cx} ${cy - r} Z`;
+    + ` A ${rx.toFixed(2)} ${r} 0 0 ${innen} ${cx} ${cy - r} Z`;
 }
 
 /**

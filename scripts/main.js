@@ -142,6 +142,13 @@ function registerSettings() {
     type: Boolean,
     default: true
   });
+  S(SETTINGS.SHEETVIEW_RESET, {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {},
+    onChange: () => syncSheetView()
+  });
 
   // Der Bogen ist standardmäßig aus: er ist neu, und eine Leiste, die sich beim
   // Aktualisieren von selbst verändert, will man selbst einschalten.

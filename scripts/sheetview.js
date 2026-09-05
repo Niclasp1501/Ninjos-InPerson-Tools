@@ -282,7 +282,7 @@ function leisteUnterDieUhr() {
     element.style.removeProperty("bottom");
   };
 
-  if (!localStorage.getItem(PLATZ_KEY)) {
+  if (!localStorage.getItem(lageKey(PLATZ_KEY))) {
     if (hochkant) unten(bar, 12);
     else {
       oben(bar);
@@ -290,7 +290,7 @@ function leisteUnterDieUhr() {
       if (uhr) bar.style.top = `${Math.round((uhr.getBoundingClientRect().bottom + 12) / faktor)}px`;
     }
   }
-  if (uhr && !localStorage.getItem(UHR_PLATZ_KEY)) {
+  if (uhr && !localStorage.getItem(lageKey(UHR_PLATZ_KEY))) {
     if (hochkant) unten(uhr, 12 + bar.getBoundingClientRect().height + 12);
     else oben(uhr);
   }
@@ -306,6 +306,69 @@ function leisteUnterDieUhr() {
 // ohne dass jemand etwas löschen muss.
 const PLATZ_KEY = `${MODULE_ID}.sheetviewBar2`;
 const UHR_PLATZ_KEY = `${MODULE_ID}.sheetviewUhr2`;
+
+/**
+ * Hoch oder quer - jede Lage merkt sich ihre eigenen Plätze und Größen.
+ *
+ * Ein Platz, der quer neben dem Banner gut war, liegt hochkant auf den
+ * Attributen; dasselbe gilt für die Größe. Der Gerätespeicher bleibt über
+ * Neuladen und Neuanmelden erhalten, weil er am Browser hängt, nicht an der
+ * Sitzung.
+ */
+function lage() {
+  return window.innerHeight > window.innerWidth ? "hoch" : "quer";
+}
+
+function lageKey(key) {
+  return `${key}.${lage()}`;
+}
+
+/** Alle Schlüssel, die diese Ansicht im Gerätespeicher anlegt. */
+function alleGeraeteSchluessel() {
+  const aus = [];
+  for (const key of [PLATZ_KEY, UHR_PLATZ_KEY, GROESSE_KEY]) aus.push(`${key}.hoch`, `${key}.quer`);
+  aus.push(ZOOM_KEY);
+  return aus;
+}
+
+/**
+ * Hat der Spielleiter für dieses Konto einen Neustart verlangt?
+ *
+ * Er kommt an den Gerätespeicher eines Tablets nicht heran. Also steht in
+ * einer Welteinstellung je Konto ein Zeitstempel; jedes Gerät merkt sich, bis
+ * zu welchem es aufgeräumt hat. So greift es auch auf einem Tablet, das beim
+ * Drücken des Knopfs aus war - beim nächsten Laden.
+ */
+const RESET_KEY = `${MODULE_ID}.sheetviewReset`;
+
+function resetPruefen() {
+  const stempel = Number(game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_RESET)?.[game.user.id] ?? 0);
+  if (!stempel) return false;
+  const erledigt = Number(localStorage.getItem(RESET_KEY)) || 0;
+  if (stempel <= erledigt) return false;
+  for (const key of alleGeraeteSchluessel()) localStorage.removeItem(key);
+  localStorage.setItem(RESET_KEY, String(stempel));
+  console.log(`${MODULE_ID} | Leisten auf Startwerte zurückgesetzt (Spielleiter)`);
+  return true;
+}
+
+/** Plätze und Größen der aktuellen Lage anwenden - beim Start und beim Drehen. */
+function lageAnwenden() {
+  groesseAnwenden();
+  for (const [id, key] of [[BAR_ID, PLATZ_KEY], [UHR_ID, UHR_PLATZ_KEY]]) {
+    const element = document.getElementById(id);
+    if (!element) continue;
+    for (const p of ["left", "top", "right", "bottom", "transform"]) element.style.removeProperty(p);
+    platzWiederherstellen(element, key);
+  }
+  leisteUnterDieUhr();
+}
+
+let drehTimer = null;
+function beimDrehen() {
+  clearTimeout(drehTimer);
+  drehTimer = setTimeout(lageAnwenden, 150);
+}
 /**
  * Wie lange halten, bevor die Leiste zieht.
  *
@@ -376,7 +439,7 @@ function ziehbarMachen(element, key) {
     aktiv = false;
     element.classList.remove("wird-gezogen");
     const r = element.getBoundingClientRect();
-    localStorage.setItem(key, JSON.stringify({ x: Math.round(r.left), y: Math.round(r.top) }));
+    localStorage.setItem(lageKey(key), JSON.stringify({ x: Math.round(r.left), y: Math.round(r.top) }));
     // Erst nach dem Klick zurücksetzen, sonst feuert der Knopf doch noch.
     setTimeout(() => { gezogen = false; }, 0);
   };
@@ -426,7 +489,7 @@ function setzen(bar, x, y) {
  */
 function platzWiederherstellen(bar, key) {
   let platz = null;
-  try { platz = JSON.parse(localStorage.getItem(key) ?? "null"); } catch { /* egal */ }
+  try { platz = JSON.parse(localStorage.getItem(lageKey(key)) ?? "null"); } catch { /* egal */ }
   if (!platz) return;
   if (platz.x > window.innerWidth - 40 || platz.y > window.innerHeight - 40) return;
 
@@ -441,7 +504,7 @@ function platzWiederherstellen(bar, key) {
     bar.style.removeProperty("right");
     bar.style.removeProperty("bottom");
     bar.style.removeProperty("transform");
-    localStorage.removeItem(key);
+    localStorage.removeItem(lageKey(key));
     console.warn(`${MODULE_ID} | gemerkter Platz überdeckte die andere Leiste, verworfen`, platz, vorher);
   }
 }
@@ -612,7 +675,7 @@ function lautstaerke() {
 const GROESSE_KEY = `${MODULE_ID}.sheetviewLeiste`;
 
 function groesseAnwenden() {
-  const faktor = Number(localStorage.getItem(GROESSE_KEY)) || 1;
+  const faktor = Number(localStorage.getItem(lageKey(GROESSE_KEY))) || 1;
   document.documentElement.style.setProperty("--inperson-sv-leiste", String(faktor));
 }
 
@@ -621,9 +684,9 @@ function leistengroesse() {
     feld.append(reglerZeile({
       icon: "fa-up-right-and-down-left-from-center", titel: "INPERSON.SheetView.BarSize",
       min: 0.6, max: 1.4, step: 0.05,
-      wert: Number(localStorage.getItem(GROESSE_KEY)) || 1,
+      wert: Number(localStorage.getItem(lageKey(GROESSE_KEY))) || 1,
       bei: v => {
-        localStorage.setItem(GROESSE_KEY, String(v));
+        localStorage.setItem(lageKey(GROESSE_KEY), String(v));
         groesseAnwenden();
         leisteUnterDieUhr();
         feldPlatzieren(document.getElementById(GROESSE_ID));
@@ -871,13 +934,13 @@ async function starten() {
   if (laufend) return;
   laufend = true;
   document.body.classList.add(BODY_CLASS);
+  resetPruefen();
   zoomAnwenden();
-  groesseAnwenden();
   leisteBauen();
   uhrBauen();
-  leisteUnterDieUhr();
-  // Das Tablet wird gedreht: neu einordnen, sofern niemand gezogen hat.
-  window.addEventListener("resize", leisteUnterDieUhr);
+  lageAnwenden();
+  // Das Tablet wird gedreht: Plätze und Größe der neuen Lage holen.
+  window.addEventListener("resize", beimDrehen);
   await blattZeigen();
   console.log(`${MODULE_ID} | Blattansicht läuft (Beta)`);
 }
@@ -895,7 +958,7 @@ async function beenden() {
   geoeffnet.clear();
   removeShells(".sidebar-popout", { onlyGhost: false });
   document.body.classList.remove(BODY_CLASS);
-  window.removeEventListener("resize", leisteUnterDieUhr);
+  window.removeEventListener("resize", beimDrehen);
   document.getElementById(BAR_ID)?.remove();
   document.getElementById(UHR_ID)?.remove();
   document.getElementById(LAUT_ID)?.remove();
@@ -907,8 +970,13 @@ async function beenden() {
 
 /** Zustand herstellen, wie die Einstellung ihn verlangt. */
 export function syncSheetView() {
-  if (sheetViewWanted()) return starten();
-  return beenden();
+  if (!sheetViewWanted()) return beenden();
+  if (laufend) {
+    // Läuft schon - dann kann nur der Spielleiter etwas verlangt haben.
+    if (resetPruefen()) { zoomAnwenden(); lageAnwenden(); }
+    return;
+  }
+  return starten();
 }
 
 /**

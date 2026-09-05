@@ -2472,6 +2472,14 @@ body.inperson-sheetview .sidebar-popout {
   height: 36px;
 }
 
+.inperson-sv-reset {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-left: 4px;
+}
+
 .inperson-sv-verhalten {
   display: flex;
   flex-direction: column;

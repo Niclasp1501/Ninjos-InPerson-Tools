@@ -1,5 +1,24 @@
 # Changelog
 
+## 14.2611.46 — 2026-09-06
+
+**Der Mond zeigt jetzt die richtige Phase.** Die Rechnung stimmte (Calendaria
+und wir sagten beide „Abnehmender Mond“), die Zeichnung nicht: Der
+Schattenrand war falsch herum gebogen, aus 82 % hell links wurde eine Sichel
+rechts. Dazu ist Calendarias eigene Antwort jetzt die Quelle, wenn es läuft —
+Spieler und Spielleiter sehen garantiert dasselbe. Ohne Calendaria rechnen
+wir weiter selbst, jetzt mit `referencePhase` als Index und `cycleDayAdjust`.
+
+**Plätze und Größe je Lage.** Hoch und quer merken sich getrennt, wohin die
+Leisten gezogen wurden und wie groß sie sind; beim Drehen holt das Gerät die
+Werte der neuen Lage. Alles liegt im Gerätespeicher und überlebt Neuladen und
+Neuanmelden.
+
+**Zurücksetzen durch den Spielleiter.** Auf der Seite „Blattansicht (Beta)“
+hat jedes Konto einen ↺-Knopf: Lage, Größe und Schrift der Leisten gehen auf
+diesem Konto zurück auf die Startwerte — auf allen seinen Geräten, sofort
+wenn es angemeldet ist, sonst beim nächsten Laden.
+
 ## 14.2611.45 — 2026-09-06
 
 **Haltezeit-Einstellung wieder raus.** Sie stand einen Tag auf der Seite des

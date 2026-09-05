@@ -26,7 +26,8 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
     window: { title: "INPERSON.SheetView.Title", icon: "fa-solid fa-tablet-screen-button", resizable: true },
     position: { width: 560, height: "auto" },
     classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-displays"],
-    form: { handler: SheetViewSettings.#onSubmit, closeOnSubmit: true }
+    form: { handler: SheetViewSettings.#onSubmit, closeOnSubmit: true },
+    actions: { reset: SheetViewSettings.#onReset }
   };
 
   static PARTS = {
@@ -57,6 +58,25 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
       users,
       hasUsers: users.length > 0
     };
+  }
+
+  /**
+   * Leisten eines Kontos zurücksetzen - sofort, nicht erst beim Speichern.
+   *
+   * Es ist eine Handlung, keine Einstellung: Der Spielleiter steht neben dem
+   * Tablet, auf dem die Leiste außer Reichweite liegt, und will sie jetzt
+   * zurück. Der Stempel bleibt stehen; ein Gerät, das gerade aus ist, räumt
+   * beim nächsten Laden auf.
+   */
+  static async #onReset(event, target) {
+    event.preventDefault();
+    const userId = target.dataset.user;
+    const user = game.users.get(userId);
+    if (!user) return;
+    const stempel = foundry.utils.deepClone(game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_RESET) ?? {});
+    stempel[userId] = Date.now();
+    await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_RESET, stempel);
+    ui.notifications.info(game.i18n.format("INPERSON.SheetView.ResetDone", { name: user.name }));
   }
 
   static async #onSubmit(event, form, formData) {

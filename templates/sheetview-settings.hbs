@@ -29,6 +29,10 @@
             {{#if this.actorName}}<em>{{this.actorName}}</em>{{/if}}
           </span>
           {{#if this.online}}<span class="inperson-tag ok">{{localize "INPERSON.SheetView.Online"}}</span>{{/if}}
+          <button type="button" class="inperson-mini inperson-sv-reset" data-action="reset" data-user="{{this.id}}"
+                  data-tooltip="{{localize "INPERSON.SheetView.ResetHint"}}">
+            <i class="fa-solid fa-rotate-left"></i>
+          </button>
         </label>
       {{/each}}
     </div>

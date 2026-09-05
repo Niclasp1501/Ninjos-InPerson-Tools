@@ -318,5 +318,7 @@
   "INPERSON.SheetView.VolumePlaylist": "Musik",
   "INPERSON.SheetView.VolumeAmbient": "Umgebung",
   "INPERSON.SheetView.VolumeInterface": "Oberfläche",
-  "INPERSON.SheetView.BarSize": "Leistengröße"
+  "INPERSON.SheetView.BarSize": "Leistengröße",
+  "INPERSON.SheetView.ResetHint": "Leisten dieses Kontos auf die Startwerte zurücksetzen — Lage, Größe, Schrift, auf allen seinen Geräten. Ein ausgeschaltetes Gerät holt es beim nächsten Laden nach.",
+  "INPERSON.SheetView.ResetDone": "{name}: Leisten werden auf die Startwerte zurückgesetzt."
 }
