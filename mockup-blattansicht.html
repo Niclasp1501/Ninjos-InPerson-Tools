@@ -1,0 +1,476 @@
+<title>Blattansicht am Tisch</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Page chrome: its own tokens, light and dark.
+     The device screens below deliberately do NOT follow the page theme -
+     they are the product, and the product commits to parchment. */
+  :root {
+    --ground: #f7f5f1;
+    --panel: #ffffff;
+    --ink: #1c1a17;
+    --ink-soft: #5c564d;
+    --rule: #ddd7cc;
+    --red: #8B0000;
+    --gold: #9a7d22;
+    --shadow: 0 2px 4px rgb(28 26 23 / 8%), 0 12px 28px rgb(28 26 23 / 8%);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #16150f;
+      --panel: #1f1d16;
+      --ink: #ece7db;
+      --ink-soft: #a49c8c;
+      --rule: #37332a;
+      --red: #d96a5e;
+      --gold: #d4af37;
+      --shadow: 0 2px 4px rgb(0 0 0 / 30%), 0 14px 32px rgb(0 0 0 / 35%);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #16150f;
+    --panel: #1f1d16;
+    --ink: #ece7db;
+    --ink-soft: #a49c8c;
+    --rule: #37332a;
+    --red: #d96a5e;
+    --gold: #d4af37;
+    --shadow: 0 2px 4px rgb(0 0 0 / 30%), 0 14px 32px rgb(0 0 0 / 35%);
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 40px 24px 72px; display: flex; flex-direction: column; gap: 40px; }
+
+  header { display: flex; flex-direction: column; gap: 10px; max-width: 62ch; }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-soft);
+  }
+  h1 {
+    font-family: Alegreya, Georgia, serif; font-weight: 700; font-size: clamp(30px, 4vw, 44px);
+    line-height: 1.1; margin: 0; text-wrap: balance; color: var(--ink);
+  }
+  header p { margin: 0; color: var(--ink-soft); font-size: 16px; }
+
+  h2 {
+    font-family: Alegreya, Georgia, serif; font-weight: 700; font-size: 24px; margin: 0 0 4px;
+    color: var(--ink); text-wrap: balance;
+  }
+  .lede { margin: 0; color: var(--ink-soft); max-width: 62ch; }
+
+  /* ── The two devices ─────────────────────────────────────────── */
+  .stage { display: flex; flex-wrap: wrap; gap: 36px; align-items: flex-start; }
+  .device { display: flex; flex-direction: column; gap: 10px; }
+  .device-name {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px;
+    letter-spacing: 0.08em; color: var(--ink-soft); display: flex; gap: 10px; align-items: baseline;
+  }
+  .device-name b { color: var(--ink); font-weight: 500; letter-spacing: 0.04em; }
+
+  .bezel {
+    background: #2a2721; border-radius: 16px; padding: 10px;
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .screen-box { overflow: hidden; border-radius: 6px; }
+  .screen {
+    transform-origin: top left;
+    position: relative; overflow: hidden;
+    background: #fdfbf7; color: #1a1a1a;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  /* Real sizes, then scaled. 44px stays 44px in the design. */
+  .portrait  .screen { width: 800px;  height: 1180px; transform: scale(0.36); --bar: 118px; }
+  .portrait  .screen-box { width: 288px; height: 425px; }
+  .landscape .screen { width: 1180px; height: 800px;  transform: scale(0.5); --bar: 56px; }
+  .landscape .screen-box { width: 590px; height: 400px; }
+
+  /* ── Inside the screen ───────────────────────────────────────── */
+  /* Schwebt über dem Blatt: eigene Fläche mit Rand und Schatten, damit sie
+     sich vom Banner darunter absetzt, statt darin zu verschwinden. */
+  .bar {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 9;
+    display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+    width: max-content; max-width: calc(100% - 20px);
+    /* Über allem: die Leiste ist der Weg zurück aus jeder Fläche. Läge sie
+       darunter, käme man aus dem Chat nur über dessen eigenen Knopf heraus. */
+    background: #f4f1eaf2; border: 1px solid #D4AF37; border-top: none;
+    border-radius: 0 0 8px 8px; box-shadow: 0 3px 12px rgb(0 0 0 / 30%);
+  }
+  /* Hoch: neun Knöpfe und die Zeitleiste passen nicht in eine Zeile.
+     Gerechnet 9x52 + Abstände = ~530px, Zeitleiste ~330px, Schirm 800px. */
+  .portrait .bar { flex-wrap: wrap; justify-content: center; }
+  .portrait .bar .clock { flex-basis: 100%; margin-left: 0; }
+  .landscape .bar .clock { margin-left: 8px; }
+  .landscape .bar { flex-wrap: nowrap; }
+  .bar button {
+    min-width: 52px; height: 44px; padding: 0 10px; flex: none;
+    border: 1px solid #dcd6cc; border-radius: 3px; background: #fff; color: #1a1a1a;
+    font: 600 14px/1 'Segoe UI', sans-serif; cursor: pointer;
+  }
+  .bar button[aria-pressed="true"] { background: #8B0000; border-color: #8B0000; color: #fff; }
+  /* Knöpfe, die sofort etwas tun statt eine Fläche zu rufen. */
+  .bar button.now { border-style: dashed; color: #6b6459; }
+  .bar .spacer { width: 1px; height: 30px; background: #dcd6cc; flex: none; margin: 0 2px; }
+  .bar .clock {
+    margin-left: auto; display: flex; gap: 10px; align-items: center; justify-content: center;
+    padding: 0 12px; height: 34px; border-radius: 17px;
+    background: #14141899; color: #e6e2d8; font-size: 13px; white-space: nowrap;
+  }
+  .bar .clock b { font-weight: 600; color: #fff; }
+
+  /* Das Blatt beginnt ganz oben und behält die volle Höhe. Die Leiste liegt
+     darauf — entschieden am 05.09.2026. */
+  .sheet {
+    position: absolute; inset: 0; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .sheet-head {
+    background: linear-gradient(180deg, #7a1220, #5d0e19); color: #f6efe2; padding: 16px 20px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .portret {
+    width: 64px; height: 64px; border-radius: 50%; border: 2px solid #D4AF37;
+    background: radial-gradient(circle at 40% 35%, #b9a07a, #4a3a29); flex: none;
+  }
+  .sheet-head h3 { margin: 0; font: 700 26px/1.1 Alegreya, Georgia, serif; letter-spacing: 0.02em; }
+  .sheet-head span { font-size: 13px; opacity: 0.8; }
+  .stats { display: flex; gap: 8px; padding: 14px 20px; flex-wrap: wrap; }
+  .stat {
+    width: 76px; padding: 8px 0; text-align: center; border: 1px solid #dcd6cc;
+    border-radius: 3px; background: #fff;
+  }
+  .stat b { display: block; font-size: 18px; }
+  .stat span { font-size: 11px; letter-spacing: 0.08em; color: #6b6459; }
+  .rows { padding: 6px 20px; display: flex; flex-direction: column; gap: 6px; }
+  .row {
+    display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px;
+    border: 1px solid #dcd6cc; border-radius: 3px; background: #fff; font-size: 15px;
+  }
+  .row i { width: 26px; height: 26px; border-radius: 3px; background: #efe9dc; flex: none; }
+  .row em { margin-left: auto; font-style: normal; color: #8B0000; font-weight: 700; }
+
+  /* ── The surfaces ────────────────────────────────────────────── */
+  .surface {
+    position: absolute; z-index: 8; background: #fdfbf7; display: none;
+    flex-direction: column; border-left: 2px solid #D4AF37;
+  }
+  .surface-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 12px 16px; background: #f4f1ea; border-bottom: 1px solid #dcd6cc;
+  }
+  .surface-head h4 { margin: 0; font: 700 18px/1 Alegreya, Georgia, serif; }
+  .surface-head button {
+    min-height: 40px; padding: 0 14px; border: 1px solid #dcd6cc; border-radius: 3px;
+    background: #fff; font: 600 14px/1 'Segoe UI', sans-serif; cursor: pointer; color: #1a1a1a;
+  }
+  .surface-body { padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+  .chip {
+    display: flex; align-items: center; gap: 10px; min-height: 52px; padding: 0 12px;
+    border: 1px solid #dcd6cc; border-radius: 3px; background: #fff; font-size: 15px;
+  }
+  .chip .dot { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #D4AF37;
+    background: radial-gradient(circle at 40% 35%, #b9a07a, #4a3a29); flex: none; }
+  .chip small { display: block; color: #6b6459; font-size: 12px; }
+
+  /* Portrait: every surface covers the sheet. Landscape: characters and chat dock. */
+  .portrait [data-surface="none"] .surface { display: none; }
+  .portrait .surface { inset: var(--bar) 0 0 0; display: none; }
+  .landscape .surface { inset: var(--bar) 0 0 auto; width: 340px; display: none; }
+  .screen[data-surface="chars"] .s-chars,
+  .screen[data-surface="chat"]  .s-chat,
+  .screen[data-surface="journal"] .s-journal,
+  .screen[data-surface="trade"] .s-trade { display: flex; }
+  /* Die Fläche beginnt unter der Leiste, das Blatt darunter nicht — so bleibt
+     der Rückweg immer sichtbar. */
+  /* Docked surfaces give the sheet its room back instead of covering it. */
+  .landscape .screen[data-surface="chars"] .sheet,
+  .landscape .screen[data-surface="chat"] .sheet { right: 340px; }
+
+  .msg { border: 1px solid #dcd6cc; border-left: 3px solid #8B0000; border-radius: 3px;
+    background: #fff; padding: 8px 12px; font-size: 14px; }
+  .msg b { color: #8B0000; }
+
+  /* ── Callouts ────────────────────────────────────────────────── */
+  .keys { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 2px;
+    background: var(--rule); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+  .key { background: var(--panel); padding: 14px 16px; display: flex; gap: 12px; align-items: baseline; }
+  .key .n {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500;
+    color: var(--red); flex: none; padding-top: 2px;
+  }
+  .key p { margin: 0; font-size: 14px; color: var(--ink-soft); }
+  .key p b { color: var(--ink); font-weight: 600; display: block; }
+
+
+  .decisions { display: flex; flex-direction: column; gap: 0; border-top: 1px solid var(--rule); }
+  .decision { display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 18px 0;
+    border-bottom: 1px solid var(--rule); align-items: start; }
+  .decision .q { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--gold); padding-top: 2px; }
+  .decision h3 { margin: 0 0 4px; font: 600 17px/1.3 'Segoe UI', sans-serif; color: var(--ink); }
+  .decision p { margin: 0; color: var(--ink-soft); font-size: 15px; max-width: 62ch; }
+
+  .note { font-size: 14px; color: var(--ink-soft); border-left: 2px solid var(--gold);
+    padding: 4px 0 4px 14px; max-width: 62ch; }
+  .note b { color: var(--ink); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .bar button, .surface-head button { transition: background-color .15s, color .15s; }
+  }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Ninjo&rsquo;s In-Person Tools &middot; Entwurf</div>
+    <h1>Blattansicht am Tisch</h1>
+    <p>Was am Tablet zu sehen ist, wenn Foundrys Oberfl&auml;che verschwindet. Beide
+      Lagen sind gleichwertig entworfen: hoch ist der Normalfall, quer ist der Fall,
+      in dem daneben noch Platz ist. Tippe die Knöpfe in der Leiste an &mdash; die
+      Fl&auml;chen verhalten sich in beiden Lagen unterschiedlich, und genau das ist
+      die Entscheidung.</p>
+  </header>
+
+
+
+  <section class="stage">
+
+    <!-- ── Hochformat ─────────────────────────────────────────── -->
+    <div class="device portrait">
+      <div class="device-name"><b>Hochformat</b> 800 &times; 1180</div>
+      <div class="bezel"><div class="screen-box">
+        <div class="screen" data-surface="none">
+
+          <div class="bar">
+            <button data-go="chars" aria-pressed="false">Wer</button>
+            <button data-go="chat" aria-pressed="false">Chat</button>
+            <button data-go="journal" aria-pressed="false">Notiz</button>
+            <button data-go="trade" aria-pressed="false">Tausch</button>
+            <span class="spacer"></span>
+            <button class="now" title="Schrift kleiner">A&minus;</button>
+            <button class="now" title="Schrift gr&ouml;&szlig;er">A+</button>
+            <button class="now" title="Vollbild">&#9974;</button>
+            <button class="now" title="Abmelden">&#9099;</button>
+            <div class="clock"><b>1 Eleasis, 1492</b> 21:01 &middot; Windig 11&nbsp;&deg;C &middot; Sommer</div>
+          </div>
+
+          <div class="sheet">
+            <div class="sheet-head">
+              <div class="portret"></div>
+              <div><h3>Nadylos</h3><span>Humanoide &middot; Mittelgro&szlig; &middot; Geschwindigkeit 0 m</span></div>
+            </div>
+            <div class="stats">
+              <div class="stat"><b>+0</b><span>ST&Auml;</span></div>
+              <div class="stat"><b>+0</b><span>GES</span></div>
+              <div class="stat"><b>+0</b><span>KON</span></div>
+              <div class="stat"><b>+0</b><span>INT</span></div>
+              <div class="stat"><b>+0</b><span>WEI</span></div>
+              <div class="stat"><b>+0</b><span>CHA</span></div>
+            </div>
+            <div class="rows">
+              <div class="row"><i></i> Beh&auml;lter <em>1</em></div>
+              <div class="row"><i></i> Heiltrank <em>&times;3</em></div>
+              <div class="row"><i></i> Pfeile <em>&times;15</em></div>
+              <div class="row"><i></i> Medaillion <em>1</em></div>
+            </div>
+          </div>
+
+          <div class="surface s-chars">
+            <div class="surface-head"><h4>Deine Charaktere</h4><button data-go="none">Zur&uuml;ck</button></div>
+            <div class="surface-body">
+              <div class="chip"><span class="dot"></span><span>Nadylos<small>gerade offen</small></span></div>
+              <div class="chip"><span class="dot"></span><span>Vincent de Coro<small>Roxy</small></span></div>
+            </div>
+          </div>
+
+          <div class="surface s-chat">
+            <div class="surface-head"><h4>Chat</h4><button data-go="none">Zur&uuml;ck</button></div>
+            <div class="surface-body">
+              <div class="msg"><b>Nadylos</b> &harr; <b>Vincent de Coro</b><br>Nadylos gibt: 12 Gold</div>
+              <div class="msg">Wahrnehmung: <b>17</b></div>
+              <div class="msg">Rettungswurf Geschicklichkeit: <b>9</b></div>
+            </div>
+          </div>
+
+          <div class="surface s-journal">
+            <div class="surface-head"><h4>Notizen</h4><button data-go="none">Zur&uuml;ck</button></div>
+            <div class="surface-body">
+              <div class="chip"><span>Geheimnisse der Abgr&uuml;nde</span></div>
+              <div class="chip"><span>Spielerhandbuch</span></div>
+              <div class="chip"><span>Diskrete Angelegenheit</span></div>
+            </div>
+          </div>
+
+          <div class="surface s-trade">
+            <div class="surface-head"><h4>Tausch</h4><button data-go="none">Zur&uuml;ck</button></div>
+            <div class="surface-body">
+              <div class="chip"><span class="dot"></span><span>Vincent de Coro<small>Roxy</small></span></div>
+              <div class="msg">Auf dem Tisch: Beh&auml;lter<br><small>darin: Spitzhacke, Pfeile &times;15, 15 Gold</small></div>
+            </div>
+          </div>
+
+
+
+
+        </div>
+      </div></div>
+    </div>
+
+    <!-- ── Querformat ─────────────────────────────────────────── -->
+    <div class="device landscape">
+      <div class="device-name"><b>Querformat</b> 1180 &times; 800</div>
+      <div class="bezel"><div class="screen-box">
+        <div class="screen" data-surface="chars">
+
+          <div class="bar">
+            <button data-go="chars" aria-pressed="true">Wer</button>
+            <button data-go="chat" aria-pressed="false">Chat</button>
+            <button data-go="journal" aria-pressed="false">Notiz</button>
+            <button data-go="trade" aria-pressed="false">Tausch</button>
+            <span class="spacer"></span>
+            <button class="now" title="Schrift kleiner">A&minus;</button>
+            <button class="now" title="Schrift gr&ouml;&szlig;er">A+</button>
+            <button class="now" title="Vollbild">&#9974;</button>
+            <button class="now" title="Abmelden">&#9099;</button>
+            <div class="clock"><b>1 Eleasis, 1492</b> 21:01 &middot; Windig 11&nbsp;&deg;C &middot; Sommer</div>
+          </div>
+
+          <div class="sheet">
+            <div class="sheet-head">
+              <div class="portret"></div>
+              <div><h3>Nadylos</h3><span>Humanoide &middot; Mittelgro&szlig; &middot; Geschwindigkeit 0 m</span></div>
+            </div>
+            <div class="stats">
+              <div class="stat"><b>+0</b><span>ST&Auml;</span></div>
+              <div class="stat"><b>+0</b><span>GES</span></div>
+              <div class="stat"><b>+0</b><span>KON</span></div>
+              <div class="stat"><b>+0</b><span>INT</span></div>
+              <div class="stat"><b>+0</b><span>WEI</span></div>
+              <div class="stat"><b>+0</b><span>CHA</span></div>
+            </div>
+            <div class="rows">
+              <div class="row"><i></i> Beh&auml;lter <em>1</em></div>
+              <div class="row"><i></i> Heiltrank <em>&times;3</em></div>
+              <div class="row"><i></i> Pfeile <em>&times;15</em></div>
+            </div>
+          </div>
+
+          <div class="surface s-chars">
+            <div class="surface-head"><h4>Deine Charaktere</h4><button data-go="none">Zu</button></div>
+            <div class="surface-body">
+              <div class="chip"><span class="dot"></span><span>Nadylos<small>gerade offen</small></span></div>
+              <div class="chip"><span class="dot"></span><span>Vincent de Coro<small>Roxy</small></span></div>
+            </div>
+          </div>
+
+          <div class="surface s-chat">
+            <div class="surface-head"><h4>Chat</h4><button data-go="none">Zu</button></div>
+            <div class="surface-body">
+              <div class="msg"><b>Nadylos</b> &harr; <b>Vincent de Coro</b><br>Nadylos gibt: 12 Gold</div>
+              <div class="msg">Wahrnehmung: <b>17</b></div>
+            </div>
+          </div>
+
+          <div class="surface s-journal">
+            <div class="surface-head"><h4>Notizen</h4><button data-go="none">Zu</button></div>
+            <div class="surface-body">
+              <div class="chip"><span>Geheimnisse der Abgr&uuml;nde</span></div>
+              <div class="chip"><span>Spielerhandbuch</span></div>
+            </div>
+          </div>
+
+          <div class="surface s-trade">
+            <div class="surface-head"><h4>Tausch</h4><button data-go="none">Zu</button></div>
+            <div class="surface-body">
+              <div class="chip"><span class="dot"></span><span>Vincent de Coro<small>Roxy</small></span></div>
+              <div class="msg">Auf dem Tisch: Beh&auml;lter</div>
+            </div>
+          </div>
+
+
+
+
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <p class="note"><b>Der Unterschied, um den es geht:</b> Im Hochformat verdeckt jede
+    Fl&auml;che das Blatt und geht wieder weg. Im Querformat bleiben <em>Charaktere</em>
+    und <em>Chat</em> angedockt stehen und das Blatt r&uuml;ckt zur Seite &mdash;
+    Die Leiste selbst schwebt in beiden Lagen &uuml;ber dem Blatt, damit ihm die
+    volle H&ouml;he bleibt. <em>Notizen</em> und <em>Tausch</em> legen sich auch quer dar&uuml;ber, weil man
+    sie liest statt sie nebenbei im Blick zu haben. Zielen und Figurensteuerung
+    sind bewusst nicht dabei &mdash; die brauchen wir an diesem Tisch nicht.</p>
+
+  <section>
+    <h2>Was hier zu sehen ist</h2>
+    <div class="keys">
+      <div class="key"><span class="n">1</span><p><b>Neun Kn&ouml;pfe, nichts f&auml;llt weg</b>
+        Schriftgr&ouml;&szlig;e, Vollbild und Abmelden bleiben: auf iPadOS und Android
+        gibt es kein F11 und kein Strg+, und in einer installierten Ansicht keine
+        Adressleiste.</p></div>
+      <div class="key"><span class="n">2</span><p><b>Die Zeitleiste bleibt stehen</b>
+        Sie ist keine Fl&auml;che. Sie wird angeschaut, nicht bedient.</p></div>
+      <div class="key"><span class="n">3</span><p><b>Alles ist 44&nbsp;Pixel hoch</b>
+        Gezeichnet in echten Ma&szlig;en und dann verkleinert, damit die Gr&ouml;&szlig;en
+        stimmen und nicht nur aussehen, als w&uuml;rden sie.</p></div>
+      <div class="key"><span class="n">4</span><p><b>Das Blatt ist nicht unseres</b>
+        Es kommt von Foundry und Tidy5e. Wir zeigen es formatf&uuml;llend und fassen
+        es nicht an.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Drei Entscheidungen</h2>
+    <p class="lede">Bevor eine Zeile Modulcode entsteht.</p>
+    <div class="decisions">
+      <div class="decision">
+        <span class="q">A</span>
+        <div><h3>Stimmt die Aufteilung im Hochformat?</h3>
+          <p>Leiste oben, Blatt darunter, Fl&auml;chen dar&uuml;ber. Die Alternative
+            w&auml;re eine Leiste unten am Daumen &mdash; besser zu erreichen, aber
+            dort sitzt auf dem Tablet schon die Systemleiste.</p></div>
+      </div>
+      <div class="decision">
+        <span class="q">B</span>
+        <div><h3>Verdeckt die Leiste etwas Wichtiges?</h3>
+          <p>Sie liegt jetzt auf dem Kopf des Blattes. Bei Tidy5e steht dort das
+            Banner mit Namen und Werten &mdash; im Hochformat nimmt die zweizeilige
+            Leiste davon einiges ein. Am Tisch pr&uuml;fen, ob etwas fehlt, das man
+            oft braucht.</p></div>
+      </div>
+      <div class="decision">
+        <span class="q">C</span>
+        <div><h3>Darf im Querformat etwas stehen bleiben?</h3>
+          <p>Angedockt hei&szlig;t: das Blatt wird schmaler. Immer dar&uuml;ber
+            hei&szlig;t: eine Regel weniger, aber jedes Mal ein Griff mehr.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="note">Entwurf, kein Prototyp: keine Foundry-Anbindung, keine echten Daten.
+    Die Farben sind die des Moduls (Pergament&nbsp;#fdfbf7, Dunkelrot&nbsp;#8B0000,
+    Gold&nbsp;#D4AF37) und bleiben in beiden Seitendesigns gleich &mdash; das Produkt
+    legt sich bewusst auf ein Aussehen fest.</p>
+
+</div>
+
+<script>
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.addEventListener("click", event => {
+      const target = event.target.closest("[data-go]");
+      if (!target) return;
+      const wanted = target.dataset.go;
+      const current = screen.dataset.surface;
+      screen.dataset.surface = (wanted === current) ? "none" : wanted;
+      screen.querySelectorAll(".bar [data-go]").forEach(b => {
+        b.setAttribute("aria-pressed", String(b.dataset.go === screen.dataset.surface));
+      });
+    });
+  });
+</script>
