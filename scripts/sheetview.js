@@ -326,8 +326,9 @@ function lageKey(key) {
 /** Alle Schlüssel, die diese Ansicht im Gerätespeicher anlegt. */
 function alleGeraeteSchluessel() {
   const aus = [];
-  for (const key of [PLATZ_KEY, UHR_PLATZ_KEY, GROESSE_KEY]) aus.push(`${key}.hoch`, `${key}.quer`);
-  aus.push(ZOOM_KEY);
+  for (const key of [PLATZ_KEY, UHR_PLATZ_KEY, GROESSE_KEY]) aus.push(key, `${key}.hoch`, `${key}.quer`);
+  // Dazu die Namen früherer Fassungen, die auf alten Tablets noch liegen.
+  aus.push(ZOOM_KEY, `${MODULE_ID}.sheetviewBar`, `${MODULE_ID}.sheetviewUhr`);
   return aus;
 }
 
