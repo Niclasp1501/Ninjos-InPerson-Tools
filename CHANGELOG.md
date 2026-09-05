@@ -1,5 +1,11 @@
 # Changelog
 
+## 14.2611.54 — 2026-09-06
+
+**Der Bearbeiten-Schalter des Blatts ist wieder da.** Tidys Spielen/Bearbeiten
+sitzt in der Fensterkopfzeile und wurde von der Regel „alle Kopfknöpfe außer ⋮
+weg“ mit ausgeblendet.
+
 ## 14.2611.53 — 2026-09-06
 
 **„Position festhalten“ als Kippschalter.** Das dunkle Häkchen-Kästchen war

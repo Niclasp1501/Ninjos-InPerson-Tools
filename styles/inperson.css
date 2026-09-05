@@ -2174,9 +2174,11 @@ body.inperson-sheetview .inperson-stage-sheet {
  * Schließen: alles Schreibtisch-Werkzeug, auf einem Tablet ohne Zwischenablage
  * und ohne zweites Fenster nur Ziele für Fehlgriffe. Der ⋮ (`toggleControls`)
  * bleibt - hinter ihm liegen die Blatt-Einstellungen, und die braucht man auch
- * am Tisch.
+ * am Tisch. Und Tidys Spielen/Bearbeiten-Schalter bleibt: Er steht als
+ * `.header-sheet-edit-mode-toggle` ebenfalls in der Kopfzeile und wurde von
+ * der Regel mit erwischt - das Blatt ließ sich nicht mehr bearbeiten.
  */
-body.inperson-sheetview .inperson-stage-sheet > .window-header .header-control:not([data-action="toggleControls"]),
+body.inperson-sheetview .inperson-stage-sheet > .window-header .header-control:not([data-action="toggleControls"]):not(.header-sheet-edit-mode-toggle),
 body.inperson-sheetview .inperson-stage-sheet .window-resize-handle {
   display: none !important;
 }
