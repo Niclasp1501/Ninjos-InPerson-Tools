@@ -2111,10 +2111,13 @@ span.inperson-icon svg {
  * dafür mussten wir im Sheet-Only-Modus einen eigenen Streifen bauen.
  */
 body.inperson-sheetview #interface,
-body.inperson-sheetview #pause,
-body.inperson-sheetview #tooltip {
+body.inperson-sheetview #pause {
   display: none !important;
 }
+
+/* `#tooltip` bleibt: Es ist Foundrys Erklärkasten für alles, auch für unsere
+   Zeitleiste - Wetter und Mondphase hängen daran. Mit ausgeblendet, zeigte
+   ein Finger auf der Leiste nichts mehr. */
 
 body.inperson-sheetview {
   overflow: hidden;
