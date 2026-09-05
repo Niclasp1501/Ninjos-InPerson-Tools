@@ -272,8 +272,9 @@ function leisteUnterDieUhr() {
   // ausläuft; die Zeitleiste direkt darüber. Gezogene Plätze gewinnen.
   const hochkant = window.innerHeight > window.innerWidth;
   const unten = (element, abstand) => {
+    const faktor = Number(getComputedStyle(element).zoom) || 1;
     element.style.top = "auto";
-    element.style.bottom = `calc(env(safe-area-inset-bottom, 0px) + ${abstand}px)`;
+    element.style.bottom = `calc((env(safe-area-inset-bottom, 0px) + ${abstand}px) / ${faktor})`;
   };
   const oben = element => {
     element.style.removeProperty("top");
@@ -284,11 +285,12 @@ function leisteUnterDieUhr() {
     if (hochkant) unten(bar, 12);
     else {
       oben(bar);
-      if (uhr) bar.style.top = `${Math.round(uhr.getBoundingClientRect().bottom + 12)}px`;
+      const faktor = Number(getComputedStyle(bar).zoom) || 1;
+      if (uhr) bar.style.top = `${Math.round((uhr.getBoundingClientRect().bottom + 12) / faktor)}px`;
     }
   }
   if (uhr && !localStorage.getItem(UHR_PLATZ_KEY)) {
-    if (hochkant) unten(uhr, 12 + bar.offsetHeight + 12);
+    if (hochkant) unten(uhr, 12 + bar.getBoundingClientRect().height + 12);
     else oben(uhr);
   }
 }
@@ -402,8 +404,11 @@ function setzen(bar, x, y) {
   const r = bar.getBoundingClientRect();
   const maxX = Math.max(0, window.innerWidth - r.width);
   const maxY = Math.max(0, window.innerHeight - r.height);
-  bar.style.left = `${Math.min(maxX, Math.max(0, x))}px`;
-  bar.style.top = `${Math.min(maxY, Math.max(0, y))}px`;
+  // Auf kleinen Schirmen sind die Leisten über `zoom` verkleinert, und ein
+  // gezoomtes Element misst sein left/top in eigenen, kleineren Pixeln.
+  const faktor = Number(getComputedStyle(bar).zoom) || 1;
+  bar.style.left = `${Math.min(maxX, Math.max(0, x)) / faktor}px`;
+  bar.style.top = `${Math.min(maxY, Math.max(0, y)) / faktor}px`;
 }
 
 /**

@@ -2405,6 +2405,27 @@ body.inperson-sheetview .sidebar-popout {
   z-index: 9999 !important;
 }
 
+/* Kleinere Schirme, kleinere Leisten. 44-Pixel-Knöpfe und eine 152 Pixel
+   breite Kuppel sind für ein 12-Zoll-Tablet gedacht; auf 8 Zoll nehmen sie
+   ein Viertel des Blatts. Über `zoom`, damit alles darin - Kuppel, Pille,
+   Knöpfe - im selben Verhältnis bleibt; sheetview.js rechnet die Plätze
+   durch denselben Faktor. */
+@media (max-width: 1100px) {
+  .inperson-sheetview-bar,
+  .inperson-sheetview-uhr,
+  .inperson-sv-lautstaerke {
+    zoom: 0.85;
+  }
+}
+
+@media (max-width: 850px) {
+  .inperson-sheetview-bar,
+  .inperson-sheetview-uhr,
+  .inperson-sv-lautstaerke {
+    zoom: 0.72;
+  }
+}
+
 /* ── Die Seite der Blattansicht ──────────────────────────────────────
    Kurz gehalten: Die erste Fassung hatte drei Erklärkästen, und in der
    Textwand waren die Konten - der eigentliche Inhalt - kaum zu finden. Die

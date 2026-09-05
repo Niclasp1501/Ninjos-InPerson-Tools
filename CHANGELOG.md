@@ -1,5 +1,12 @@
 # Changelog
 
+## 14.2611.43 — 2026-09-06
+
+**Kleinere Leisten auf kleinen Schirmen.** Unter 1100 Pixeln Breite schrumpfen
+Knopfleiste, Zeitleiste und Lautstärkefeld auf 85 %, unter 850 auf 72 % —
+Knöpfe, Kuppel und Pille im selben Verhältnis. Die Stufen sind geschätzt,
+bis ein kleines Tablet am Tisch war.
+
 ## 14.2611.42 — 2026-09-06
 
 **Hochformat: Leisten unten.** Hochkant sitzen die Attribute im Kopf des
