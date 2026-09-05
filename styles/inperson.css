@@ -2024,3 +2024,15 @@ span.inperson-icon svg {
 .inperson-clock-season {
   cursor: help;
 }
+
+/* Der Himmelsbogen in der Zeitleiste. Eigene Ecken, damit er als Bild lesbar
+   bleibt und nicht wie ein Teil des dunklen Chips wirkt. */
+.inperson-clock-sky {
+  display: inline-flex;
+  border-radius: 6px;
+  overflow: hidden;
+  line-height: 0;
+  cursor: help;
+}
+
+.inperson-clock-sky svg.inperson-sky { display: block; height: 30px; width: auto; }

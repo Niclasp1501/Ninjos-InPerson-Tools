@@ -30,6 +30,7 @@
 
 import { MODULE_ID, SETTINGS } from "./const.js";
 import { mountInSheetOnly, unmountFromSheetOnly } from "./sheet-only.js";
+import { himmelsbogen } from "./sky.js";
 
 const MOUNT_ID = "clock";
 
@@ -267,6 +268,15 @@ function weatherTooltip(weather) {
 function fillStrip(element, now) {
   const get = key => game.settings.get(MODULE_ID, key);
   const parts = [];
+
+  // Der Bogen steht vorn: er ist ein Bild und wird angeschaut, die Zahlen
+  // daneben werden gelesen.
+  if (get(SETTINGS.CLOCK_SKY)) {
+    const bogen = himmelsbogen();
+    if (bogen) {
+      parts.push(`<span class="inperson-clock-sky" data-tooltip-html="${foundry.utils.escapeHTML(bogen.hinweis)}">${bogen.svg}</span>`);
+    }
+  }
 
   if (get(SETTINGS.CLOCK_DATE)) {
     parts.push(`<span class="inperson-clock-date">${escape(now.date)}</span>`);

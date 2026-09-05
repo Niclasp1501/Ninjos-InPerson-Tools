@@ -276,8 +276,12 @@
   "INPERSON.Willkommen.Punkt2": "<strong>Szenen-Monitore</strong> — zwei Anzeigekonten mit getrennten Aufgaben: eines folgt jeder Szene, eines lässt sich festhalten. Dazu ein Einbrennschutz für den Fernseher.",
   "INPERSON.Willkommen.Punkt3": "<strong>Am Charakterblatt</strong> — zusammen mit Sheet Only erscheinen Datum, Uhrzeit und Wetter dort, wo es sonst keine Oberfläche mehr gibt.",
   "INPERSON.Willkommen.Start": "Zum Anfangen: <strong>Alt+T</strong> öffnet das Bedienfenster mit dem Hauptschalter. Alles Übrige steht in den Moduleinstellungen unter „Tischmodus“ und „Szenen-Monitore“.",
-  "INPERSON.Willkommen.Forge": "Anleitung und weitere Module:",
   "INPERSON.Willkommen.Nie": "Nicht mehr anzeigen",
   "INPERSON.Willkommen.Spaeter": "Später",
-  "INPERSON.Willkommen.Untertitel": "Werkzeuge für den echten Spieltisch"
+  "INPERSON.Willkommen.Untertitel": "Werkzeuge für den echten Spieltisch",
+  "INPERSON.Willkommen.ForgeZeile": "Alle Module, Anleitungen und deutschen Übersetzungen an einem Ort — Modulseite öffnen",
+  "INPERSON.Clock.Field.Sky": "Sonnen- und Mondbogen",
+  "INPERSON.Clock.Field.SkyHint": "Zeigt, wo Sonne oder Mond gerade stehen, mit Mondphase. Wird aus dem Weltkalender gerechnet; ohne Angaben dort fällt er auf 06:00/18:00 zurück.",
+  "INPERSON.Clock.SunTimes": "Sonne: {up} auf, {down} unter",
+  "INPERSON.Clock.SunGuessed": "geschätzt — der Kalender macht keine Angabe"
 }

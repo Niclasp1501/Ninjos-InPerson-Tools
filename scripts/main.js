@@ -107,6 +107,16 @@ function registerSettings() {
     onChange: () => refreshClock({ force: true })
   });
 
+  // Der Bogen ist standardmäßig aus: er ist neu, und eine Leiste, die sich beim
+  // Aktualisieren von selbst verändert, will man selbst einschalten.
+  S(SETTINGS.CLOCK_SKY, {
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: false,
+    onChange: () => refreshClock({ force: true })
+  });
+
   // The four parts of the strip. All on the page, so the list keeps one row per
   // tool rather than five for this one.
   for (const key of [SETTINGS.CLOCK_DATE, SETTINGS.CLOCK_TIME, SETTINGS.CLOCK_SHOW_SEASON]) {

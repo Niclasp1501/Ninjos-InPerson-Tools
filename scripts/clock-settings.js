@@ -51,6 +51,7 @@ export class ClockSettings extends HandlebarsApplicationMixin(ApplicationV2) {
       time: get(SETTINGS.CLOCK_TIME),
       weather: get(SETTINGS.CLOCK_WEATHER),
       season: get(SETTINGS.CLOCK_SHOW_SEASON),
+      sky: get(SETTINGS.CLOCK_SKY),
       // Said plainly rather than left to be discovered: without a weather
       // module the two weather rows do nothing, while the season keeps working
       // out of the world calendar.
@@ -67,6 +68,7 @@ export class ClockSettings extends HandlebarsApplicationMixin(ApplicationV2) {
     await set(SETTINGS.CLOCK_TIME, !!data.time);
     await set(SETTINGS.CLOCK_WEATHER, !!data.weather);
     await set(SETTINGS.CLOCK_SHOW_SEASON, !!data.season);
+    await set(SETTINGS.CLOCK_SKY, !!data.sky);
 
     syncClock();
     refreshClock({ force: true });

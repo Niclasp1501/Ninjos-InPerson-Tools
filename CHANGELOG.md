@@ -1,5 +1,25 @@
 # Changelog
 
+## 14.2611.24 — 2026-09-05
+
+**Ein Sonnen- und Mondbogen in der Zeitleiste.** Er zeigt, wo Sonne oder Mond
+gerade stehen, mit der Phase des Mondes — ein Blick sagt „die Sonne ist seit
+einer Stunde weg", wofür man sonst rechnen müsste. Einzuschalten unter
+„Zeit & Wetter"; standardmäßig aus.
+
+**Gerechnet, nicht abgeschrieben.** Alles kommt aus dem Weltkalender, den jeder
+Client hat: `daylight` liefert längsten und kürzesten Tag samt Sonnenwenden,
+daraus die Taglänge für heute; `moons` liefert Zykluslänge, Bezugsdatum und die
+acht Phasen. Geprüft gegen die Werte dieser Welt — Tag 171 ergibt 16 Stunden,
+Tag 354 genau 8. Die Mondsicheln zeichnen wir selbst, statt die Bilddateien
+eines anderen Moduls zu laden; sonst hinge die Leiste an dessen Vorhandensein.
+Ohne Kalenderangaben fällt der Bogen auf 06:00/18:00 zurück und lässt den Mond
+weg, statt zu verschwinden.
+
+Der Rechentest fand dabei gleich einen Fehler: Aus 19,99993 Stunden wurde
+„19:60", weil die Minuten für sich gerundet auf 60 kamen. Jetzt wird erst auf
+Minuten gerundet und dann geteilt.
+
 ## 14.2611.23 — 2026-09-05
 
 **Der Akteure-Knopf öffnete das Verzeichnis nicht mehr.** Die Ursache liegt

@@ -276,8 +276,12 @@
   "INPERSON.Willkommen.Punkt2": "<strong>Scene displays</strong> — two display accounts with separate jobs: one follows every scene, one can be pinned. Plus burn-in protection for the television.",
   "INPERSON.Willkommen.Punkt3": "<strong>On the character sheet</strong> — together with Sheet Only, the date, time and weather appear where there is otherwise no interface left.",
   "INPERSON.Willkommen.Start": "To begin: <strong>Alt+T</strong> opens the control panel with the master switch. Everything else lives in the module settings under \"Table Mode\" and \"Scene Displays\".",
-  "INPERSON.Willkommen.Forge": "Documentation and more modules:",
   "INPERSON.Willkommen.Nie": "Don't show again",
   "INPERSON.Willkommen.Spaeter": "Later",
-  "INPERSON.Willkommen.Untertitel": "Tools for playing around a real table"
+  "INPERSON.Willkommen.Untertitel": "Tools for playing around a real table",
+  "INPERSON.Willkommen.ForgeZeile": "Every module, its documentation and the German translations in one place — open the module page",
+  "INPERSON.Clock.Field.Sky": "Sun and moon arc",
+  "INPERSON.Clock.Field.SkyHint": "Shows where the sun or moon stands right now, with the moon's phase. Computed from the world calendar; without those figures it falls back to 06:00/18:00.",
+  "INPERSON.Clock.SunTimes": "Sun: up {up}, down {down}",
+  "INPERSON.Clock.SunGuessed": "estimated - the calendar gives no figures"
 }

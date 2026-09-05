@@ -34,6 +34,14 @@
   </label>
 
   <label class="inperson-pick-row">
+    <input type="checkbox" name="sky" {{checked sky}}>
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.Clock.Field.Sky"}}
+      <em>{{localize "INPERSON.Clock.Field.SkyHint"}}</em>
+    </span>
+  </label>
+
+  <label class="inperson-pick-row">
     <input type="checkbox" name="weather" {{checked weather}}>
     <span class="inperson-pick-name">
       {{localize "INPERSON.Clock.Field.Weather"}}

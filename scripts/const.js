@@ -104,6 +104,8 @@ export const SETTINGS = {
   CLOCK_DATE: "clockDate",
   CLOCK_TIME: "clockTime",
   CLOCK_SHOW_SEASON: "clockShowSeason",
+  /** Sonnen- und Mondbogen statt oder neben der Uhrzeit (world). */
+  CLOCK_SKY: "clockSky",
   /** Offer the trade button at all (world). */
   TRADE: "trade",
   /**
