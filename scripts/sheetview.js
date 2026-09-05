@@ -199,15 +199,22 @@ function uhrBauen() {
 // Version 2 der Schlüssel: Die alten enthalten Plätze aus der Zeit, als beide
 // Leisten oben standen und sich überdeckten. Ein neuer Name wirft sie weg,
 // ohne dass jemand etwas löschen muss.
+// Version 2 der Schlüssel: Die alten enthalten Plätze aus der Zeit, als beide
+// Leisten oben standen und sich überdeckten. Ein neuer Name wirft sie weg,
+// ohne dass jemand etwas löschen muss.
 const PLATZ_KEY = `${MODULE_ID}.sheetviewBar2`;
 const UHR_PLATZ_KEY = `${MODULE_ID}.sheetviewUhr2`;
 const HALTEN_MS = 400;
 
+/**
+ * Ob gerade gezogen wurde — die einzige Angabe, die beide Leisten teilen.
+ *
+ * Sie dient nur dazu, den Klick zu unterdrücken, der auf ein Ziehen folgt.
+ * Alles andere gehört der einzelnen Leiste: Anfangs lagen Griffpunkt und
+ * gegriffenes Element hier oben, und weil `ziehbarMachen` zweimal läuft, zog
+ * ein Griff an der einen die andere mit. Genau das war zu sehen.
+ */
 let gezogen = false;
-let timer = null;
-let gegriffen = null;
-let griffX = 0;
-let griffY = 0;
 
 function wurdeGezogen() {
   return gezogen;
@@ -220,47 +227,56 @@ function wurdeGezogen() {
  * Leiste sofort, wäre kein Knopf mehr zu treffen — man würde sie beim Drücken
  * verschieben. Also: kurz halten, dann bewegt sie sich; und wer gezogen hat,
  * löst beim Loslassen keinen Knopf aus.
+ *
+ * Jede Leiste hat ihren eigenen Zustand. Der steckt bewusst in dieser Funktion
+ * und nicht daneben.
  */
-function ziehbarMachen(bar, key) {
+function ziehbarMachen(element, key) {
+  let timer = null;
+  let aktiv = false;
+  let griffX = 0;
+  let griffY = 0;
+
   const start = event => {
-    gezogen = false;
     const punkt = event.touches?.[0] ?? event;
     clearTimeout(timer);
     timer = setTimeout(() => {
+      aktiv = true;
       gezogen = true;
-      gegriffen = bar;
-      bar.classList.add("wird-gezogen");
-      const r = bar.getBoundingClientRect();
+      element.classList.add("wird-gezogen");
+      const r = element.getBoundingClientRect();
       griffX = punkt.clientX - r.left;
       griffY = punkt.clientY - r.top;
     }, HALTEN_MS);
   };
 
   const bewegen = event => {
-    if (!gegriffen) return;
+    if (!aktiv) return;
     event.preventDefault();
     const punkt = event.touches?.[0] ?? event;
-    setzen(bar, punkt.clientX - griffX, punkt.clientY - griffY);
+    setzen(element, punkt.clientX - griffX, punkt.clientY - griffY);
   };
 
   const ende = () => {
     clearTimeout(timer);
-    if (gegriffen) {
-      gegriffen.classList.remove("wird-gezogen");
-      const r = bar.getBoundingClientRect();
-      localStorage.setItem(key, JSON.stringify({ x: Math.round(r.left), y: Math.round(r.top) }));
-      gegriffen = null;
-    }
+    if (!aktiv) return;
+    aktiv = false;
+    element.classList.remove("wird-gezogen");
+    const r = element.getBoundingClientRect();
+    localStorage.setItem(key, JSON.stringify({ x: Math.round(r.left), y: Math.round(r.top) }));
     // Erst nach dem Klick zurücksetzen, sonst feuert der Knopf doch noch.
     setTimeout(() => { gezogen = false; }, 0);
   };
 
-  bar.addEventListener("mousedown", start);
-  bar.addEventListener("touchstart", start, { passive: true });
+  element.addEventListener("mousedown", start);
+  element.addEventListener("touchstart", start, { passive: true });
   document.addEventListener("mousemove", bewegen);
   document.addEventListener("touchmove", bewegen, { passive: false });
   document.addEventListener("mouseup", ende);
   document.addEventListener("touchend", ende);
+  // Ein Zeigerwechsel mitten im Ziehen darf die Leiste nicht am Zeiger kleben
+  // lassen.
+  document.addEventListener("pointercancel", ende);
 }
 
 /**

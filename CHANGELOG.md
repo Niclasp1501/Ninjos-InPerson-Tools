@@ -1,5 +1,17 @@
 # Changelog
 
+## 14.2611.32 — 2026-09-05
+
+**Beim Ziehen flog alles mit.** Wer die Knopfleiste anfasste, verschob auch die
+Zeitleiste. Der Grund war ein Anfängerfehler von mir: Die Funktion, die eine
+Leiste verschiebbar macht, läuft **zweimal** — einmal je Leiste —, aber
+Griffpunkt und gegriffenes Element lagen als gemeinsame Variablen daneben. Also
+las die eine, was die andere gerade gesetzt hatte, und beide bewegten sich.
+
+Jede Leiste hat jetzt ihren eigenen Zustand. Geteilt bleibt nur die eine Angabe,
+die geteilt gehört: ob gerade gezogen wurde, damit der Klick danach nicht auch
+noch einen Knopf auslöst.
+
 ## 14.2611.31 — 2026-09-05
 
 **Die Phantomseite ist weg — es waren drei Fehler, nicht einer.** Gefunden, weil
