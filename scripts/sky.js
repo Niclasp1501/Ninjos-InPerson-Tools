@@ -14,7 +14,8 @@
  *
  * Zwei Dinge sind bewusst *nicht* übernommen. Die Mondsicheln zeichnen wir
  * selbst statt die Bilddateien eines anderen Moduls zu laden - sonst hinge die
- * Leiste an dessen Vorhandensein und an dessen Dateinamen. Und der Bogen läuft
+ * Leiste an dessen Vorhandensein und an dessen Dateinamen, und auf 28 Pixel
+ * verkleinert waren die Bilder ohnehin nicht mehr rund. Und der Bogen läuft
  * ohne jedes Kalendermodul: fehlen die Angaben, fällt er auf 06:00/18:00 zurück
  * und lässt den Mond weg, statt zu verschwinden.
  */
@@ -35,7 +36,7 @@ import { MODULE_ID } from "./const.js";
 const RADIUS = 76;
 const BREITE = RADIUS * 2;
 const HOEHE = RADIUS + 2;
-const GESTIRN = 13;
+const GESTIRN = 14;
 
 /* ── Rechnen ─────────────────────────────────────────────────────── */
 
@@ -143,27 +144,33 @@ const STERNE = [
 ];
 
 /**
- * Der Mond, mit dem Bild des Kalendermoduls wenn es eines gibt.
+ * Der Mond, gezeichnet - nicht das Bild des Kalendermoduls.
  *
- * Zuerst hatte ich die Sichel selbst gezeichnet, um nicht an fremden Dateien zu
- * hängen. Am Tisch sah das schlechter aus als das Original - und das Original
- * *ist* das Bild, das in den Phasendaten steht. Also wird es genommen, wenn es
- * da ist, und selbst gezeichnet, wenn nicht. Die Leiste läuft weiterhin ohne
- * jedes Kalendermodul; sie sieht dann nur etwas schlichter aus.
+ * Das Bild hatte ich zwischendurch genommen, weil es "das Original" war. Auf
+ * 28 Pixel herunterskaliert war es weder rund noch scharf: eine Rasterdatei,
+ * für 64 Pixel gemacht. Ein Kreis im SVG ist auf jedem Schirm ein Kreis, und
+ * die Phase kommt als Fläche aus demselben Anteil, aus dem auch der Name kommt.
+ *
+ * Aufbau von hinten nach vorn: Hof, dunkle Scheibe (damit bei Neumond etwas
+ * am Himmel steht), die beleuchtete Fläche mit einem Verlauf, der zum
+ * Schattenrand hin leicht abdunkelt, und ein feiner heller Rand.
  */
 function mondBild(cx, cy, mond) {
-  const hof = `<circle cx="${cx}" cy="${cy}" r="${GESTIRN * 1.7}" fill="#e8f0ff" opacity="0.16"/>`;
-  const d = GESTIRN * 2;
-
-  if (mond?.bild) {
-    return `${hof}<image href="${escape(mond.bild)}" x="${(cx - GESTIRN).toFixed(1)}" y="${(cy - GESTIRN).toFixed(1)}"
-      width="${d}" height="${d}" preserveAspectRatio="xMidYMid meet"/>`;
-  }
-
-  return `${hof}
-    <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="#25313f"/>
-    <path d="${mondPfad(Number(cx), Number(cy), GESTIRN, mond?.anteil ?? 0.5)}" fill="${mond?.farbe ?? "#e9e9e4"}"/>
-    <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="0.6"/>`;
+  const x = Number(cx);
+  const y = Number(cy);
+  const anteil = mond?.anteil ?? 0.5;
+  const farbe = mond?.farbe ?? "#e9e9e4";
+  const id = `${MODULE_ID}-moon`;
+  const lichtSeite = anteil < 0.5 ? "70%" : "30%";
+  return `
+    <defs><radialGradient id="${id}" cx="${lichtSeite}" cy="35%" r="75%">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="0.55" stop-color="${farbe}"/><stop offset="1" stop-color="${farbe}" stop-opacity="0.82"/>
+    </radialGradient></defs>
+    <circle cx="${cx}" cy="${cy}" r="${GESTIRN * 1.8}" fill="#dfe8ff" opacity="0.14"/>
+    <circle cx="${cx}" cy="${cy}" r="${GESTIRN * 1.25}" fill="#dfe8ff" opacity="0.1"/>
+    <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="#1f2635"/>
+    <path d="${mondPfad(x, y, GESTIRN, anteil)}" fill="url(#${id})"/>
+    <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="none" stroke="#ffffff" stroke-opacity="0.3" stroke-width="0.7"/>`;
 }
 
 /** Der beleuchtete Teil des Mondes als Pfad. */

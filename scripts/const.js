@@ -114,6 +114,20 @@ export const SETTINGS = {
    * geladen — eine abgeschaltete Beta darf nicht messbar sein.
    */
   SHEETVIEW: "sheetView",
+  /**
+   * Wer sie bekommt: `{ [userId]: true }` (world).
+   *
+   * Der Schalter allein traf jeden Spieler mit Charakter — auch den am Laptop,
+   * der seine Szenenliste braucht. Ob jemand nur sein Blatt sieht, hängt am
+   * Gerät in seiner Hand, nicht an seiner Rolle.
+   */
+  SHEETVIEW_USERS: "sheetViewUsers",
+  /** Spielfeld auf diesen Geräten abschalten — dieselbe Maschinerie wie im Tischmodus (world). */
+  SHEETVIEW_NO_CANVAS: "sheetViewNoCanvas",
+  /** Chat aufklappen, sobald der Spieler selbst etwas würfelt oder benutzt (world). */
+  SHEETVIEW_CHAT_ON_USE: "sheetViewChatOnUse",
+  /** Wie lange man eine Leiste halten muss, bevor sie sich ziehen lässt, in ms (world). */
+  SHEETVIEW_HOLD_MS: "sheetViewHoldMs",
   /** Offer the trade button at all (world). */
   TRADE: "trade",
   /**

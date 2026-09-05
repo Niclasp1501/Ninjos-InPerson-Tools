@@ -1,5 +1,31 @@
 # Changelog
 
+## 14.2611.40 — 2026-09-05
+
+**Die Blattansicht bekommt ihre eigene Seite — und wählt Konten einzeln.** Der
+Beta-Schalter allein traf jeden Spieler mit Charakter, auch den am Laptop, der
+seine Szenenliste braucht. Jetzt: Hauptschalter plus Liste der Spielerkonten
+mit Häkchen, wie beim Tischmodus. Spielleiter stehen nicht in der Liste.
+
+Dazu auf derselben Seite: **Spielfeld abschalten** (dieselbe Maschinerie wie
+im Tischmodus; das Tablet fragt einmal nach einem Neuladen), **Chat beim
+Würfeln aufklappen** (nur bei eigenen Nachrichten) und die **Haltezeit** zum
+Verschieben der Leisten.
+
+**Knöpfe anderer Module.** Die Leiste nimmt Knöpfe über
+`game.modules.get("ninjos-inperson-tools").api.sheetView.registerButton()`
+an; wer vor uns fertig ist, bekommt den Hook `ninjosInPersonTools.ready`.
+Kein Element mit fremder Kennung, das jemand im DOM suchen müsste. FANG und
+NDRS melden sich ab ihren nächsten Fassungen darüber an.
+
+In der zweiten Knopfgruppe neu: **Schrift zurücksetzen** und **Einstellungen**
+(Foundrys Einstellungsfenster — Lautstärke, Sprache, Moduleinstellungen, an
+die ein Spieler sonst nicht mehr käme).
+
+**Der Mond ist wieder gezeichnet.** Das Phasenbild des Kalendermoduls war auf
+28 Pixel weder rund noch scharf. Jetzt eine Vektorscheibe mit echter Phase aus
+dem Kalender, leichtem Verlauf und Hof.
+
 ## 14.2611.39 — 2026-09-05
 
 **Die Kuppel steht hinter der Zeitleiste**, ihr Fuß verschwindet unter der

@@ -49,6 +49,10 @@ let laufend = false;
 export function sheetViewWanted() {
   if (!game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW)) return false;
   if (game.user.isGM) return false;
+  // Nur ausgewählte Konten. Der Schalter allein traf jeden Spieler mit
+  // Charakter, auch den am Laptop, der seine Szenenliste braucht.
+  const wer = game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_USERS) ?? {};
+  if (wer[game.user.id] !== true) return false;
   return !!characterOf(game.user);
 }
 
@@ -96,10 +100,54 @@ const GRUPPEN = {
   ],
   extra: [
     { icon: "fa-magnifying-glass-minus", titel: "INPERSON.SheetView.Smaller",    tun: () => zoomen(-0.1) },
+    { icon: "fa-magnifying-glass",       titel: "INPERSON.SheetView.ResetZoom",  tun: () => zoomen(null) },
     { icon: "fa-magnifying-glass-plus",  titel: "INPERSON.SheetView.Bigger",     tun: () => zoomen(0.1) },
+    // Lautstärke, Sprache, die eigenen Moduleinstellungen: Ohne diesen Knopf
+    // käme ein Spieler in der Ansicht an nichts davon heran.
+    { icon: "fa-gear",                   titel: "INPERSON.SheetView.Settings",   tun: einstellungen },
     { icon: "fa-expand",                 titel: "INPERSON.SheetView.Fullscreen", tun: vollbild },
     { icon: "fa-right-from-bracket",     titel: "INPERSON.SheetView.LogOut",     tun: abmelden }
   ]
+};
+
+/* ── Knöpfe anderer Module ───────────────────────────────────────── */
+
+/**
+ * Was FANG, NDRS und wer sonst noch will in die Leiste stellen.
+ *
+ * Kein Element mit fremder Kennung, das andere Module im DOM suchen müssten —
+ * das war Sheet Onlys Weg, und er zwingt jedes Modul zu einem Beobachter, der
+ * die ganze Seite absucht. Hier melden sie einen Knopf an, und die Leiste
+ * zeichnet ihn, wann immer sie sich zeichnet. Wer sich vor uns meldet, hat die
+ * Schnittstelle noch nicht: dafür ruft main.js `ninjosInPersonTools.ready`.
+ *
+ * @type {Map<string, {icon: string, title: string, onClick: Function, group: string}>}
+ */
+const fremde = new Map();
+
+export const sheetViewApi = {
+  /**
+   * @param {object} knopf
+   * @param {string} knopf.id       eindeutig je Modul, z. B. "fang"
+   * @param {string} knopf.icon     Font-Awesome-Klasse ohne Stil, z. B. "fa-diagram-project"
+   * @param {string} knopf.title    Tooltip, fertig übersetzt oder als Sprachschlüssel
+   * @param {Function} knopf.onClick
+   * @param {"haupt"|"extra"} [knopf.group]  vorn bei den täglichen oder hinten
+   */
+  registerButton({ id, icon, title, onClick, group = "haupt" } = {}) {
+    if (!id || !icon || typeof onClick !== "function") {
+      throw new Error(`${MODULE_ID} | registerButton braucht id, icon und onClick`);
+    }
+    fremde.set(String(id), { icon, title: title ?? id, onClick, group: group === "extra" ? "extra" : "haupt" });
+    const bar = document.getElementById(BAR_ID);
+    if (bar) gruppeZeichnen(bar);
+  },
+  unregisterButton(id) {
+    if (!fremde.delete(String(id))) return;
+    const bar = document.getElementById(BAR_ID);
+    if (bar) gruppeZeichnen(bar);
+  },
+  isRunning: () => laufend
 };
 
 /**
@@ -112,7 +160,7 @@ const GRUPPEN = {
 function knopf({ icon, titel, flaeche = null, tun = null }) {
   const b = document.createElement("button");
   b.type = "button";
-  b.innerHTML = `<i class="fa-solid ${icon}"></i>`;
+  b.innerHTML = `<i class="fa-solid ${foundry.utils.escapeHTML(icon)}"></i>`;
   b.title = titel;
   b.setAttribute("aria-label", titel);
   if (flaeche) {
@@ -140,6 +188,16 @@ function gruppeZeichnen(bar) {
       flaeche: k.flaeche,
       tun: k.tun
     }));
+  }
+  for (const [id, f] of fremde) {
+    if (f.group !== gruppe) continue;
+    const b = knopf({
+      icon: f.icon,
+      titel: game.i18n.has(f.title) ? game.i18n.localize(f.title) : f.title,
+      tun: () => f.onClick()
+    });
+    b.dataset.modul = id;
+    reihe.append(b);
   }
   markieren();
 }
@@ -221,7 +279,15 @@ function leisteUnterDieUhr() {
 // ohne dass jemand etwas löschen muss.
 const PLATZ_KEY = `${MODULE_ID}.sheetviewBar2`;
 const UHR_PLATZ_KEY = `${MODULE_ID}.sheetviewUhr2`;
-const HALTEN_MS = 400;
+/**
+ * Wie lange halten, bevor die Leiste zieht. Einstellbar, weil das Gefühl dafür
+ * am Tisch verschieden ist: Wer fest drückt, zieht mit 300 ms versehentlich;
+ * wer vorsichtig tippt, wartet bei 800 ms vergeblich.
+ */
+function haltezeit() {
+  const ms = Number(game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_HOLD_MS));
+  return Number.isFinite(ms) && ms >= 150 ? ms : 400;
+}
 
 /**
  * Ob gerade gezogen wurde — die einzige Angabe, die beide Leisten teilen.
@@ -264,7 +330,7 @@ function ziehbarMachen(element, key) {
       const r = element.getBoundingClientRect();
       griffX = punkt.clientX - r.left;
       griffY = punkt.clientY - r.top;
-    }, HALTEN_MS);
+    }, haltezeit());
   };
 
   const bewegen = event => {
@@ -365,7 +431,8 @@ function ueberlappen(a, b) {
  */
 function zoomen(schritt) {
   const jetzt = Number(localStorage.getItem(ZOOM_KEY)) || 1;
-  const neu = Math.min(1.8, Math.max(0.7, Math.round((jetzt + schritt) * 10) / 10));
+  // null heißt: zurück auf eins.
+  const neu = schritt == null ? 1 : Math.min(1.8, Math.max(0.7, Math.round((jetzt + schritt) * 10) / 10));
   localStorage.setItem(ZOOM_KEY, String(neu));
   zoomAnwenden();
 }
@@ -391,6 +458,18 @@ async function vollbild() {
     console.warn(`${MODULE_ID} | Vollbild nicht möglich`, error);
     ui.notifications?.info(game.i18n.localize("INPERSON.SheetView.NoFullscreen"));
   }
+}
+
+/**
+ * Foundrys Einstellungen, als Fenster.
+ *
+ * Das Blatt liegt bei z-index 20 und die Flächen bei 9999; ein gewöhnliches
+ * Fenster stünde dazwischen und wäre sichtbar - nur hinter einer offenen
+ * Fläche nicht. Also erst die Fläche zu.
+ */
+async function einstellungen() {
+  await flaecheSchliessen();
+  game.settings.sheet.render({ force: true });
 }
 
 function abmelden() {
@@ -660,8 +739,25 @@ export function syncSheetView() {
   return beenden();
 }
 
+/**
+ * Den Chat aufklappen, wenn der Spieler selbst etwas tut.
+ *
+ * Wer einen Trank benutzt oder würfelt, will das Ergebnis sehen, ohne erst
+ * einen Knopf zu suchen. Nur eigene Nachrichten - sonst ginge bei jedem Wurf
+ * des Spielleiters auf allen Tablets der Chat auf.
+ */
+function chatBeiBenutzung(message) {
+  if (!laufend) return;
+  if (!game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_CHAT_ON_USE)) return;
+  if (message?.author?.id !== game.user.id) return;
+  if (offeneFlaeche === "chat") return;
+  flaecheUmschalten("chat");
+}
+
 export function installSheetView() {
   syncSheetView();
+
+  Hooks.on("createChatMessage", message => chatBeiBenutzung(message));
 
   // Das Blatt wird bei jedem Akteurswechsel neu gezeichnet und verliert dabei
   // unsere Klasse.

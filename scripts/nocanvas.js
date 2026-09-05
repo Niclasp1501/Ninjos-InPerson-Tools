@@ -18,6 +18,7 @@
 
 import { MODULE_ID, SETTINGS } from "./const.js";
 import { isActive } from "./state.js";
+import { sheetViewWanted } from "./sheetview.js";
 
 /** Ask the user to reload, using Foundry's own localised prompt when available. */
 async function offerReload() {
@@ -51,12 +52,12 @@ async function release() {
 export async function syncNoCanvas() {
   const owned = game.settings.get(MODULE_ID, SETTINGS.NO_CANVAS_OWNED);
 
-  if (!game.settings.get(MODULE_ID, SETTINGS.AUTO_NO_CANVAS)) {
-    if (owned && game.settings.get("core", "noCanvas")) await release();
-    return;
-  }
-
-  const wanted = isActive();
+  // Zwei Gründe, das Spielfeld abzuschalten: der Tischmodus und die
+  // Blattansicht. Ein Tablet, das nur das Charakterblatt zeigt, rechnet sonst
+  // trotzdem jede Szene durch - das war der spürbarste Unterschied zu Sheet Only.
+  const tisch = game.settings.get(MODULE_ID, SETTINGS.AUTO_NO_CANVAS) && isActive();
+  const blatt = game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_NO_CANVAS) && sheetViewWanted();
+  const wanted = tisch || blatt;
   const current = game.settings.get("core", "noCanvas");
 
   if (wanted && !current) {

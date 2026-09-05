@@ -28,7 +28,8 @@ import { installClock, syncClock, refreshClock } from "./clock.js";
 import { willkommenEinrichten, willkommenZeigen } from "./willkommen.js";
 import { openClockSettings } from "./clock-settings.js";
 import { openTradeSettings } from "./trade-settings.js";
-import { installSheetView, syncSheetView } from "./sheetview.js";
+import { installSheetView, syncSheetView, sheetViewApi } from "./sheetview.js";
+import { openSheetViewSettings } from "./sheetview-settings.js";
 import { onTradeSocket } from "./trade.js";
 import { installTradeWindow } from "./trade-window.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
@@ -109,14 +110,43 @@ function registerSettings() {
   });
 
   // Die Blattansicht. Beta, weltweit, standardmäßig aus — siehe const.js.
+  // Auf ihrer eigenen Seite wie die anderen Werkzeuge; die Auswahl der Konten
+  // passt in keine flache Liste.
+  const blattAbgleichen = () => { syncSheetView(); syncNoCanvas(); };
   S(SETTINGS.SHEETVIEW, {
     name: "INPERSON.SheetView.Name",
     hint: "INPERSON.SheetView.Hint",
     scope: "world",
-    config: true,
+    config: false,
     type: Boolean,
     default: false,
-    onChange: () => syncSheetView()
+    onChange: blattAbgleichen
+  });
+  S(SETTINGS.SHEETVIEW_USERS, {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {},
+    onChange: blattAbgleichen
+  });
+  S(SETTINGS.SHEETVIEW_NO_CANVAS, {
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: true,
+    onChange: blattAbgleichen
+  });
+  S(SETTINGS.SHEETVIEW_CHAT_ON_USE, {
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: true
+  });
+  S(SETTINGS.SHEETVIEW_HOLD_MS, {
+    scope: "world",
+    config: false,
+    type: Number,
+    default: 400
   });
 
   // Der Bogen ist standardmäßig aus: er ist neu, und eine Leiste, die sich beim
@@ -472,6 +502,16 @@ function registerSettings() {
     restricted: true
   });
 
+  // Die Blattansicht: der Beta-Schalter und die Liste der Konten.
+  game.settings.registerMenu(MODULE_ID, "sheetview", {
+    name: "INPERSON.SheetView.MenuName",
+    label: "INPERSON.SheetView.MenuLabel",
+    hint: "INPERSON.SheetView.MenuHint",
+    icon: "fa-solid fa-tablet-screen-button",
+    type: SheetViewSettingsShim,
+    restricted: true
+  });
+
   // The strip has its own page too, and like the others it is the gamemaster's.
   game.settings.registerMenu(MODULE_ID, "clock", {
     name: "INPERSON.Clock.MenuName",
@@ -516,6 +556,14 @@ class ClockSettingsShim extends foundry.applications.api.ApplicationV2 {
   constructor(...args) {
     super(...args);
     openClockSettings();
+  }
+  async render() { return this; }
+}
+
+class SheetViewSettingsShim extends foundry.applications.api.ApplicationV2 {
+  constructor(...args) {
+    super(...args);
+    openSheetViewSettings();
   }
   async render() { return this; }
 }
@@ -709,8 +757,15 @@ Hooks.once("ready", async () => {
     resetStats,
     refresh: applyStateChange,
     openTrade,
-    openTradeLog
+    openTradeLog,
+    // Die Leiste der Blattansicht nimmt Knöpfe anderer Module an - siehe
+    // sheetview.js. FANG und NDRS melden sich hier an, statt in unserem DOM
+    // nach einem Element zu suchen.
+    sheetView: sheetViewApi
   };
+  // Wer vor uns fertig war, hat die Schnittstelle noch nicht gesehen. Ein
+  // eigener Hook, damit niemand auf "ready"-Reihenfolgen raten muss.
+  Hooks.callAll("ninjosInPersonTools.ready", game.modules.get(MODULE_ID).api);
 
   refreshTokenSources();
   updatePill();

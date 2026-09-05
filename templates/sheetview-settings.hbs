@@ -1,0 +1,91 @@
+{{!--
+  Ein Schalter und eine Liste. Wer angehakt ist, sieht nur sein Blatt - sobald
+  der Schalter oben an ist. Spielleiter fehlen absichtlich.
+--}}
+<section class="inperson-body">
+
+  <div class="inperson-scene">
+    <div class="inperson-scene-head">
+      <h3><i class="fa-solid fa-tablet-screen-button"></i> {{localize "INPERSON.SheetView.Group"}}</h3>
+    </div>
+    <p class="inperson-hint">
+      <i class="fa-solid fa-circle-info"></i>
+      {{localize "INPERSON.SheetView.GroupHint"}}
+    </p>
+  </div>
+
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="enabled" {{checked enabled}}>
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.SheetView.Name"}}
+      <em>{{localize "INPERSON.SheetView.EnabledHint"}}</em>
+    </span>
+  </label>
+
+  <div class="inperson-scene">
+    <div class="inperson-scene-head">
+      <h3><i class="fa-solid fa-users"></i> {{localize "INPERSON.SheetView.Who"}}</h3>
+    </div>
+    <p class="inperson-hint">
+      <i class="fa-solid fa-circle-info"></i>
+      {{localize "INPERSON.SheetView.WhoListHint"}}
+    </p>
+  </div>
+
+  {{#if hasUsers}}
+    <div class="inperson-partner-list">
+      {{#each users}}
+        <label class="inperson-pick-row {{#if this.checked}}on{{/if}}">
+          <input type="checkbox" name="user.{{this.id}}" {{checked this.checked}}>
+          <img class="inperson-portrait" src="{{this.actorImg}}" alt="">
+          <span class="inperson-pick-name">
+            {{this.name}}
+            <em>{{#if this.actorName}}{{this.actorName}}{{else}}{{localize "INPERSON.Trade.Why.none"}}{{/if}}</em>
+          </span>
+          {{#if this.online}}<span class="inperson-tag ok">{{localize "INPERSON.SheetView.Online"}}</span>{{/if}}
+        </label>
+      {{/each}}
+    </div>
+  {{else}}
+    <p class="inperson-hint">{{localize "INPERSON.SheetView.NoUsers"}}</p>
+  {{/if}}
+
+  <div class="inperson-scene">
+    <div class="inperson-scene-head">
+      <h3><i class="fa-solid fa-sliders"></i> {{localize "INPERSON.SheetView.Behaviour"}}</h3>
+    </div>
+  </div>
+
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="noCanvas" {{checked noCanvas}}>
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.SheetView.NoCanvas"}}
+      <em>{{localize "INPERSON.SheetView.NoCanvasHint"}}</em>
+    </span>
+  </label>
+
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="chatOnUse" {{checked chatOnUse}}>
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.SheetView.ChatOnUse"}}
+      <em>{{localize "INPERSON.SheetView.ChatOnUseHint"}}</em>
+    </span>
+  </label>
+
+  <div class="form-group">
+    <label>{{localize "INPERSON.SheetView.HoldMs"}}</label>
+    <div class="form-fields">
+      <input type="number" name="holdMs" value="{{holdMs}}" min="150" max="1500" step="50">
+      <span class="units">ms</span>
+    </div>
+    <p class="hint">{{localize "INPERSON.SheetView.HoldMsHint"}}</p>
+  </div>
+
+  <footer class="inperson-foot">
+    <button type="submit" class="inperson-master-toggle">
+      <i class="fa-solid fa-floppy-disk"></i>
+      <span>{{localize "INPERSON.Clock.Save"}}</span>
+    </button>
+  </footer>
+
+</section>
