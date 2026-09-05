@@ -235,7 +235,7 @@ export function himmelsbogen() {
     </linearGradient></defs>
     <path d="M 0 ${boden} A ${RADIUS} ${RADIUS} 0 0 1 ${BREITE} ${boden} Z" fill="url(#${id})"/>
     ${sterne}
-    <path d="M 0 ${boden} A ${RADIUS} ${RADIUS} 0 0 1 ${BREITE} ${boden}" fill="none" stroke="#D4AF37" stroke-opacity="0.85" stroke-width="1.5"/>
+    <path d="M 0 ${boden} A ${RADIUS} ${RADIUS} 0 0 1 ${BREITE} ${boden}" fill="none" stroke="#D4AF37" stroke-opacity="0.45" stroke-width="1"/>
     ${gestirn}
   </svg>`;
 

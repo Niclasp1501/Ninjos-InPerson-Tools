@@ -1,5 +1,21 @@
 # Changelog
 
+## 14.2611.35 — 2026-09-05
+
+**Das Blatt füllt den Schirm Kante an Kante, wie bei Sheet Only.** Zwei Umwege
+sind wieder ausgebaut. Oben hatte ich die Fensterkopfzeile ganz entfernt und
+dann zehn Pixel Luft gelassen, damit das Porträt nicht am Rand klebt — im Spalt
+war der blaue Seitenhintergrund zu sehen. Sheet Only behält die Kopfzeile und
+versteckt nur den Schließen-Knopf; sie gibt dem Blatt oben von selbst seinen
+dunklen Rand. Genau so jetzt. Unten lag ein roter Sockel: eine `padding-bottom`
+auf dem Fensterinhalt, die dessen Hintergrund freilegte. Weg damit — die Leisten
+liegen einfach über dem Blatt, wie ihre Vorbilder auch.
+
+**Kein Gold an den Leisten.** Das ist HUD über dem Blatt, nicht das
+D&D-Fensterdesign; dort war der Goldrand viel zu laut. Beide Leisten tragen
+jetzt denselben leisen Rand wie die Zeitleiste von Anfang an, der Saum der
+Kuppel ist auf die Hälfte gedämpft.
+
 ## 14.2611.34 — 2026-09-05
 
 **Die Knopfleiste ist deckend, dunkel und passt zur Zeitleiste.** Vorher war
