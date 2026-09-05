@@ -2168,8 +2168,25 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
   font-size: 18px !important;
 }
 
-/* Die Zeitleiste steht daneben und schrumpft nicht mit. */
-.inperson-sheetview-bar .inperson-clock {
+/* Die Zeitleiste steht für sich, ebenfalls verschiebbar. Sie wird angeschaut,
+   die Knöpfe werden bedient — zwei Dinge, zwei Elemente. */
+.inperson-sheetview-uhr {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 56px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 39;
+  touch-action: none;
+  user-select: none;
+  cursor: default;
+}
+
+.inperson-sheetview-uhr.wird-gezogen {
+  transform: scale(1.06);
+  filter: drop-shadow(0 6px 20px rgb(0 0 0 / 45%));
+}
+
+.inperson-sheetview-uhr .inperson-clock {
   position: static;
   transform: none;
   margin: 0;

@@ -1,5 +1,13 @@
 # Changelog
 
+## 14.2611.28 — 2026-09-05
+
+**Zeitleiste und Knopfleiste sind getrennt.** Mit dem Himmelsbogen darin wurde
+die Knopfleiste 833 Pixel breit und 96 hoch — alles andere als klein. Es sind
+auch zwei verschiedene Dinge: die eine wird bedient, die andere angeschaut.
+Jetzt 277 × 54 für die Knöpfe, die Zeit steht daneben, beide für sich
+verschiebbar mit eigenem gemerktem Platz.
+
 ## 14.2611.27 — 2026-09-05
 
 **Die Leiste der Blattansicht ist jetzt klein, durchscheinend und

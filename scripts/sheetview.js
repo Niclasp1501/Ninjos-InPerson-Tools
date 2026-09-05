@@ -29,6 +29,7 @@ import { mountClockInto } from "./clock.js";
 
 const BODY_CLASS = "inperson-sheetview";
 const BAR_ID = "inperson-sheetview-bar";
+const UHR_ID = "inperson-sheetview-uhr";
 
 /** Schriftgröße als Faktor, je Gerät gemerkt. */
 const ZOOM_KEY = `${MODULE_ID}.sheetviewZoom`;
@@ -162,14 +163,34 @@ function leisteBauen() {
 
   document.body.appendChild(bar);
   gruppeZeichnen(bar);
-  mountClockInto(bar);
-  ziehbarMachen(bar);
-  platzWiederherstellen(bar);
+  ziehbarMachen(bar, PLATZ_KEY);
+  platzWiederherstellen(bar, PLATZ_KEY);
+}
+
+/**
+ * Die Zeitleiste steht für sich.
+ *
+ * Sie steckte zuerst in der Knopfleiste — mit dem Himmelsbogen darin wurde die
+ * 833 Pixel breit und 96 hoch, also alles andere als klein. Es sind auch zwei
+ * verschiedene Dinge: die eine wird bedient, die andere angeschaut. Beide sind
+ * verschiebbar, jede mit ihrem eigenen gemerkten Platz.
+ */
+function uhrBauen() {
+  if (document.getElementById(UHR_ID)) return;
+  const halter = document.createElement("div");
+  halter.id = UHR_ID;
+  halter.className = "inperson-sheetview-uhr";
+  document.body.appendChild(halter);
+  mountClockInto(halter);
+  if (!halter.firstChild) return halter.remove();   // Leiste ist abgeschaltet
+  ziehbarMachen(halter, UHR_PLATZ_KEY);
+  platzWiederherstellen(halter, UHR_PLATZ_KEY);
 }
 
 /* ── Verschieben ─────────────────────────────────────────────────── */
 
 const PLATZ_KEY = `${MODULE_ID}.sheetviewBar`;
+const UHR_PLATZ_KEY = `${MODULE_ID}.sheetviewUhr`;
 const HALTEN_MS = 400;
 
 let gezogen = false;
@@ -190,7 +211,7 @@ function wurdeGezogen() {
  * verschieben. Also: kurz halten, dann bewegt sie sich; und wer gezogen hat,
  * löst beim Loslassen keinen Knopf aus.
  */
-function ziehbarMachen(bar) {
+function ziehbarMachen(bar, key) {
   const start = event => {
     gezogen = false;
     const punkt = event.touches?.[0] ?? event;
@@ -217,7 +238,7 @@ function ziehbarMachen(bar) {
     if (gegriffen) {
       gegriffen.classList.remove("wird-gezogen");
       const r = bar.getBoundingClientRect();
-      localStorage.setItem(PLATZ_KEY, JSON.stringify({ x: Math.round(r.left), y: Math.round(r.top) }));
+      localStorage.setItem(key, JSON.stringify({ x: Math.round(r.left), y: Math.round(r.top) }));
       gegriffen = null;
     }
     // Erst nach dem Klick zurücksetzen, sonst feuert der Knopf doch noch.
@@ -248,9 +269,9 @@ function setzen(bar, x, y) {
  * Wer die Leiste am 27-Zoll-Bildschirm nach rechts außen schiebt und dann das
  * Tablet nimmt, fände sie sonst nicht wieder.
  */
-function platzWiederherstellen(bar) {
+function platzWiederherstellen(bar, key) {
   let platz = null;
-  try { platz = JSON.parse(localStorage.getItem(PLATZ_KEY) ?? "null"); } catch { /* egal */ }
+  try { platz = JSON.parse(localStorage.getItem(key) ?? "null"); } catch { /* egal */ }
   if (!platz) return;
   const r = bar.getBoundingClientRect();
   if (platz.x > window.innerWidth - 40 || platz.y > window.innerHeight - 40) return;
@@ -385,6 +406,7 @@ async function starten() {
   document.body.classList.add(BODY_CLASS);
   zoomAnwenden();
   leisteBauen();
+  uhrBauen();
   await blattZeigen();
   console.log(`${MODULE_ID} | Blattansicht läuft (Beta)`);
 }
@@ -395,6 +417,7 @@ async function beenden() {
   await flaecheSchliessen();
   document.body.classList.remove(BODY_CLASS);
   document.getElementById(BAR_ID)?.remove();
+  document.getElementById(UHR_ID)?.remove();
   blattApp()?.element?.classList.remove("inperson-stage-sheet");
   document.documentElement.style.removeProperty("--inperson-sv-zoom");
 }
