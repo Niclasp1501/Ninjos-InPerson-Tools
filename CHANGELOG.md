@@ -1,5 +1,31 @@
 # Changelog
 
+## 14.2611.31 — 2026-09-05
+
+**Die Phantomseite ist weg — es waren drei Fehler, nicht einer.** Gefunden, weil
+diesmal alle Wege durchprobiert wurden statt nur der eine, der schon
+funktionierte.
+
+*Ein Wettlauf.* Öffnen und Schließen sind beide asynchron und dauern
+unterschiedlich lang; wer zweimal kurz hintereinander tippt, startet das zweite,
+bevor das erste fertig ist. Gemessen: zwölf Runden schnelles Auf und Zu ließen
+**zwei Fenster offen**. Die Umschaltungen laufen jetzt der Reihe nach.
+
+*Ein Rahmen ohne Anwendung.* Foundry meldete für das Notiz-Verzeichnis
+`rendered: false` und ließ sein Element trotzdem im Dokument stehen. Meine
+Prüfung suchte nach *leeren* Rahmen — dieser hatte Inhalt und rutschte durch.
+Jetzt wird gefragt, was die Anwendung selbst über sich sagt; das ist die
+verlässlichere Auskunft.
+
+*Und ein hausgemachter.* Das Akteursverzeichnis bauen wir selbst, weil Monks
+Little Details `renderPopout` abfängt — es hängt deshalb **nicht** an
+`app.popout`, und genau dort habe ich es zu schließen versucht. Es blieb offen
+und meldete dabei fröhlich `rendered: true`. Wir merken uns jetzt, was wir
+aufgeklappt haben.
+
+Geprüft: einzeln auf und zu, zwölf Runden im 450-Millisekunden-Takt, fünfzehn im
+60er, fünfundzwanzig im 30er. Danach jedes Mal null offene Fenster.
+
 ## 14.2611.30 — 2026-09-05
 
 Drei Fehler in der Blattansicht, die ich hätte sehen müssen, statt Zahlen aus

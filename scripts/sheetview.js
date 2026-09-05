@@ -374,6 +374,17 @@ function abmelden() {
 let offeneFlaeche = null;
 
 /**
+ * Was wir aufgeklappt haben, als Anwendung.
+ *
+ * Nötig, weil wir nicht jedes Fenster über `renderPopout` bekommen: Monks
+ * Little Details fängt das für das Akteursverzeichnis ab, also bauen wir dort
+ * die Anwendung selbst — und dann hängt sie *nicht* an `app.popout`. Wer nur
+ * dort nachsieht, schließt genau dieses eine Fenster nie. Gemessen: es blieb
+ * offen und meldete `rendered: true`.
+ */
+const geoeffnet = new Map();
+
+/**
  * Charaktere, Chat und Notizen sind Foundrys eigene Verzeichnisse, ausgeklappt
  * und von uns an den rechten Rand geheftet — dieselbe Verankerung, die wir für
  * Sheet Only bauen mussten, weil Foundry die Lage aus der Position eines
@@ -385,27 +396,126 @@ const FLAECHEN = {
   journal: () => game.journal.apps?.[0]
 };
 
-async function flaecheUmschalten(name) {
-  if (offeneFlaeche === name) return flaecheSchliessen();
-  await flaecheSchliessen();
+/**
+ * Eines nach dem anderen.
+ *
+ * Ohne diese Kette überholen sich Öffnen und Schließen. Gemessen: zwölf Runden
+ * schnelles Auf und Zu hinterließen **zwei offene Fenster** — Chat und Notizen,
+ * beide mit Inhalt, beide von niemandem mehr verwaltet. Das ist die
+ * „Phantomseite": kein leerer Rahmen, sondern ein Fenster, dessen Schließen im
+ * Wettlauf verlorenging.
+ *
+ * `renderPopout` und `close` sind beide asynchron und dauern unterschiedlich
+ * lang. Wer zweimal tippt, startet das zweite, bevor das erste fertig ist.
+ */
+let kette = Promise.resolve();
 
-  const app = FLAECHEN[name]?.();
-  if (!app) return;
+function nacheinander(arbeit) {
+  kette = kette.then(arbeit, arbeit);
+  return kette;
+}
 
-  const popout = await ausklappen(app);
-  if (!popout) return;
+function flaecheUmschalten(name) {
+  return nacheinander(async () => {
+    const wollen = offeneFlaeche === name ? null : name;
+    offeneFlaeche = wollen;
 
-  offeneFlaeche = name;
-  markieren();
+    await allesSchliessenAusser(null);
+    if (!wollen) return markieren();
 
-  // Wenn der Spieler das Fenster über dessen eigenes Kreuz schließt, erfahren
-  // wir es nur hier.
-  const node = popout.element;
-  node?.addEventListener?.("close", () => {
-    offeneFlaeche = null;
-    queueSweep(".sidebar-popout", { reason: "vom Spieler geschlossen", force: true });
+    const app = FLAECHEN[wollen]?.();
+    const popout = app ? await ausklappen(app) : null;
+
+    // In der Zwischenzeit kann schon wieder getippt worden sein. Dann ist
+    // dieses Fenster verwaist, und zwar genau das hier — es wird deshalb
+    // direkt geschlossen und nicht nur „alles offene", denn es kann in diesem
+    // Moment noch gar nicht im Dokument stehen.
+    if (offeneFlaeche !== wollen) {
+      try { await popout?.close?.(); } catch { /* schon zu */ }
+      await allesSchliessenAusser(null);
+      markieren();
+      return abgleichen();
+    }
+    if (!popout) offeneFlaeche = null;
+    else geoeffnet.set(wollen, popout);
+
     markieren();
-  }, { once: true });
+    abgleichen();
+
+    // Schließt der Spieler es über das eigene Kreuz, erfahren wir es nur hier.
+    popout?.element?.addEventListener?.("close", () => {
+      if (offeneFlaeche === wollen) offeneFlaeche = null;
+      queueSweep(".sidebar-popout", { reason: "vom Spieler geschlossen", force: true });
+      markieren();
+    }, { once: true });
+  });
+}
+
+/**
+ * Nachsehen, ob die Wirklichkeit noch zu `offeneFlaeche` passt.
+ *
+ * Der Wettlauf lässt sich nicht restlos ausschließen: Ein `renderPopout`, das
+ * spät fertig wird, hängt sein Fenster ins Dokument, nachdem das letzte
+ * Aufräumen durch war. Gemessen beim Hämmern im 60-Millisekunden-Takt — am Ende
+ * stand das Akteursverzeichnis offen, obwohl zuletzt „Notizen" angetippt worden
+ * war.
+ *
+ * Also wird kurz danach noch einmal verglichen und geradegezogen. Einmal, nicht
+ * dauernd: Es geht um den Nachzügler, nicht um eine Überwachung.
+ */
+let abgleichTimer = null;
+
+function abgleichen() {
+  clearTimeout(abgleichTimer);
+  abgleichTimer = setTimeout(() => {
+    const soll = offeneFlaeche ? KLASSEN[offeneFlaeche] : null;
+    for (const node of document.querySelectorAll(".sidebar-popout")) {
+      if (soll && node.classList.contains(soll)) continue;
+      const app = foundry.applications.instances?.get(node.id)
+        ?? [...geoeffnet.values()].find(a => a?.element === node);
+      if (app?.close) app.close().then(() => node.remove(), () => node.remove());
+      else node.remove();
+    }
+  }, 900);
+}
+
+/** Woran man das Fenster einer Fläche im Dokument erkennt. */
+const KLASSEN = {
+  chars: "actors-sidebar",
+  chat: "chat-sidebar",
+  journal: "journal-sidebar"
+};
+
+/**
+ * Alles zumachen, was nicht offen sein soll.
+ *
+ * Nicht „das eine schließen", sondern „alles außer diesem" — das repariert sich
+ * selbst, auch wenn vorher etwas durchgerutscht ist. Danach die leeren Hüllen,
+ * die Foundry stehen lässt (siehe shells.js).
+ */
+async function allesSchliessenAusser(behalten) {
+  // Erst über die Anwendung schließen, nicht über das Element. Wer den Knoten
+  // wegnimmt, lässt eine Anwendung zurück, die sich für offen hält — und die
+  // zeichnet sich bei der nächsten Gelegenheit wieder hin.
+  //
+  // Beide Wege, weil ein Fenster auf zwei Arten entstanden sein kann: über
+  // `renderPopout` (dann hängt es an `app.popout`) oder von uns selbst gebaut
+  // (dann steht es nur hier).
+  for (const [name, app] of [...geoeffnet]) {
+    if (name === behalten) continue;
+    geoeffnet.delete(name);
+    try { await app?.close?.(); } catch { /* war schon zu */ }
+  }
+  for (const [name, hol] of Object.entries(FLAECHEN)) {
+    if (name === behalten) continue;
+    const popout = hol()?.popout;
+    if (!popout) continue;
+    try { await popout.close(); } catch { /* war schon zu */ }
+  }
+
+  // Dann die Rahmen, die trotzdem stehen blieben. Foundry meldet für sie
+  // `rendered === false` und lässt ihr Element im Dokument — siehe shells.js.
+  queueSweep(".sidebar-popout", { reason: "nach dem Schließen", force: true });
 }
 
 /**
@@ -439,18 +549,13 @@ async function ausklappen(app) {
   }
 }
 
-async function flaecheSchliessen() {
-  offeneFlaeche = null;
-  for (const node of document.querySelectorAll(".sidebar-popout")) {
-    const app = foundry.applications.instances?.get(node.id);
-    if (app?.close) await app.close();
-    else node.remove();
-  }
-  // Und danach die Leichen. Foundry lässt die Hülle stehen — siehe shells.js;
-  // ohne das bleibt ein leerer Rahmen am Rand kleben und der Knopf glaubt
-  // weiterhin, die Fläche sei offen.
-  queueSweep(".sidebar-popout", { reason: "Fläche geschlossen", force: true });
-  markieren();
+function flaecheSchliessen() {
+  return nacheinander(async () => {
+    offeneFlaeche = null;
+    await allesSchliessenAusser(null);
+    markieren();
+    abgleichen();
+  });
 }
 
 function markieren() {
@@ -476,6 +581,7 @@ async function beenden() {
   if (!laufend) return;
   laufend = false;
   await flaecheSchliessen();
+  geoeffnet.clear();
   removeShells(".sidebar-popout", { onlyGhost: false });
   document.body.classList.remove(BODY_CLASS);
   document.getElementById(BAR_ID)?.remove();

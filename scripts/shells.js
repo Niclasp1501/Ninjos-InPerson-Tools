@@ -24,14 +24,28 @@
 import { MODULE_ID } from "./const.js";
 
 /**
- * Ist das eine leere Hülle?
+ * Ist das ein Rahmen ohne Anwendung dahinter?
  *
- * Sie meldet sich selbst: Kopfzeile noch da, Inhalt weg.
+ * Zwei Prüfungen, und die erste ist die verlässlichere: **Foundry selbst sagt
+ * es.** Eine geschlossene Anwendung meldet `rendered === false`; steht ihr
+ * Element trotzdem noch im Dokument, ist es eine Leiche. Gemessen an einem
+ * hängengebliebenen Notiz-Verzeichnis:
+ *
+ *   journal.popout → { rendered: false, element.isConnected: true }
+ *
+ * Die zweite Prüfung — Rahmen da, Inhalt weg — hatte ich zuerst allein. Sie
+ * findet nur die Hüllen, die Foundry ausgeräumt hat, und ließ genau den Fall
+ * oben durch: ein vollständiges Fenster, das niemand mehr verwaltet.
+ *
  * @param {HTMLElement} shell
  * @returns {boolean}
  */
 export function isGhost(shell) {
   if (!shell) return false;
+
+  const app = shell.id ? foundry.applications?.instances?.get(shell.id) : null;
+  if (app && app.rendered === false) return true;
+
   const content = shell.querySelector(".window-content");
   if (!content) return true;
   return content.childElementCount === 0;
