@@ -1,5 +1,26 @@
 # Changelog
 
+## 14.2611.27 — 2026-09-05
+
+**Die Leiste der Blattansicht ist jetzt klein, durchscheinend und
+verschiebbar.** Meine erste Fassung stellte neun Knöpfe nebeneinander und klebte
+oben in der Mitte fest — falsch in allen drei Punkten.
+
+*Klein, weil sie umschaltet:* Sie zeigt eine Gruppe zur Zeit, und ein ☰ wechselt.
+Vorn steht, was man dauernd braucht (Wer, Chat, Notiz, Tausch), dahinter das,
+was man einmal am Abend tut (Schriftgröße, Vollbild, Abmelden). Es fällt nichts
+weg, es steht nur nicht alles gleichzeitig da.
+
+*Verschiebbar per langem Druck:* Auf einem Touchscreen ist jede Berührung erst
+einmal ein Tipp. Zöge die Leiste sofort, wäre kein Knopf mehr zu treffen. Also
+kurz halten, dann folgt sie — und wer gezogen hat, löst beim Loslassen keinen
+Knopf aus. Der Platz wird je Gerät gemerkt, aber nur zurückgeholt, wenn er auf
+diesem Schirm auch liegt: Wer die Leiste am großen Monitor nach außen schiebt,
+soll sie auf dem Tablet wiederfinden.
+
+*Durchscheinend*, weil sie auf dem Blatt liegt und nicht verdecken soll, was
+darunter steht.
+
 ## 14.2611.26 — 2026-09-05
 
 **Der Himmelsbogen nimmt jetzt Calendarias eigene Mondbilder.** Zuerst hatte ich

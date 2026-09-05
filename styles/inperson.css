@@ -2094,6 +2094,16 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
 
 /* ── Die Leiste ─────────────────────────────────────────────────── */
 
+/*
+ * Klein, durchscheinend, verschiebbar.
+ *
+ * Klein, weil sie umschaltet statt alles nebeneinanderzustellen: eine Gruppe
+ * zur Zeit, der ☰ wechselt. Durchscheinend, weil sie auf dem Blatt liegt und
+ * nicht verdecken soll, was darunter steht. Verschiebbar, weil jeder Tisch
+ * anders sitzt und niemand sagen kann, wo sie stören wird.
+ *
+ * `left`/`top` werden beim Ziehen gesetzt; bis dahin steht sie mittig oben.
+ */
 .inperson-sheetview-bar {
   position: fixed;
   top: env(safe-area-inset-top, 0px);
@@ -2104,28 +2114,42 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
   z-index: 40;
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 6px 10px;
-  max-width: calc(100vw - 20px);
-  background: rgb(244 241 234 / 95%);
+  gap: 4px;
+  padding: 4px;
+  background: rgb(244 241 234 / 62%);
+  backdrop-filter: blur(6px);
   color: #1a1a1a;
-  border: 1px solid #D4AF37;
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  box-shadow: 0 3px 12px rgb(0 0 0 / 30%);
+  border: 1px solid rgb(212 175 55 / 70%);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 25%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Beim langen Druck soll das Gerät nicht scrollen oder Text markieren. */
+  touch-action: none;
+  user-select: none;
+}
+
+/* Beim Ziehen etwas größer: die einzige Rückmeldung, dass sie jetzt folgt. */
+.inperson-sheetview-bar.wird-gezogen {
+  transform: scale(1.06);
+  background: rgb(244 241 234 / 92%);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 40%);
+  cursor: grabbing;
+}
+
+.inperson-sv-reihe {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .inperson-sheetview-bar button {
   flex: none;
-  min-width: 52px;
+  min-width: 46px;
   min-height: 44px;
-  padding: 0 10px;
-  border: 1px solid #dcd6cc;
-  border-radius: 3px;
-  background: #ffffff;
+  padding: 0 8px;
+  border: 1px solid rgb(220 214 204 / 70%);
+  border-radius: 4px;
+  background: rgb(255 255 255 / 70%);
   color: #1a1a1a;
   font: 600 14px/1 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   cursor: pointer;
@@ -2137,30 +2161,19 @@ body.inperson-sheetview .inperson-stage-sheet > .window-header {
   color: #ffffff;
 }
 
-/* Knöpfe, die sofort etwas tun statt eine Fläche zu rufen. */
-.inperson-sheetview-bar button.now {
-  border-style: dashed;
-  color: #6b6459;
+/* Der Umschalter setzt sich ab: er wechselt die Gruppe, er tut nichts im Spiel. */
+.inperson-sv-wechsel {
+  background: rgb(139 0 0 / 12%) !important;
+  border-color: rgb(139 0 0 / 40%) !important;
+  font-size: 18px !important;
 }
 
-.inperson-sv-spacer {
-  width: 1px;
-  height: 30px;
-  background: #dcd6cc;
-  flex: none;
-}
-
-/* Die Zeitleiste sitzt in derselben Reihe; im Hochformat bekommt sie eine
-   eigene Zeile, weil neun Knöpfe und sie zusammen nicht auf 800px passen. */
+/* Die Zeitleiste steht daneben und schrumpft nicht mit. */
 .inperson-sheetview-bar .inperson-clock {
   position: static;
   transform: none;
   margin: 0;
   z-index: auto;
-}
-
-@media (max-width: 900px) {
-  .inperson-sheetview-bar .inperson-clock { flex-basis: 100%; justify-content: center; }
 }
 
 /* ── Die Flächen ────────────────────────────────────────────────── */

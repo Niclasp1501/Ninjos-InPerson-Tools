@@ -299,5 +299,6 @@
   "INPERSON.SheetView.Fullscreen": "Fullscreen",
   "INPERSON.SheetView.NoFullscreen": "This device does not allow fullscreen. On iPhone and iPad, use “Add to Home Screen”.",
   "INPERSON.SheetView.LogOut": "Log out",
-  "INPERSON.SheetView.LogOutAsk": "Really log out?"
+  "INPERSON.SheetView.LogOutAsk": "Really log out?",
+  "INPERSON.SheetView.More": "More buttons"
 }

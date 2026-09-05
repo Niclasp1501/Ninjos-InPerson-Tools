@@ -71,41 +71,69 @@ async function blattZeigen() {
 /* ── Die Leiste ──────────────────────────────────────────────────── */
 
 /**
- * Die Knöpfe, ausgeschrieben.
+ * Die Knöpfe, in zwei Gruppen.
  *
- * Die Sprachschlüssel stehen hier vollständig da statt aus `SheetView.${name}`
- * zusammengesetzt zu werden: Der Prüfer liest den Quelltext, um zu sehen, ob
- * jeder Schlüssel in beiden Sprachen vorhanden ist, und einen Schlüssel, den er
- * nicht sieht, kann er auch nicht vermissen.
+ * **Klein, weil sie umschaltet.** Neun Knöpfe nebeneinander ergeben eine
+ * Leiste, die quer über den halben Schirm reicht; das war meine erste Fassung
+ * und sie war zu groß. Stattdessen zeigt sie eine Gruppe zur Zeit, und ein
+ * Knopf wechselt — dasselbe Verhalten, das Sheet Only mit seinen zwei
+ * Knopfreihen hat, weil es sich am Tisch bewährt hat.
+ *
+ * Vorn steht, was man dauernd braucht; hinten, was man einmal am Abend tut.
+ *
+ * Die Sprachschlüssel stehen ausgeschrieben da statt zusammengesetzt: Der
+ * Prüfer liest den Quelltext, und einen Schlüssel, den er nicht sieht, kann er
+ * auch nicht vermissen.
  */
-const KNOEPFE = [
-  { text: "INPERSON.SheetView.Who",   titel: "INPERSON.SheetView.WhoHint",   flaeche: "chars" },
-  { text: "INPERSON.SheetView.Chat",  titel: "INPERSON.SheetView.ChatHint",  flaeche: "chat" },
-  { text: "INPERSON.SheetView.Notes", titel: "INPERSON.SheetView.NotesHint", flaeche: "journal" },
-  { text: "INPERSON.SheetView.Trade", titel: "INPERSON.SheetView.TradeHint", tun: () => openTrade() }
-];
-
-const SOFORT = [
-  { zeichen: "A−", titel: "INPERSON.SheetView.Smaller",    tun: () => zoomen(-0.1) },
-  { zeichen: "A+",       titel: "INPERSON.SheetView.Bigger",     tun: () => zoomen(0.1) },
-  { zeichen: "⛶",  titel: "INPERSON.SheetView.Fullscreen", tun: vollbild },
-  { zeichen: "⏻",  titel: "INPERSON.SheetView.LogOut",     tun: abmelden }
-];
+const GRUPPEN = {
+  haupt: [
+    { text: "INPERSON.SheetView.Who",   titel: "INPERSON.SheetView.WhoHint",   flaeche: "chars" },
+    { text: "INPERSON.SheetView.Chat",  titel: "INPERSON.SheetView.ChatHint",  flaeche: "chat" },
+    { text: "INPERSON.SheetView.Notes", titel: "INPERSON.SheetView.NotesHint", flaeche: "journal" },
+    { text: "INPERSON.SheetView.Trade", titel: "INPERSON.SheetView.TradeHint", tun: () => openTrade() }
+  ],
+  extra: [
+    { zeichen: "A−", titel: "INPERSON.SheetView.Smaller",    tun: () => zoomen(-0.1) },
+    { zeichen: "A+",       titel: "INPERSON.SheetView.Bigger",     tun: () => zoomen(0.1) },
+    { zeichen: "⛶",  titel: "INPERSON.SheetView.Fullscreen", tun: vollbild },
+    { zeichen: "⏻",  titel: "INPERSON.SheetView.LogOut",     tun: abmelden }
+  ]
+};
 
 /** Ein Knopf. `flaeche` ruft eine Fläche, `tun` macht sofort etwas. */
-function knopf({ text, titel, flaeche = null, tun = null, sofort = false }) {
+function knopf({ text, titel, flaeche = null, tun = null }) {
   const b = document.createElement("button");
   b.type = "button";
   b.textContent = text;
   b.title = titel;
   b.setAttribute("aria-label", titel);
-  if (sofort) b.classList.add("now");
   if (flaeche) {
     b.dataset.flaeche = flaeche;
     b.setAttribute("aria-pressed", "false");
   }
-  b.addEventListener("click", () => (flaeche ? flaecheUmschalten(flaeche) : tun?.()));
+  b.addEventListener("click", () => {
+    // Wer gezogen hat, wollte nicht drücken.
+    if (wurdeGezogen()) return;
+    if (flaeche) flaecheUmschalten(flaeche);
+    else tun?.();
+  });
   return b;
+}
+
+let gruppe = "haupt";
+
+function gruppeZeichnen(bar) {
+  const reihe = bar.querySelector(".inperson-sv-reihe");
+  reihe.replaceChildren();
+  for (const k of GRUPPEN[gruppe]) {
+    reihe.append(knopf({
+      text: k.zeichen ?? game.i18n.localize(k.text),
+      titel: game.i18n.localize(k.titel),
+      flaeche: k.flaeche,
+      tun: k.tun
+    }));
+  }
+  markieren();
 }
 
 function leisteBauen() {
@@ -115,30 +143,118 @@ function leisteBauen() {
   bar.id = BAR_ID;
   bar.className = "inperson-sheetview-bar";
 
-  for (const k of KNOEPFE) {
-    bar.append(knopf({
-      text: game.i18n.localize(k.text),
-      titel: game.i18n.localize(k.titel),
-      flaeche: k.flaeche,
-      tun: k.tun
-    }));
-  }
+  const reihe = document.createElement("div");
+  reihe.className = "inperson-sv-reihe";
+  bar.append(reihe);
 
-  const trenner = document.createElement("span");
-  trenner.className = "inperson-sv-spacer";
-  bar.append(trenner);
-
-  for (const k of SOFORT) {
-    bar.append(knopf({
-      text: k.zeichen,
-      titel: game.i18n.localize(k.titel),
-      tun: k.tun,
-      sofort: true
-    }));
-  }
+  const wechsel = document.createElement("button");
+  wechsel.type = "button";
+  wechsel.className = "inperson-sv-wechsel";
+  wechsel.textContent = "☰";
+  wechsel.title = game.i18n.localize("INPERSON.SheetView.More");
+  wechsel.setAttribute("aria-label", game.i18n.localize("INPERSON.SheetView.More"));
+  wechsel.addEventListener("click", () => {
+    if (wurdeGezogen()) return;
+    gruppe = gruppe === "haupt" ? "extra" : "haupt";
+    gruppeZeichnen(bar);
+  });
+  bar.append(wechsel);
 
   document.body.appendChild(bar);
+  gruppeZeichnen(bar);
   mountClockInto(bar);
+  ziehbarMachen(bar);
+  platzWiederherstellen(bar);
+}
+
+/* ── Verschieben ─────────────────────────────────────────────────── */
+
+const PLATZ_KEY = `${MODULE_ID}.sheetviewBar`;
+const HALTEN_MS = 400;
+
+let gezogen = false;
+let timer = null;
+let gegriffen = null;
+let griffX = 0;
+let griffY = 0;
+
+function wurdeGezogen() {
+  return gezogen;
+}
+
+/**
+ * Ziehen erst nach langem Druck.
+ *
+ * Auf einem Touchscreen ist jede Berührung erst einmal ein Tipp. Zöge die
+ * Leiste sofort, wäre kein Knopf mehr zu treffen — man würde sie beim Drücken
+ * verschieben. Also: kurz halten, dann bewegt sie sich; und wer gezogen hat,
+ * löst beim Loslassen keinen Knopf aus.
+ */
+function ziehbarMachen(bar) {
+  const start = event => {
+    gezogen = false;
+    const punkt = event.touches?.[0] ?? event;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      gezogen = true;
+      gegriffen = bar;
+      bar.classList.add("wird-gezogen");
+      const r = bar.getBoundingClientRect();
+      griffX = punkt.clientX - r.left;
+      griffY = punkt.clientY - r.top;
+    }, HALTEN_MS);
+  };
+
+  const bewegen = event => {
+    if (!gegriffen) return;
+    event.preventDefault();
+    const punkt = event.touches?.[0] ?? event;
+    setzen(bar, punkt.clientX - griffX, punkt.clientY - griffY);
+  };
+
+  const ende = () => {
+    clearTimeout(timer);
+    if (gegriffen) {
+      gegriffen.classList.remove("wird-gezogen");
+      const r = bar.getBoundingClientRect();
+      localStorage.setItem(PLATZ_KEY, JSON.stringify({ x: Math.round(r.left), y: Math.round(r.top) }));
+      gegriffen = null;
+    }
+    // Erst nach dem Klick zurücksetzen, sonst feuert der Knopf doch noch.
+    setTimeout(() => { gezogen = false; }, 0);
+  };
+
+  bar.addEventListener("mousedown", start);
+  bar.addEventListener("touchstart", start, { passive: true });
+  document.addEventListener("mousemove", bewegen);
+  document.addEventListener("touchmove", bewegen, { passive: false });
+  document.addEventListener("mouseup", ende);
+  document.addEventListener("touchend", ende);
+}
+
+/** Setzen und dabei im Bild halten. */
+function setzen(bar, x, y) {
+  const r = bar.getBoundingClientRect();
+  const maxX = Math.max(0, window.innerWidth - r.width);
+  const maxY = Math.max(0, window.innerHeight - r.height);
+  bar.style.left = `${Math.min(maxX, Math.max(0, x))}px`;
+  bar.style.top = `${Math.min(maxY, Math.max(0, y))}px`;
+  bar.style.transform = "none";
+}
+
+/**
+ * Den gemerkten Platz zurückholen — aber nur, wenn er auf diesem Schirm liegt.
+ *
+ * Wer die Leiste am 27-Zoll-Bildschirm nach rechts außen schiebt und dann das
+ * Tablet nimmt, fände sie sonst nicht wieder.
+ */
+function platzWiederherstellen(bar) {
+  let platz = null;
+  try { platz = JSON.parse(localStorage.getItem(PLATZ_KEY) ?? "null"); } catch { /* egal */ }
+  if (!platz) return;
+  const r = bar.getBoundingClientRect();
+  if (platz.x > window.innerWidth - 40 || platz.y > window.innerHeight - 40) return;
+  setzen(bar, platz.x, platz.y);
 }
 
 /* ── Die drei, die sofort etwas tun ──────────────────────────────── */

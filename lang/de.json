@@ -299,5 +299,6 @@
   "INPERSON.SheetView.Fullscreen": "Vollbild",
   "INPERSON.SheetView.NoFullscreen": "Dieses Gerät erlaubt kein Vollbild. Auf iPhone und iPad geht es über „Zum Home-Bildschirm hinzufügen“.",
   "INPERSON.SheetView.LogOut": "Abmelden",
-  "INPERSON.SheetView.LogOutAsk": "Wirklich abmelden?"
+  "INPERSON.SheetView.LogOutAsk": "Wirklich abmelden?",
+  "INPERSON.SheetView.More": "Weitere Knöpfe"
 }
