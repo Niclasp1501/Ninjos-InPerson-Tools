@@ -208,6 +208,18 @@ function aufhellen(hex) {
   return `#${kanal(0)}${kanal(1)}${kanal(2)}`;
 }
 
+/**
+ * Zwei Farben mischen, `t` von 0 (nur a) bis 1 (nur b).
+ *
+ * Steht auf Modulebene, weil sowohl der Tagesverlauf als auch die
+ * Wetterfärbung sie brauchen - vorher lag sie zweimal herum.
+ */
+function farbmischen(a, b, t) {
+  const kanaele = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const [p, q] = [kanaele(a), kanaele(b)];
+  return "#" + p.map((v, i) => Math.round(v + (q[i] - v) * t).toString(16).padStart(2, "0")).join("");
+}
+
 /* ── Zeichnen ────────────────────────────────────────────────────── */
 
 /**
@@ -325,11 +337,6 @@ export function himmelsbogen(wetter = null) {
     y: boden - bahn * Math.sin(Math.PI * anteil)
   });
 
-  const mischen = (a, b, t) => {
-    const c = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
-    const [p, q] = [c(a), c(b)];
-    return "#" + p.map((v, i) => Math.round(v + (q[i] - v) * t).toString(16).padStart(2, "0")).join("");
-  };
   // Nacht wie Calendarias Sternenfeld (tiefes Nachtblau nach fast Schwarz),
   // Tag aus dessen Kuppel abgelesen (Himmelblau nach Dunst am Horizont).
   const nacht = ["#0d1033", "#0a0a1a", "#05050f"];
@@ -337,7 +344,7 @@ export function himmelsbogen(wetter = null) {
   // blau; Calendarias wirkt matter und geht zum Horizont in einen Dunst über
   // statt in helles Blau. Abgelesen aus dem Vergleichsbild vom 06.09.2026.
   const tagfarben = ["#86b4d2", "#aecee2", "#cfe0e8"];
-  const tageszeit = nacht.map((f, i) => mischen(f, tagfarben[i], helligkeit));
+  const tageszeit = nacht.map((f, i) => farbmischen(f, tagfarben[i], helligkeit));
 
   // Und darüber das Wetter: Bei Regen wird der Himmel grau, beim Sandsturm
   // ockerfarben, beim Gewitter fast schwarz. Ohne das blieb er immer blau und
@@ -346,7 +353,7 @@ export function himmelsbogen(wetter = null) {
   // muss; bei "windig" sind es 15 %, beim Nullfront 95 %.
   const art = wetterArt(wetter);
   const himmel = art?.toenung
-    ? tageszeit.map((f, i) => mischen(f, art.toenung.farben[i], art.toenung.staerke))
+    ? tageszeit.map((f, i) => farbmischen(f, art.toenung.farben[i], art.toenung.staerke))
     : tageszeit;
   // Morgen- und Abendrot am Horizont, am stärksten mitten in der Dämmerung.
   const rot = Math.sin(Math.PI * helligkeit);
@@ -465,50 +472,50 @@ function reihe(saat, n) {
 /** Für die Prüfung sichtbar: tools/test-sky.mjs geht die Tabelle durch. */
 export const WETTER_VORLAGEN = {
   // Standard
-  "partly-cloudy":    { wolken: 0.3 , himmel: "clouds-light" },
-  cloudy:             { wolken: 0.65 , himmel: "clouds-heavy" },
-  overcast:           { wolken: 1 , himmel: "clouds-overcast" },
-  drizzle:            { regen: 0.3 , himmel: "rain" },
-  rain:               { regen: 0.65, wolken: 0.4 , himmel: "rain" },
-  sunshower:          { regen: 0.35 , himmel: "rain" },
-  fog:                { nebel: 0.8 , himmel: "fog" },
-  mist:               { nebel: 0.45 , himmel: "fog" },
-  windy:              { fahnen: 0.6, wolken: 0.35 , himmel: "gust" },
-  snow:               { flocken: 0.6 , himmel: "snow" },
-  sleet:              { regen: 0.45, koerner: 0.35 , himmel: "sleet" },
-  "heat-wave":        { flimmern: 1 , himmel: "haze" },
+  "partly-cloudy":    { wolken: 0.3 , himmel: ["verhangen", 0.3] },
+  cloudy:             { wolken: 0.65 , himmel: ["verhangen", 0.55] },
+  overcast:           { wolken: 1 , himmel: ["bedeckt", 0.8] },
+  drizzle:            { regen: 0.3 , himmel: ["trueb", 0.55] },
+  rain:               { regen: 0.65, wolken: 0.4 , himmel: ["trueb", 0.75] },
+  sunshower:          { regen: 0.35 , himmel: ["verhangen", 0.3] },
+  fog:                { nebel: 0.8 , himmel: ["dunst", 0.8] },
+  mist:               { nebel: 0.45 , himmel: ["dunst", 0.5] },
+  windy:              { fahnen: 0.6, wolken: 0.35 , himmel: ["verhangen", 0.15] },
+  snow:               { flocken: 0.6 , himmel: ["schnee", 0.55] },
+  sleet:              { regen: 0.45, koerner: 0.35 , himmel: ["koerner", 0.7] },
+  "heat-wave":        { flimmern: 1 , himmel: ["hitze", 0.5] },
   // Schwer
-  thunderstorm:       { regen: 0.9, wolken: 0.8, blitz: "#ffffff" , himmel: "lightning" },
-  blizzard:           { flocken: 1, fahnen: 0.7, wolken: 0.6 , himmel: "snow-heavy" },
-  hail:               { koerner: 0.8, wolken: 0.5 , himmel: "hail" },
-  tornado:            { wirbel: 1, wolken: 0.9, regen: 0.5, fahnen: 0.6 , himmel: "tornado" },
-  hurricane:          { regen: 1, wolken: 0.9, fahnen: 1 , himmel: "hurricane" },
-  "ice-storm":        { koerner: 0.7, flocken: 0.3, wolken: 0.5, farbe: "#cfeaff" , himmel: "ice" },
-  monsoon:            { regen: 1, wolken: 0.8, fahnen: 0.4 , himmel: "rain-heavy" },
+  thunderstorm:       { regen: 0.9, wolken: 0.8, blitz: "#ffffff" , himmel: ["sturm", 0.9] },
+  blizzard:           { flocken: 1, fahnen: 0.7, wolken: 0.6 , himmel: ["schnee", 0.75] },
+  hail:               { koerner: 0.8, wolken: 0.5 , himmel: ["koerner", 0.78] },
+  tornado:            { wirbel: 1, wolken: 0.9, regen: 0.5, fahnen: 0.6 , himmel: ["wirbel", 0.9] },
+  hurricane:          { regen: 1, wolken: 0.9, fahnen: 1 , himmel: ["sturm", 0.88] },
+  "ice-storm":        { koerner: 0.7, flocken: 0.3, wolken: 0.5, farbe: "#cfeaff" , himmel: ["eis", 0.6] },
+  monsoon:            { regen: 1, wolken: 0.8, fahnen: 0.4 , himmel: ["sturm", 0.8] },
   // Umwelt
-  ashfall:            { flocken: 0.55, nebel: 0.25, farbe: "#a2988c" , himmel: "ashfall" },
-  sandstorm:          { fahnen: 1, nebel: 0.55, farbe: "#d9b57a" , himmel: "sand" },
-  "luminous-sky":     { aurora: 1 , himmel: "aurora" },
-  "sakura-bloom":     { blaetter: 0.5, farbe: "#ffc2ce" , himmel: "petals" },
-  "autumn-leaves":    { blaetter: 0.5, farbe: "#e08a44" , himmel: "leaves" },
-  "rolling-fog":      { nebel: 1 , himmel: "fog" },
-  "wildfire-smoke":   { rauch: 0.8, nebel: 0.35, farbe: "#a97a52" , himmel: "smoke" },
-  "dust-devil":       { fahnen: 0.7, wirbel: 0.5, farbe: "#d3ad76" , himmel: "sand" },
+  ashfall:            { flocken: 0.55, nebel: 0.25, farbe: "#a2988c" , himmel: ["asche", 0.8] },
+  sandstorm:          { fahnen: 1, nebel: 0.55, farbe: "#d9b57a" , himmel: ["wueste", 0.85] },
+  "luminous-sky":     { aurora: 1 , himmel: ["polarlicht", 0.85] },
+  "sakura-bloom":     { blaetter: 0.5, farbe: "#ffc2ce" , himmel: ["bluete", 0.4] },
+  "autumn-leaves":    { blaetter: 0.5, farbe: "#e08a44" , himmel: ["laub", 0.35] },
+  "rolling-fog":      { nebel: 1 , himmel: ["dunst", 0.9] },
+  "wildfire-smoke":   { rauch: 0.8, nebel: 0.35, farbe: "#a97a52" , himmel: ["rauch", 0.88] },
+  "dust-devil":       { fahnen: 0.7, wirbel: 0.5, farbe: "#d3ad76" , himmel: ["wueste", 0.7] },
   // Fantasy
-  "black-sun":        { dunkel: 0.85 , himmel: "void" },
-  "ley-surge":        { funken: 0.9, blitz: "#7fc6ff", farbe: "#5ab8ff" , himmel: "ley-surge" },
-  "aether-haze":      { nebel: 0.6, funken: 0.25, farbe: "#b98ade" , himmel: "aether" },
-  nullfront:          { rauschen: 0.8 , himmel: "nullstatic" },
-  "permafrost-surge": { flocken: 0.5, koerner: 0.35, nebel: 0.3, farbe: "#bfe6f5" , himmel: "ice" },
-  gravewind:          { schemen: 0.8, farbe: "#9fd8b8" , himmel: "spectral" },
-  veilfall:           { regen: 0.35, nebel: 0.3, farbe: "#c3b4e8" , himmel: "veil" },
-  "arcane-winds":     { fahnen: 0.7, funken: 0.45, farbe: "#c98ceb" , himmel: "arcane-wind" },
-  "acid-rain":        { regen: 0.6, farbe: "#9ade6a" , himmel: "rain-acid" },
-  "blood-rain":       { regen: 0.7, farbe: "#cf4a5e" , himmel: "rain-blood" },
-  "meteor-shower":    { meteore: 1 , himmel: "meteors" },
-  "spore-cloud":      { flocken: 0.55, langsam: true, nebel: 0.2, farbe: "#a8c85e" , himmel: "spores" },
-  "divine-light":     { strahlen: 1 , himmel: "divine" },
-  "plague-miasma":    { nebel: 0.85, farbe: "#8fa055" , himmel: "miasma" }
+  "black-sun":        { dunkel: 0.85 , himmel: ["leere", 0.95] },
+  "ley-surge":        { funken: 0.9, blitz: "#7fc6ff", farbe: "#5ab8ff" , himmel: ["ley", 0.75] },
+  "aether-haze":      { nebel: 0.6, funken: 0.25, farbe: "#b98ade" , himmel: ["aether", 0.8] },
+  nullfront:          { rauschen: 0.8 , himmel: ["rauschen", 0.95] },
+  "permafrost-surge": { flocken: 0.5, koerner: 0.35, nebel: 0.3, farbe: "#bfe6f5" , himmel: ["eis", 0.6] },
+  gravewind:          { schemen: 0.8, farbe: "#9fd8b8" , himmel: ["geist", 0.8] },
+  veilfall:           { regen: 0.35, nebel: 0.3, farbe: "#c3b4e8" , himmel: ["schleier", 0.75] },
+  "arcane-winds":     { fahnen: 0.7, funken: 0.45, farbe: "#c98ceb" , himmel: ["arkan", 0.8] },
+  "acid-rain":        { regen: 0.6, farbe: "#9ade6a" , himmel: ["saeure", 0.8] },
+  "blood-rain":       { regen: 0.7, farbe: "#cf4a5e" , himmel: ["blut", 0.85] },
+  "meteor-shower":    { meteore: 1 , himmel: ["meteor", 0.6] },
+  "spore-cloud":      { flocken: 0.55, langsam: true, nebel: 0.2, farbe: "#a8c85e" , himmel: ["sporen", 0.7] },
+  "divine-light":     { strahlen: 1 , himmel: ["goettlich", 0.6] },
+  "plague-miasma":    { nebel: 0.85, farbe: "#8fa055" , himmel: ["miasma", 0.85] }
 };
 
 
@@ -517,55 +524,71 @@ export const WETTER_VORLAGEN = {
  *
  * Das war der auffälligste Unterschied zu Calendarias Kuppel und der Grund
  * für die Frage "warum sieht das bei uns anders aus": Nicht die Tropfen sind
- * es, sondern der Himmel dahinter. Bei Regen wird er dort grau, bei Sandsturm
- * ockerfarben, beim Gewitter fast schwarz - wir hatten immer denselben
- * blauen Verlauf mit Strichen davor.
+ * es, sondern der Himmel dahinter. Bei Regen muss er grau werden, beim
+ * Sandsturm ockerfarben, beim Gewitter fast schwarz - sonst hängt alles vor
+ * einem ewig blauen Himmel wie aufgeklebt.
  *
- * Die Werte stammen aus Calendaria (MIT, siehe LICENSE): je Effekt eine
- * Stärke und drei Farben für oben, Mitte und unten. Sie hier nachzubauen
- * hätte geraten geheißen; genommen sind sie gemessen, und beide Kuppeln
- * zeigen denselben Himmel - was der eigentliche Zweck ist, wenn Spielleiter
- * und Tisch nebeneinander sitzen.
+ * **Eine Grundfarbe je Stimmung, der Verlauf entsteht daraus.** Drei
+ * Farbwerte für jedes der 41 Wetter zu pflegen hieße 123 Zahlen, die niemand
+ * mehr nachvollzieht. Stattdessen eine Handvoll Stimmungen mit je einer
+ * Farbe; oben wird sie abgedunkelt, zum Horizont hin aufgehellt, weil dort
+ * das Restlicht steht. Wer eine Stimmung ändern will, ändert eine Zahl.
  */
-const HIMMELSTOENUNG = {
-  "clouds-light": { staerke: 0.5, farben: ["#a0aab9", "#afb9c8", "#bec8d7"] },
-  "clouds-heavy": { staerke: 0.7, farben: ["#737882", "#828791", "#969ba5"] },
-  "clouds-overcast": { staerke: 0.85, farben: ["#5f5f64", "#6e6e73", "#828287"] },
-  rain: { staerke: 0.75, farben: ["#464b5a", "#555a69", "#646978"] },
-  "rain-heavy": { staerke: 0.85, farben: ["#323746", "#414452", "#50525f"] },
-  snow: { staerke: 0.6, farben: ["#b9c3d2", "#c3cddc", "#d2dae6"] },
-  "snow-heavy": { staerke: 0.7, farben: ["#c3c8d7", "#cdd2e1", "#d7dceb"] },
-  fog: { staerke: 0.8, farben: ["#afb2b4", "#b9bcbe", "#c8cacd"] },
-  lightning: { staerke: 0.9, farben: ["#232337", "#2d3044", "#3c3e50"] },
-  sand: { staerke: 0.85, farben: ["#b9a064", "#c8af73", "#d7be82"] },
-  ashfall: { staerke: 0.85, farben: ["#5a4632", "#785f46", "#96785a"] },
-  embers: { staerke: 0.85, farben: ["#a06e3c", "#b47d46", "#c38c50"] },
-  ice: { staerke: 0.6, farben: ["#a0c3dc", "#afcde6", "#bed7f0"] },
-  hail: { staerke: 0.8, farben: ["#464b5f", "#5a5f73", "#6e7382"] },
-  tornado: { staerke: 0.9, farben: ["#2d3228", "#3c4132", "#4b4e41"] },
-  hurricane: { staerke: 0.9, farben: ["#323741", "#414450", "#50525f"] },
-  nullstatic: { staerke: 0.95, farben: ["#0c0a10", "#120f16", "#19161e"] },
-  gust: { staerke: 0.15, farben: ["#b4bec8", "#bec8d2", "#c8d2dc"] },
-  aurora: { staerke: 0.85, farben: ["#0a0823", "#143c32", "#0f193c"] },
-  aether: { staerke: 0.8, farben: ["#64285a", "#823c78", "#a05096"] },
-  void: { staerke: 0.95, farben: ["#0f0a0c", "#160f12", "#1e1619"] },
-  spectral: { staerke: 0.8, farben: ["#1e2832", "#2d3c32", "#3c5041"] },
-  arcane: { staerke: 0.7, farben: ["#2850a0", "#3c78c8", "#64b4e6"] },
-  "arcane-wind": { staerke: 0.8, farben: ["#502864", "#6e3c82", "#8c50a0"] },
-  veil: { staerke: 0.75, farben: ["#50466e", "#6e648c", "#8c82aa"] },
-  petals: { staerke: 0.4, farben: ["#8c82b4", "#b496aa", "#dcb4be"] },
-  sleet: { staerke: 0.75, farben: ["#505564", "#5f6473", "#737887"] },
-  haze: { staerke: 0.5, farben: ["#c8b48c", "#d7c39b", "#e6d2aa"] },
-  leaves: { staerke: 0.35, farben: ["#a0825a", "#b49664", "#c8aa78"] },
-  smoke: { staerke: 0.9, farben: ["#3c3228", "#504132", "#645541"] },
-  "rain-acid": { staerke: 0.8, farben: ["#28501e", "#37642d", "#46783c"] },
-  "rain-blood": { staerke: 0.85, farben: ["#501419", "#641e23", "#78282d"] },
-  meteors: { staerke: 0.6, farben: ["#0f0a1e", "#1e142d", "#32233c"] },
-  spores: { staerke: 0.7, farben: ["#3c5028", "#4b6437", "#5a7846"] },
-  divine: { staerke: 0.6, farben: ["#c8b464", "#dcc882", "#f0dca0"] },
-  miasma: { staerke: 0.85, farben: ["#323c1e", "#414e28", "#505f37"] },
-  "ley-surge": { staerke: 0.75, farben: ["#321e78", "#503ca0", "#7864c8"] },
+const STIMMUNGEN = {
+  verhangen:  "#7f848e",   // Wolkendecke, hell verhangen
+  bedeckt:    "#66686d",   // geschlossene graue Decke
+  trueb:      "#5b6172",   // Regen, Nieselregen
+  sturm:      "#2a2c3d",   // Gewitter, Monsun, Hurrikan
+  wirbel:     "#383e33",   // Tornado, olivgrün-drückend
+  dunst:      "#b4b8bc",   // Nebel und Dunst
+  schnee:     "#c4ccd9",
+  eis:        "#a6c6dc",
+  koerner:    "#565c6c",   // Graupel und Hagel
+  wueste:     "#c1a267",   // Sand und Staub
+  asche:      "#6a533e",
+  rauch:      "#453a2d",
+  hitze:      "#d1ba8d",
+  polarlicht: "#11393b",
+  bluete:     "#b497b3",
+  laub:       "#a68653",
+  leere:      "#130f16",   // Schwarze Sonne
+  rauschen:   "#141219",   // Nullfront
+  ley:        "#3e2e8f",
+  aether:     "#6d2f6f",
+  geist:      "#293932",
+  schleier:   "#5c547f",
+  arkan:      "#5e2f7f",
+  saeure:     "#2e5b25",
+  blut:       "#59191f",
+  meteor:     "#141026",
+  sporen:     "#40542b",
+  goettlich:  "#cab369",
+  miasma:     "#394421"
 };
+
+/**
+ * Aus einer Grundfarbe die drei Stufen des Verlaufs.
+ *
+ * Oben dunkler, unten heller - so sieht ein Himmel aus, egal bei welchem
+ * Wetter: Das Licht kommt vom Horizont, nicht aus dem Zenit.
+ */
+function verlauf(basis) {
+  return [
+    farbmischen(basis, "#000000", 0.18),
+    basis,
+    farbmischen(basis, "#ffffff", 0.14)
+  ];
+}
+
+/** Stimmung und Stärke je Wetter - was der Himmel tun soll und wie sehr. */
+function toenungAusRezept(rezept) {
+  const eintrag = rezept?.himmel;
+  if (!Array.isArray(eintrag)) return null;
+  const [stimmung, staerke] = eintrag;
+  const basis = STIMMUNGEN[stimmung];
+  if (!basis) return null;
+  return { staerke, farben: verlauf(basis) };
+}
 
 /** Ein RGB-Tripel aus fremden Daten als Farbe, oder nichts. */
 function tripelAlsFarbe(wert) {
@@ -580,7 +603,7 @@ function tripelAlsFarbe(wert) {
  * Calendaria kennt zwei Wege dorthin, und beide stehen in Welteinstellungen,
  * die uns offenstehen: selbst angelegtes Wetter trägt seine Farben direkt,
  * und für die eingebauten gibt es eine Liste von Übersteuerungen. Fehlt eine
- * der drei Farben, füllt die Vorlage sie auf - genau wie dort.
+ * der drei Farben, füllt unsere Stimmung sie auf.
  */
 function toenungUebersteuert(wetter, vorlage) {
   const id = String(wetter?.id ?? "");
@@ -648,7 +671,7 @@ export function wetterArt(wetter) {
     else return null;
   }
 
-  const vorlage = HIMMELSTOENUNG[rezept.himmel] ?? null;
+  const vorlage = toenungAusRezept(rezept);
   return {
     ...rezept,
     wind, dichte, tempo,
