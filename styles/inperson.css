@@ -2635,3 +2635,61 @@ body.inperson-sheetview .sidebar-popout {
   .inperson-sky-regen line { transform: translateY(40px); }
   .inperson-sky-flocken circle { transform: translateY(40px); }
 }
+
+
+/* ── „Du bist dran" ──────────────────────────────────────────────────
+   Gegenüber den Leisten: quer unten, hochkant oben. Rot, solange der eigene
+   Charakter am Zug ist; grau, wenn er der nächste ist; sonst nicht da. */
+.inperson-sv-zug {
+  position: fixed;
+  left: 50%;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  transform: translateX(-50%);
+  z-index: 38;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 18%);
+  background: rgb(20 20 24 / 92%);
+  color: #e6e2d8;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 45%);
+  pointer-events: none;
+  zoom: var(--inperson-sv-leiste-auto, 1);
+}
+
+.inperson-sv-zug i {
+  font-size: 20px;
+}
+
+.inperson-sv-zug.dran {
+  background: #8B0000;
+  border-color: #b51a1a;
+  color: #ffffff;
+  animation: inperson-sv-zug-puls 1.6s ease-in-out infinite;
+}
+
+.inperson-sv-zug.gleich {
+  opacity: .9;
+}
+
+@keyframes inperson-sv-zug-puls {
+  0%, 100% { box-shadow: 0 4px 14px rgb(0 0 0 / 45%), 0 0 0 0 rgb(181 26 26 / 55%); }
+  50%      { box-shadow: 0 4px 14px rgb(0 0 0 / 45%), 0 0 0 12px rgb(181 26 26 / 0%); }
+}
+
+@media (orientation: portrait) {
+  .inperson-sv-zug {
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
+    bottom: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inperson-sv-zug.dran { animation: none; }
+}

@@ -1,7 +1,5 @@
 {
-  "INPERSON.Menu.Name": "Table Mode controls",
   "INPERSON.Menu.Label": "Open controls",
-  "INPERSON.Menu.Hint": "Decide who is sitting at the table and should stop downloading maps.",
   "INPERSON.Settings.Enabled.Name": "Enable Table Mode",
   "INPERSON.Settings.Enabled.Hint": "Master switch. While this is off, Foundry behaves exactly as usual.",
   "INPERSON.Settings.DefaultPlayers.Name": "Include players by default",
@@ -16,7 +14,7 @@
   "INPERSON.Settings.AutoNoCanvas.Hint": "Also turns on Foundry's \"Disable Game Canvas\" on affected clients. Saves the WebGL context and render loop on top, but requires the player to reload. Monitor accounts and gamemasters are left alone.",
   "INPERSON.Settings.AllowList.Name": "Exceptions",
   "INPERSON.Settings.AllowList.Hint": "Path fragments that are never blocked - one per line or comma separated. Example: modules/my-map-assets/",
-  "INPERSON.Settings.Self.Name": "For this client",
+  "INPERSON.Settings.Self.Name": "This device: table mode",
   "INPERSON.Settings.Self.Hint": "Applies to this device only. An explicit assignment by the gamemaster always wins.",
   "INPERSON.Settings.Self.Auto": "Automatic",
   "INPERSON.Settings.Self.On": "Always in table mode",
@@ -154,7 +152,7 @@
   "INPERSON.Settings.KeepTokens.Hint": "Recommended. Token images are small and players need to tell their figures apart. Turning this off leaves tokens black as well.",
   "INPERSON.Settings.HideProgress.Name": "Hide the loading bar for players",
   "INPERSON.Settings.HideProgress.Hint": "Foundry shows its scene loading bar even when every file comes from the browser cache or was blocked. It reports processing, not bandwidth, which is misleading here. This only hides the display, nothing about loading changes.",
-  "INPERSON.Settings.ShowPill.Name": "Show status indicator",
+  "INPERSON.Settings.ShowPill.Name": "This device: status badge",
   "INPERSON.Settings.ShowPill.Hint": "Small badge along the bottom edge of a player's screen while table mode runs there. It explains that the black map is deliberate.",
   "INPERSON.Settings.IdleEnabled.Name": "Use a screensaver",
   "INPERSON.Settings.IdleEnabled.Hint": "For displays on an OLED. With this off nothing happens at all - everything below appears only once you say yes here.",
@@ -323,5 +321,7 @@
   "INPERSON.SheetView.ResetDone": "{name}: bars are being reset to their defaults.",
   "INPERSON.SheetView.BarSizeButtons": "Menu bar",
   "INPERSON.SheetView.BarSizeClock": "Time strip",
-  "INPERSON.SheetView.LockPosition": "Lock position"
+  "INPERSON.SheetView.LockPosition": "Lock position",
+  "INPERSON.SheetView.YourTurn": "Your turn!",
+  "INPERSON.SheetView.NextTurn": "You're up next"
 }

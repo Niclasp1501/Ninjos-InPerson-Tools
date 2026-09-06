@@ -1,6 +1,6 @@
 # Ninjo's In-Person Tools
 
-**Current Version / Aktuelle Version:** `14.2611.7`
+**Current Version / Aktuelle Version:** `14.2611.58`
 
 Tools for running Foundry VTT at a physical table: the map is on a TV, the
 players only need their character sheet, dice and token — and yet every laptop
@@ -12,7 +12,7 @@ pulls the same megabytes over Wi-Fi on each scene change.
 
 ## 🇬🇧 English
 
-Five areas, each usable on its own:
+Eight areas, each usable on its own:
 
 | | |
 |---|---|
@@ -20,6 +20,9 @@ Five areas, each usable on its own:
 | [Scene displays](#scene-displays) | two screens with separate jobs |
 | [Scene rotation](#scene-rotation) | portrait maps laid across a 16:9 screen |
 | [Bring players](#bring-players) | pull individual players to a scene |
+| [Sheet view (beta)](#sheet-view-beta) | a tablet shows nothing but the character sheet |
+| [Time & weather](#time--weather) | date, clock, weather and a sun/moon dome above the sheet |
+| [Trading](#trading) | two players swap items and coin across a table |
 | [Alongside Lock View](#alongside-lock-view) | rotation-aware fitting and viewbox |
 
 Tested against **Foundry v14**, minimum v13. Runs standalone; it fits in where
@@ -255,6 +258,50 @@ to be asked.
 *Verified with Calendaria for the calendar side. Without any calendar module the
 strip still shows date and time from Foundry's own.*
 
+### Sheet view (beta)
+
+For tablets at the table. The gamemaster ticks the accounts on the
+**Sheet view (beta)** page; on those devices Foundry's interface disappears and
+the character sheet fills the screen. A small **menu bar** keeps what a player
+needs: their characters, chat, journal, trading, and the buttons of other
+modules that register through `game.modules.get("ninjos-inperson-tools").api.sheetView.registerButton()`
+(Ninjo's FANG and NDRS do). A second group holds text size, volume, bar size,
+Foundry's settings, fullscreen and log out.
+
+Both bars can be dragged after a long press, sized per bar, and locked in
+place; positions and sizes are remembered per device and per orientation
+(portrait puts the bars at the bottom, landscape at the top). The gamemaster
+can reset a player's bars from the settings page. The canvas is switched off on
+these devices (same machinery as map blocking), the chat opens on the player's
+own rolls, and a **"Your turn!"** banner appears while the player's character
+is up in combat, with **"You're up next"** one step before. Gamemasters are
+never affected.
+
+Beta: the view is tested on a monitor and on tablets in progress; keep it off
+for players you are not sitting next to.
+
+### Time & weather
+
+A slim strip with the date, the clock, the current weather with temperature and
+the season, and above it a **dome** with the sun by day and the moon with its
+real phase by night - twilight blends between the two, and rain, snow, fog,
+clouds and lightning show in the dome when a weather source reports them. The
+strip lives in the sheet view and in Sheet Only alike. Everything is read, not
+borrowed: date and sunrise come from the world calendar, weather and moon phase
+from Calendaria when it is installed; without any calendar module the strip
+still shows date and time and draws the dome from Foundry's own calendar. What
+the strip shows is the gamemaster's choice on the **Time & weather** page.
+
+### Trading
+
+Two players put items and coin on a shared table window; nothing moves until
+both agree, and the move is carried out on the gamemaster's client so
+ownership never depends on a player's rights. Containers travel with their
+contents, coins in containers included. Optionally every trade is written into
+a "Tauschbuch" journal. Whether players may trade at all, whether the
+gamemaster appears as a partner, and whether the logbook is kept, is set on the
+**Trading** page.
+
 ### Installation
 
 Install through the Foundry package browser, or by manifest URL:
@@ -270,7 +317,7 @@ back to its own patch.
 
 ## 🇩🇪 Deutsch
 
-Fünf Bereiche, unabhängig voneinander nutzbar:
+Acht Bereiche, unabhängig voneinander nutzbar:
 
 | | |
 |---|---|
@@ -278,6 +325,9 @@ Fünf Bereiche, unabhängig voneinander nutzbar:
 | [Szenen-Monitore](#szenen-monitore) | zwei Bildschirme mit getrennten Aufgaben |
 | [Szenendrehung](#szenendrehung) | hochkante Karten quer auf 16:9 |
 | [Spieler holen](#spieler-holen) | gezielt einzelne Spieler auf eine Szene ziehen |
+| [Blattansicht (Beta)](#blattansicht-beta) | ein Tablet zeigt nur das Charakterblatt |
+| [Zeit & Wetter](#zeit--wetter) | Datum, Uhrzeit, Wetter und eine Sonnen-/Mondkuppel über dem Blatt |
+| [Tauschen](#tauschen) | zwei Spieler tauschen Gegenstände und Geld über einen Tisch |
 | [Zusammen mit Lock View](#zusammen-mit-lock-view) | Einpassung und Ansichtsrahmen folgen der Drehung |
 
 Getestet gegen **Foundry v14**, Mindestversion v13. Läuft eigenständig; wo
@@ -522,6 +572,52 @@ eines fremden Moduls um — also wartet es, bis man es darum bittet.
 
 *Für die Kalenderseite mit Calendaria geprüft. Ganz ohne Kalendermodul zeigt die
 Leiste weiterhin Datum und Uhrzeit aus Foundrys eigenem Kalender.*
+
+### Blattansicht (Beta)
+
+Für die Tablets am Tisch. Der Spielleiter hakt auf der Seite **Blattansicht
+(Beta)** die Konten an; auf diesen Geräten verschwindet Foundrys Oberfläche,
+das Charakterblatt füllt den Schirm. Eine kleine **Menüleiste** hält bereit,
+was ein Spieler braucht: seine Charaktere, Chat, Notizen, Tauschen und die
+Knöpfe anderer Module, die sich über
+`game.modules.get("ninjos-inperson-tools").api.sheetView.registerButton()`
+anmelden (Ninjo's FANG und NDRS tun das). Eine zweite Gruppe hat Schriftgröße,
+Lautstärke, Leistengröße, Foundrys Einstellungen, Vollbild und Abmelden.
+
+Beide Leisten lassen sich nach langem Druck verschieben, je Leiste in der
+Größe einstellen und festhalten; Plätze und Größen merkt sich das Gerät je
+Lage (hochkant stehen die Leisten unten, quer oben). Der Spielleiter kann die
+Leisten eines Kontos auf die Startwerte zurücksetzen. Das Spielfeld ist auf
+diesen Geräten abgeschaltet (dieselbe Maschinerie wie die Kartensperre), der
+Chat öffnet sich bei eigenen Würfen, und im Kampf steht **„Du bist dran!"** auf
+dem Tablet, solange der eigene Charakter am Zug ist — mit **„Gleich bist du
+dran"** eine Stelle davor. Spielleiter sind nie betroffen.
+
+Beta: am Monitor geprüft, am Tablet in Arbeit; nur für Spieler einschalten,
+neben denen man sitzt.
+
+### Zeit & Wetter
+
+Eine schmale Leiste mit Datum, Uhrzeit, dem Wetter samt Temperatur und der
+Jahreszeit, darüber eine **Kuppel** mit der Sonne am Tag und dem Mond in
+seiner echten Phase bei Nacht — die Dämmerung blendet dazwischen, und Regen,
+Schnee, Nebel, Wolken und Gewitter erscheinen in der Kuppel, wenn eine
+Wetterquelle sie meldet. Die Leiste steht in der Blattansicht wie in Sheet
+Only. Alles wird gelesen, nicht ausgeliehen: Datum und Sonnenaufgang aus dem
+Weltkalender, Wetter und Mondphase aus Calendaria, wenn es installiert ist;
+ohne Kalendermodul zeigt die Leiste weiterhin Datum und Uhrzeit und zeichnet
+die Kuppel aus Foundrys eigenem Kalender. Was die Leiste zeigt, entscheidet der
+Spielleiter auf der Seite **Zeit & Wetter**.
+
+### Tauschen
+
+Zwei Spieler legen Gegenstände und Geld auf ein gemeinsames Tisch-Fenster;
+erst wenn beide zustimmen, wird etwas bewegt, und zwar auf dem Client des
+Spielleiters, damit das Eigentum nie an den Rechten eines Spielers hängt.
+Behälter reisen mit Inhalt, Münzen in Behältern eingeschlossen. Wahlweise wird
+jeder Tausch ins Journal „Tauschbuch" geschrieben. Ob Spieler überhaupt
+tauschen dürfen, ob der Spielleiter als Partner erscheint und ob das Buch
+geführt wird, steht auf der Seite **Tauschen**.
 
 ### Installation
 

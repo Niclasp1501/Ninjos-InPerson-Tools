@@ -1,7 +1,5 @@
 {
-  "INPERSON.Menu.Name": "Tischmodus-Steuerung",
   "INPERSON.Menu.Label": "Steuerung öffnen",
-  "INPERSON.Menu.Hint": "Festlegen, wer am Tisch sitzt und keine Karten mehr herunterladen soll.",
   "INPERSON.Settings.Enabled.Name": "Tischmodus aktivieren",
   "INPERSON.Settings.Enabled.Hint": "Hauptschalter. Solange dieser aus ist, verhält sich Foundry völlig normal.",
   "INPERSON.Settings.DefaultPlayers.Name": "Spieler standardmäßig einbeziehen",
@@ -16,7 +14,7 @@
   "INPERSON.Settings.AutoNoCanvas.Hint": "Setzt zusätzlich Foundrys \"Spielfeld deaktivieren\" auf den betroffenen Clients. Spart obendrein WebGL-Kontext und Render-Schleife, verlangt aber einen Reload beim Spieler. Monitor-Konten und Spielleiter bleiben unangetastet.",
   "INPERSON.Settings.AllowList.Name": "Ausnahmen",
   "INPERSON.Settings.AllowList.Hint": "Pfadschnipsel, die nie blockiert werden - eines pro Zeile oder mit Komma getrennt. Beispiel: modules/meine-map-assets/",
-  "INPERSON.Settings.Self.Name": "Für diesen Client",
+  "INPERSON.Settings.Self.Name": "Dieses Gerät: Tischmodus",
   "INPERSON.Settings.Self.Hint": "Nur für dieses Gerät. Eine ausdrückliche Zuweisung durch den Spielleiter hat immer Vorrang.",
   "INPERSON.Settings.Self.Auto": "Automatisch",
   "INPERSON.Settings.Self.On": "Immer im Tischmodus",
@@ -154,7 +152,7 @@
   "INPERSON.Settings.KeepTokens.Hint": "Empfohlen. Token-Grafiken sind klein, und die Spieler müssen ihre Figuren auseinanderhalten können. Ausschalten lässt auch Tokens schwarz.",
   "INPERSON.Settings.HideProgress.Name": "Ladebalken bei Spielern ausblenden",
   "INPERSON.Settings.HideProgress.Hint": "Foundry zeigt seinen Szenen-Ladebalken auch dann, wenn alle Dateien aus dem Browser-Cache kommen oder blockiert wurden. Er meldet also Verarbeitung, nicht Bandbreite - und wirkt dadurch irreführend. Blendet nur die Anzeige aus, am Laden selbst ändert sich nichts.",
-  "INPERSON.Settings.ShowPill.Name": "Statusanzeige einblenden",
+  "INPERSON.Settings.ShowPill.Name": "Dieses Gerät: Statusanzeige",
   "INPERSON.Settings.ShowPill.Hint": "Kleine Anzeige am unteren Rand des Spieler-Bildschirms, solange der Tischmodus dort läuft. Sie erklärt, dass die schwarze Karte Absicht ist.",
   "INPERSON.Settings.IdleEnabled.Name": "Bildschirmschoner verwenden",
   "INPERSON.Settings.IdleEnabled.Hint": "Für Monitore an einem OLED. Ist das aus, passiert überhaupt nichts - alles Weitere erscheint erst, wenn du hier zusagst.",
@@ -323,5 +321,7 @@
   "INPERSON.SheetView.ResetDone": "{name}: Leisten werden auf die Startwerte zurückgesetzt.",
   "INPERSON.SheetView.BarSizeButtons": "Menüleiste",
   "INPERSON.SheetView.BarSizeClock": "Zeitleiste",
-  "INPERSON.SheetView.LockPosition": "Position festhalten"
+  "INPERSON.SheetView.LockPosition": "Position festhalten",
+  "INPERSON.SheetView.YourTurn": "Du bist dran!",
+  "INPERSON.SheetView.NextTurn": "Gleich bist du dran"
 }

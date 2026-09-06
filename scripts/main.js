@@ -72,11 +72,14 @@ function registerSettings() {
   // Sheet Only's own actor selector, replaced by a side panel. Visible in the
   // list rather than hidden in a tool window: it changes another module's
   // interface, so whoever installed both should see that we can do it.
+  // Nur in der Liste, wenn Sheet Only da ist: Ohne das Modul ist es ein
+  // toter Schalter für jeden, der uns aus dem Katalog installiert. Registriert
+  // wird er immer, damit game.settings.get ihn kennt.
   S(SETTINGS.ACTOR_PANEL, {
     name: "INPERSON.Settings.ActorPanel.Name",
     hint: "INPERSON.Settings.ActorPanel.Hint",
     scope: "world",
-    config: true,
+    config: !!game.modules.get("sheet-only")?.active,
     type: Boolean,
     default: false,
     onChange: value => {
@@ -470,18 +473,15 @@ function registerSettings() {
     onChange: () => updatePill()
   });
 
-  game.settings.registerMenu(MODULE_ID, "panel", {
-    name: "INPERSON.Menu.Name",
-    label: "INPERSON.Menu.Label",
-    hint: "INPERSON.Menu.Hint",
-    icon: "fa-solid fa-eye-slash",
-    type: InPersonPanelShim,
-    restricted: true
-  });
+  // Das Bedienfenster (Alt+T) steht nicht mehr in dieser Liste: Es ist ein
+  // Betriebsfenster, keine Einstellung, und neben "Tischmodus einrichten" las
+  // es sich wie ein zweiter Weg zu denselben Schaltern. Erreichbar über Alt+T,
+  // die Statuspille und den Knopf auf der Tischmodus-Seite.
 
-  // One page per tool. Blocking downloads and steering two televisions have
-  // nothing to do with one another beyond the occasion, and a flat list made
-  // whichever tool had the most settings look like "the settings of the module".
+  // One page per tool, in the order they matter at the table. Blocking
+  // downloads and steering two televisions have nothing to do with one another
+  // beyond the occasion, and a flat list made whichever tool had the most
+  // settings look like "the settings of the module".
   game.settings.registerMenu(MODULE_ID, "tablemode", {
     name: "INPERSON.TableMode.MenuName",
     label: "INPERSON.TableMode.MenuLabel",
@@ -491,15 +491,15 @@ function registerSettings() {
     restricted: true
   });
 
-  // Trading: who may trade with whom, and whether the logbook is kept. The page
-  // also holds the door to that logbook, because a gamemaster asking "where did
-  // the sword go" is looking here, not at the list of journals.
-  game.settings.registerMenu(MODULE_ID, "trade", {
-    name: "INPERSON.TradeSettings.MenuName",
-    label: "INPERSON.TradeSettings.MenuLabel",
-    hint: "INPERSON.TradeSettings.MenuHint",
-    icon: "fa-solid fa-right-left",
-    type: TradeSettingsShim,
+  // Everything about the two televisions has its own page. Steering displays and
+  // stopping downloads are separate jobs that merely share a module, and one
+  // flat list made them read as a heap of unrelated switches.
+  game.settings.registerMenu(MODULE_ID, "displays", {
+    name: "INPERSON.Displays.MenuName",
+    label: "INPERSON.Displays.MenuLabel",
+    hint: "INPERSON.Displays.MenuHint",
+    icon: "fa-solid fa-display",
+    type: DisplaySettingsShim,
     restricted: true
   });
 
@@ -523,17 +523,21 @@ function registerSettings() {
     restricted: true
   });
 
-  // Everything about the two televisions has its own page. Steering displays and
-  // stopping downloads are separate jobs that merely share a module, and one
-  // flat list made them read as a heap of unrelated switches.
-  game.settings.registerMenu(MODULE_ID, "displays", {
-    name: "INPERSON.Displays.MenuName",
-    label: "INPERSON.Displays.MenuLabel",
-    hint: "INPERSON.Displays.MenuHint",
-    icon: "fa-solid fa-display",
-    type: DisplaySettingsShim,
+  // Trading: who may trade with whom, and whether the logbook is kept. The page
+  // also holds the door to that logbook, because a gamemaster asking "where did
+  // the sword go" is looking here, not at the list of journals.
+  game.settings.registerMenu(MODULE_ID, "trade", {
+    name: "INPERSON.TradeSettings.MenuName",
+    label: "INPERSON.TradeSettings.MenuLabel",
+    hint: "INPERSON.TradeSettings.MenuHint",
+    icon: "fa-solid fa-right-left",
+    type: TradeSettingsShim,
     restricted: true
   });
+
+
+
+
 }
 
 /** Same shim trick as below - the menu wants a class, we want our own window. */
@@ -573,15 +577,6 @@ class DisplaySettingsShim extends foundry.applications.api.ApplicationV2 {
   constructor(...args) {
     super(...args);
     openDisplaySettings();
-  }
-  async render() { return this; }
-}
-
-/** Settings menus want a FormApplication-shaped class; we just open our panel. */
-class InPersonPanelShim extends foundry.applications.api.ApplicationV2 {
-  constructor(...args) {
-    super(...args);
-    openPanel();
   }
   async render() { return this; }
 }

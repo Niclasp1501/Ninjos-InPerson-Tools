@@ -1,5 +1,20 @@
 # Changelog
 
+## 14.2611.58 — 2026-09-06
+
+**„Du bist dran!"** — in der Blattansicht steht es auf dem Tablet, solange der
+eigene Charakter im Kampf am Zug ist (rot, mit kurzem Brummen, wo das Gerät es
+kann), und „Gleich bist du dran" eine Stelle davor. Sonst nichts.
+
+**Einstellungen aufgeräumt.** Das Bedienfenster steht nicht mehr in der
+Einstellungsliste (Alt+T, Statuspille oder der Knopf auf der Tischmodus-Seite);
+„Akteursauswahl von Sheet Only ersetzen" erscheint nur, wenn Sheet Only aktiv
+ist; die zwei Geräteschalter heißen „Dieses Gerät: …"; die Seiten stehen in
+der Reihenfolge Tischmodus, Monitore, Blattansicht, Zeit & Wetter, Tauschen.
+
+README und Katalogtext beschreiben jetzt auch Blattansicht, Zeit & Wetter und
+Tauschen.
+
 ## 14.2611.57 — 2026-09-06
 
 **Wetter in der Kuppel.** Regen, Nieselregen, Schnee, Graupel, Hagel, Nebel,
