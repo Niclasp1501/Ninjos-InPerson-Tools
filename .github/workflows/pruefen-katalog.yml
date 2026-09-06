@@ -1,0 +1,23 @@
+# Wegwerf-Werkzeug: fragt die Katalog-Schnittstelle im Trockenlauf.
+#
+# Seit 14.2611.68 antwortet foundryvtt.com auf die Veroeffentlichung mit 500,
+# obwohl 14.2611.67 vierzehn Minuten davor mit derselben Nutzlast durchging.
+# `dry-run` prueft, ohne etwas einzutragen - damit laesst sich einkreisen, was
+# den Absturz ausloest, ohne den Katalog zu verschmutzen.
+name: Katalog pruefen
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        description: Manifest-URL einer bestimmten Fassung
+        required: true
+jobs:
+  fragen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trockenlauf
+        uses: cs96and/FoundryVTT-release-package@v1
+        with:
+          package-token: ${{ secrets.PACKAGE_TOKEN }}
+          manifest-url: ${{ github.event.inputs.manifest }}
+          dry-run: true
