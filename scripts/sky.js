@@ -240,7 +240,7 @@ function mondPfad(cx, cy, r, anteil) {
  * tagsüber die Sonne über dem Bogen, nachts der Mond.
  * @returns {{svg: string, hinweis: string}|null}
  */
-export function himmelsbogen() {
+export function himmelsbogen(wetter = null) {
   const calendar = game.time?.calendar;
   const k = game.time?.components;
   if (!calendar || !k) return null;
@@ -332,12 +332,122 @@ export function himmelsbogen() {
       ${daemmert ? `<rect x="0" y="0" width="${BREITE}" height="${HOEHE}" fill="url(#${id}-rot)"/>` : ""}
       ${sterne}
       ${gestirn}
+      ${wetterBild(wetter, helligkeit)}
       <rect x="0" y="0" width="${BREITE}" height="${HOEHE}" fill="url(#${id}-rand)"/>
     </g>
     <path d="M 0 ${boden} A ${RADIUS} ${RADIUS} 0 0 1 ${BREITE} ${boden}" fill="none" stroke="#4a4a4a" stroke-width="1.8"/>
   </svg>`;
 
   return { svg, hinweis: hinweisText(aufgang, untergang, mond, geschaetzt) };
+}
+
+/* ── Wetter ─────────────────────────────────────────────────────── */
+
+/**
+ * Feste Zufallszahlen: Die Kuppel zeichnet sich jede Minute neu, und Tropfen,
+ * die dabei umsortiert würden, sähe man springen.
+ */
+function reihe(saat, n) {
+  const aus = [];
+  let x = saat;
+  for (let i = 0; i < n; i++) {
+    x = (x * 1103515245 + 12345) % 2147483648;
+    aus.push(x / 2147483648);
+  }
+  return aus;
+}
+
+/**
+ * Was Calendarias Effektvorlage für uns bedeutet.
+ *
+ * Calendaria hat für jedes Wetter eine PixiJS-Partikelszene. Wir zeichnen
+ * vier Dinge, die im SVG billig sind und den Eindruck tragen: fallende
+ * Striche, fallende Flocken, Nebel am Horizont, Wolken. Blitz als Aufhellen.
+ * Was keine Vorlage hat, bleibt still - ein klarer Himmel ist auch ein Wetter.
+ */
+function wetterArt(wetter) {
+  const preset = String(wetter?.fxPreset ?? wetter?.precipitation?.type ?? "").toLowerCase();
+  const staerke = Math.max(0, Math.min(1, Number(wetter?.precipitation?.intensity) || 0.5));
+  const wind = Math.max(0, Math.min(1, (Number(wetter?.wind?.speed) || 0) / 5));
+  switch (preset) {
+    case "drizzle": case "sunshower":              return { regen: 0.35, wind };
+    case "rain": case "monsoon":                    return { regen: 0.6 + 0.4 * staerke, wind };
+    case "thunderstorm": case "hurricane":          return { regen: 1, wind: Math.max(wind, 0.6), blitz: true };
+    case "sleet": case "hail":                      return { regen: 0.5, flocken: 0.4, wind };
+    case "snow":                                    return { flocken: 0.6 + 0.4 * staerke, wind };
+    case "blizzard":                                return { flocken: 1, wind: Math.max(wind, 0.8) };
+    case "ashfall":                                 return { flocken: 0.5, wind, farbe: "#9a9a9a" };
+    case "fog": case "mist": case "veilfall":       return { nebel: preset === "mist" ? 0.5 : 0.85 };
+    case "gravewind":                               return { nebel: 0.7, farbe: "#b8c8b8" };
+    case "sandstorm":                               return { nebel: 0.9, farbe: "#d9b57a", wind: 1 };
+    case "overcast":                                return { wolken: 1 };
+    case "cloudy":                                  return { wolken: 0.6 };
+    case "windy": case "tornado":                   return { wolken: 0.4, wind: 1 };
+    default:                                        return null;
+  }
+}
+
+function wetterBild(wetter, helligkeit) {
+  const art = wetterArt(wetter);
+  if (!art) return "";
+  const teile = [];
+  const neigung = Math.round(-6 - 18 * (art.wind ?? 0));   // Grad, mit dem Wind nach links
+
+  if (art.wolken) {
+    // Zwei flache Wolkenbänke, die langsam ziehen; bedeckt dunkelt der Himmel.
+    const deck = art.wolken >= 1 ? 0.45 : 0.28;
+    teile.push(`<rect x="0" y="0" width="${BREITE}" height="${HOEHE}" fill="#000000" opacity="${(deck * 0.5).toFixed(2)}"/>`);
+    for (const [i, [cx, cy, sx]] of [[48, 30, 1], [118, 22, 0.8], [86, 44, 0.7]].entries()) {
+      if (i === 2 && art.wolken < 1) break;
+      teile.push(`<g class="inperson-sky-wolke" style="animation-duration:${(38 + i * 9)}s;animation-delay:-${i * 11}s">
+        <ellipse cx="${cx}" cy="${cy}" rx="${26 * sx}" ry="${9 * sx}" fill="#ffffff" opacity="${(deck * 0.9).toFixed(2)}"/>
+        <ellipse cx="${cx - 12 * sx}" cy="${cy + 3}" rx="${16 * sx}" ry="${8 * sx}" fill="#ffffff" opacity="${(deck * 0.8).toFixed(2)}"/>
+        <ellipse cx="${cx + 14 * sx}" cy="${cy + 4}" rx="${18 * sx}" ry="${7 * sx}" fill="#ffffff" opacity="${(deck * 0.8).toFixed(2)}"/>
+      </g>`);
+    }
+  }
+
+  if (art.regen) {
+    const n = Math.round(10 + 22 * art.regen);
+    const z = reihe(7, n * 2);
+    const laenge = 9 + 8 * art.regen;
+    const dauer = (1.1 - 0.5 * art.regen).toFixed(2);
+    const striche = [];
+    for (let i = 0; i < n; i++) {
+      const x = Math.round(z[i * 2] * BREITE);
+      const verzug = (z[i * 2 + 1] * Number(dauer)).toFixed(2);
+      striche.push(`<line x1="${x}" y1="-${laenge}" x2="${x}" y2="0" style="animation-delay:-${verzug}s"/>`);
+    }
+    teile.push(`<g class="inperson-sky-regen" transform="rotate(${neigung} ${RADIUS} ${RADIUS})" stroke="#dfeeff" stroke-opacity="${(0.35 + 0.35 * art.regen).toFixed(2)}" stroke-width="1" stroke-linecap="round" style="--dauer:${dauer}s">${striche.join("")}</g>`);
+  }
+
+  if (art.flocken) {
+    const n = Math.round(8 + 18 * art.flocken);
+    const z = reihe(13, n * 3);
+    const dauer = (5 - 2.5 * art.flocken).toFixed(2);
+    const flocken = [];
+    for (let i = 0; i < n; i++) {
+      const x = Math.round(z[i * 3] * BREITE);
+      const rr = (0.9 + z[i * 3 + 1] * 1.3).toFixed(1);
+      const verzug = (z[i * 3 + 2] * Number(dauer)).toFixed(2);
+      flocken.push(`<circle cx="${x}" cy="-3" r="${rr}" style="animation-delay:-${verzug}s"/>`);
+    }
+    teile.push(`<g class="inperson-sky-flocken" transform="rotate(${Math.round(neigung / 2)} ${RADIUS} ${RADIUS})" fill="${art.farbe ?? "#ffffff"}" fill-opacity="0.85" style="--dauer:${dauer}s">${flocken.join("")}</g>`);
+  }
+
+  if (art.nebel) {
+    const farbe = art.farbe ?? (helligkeit > 0.5 ? "#e6ecf0" : "#8d95a6");
+    teile.push(`<g class="inperson-sky-nebel" style="--dichte:${art.nebel.toFixed(2)}">
+      <rect x="-40" y="${RADIUS * 0.45}" width="${BREITE + 80}" height="${RADIUS}" fill="${farbe}"/>
+      <rect class="inperson-sky-nebel-schwade" x="-40" y="${RADIUS * 0.3}" width="${BREITE + 80}" height="${RADIUS * 0.4}" fill="${farbe}"/>
+    </g>`);
+  }
+
+  if (art.blitz) {
+    teile.push(`<rect class="inperson-sky-blitz" x="0" y="0" width="${BREITE}" height="${HOEHE}" fill="#ffffff"/>`);
+  }
+
+  return teile.join("");
 }
 
 /**

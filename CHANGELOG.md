@@ -1,5 +1,12 @@
 # Changelog
 
+## 14.2611.57 — 2026-09-06
+
+**Wetter in der Kuppel.** Regen, Nieselregen, Schnee, Graupel, Hagel, Nebel,
+Wolken und Gewitter — nach Calendarias Effektvorlage, als bewegte Striche,
+Flocken und Schwaden im SVG. Kein Canvas, keine Grafik-Engine; wer Bewegung
+abgeschaltet hat, bekommt das Wetter stehend. Wind neigt Regen und Schnee.
+
 ## 14.2611.56 — 2026-09-06
 
 **Die Kuppel dämmert.** Eine Stunde vor Sonnenaufgang beginnt der Himmel zu

@@ -123,7 +123,10 @@ function currentWeather() {
     // step is shown as a step, because converting it to km/h would mean copying
     // a table that belongs to another module and rots when they change it.
     wind: zone.wind ? { direction: zone.wind.direction, speed: zone.wind.speed } : null,
-    precipitation: zone.precipitation?.type ? zone.precipitation : null
+    precipitation: zone.precipitation?.type ? zone.precipitation : null,
+    // Calendarias Effektvorlage ("rain", "fog", "thunderstorm" …) - die
+    // Kuppel zeichnet danach Regen, Schnee, Nebel oder Wolken.
+    fxPreset: zone.fxPreset ?? null
   };
 }
 
@@ -272,7 +275,7 @@ function fillStrip(element, now) {
   // Der Bogen steht vorn: er ist ein Bild und wird angeschaut, die Zahlen
   // daneben werden gelesen.
   if (get(SETTINGS.CLOCK_SKY)) {
-    const bogen = himmelsbogen();
+    const bogen = himmelsbogen(now.weather);
     if (bogen) {
       parts.push(`<span class="inperson-clock-sky" data-tooltip-html="${foundry.utils.escapeHTML(bogen.hinweis)}">${bogen.svg}</span>`);
     }

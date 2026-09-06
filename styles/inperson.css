@@ -2565,3 +2565,73 @@ body.inperson-sheetview .sidebar-popout {
   flex-direction: column;
   gap: 6px;
 }
+
+
+/* ── Wetter in der Kuppel ────────────────────────────────────────────
+   Calendaria hat dafür eine PixiJS-Partikelszene. Wir kommen mit ein paar
+   Strichen, Punkten und Flächen aus, die das CSS bewegt - kein Canvas, keine
+   Grafik-Engine, und auf dem Tablet nichts, was den Akku leert. Wer Bewegung
+   abgeschaltet hat, bekommt das Wetter stehend. */
+.inperson-sky-regen line {
+  animation: inperson-sky-fallen var(--dauer, 0.8s) linear infinite;
+}
+
+.inperson-sky-flocken circle {
+  animation: inperson-sky-schweben var(--dauer, 4s) ease-in-out infinite;
+}
+
+.inperson-sky-wolke {
+  animation: inperson-sky-ziehen 40s linear infinite;
+}
+
+.inperson-sky-nebel rect {
+  opacity: calc(var(--dichte, 0.7) * 0.55);
+}
+
+.inperson-sky-nebel-schwade {
+  animation: inperson-sky-wabern 9s ease-in-out infinite alternate;
+}
+
+.inperson-sky-blitz {
+  opacity: 0;
+  animation: inperson-sky-blitz 7s steps(1, end) infinite;
+}
+
+@keyframes inperson-sky-fallen {
+  from { transform: translateY(0); }
+  to   { transform: translateY(110px); }
+}
+
+@keyframes inperson-sky-schweben {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(5px, 48px); }
+  100% { transform: translate(-3px, 96px); }
+}
+
+@keyframes inperson-sky-ziehen {
+  from { transform: translateX(-24px); }
+  to   { transform: translateX(24px); }
+}
+
+@keyframes inperson-sky-wabern {
+  from { transform: translateX(-10px); opacity: calc(var(--dichte, 0.7) * 0.25); }
+  to   { transform: translateX(10px);  opacity: calc(var(--dichte, 0.7) * 0.5); }
+}
+
+@keyframes inperson-sky-blitz {
+  0%, 91%, 93%, 100% { opacity: 0; }
+  92% { opacity: 0.55; }
+  92.5% { opacity: 0.2; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inperson-sky-regen line,
+  .inperson-sky-flocken circle,
+  .inperson-sky-wolke,
+  .inperson-sky-nebel-schwade,
+  .inperson-sky-blitz {
+    animation: none;
+  }
+  .inperson-sky-regen line { transform: translateY(40px); }
+  .inperson-sky-flocken circle { transform: translateY(40px); }
+}
