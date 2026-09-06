@@ -1,5 +1,18 @@
 # Changelog
 
+## 14.2611.62 — 2026-09-06
+
+**Jede Kuppel bekommt ihre eigenen Farbkennungen.** Verläufe werden im SVG
+über einen Namen angesprochen, und der gilt im ganzen Dokument. Standen zwei
+Kuppeln nebeneinander, holten sich beide den Verlauf der ersten — im Prüfbild
+waren dadurch sämtliche Nachtkuppeln taghell. In der Leiste steht nur eine,
+aber falsch war es trotzdem.
+
+Damit ließ sich endlich prüfen, wonach der Tisch gefragt hat: **alle 41 Wetter
+bei Tag und bei Nacht.** Beide Fassungen zeigen ihr Wetter — Regen fällt auch
+im Dunkeln, das Polarlicht kommt nachts erst zur Geltung, und die
+Nachtkuppeln sind dunkelblau mit funkelnden Sternen statt taghell.
+
 ## 14.2611.61 — 2026-09-06
 
 **Calendarias Kuppel erschien gar nicht — und dann ohne Wetter.** Zwei Fehler

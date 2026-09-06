@@ -40,6 +40,23 @@ const GESTIRN = 14;
 /** Dämmerung: so lange vor Aufgang bzw. nach Untergang blendet der Himmel, in Stunden. */
 const DAEMMERUNG = 1;
 
+/**
+ * Eine laufende Nummer je gezeichneter Kuppel, für die Kennungen im SVG.
+ *
+ * Verläufe und Ausschnitte werden über `url(#name)` angesprochen, und diese
+ * Namen gelten im ganzen Dokument, nicht nur im eigenen Bild. Standen zwei
+ * Kuppeln nebeneinander, holten sich beide den Verlauf der ersten - im
+ * Prüfbild vom 06.09.2026 waren dadurch sämtliche Nachtkuppeln taghell. In
+ * der Leiste steht nur eine, aber falsch ist es trotzdem, und die
+ * Einstellungsseite könnte morgen eine Vorschau danebenstellen.
+ */
+let laufnummer = 0;
+
+/** Kennung für dieses eine Bild. */
+function kennung(name) {
+  return `${MODULE_ID}-${name}-${laufnummer}`;
+}
+
 /* ── Rechnen ─────────────────────────────────────────────────────── */
 
 /** Tage im Jahr, aus den Monatslängen. */
@@ -193,7 +210,7 @@ function mondBild(cx, cy, mond, deckkraft = 1) {
   const y = Number(cy);
   const anteil = mond?.anteil ?? 0.5;
   const farbe = mond?.farbe ?? "#e9e9e4";
-  const id = `${MODULE_ID}-moon`;
+  const id = kennung("moon");
   const lichtSeite = anteil < 0.5 ? "70%" : "30%";
   return `<g opacity="${deckkraft.toFixed(2)}">
     <defs><radialGradient id="${id}" cx="${lichtSeite}" cy="35%" r="75%">
@@ -244,6 +261,8 @@ export function himmelsbogen(wetter = null) {
   const calendar = game.time?.calendar;
   const k = game.time?.components;
   if (!calendar || !k) return null;
+  // Neue Nummer fuer alle Kennungen dieses Bildes - siehe kennung().
+  laufnummer++;
 
   const stunden = calendar.days?.hoursPerDay ?? 24;
   const jetzt = (k.hour ?? 0) + (k.minute ?? 0) / 60;
@@ -304,7 +323,7 @@ export function himmelsbogen(wetter = null) {
     })
     .join("")}</g>`;
 
-  const id = `${MODULE_ID}-sky`;
+  const id = kennung("sky");
   let gestirn = "";
 
   // Sonne: sichtbar von einer Stunde vor Aufgang bis eine Stunde nach
@@ -663,7 +682,7 @@ function malMeteore() {
 
 /** Polarlicht: zwei weiche Bänder, die langsam atmen. */
 function malAurora() {
-  const id = `${MODULE_ID}-aurora`;
+  const id = kennung("aurora");
   return `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#57e0a0" stop-opacity="0"/>
       <stop offset="0.45" stop-color="#57e0a0" stop-opacity="0.55"/>
@@ -682,7 +701,7 @@ function malStrahlen() {
     const versatz = -44 + i * 22;
     strahl.push(`<path d="M ${RADIUS} 0 L ${RADIUS + versatz - 9} ${RADIUS} L ${RADIUS + versatz + 9} ${RADIUS} Z" style="animation-delay:-${(i * 0.7).toFixed(1)}s"/>`);
   }
-  const id = `${MODULE_ID}-divine`;
+  const id = kennung("divine");
   return `<defs><radialGradient id="${id}" cx="50%" cy="0%" r="70%">
       <stop offset="0" stop-color="#fff3c4" stop-opacity="0.75"/><stop offset="1" stop-color="#fff3c4" stop-opacity="0"/>
     </radialGradient></defs>
@@ -718,7 +737,7 @@ function malRauschen({ menge }) {
 
 /** Finsternis: der Himmel wird geschluckt. */
 function malDunkel({ staerke }) {
-  const id = `${MODULE_ID}-void`;
+  const id = kennung("void");
   return `<defs><radialGradient id="${id}" cx="50%" cy="35%" r="65%">
       <stop offset="0" stop-color="#000000" stop-opacity="${(0.95 * staerke).toFixed(2)}"/>
       <stop offset="0.6" stop-color="#12081a" stop-opacity="${(0.8 * staerke).toFixed(2)}"/>
