@@ -323,5 +323,9 @@
   "INPERSON.SheetView.BarSizeClock": "Zeitleiste",
   "INPERSON.SheetView.LockPosition": "Position festhalten",
   "INPERSON.SheetView.YourTurn": "Du bist dran!",
-  "INPERSON.SheetView.NextTurn": "Gleich bist du dran"
+  "INPERSON.SheetView.NextTurn": "Gleich bist du dran",
+  "INPERSON.Clock.Field.SkySource": "Wer die Kuppel zeichnet",
+  "INPERSON.Clock.Field.SkySourceHint": "Eigene: ein paar Dutzend bewegte Formen, läuft auf jedem Tablet. Calendarias: deren eigene Kuppel mit allen Partikeleffekten — schöner, braucht aber die Grafikeinheit des Geräts.",
+  "INPERSON.Clock.SkySource.Own": "Eigene Kuppel (sparsam)",
+  "INPERSON.Clock.SkySource.Calendaria": "Calendarias Kuppel (schöner)"
 }

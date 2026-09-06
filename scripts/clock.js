@@ -31,6 +31,7 @@
 import { MODULE_ID, SETTINGS } from "./const.js";
 import { mountInSheetOnly, unmountFromSheetOnly } from "./sheet-only.js";
 import { himmelsbogen } from "./sky.js";
+import { calendariaKuppelMoeglich, kuppelEinhaengen, kuppelLoslassen } from "./sky-calendaria.js";
 
 const MOUNT_ID = "clock";
 
@@ -283,7 +284,13 @@ function fillStrip(element, now) {
   if (get(SETTINGS.CLOCK_SKY)) {
     const bogen = himmelsbogen(now.weather);
     if (bogen) {
-      parts.push(`<span class="inperson-clock-sky" data-tooltip-html="${foundry.utils.escapeHTML(bogen.hinweis)}">${bogen.svg}</span>`);
+      // Bei "calendaria" bleibt der Platz leer und wird nach dem Einsetzen
+      // des Inhalts mit deren Kuppel gefüllt - ein fertiges Element lässt
+      // sich nicht als Text in eine Zeichenkette schreiben.
+      const fremd = geliehen();
+      const inhalt = fremd ? "" : bogen.svg;
+      const klasse = fremd ? "inperson-clock-sky inperson-clock-sky-fremd" : "inperson-clock-sky";
+      parts.push(`<span class="${klasse}" data-tooltip-html="${foundry.utils.escapeHTML(bogen.hinweis)}">${inhalt}</span>`);
     }
   }
 
@@ -309,6 +316,30 @@ function fillStrip(element, now) {
   element.innerHTML = parts.join("");
   // Everything switched off is not an empty box in the corner of the screen.
   element.toggleAttribute("hidden", parts.length === 0);
+
+  // Calendarias Kuppel ist ein lebendes Element mit eigener Zeichenfläche;
+  // sie wird umgehängt, nicht geschrieben. Klappt das nicht - fremdes HUD
+  // offen, Modul zu alt -, zeichnet der nächste Durchgang wieder unsere.
+  const platz = element.querySelector(".inperson-clock-sky-fremd");
+  if (platz) {
+    kuppelEinhaengen(platz).then(ok => {
+      if (!ok) platz.classList.remove("inperson-clock-sky-fremd");
+    });
+  } else {
+    kuppelLoslassen();
+  }
+}
+
+/**
+ * Soll die Kuppel von Calendaria kommen?
+ *
+ * Zwei Bedingungen, und die zweite ist die wichtige: Der Spielleiter muss es
+ * gewählt haben, und Calendaria muss die Kuppel überhaupt hergeben. Fehlt das
+ * Modul, bleibt die Wahl folgenlos statt kaputt.
+ */
+function geliehen() {
+  return game.settings.get(MODULE_ID, SETTINGS.CLOCK_SKY_SOURCE) === "calendaria"
+    && calendariaKuppelMoeglich();
 }
 
 /** Redraw the mounted strip if - and only if - the displayed minute moved. */

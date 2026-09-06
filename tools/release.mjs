@@ -106,7 +106,7 @@ try {
 /* ── 5. Ergebnis ─────────────────────────────────────────────────── */
 
 if (fehler) {
-  console.log(`\n${fehler} Grund${fehler === 1 ? "" : "e"}, ${tag} noch nicht zu setzen.`);
+  console.log(`\n${fehler === 1 ? "Ein Grund" : `${fehler} Gründe`}, ${tag} noch nicht zu setzen.`);
   process.exit(1);
 }
 

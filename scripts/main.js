@@ -163,6 +163,20 @@ function registerSettings() {
     onChange: () => refreshClock({ force: true })
   });
 
+  // Wer die Kuppel malt - siehe const.js. Standard ist die eigene: Sie läuft
+  // überall, auch ohne Calendaria, und kostet das Tablet nichts.
+  S(SETTINGS.CLOCK_SKY_SOURCE, {
+    scope: "world",
+    config: false,
+    type: String,
+    choices: {
+      eigen: "INPERSON.Clock.SkySource.Own",
+      calendaria: "INPERSON.Clock.SkySource.Calendaria"
+    },
+    default: "eigen",
+    onChange: () => refreshClock({ force: true })
+  });
+
   // The four parts of the strip. All on the page, so the list keeps one row per
   // tool rather than five for this one.
   for (const key of [SETTINGS.CLOCK_DATE, SETTINGS.CLOCK_TIME, SETTINGS.CLOCK_SHOW_SEASON]) {

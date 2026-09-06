@@ -52,6 +52,16 @@ export class ClockSettings extends HandlebarsApplicationMixin(ApplicationV2) {
       weather: get(SETTINGS.CLOCK_WEATHER),
       season: get(SETTINGS.CLOCK_SHOW_SEASON),
       sky: get(SETTINGS.CLOCK_SKY),
+      // Ausgerechnet statt im Template verglichen: Ein `eq`-Helfer ist nicht
+      // in jeder Foundry-Fassung da, und ein fehlender Helfer wirft beim
+      // Zeichnen, statt nur falsch auszusehen.
+      skySourceOptions: [
+        { value: "eigen", label: "INPERSON.Clock.SkySource.Own" },
+        { value: "calendaria", label: "INPERSON.Clock.SkySource.Calendaria" }
+      ].map(o => ({ ...o, selected: get(SETTINGS.CLOCK_SKY_SOURCE) === o.value })),
+      // Ohne Calendaria hat die Wahl keinen zweiten Posten - dann steht sie
+      // gar nicht erst da, statt eine Möglichkeit vorzugaukeln.
+      hasCalendaria: !!game.modules.get("calendaria")?.active,
       // Said plainly rather than left to be discovered: without a weather
       // module the two weather rows do nothing, while the season keeps working
       // out of the world calendar.
@@ -69,6 +79,7 @@ export class ClockSettings extends HandlebarsApplicationMixin(ApplicationV2) {
     await set(SETTINGS.CLOCK_WEATHER, !!data.weather);
     await set(SETTINGS.CLOCK_SHOW_SEASON, !!data.season);
     await set(SETTINGS.CLOCK_SKY, !!data.sky);
+    if (data.skySource) await set(SETTINGS.CLOCK_SKY_SOURCE, String(data.skySource));
 
     syncClock();
     refreshClock({ force: true });

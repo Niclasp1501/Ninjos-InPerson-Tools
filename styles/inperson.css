@@ -2623,9 +2623,9 @@ body.inperson-sheetview .sidebar-popout {
   animation: inperson-sky-schweifen var(--dauer, 12s) linear infinite;
 }
 
-.inperson-sky-meteore line {
+.inperson-sky-meteore > g {
   opacity: 0;
-  animation: inperson-sky-sternschnuppe 8s ease-in infinite;
+  animation: inperson-sky-sternschnuppe 5s ease-in infinite;
 }
 
 .inperson-sky-aurora path {
@@ -2638,7 +2638,7 @@ body.inperson-sheetview .sidebar-popout {
 }
 
 .inperson-sky-strahlen path {
-  opacity: 0.25;
+  opacity: 0.4;
   animation: inperson-sky-strahlen 5s ease-in-out infinite alternate;
 }
 
@@ -2647,7 +2647,7 @@ body.inperson-sheetview .sidebar-popout {
 }
 
 .inperson-sky-rauschen rect {
-  animation: inperson-sky-rauschen 0.6s steps(2, end) infinite;
+  animation: inperson-sky-rauschen 0.45s steps(2, end) infinite;
 }
 
 .inperson-sky-dunkel-ring {
@@ -2658,6 +2658,30 @@ body.inperson-sheetview .sidebar-popout {
 .inperson-sky-blitz {
   opacity: 0;
   animation: inperson-sky-blitz 7s steps(1, end) infinite;
+}
+
+/* Nacht: Sterne funkeln, der Mondhof atmet. Ohne das stand nachts alles
+   still, waehrend tagsueber die Sonne zieht und bei Regen etwas faellt. */
+.inperson-sky-sterne circle {
+  opacity: var(--stern, 0.7);
+  animation: inperson-sky-funkeln 3.4s ease-in-out infinite alternate;
+}
+
+.inperson-sky-mondhof {
+  transform-origin: center;
+  animation: inperson-sky-mondhof 6s ease-in-out infinite alternate;
+}
+
+/* Calendarias eigene Kuppel, in unsere Leiste umgehaengt: Sie bringt ihre
+   Platzierung aus deren HUD mit, wo sie ueber der Leiste schwebt. Hier ist
+   sie der Inhalt des Platzes, nicht sein Nachbar. */
+.inperson-clock-sky .dome.inperson-fremde-kuppel {
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  display: block !important;
+  opacity: 1 !important;
+  margin: 0;
 }
 
 @keyframes inperson-sky-fallen {
@@ -2719,9 +2743,9 @@ body.inperson-sheetview .sidebar-popout {
 }
 
 @keyframes inperson-sky-sternschnuppe {
-  0%, 88%   { opacity: 0; transform: translate(0, 0); }
-  90%       { opacity: 1; }
-  96%, 100% { opacity: 0; transform: translate(40px, 30px); }
+  0%, 70%   { opacity: 0; transform: translate(0, 0); }
+  74%       { opacity: 1; }
+  92%, 100% { opacity: 0; transform: translate(46px, 35px); }
 }
 
 @keyframes inperson-sky-nordlicht {
@@ -2730,8 +2754,8 @@ body.inperson-sheetview .sidebar-popout {
 }
 
 @keyframes inperson-sky-strahlen {
-  from { opacity: 0.12; }
-  to   { opacity: 0.4; }
+  from { opacity: 0.25; }
+  to   { opacity: 0.6; }
 }
 
 @keyframes inperson-sky-flimmern {
@@ -2740,13 +2764,23 @@ body.inperson-sheetview .sidebar-popout {
 }
 
 @keyframes inperson-sky-rauschen {
-  0%, 100% { opacity: 0.15; }
-  50%      { opacity: 0.75; }
+  0%, 100% { opacity: 0.2; }
+  50%      { opacity: 0.95; }
 }
 
 @keyframes inperson-sky-schlucken {
   from { transform: scale(0.9); opacity: 0.35; }
   to   { transform: scale(1.15); opacity: 0.7; }
+}
+
+@keyframes inperson-sky-funkeln {
+  from { opacity: calc(var(--stern, 0.7) * 0.35); }
+  to   { opacity: var(--stern, 0.7); }
+}
+
+@keyframes inperson-sky-mondhof {
+  from { transform: scale(0.9); opacity: 0.1; }
+  to   { transform: scale(1.12); opacity: 0.2; }
 }
 
 @keyframes inperson-sky-blitz {
@@ -2767,12 +2801,14 @@ body.inperson-sheetview .sidebar-popout {
   .inperson-sky-rauch circle,
   .inperson-sky-wirbel,
   .inperson-sky-schemen ellipse,
-  .inperson-sky-meteore line,
+  .inperson-sky-meteore > g,
   .inperson-sky-aurora path,
   .inperson-sky-strahlen path,
   .inperson-sky-flimmern rect,
   .inperson-sky-rauschen rect,
   .inperson-sky-dunkel-ring,
+  .inperson-sky-sterne circle,
+  .inperson-sky-mondhof,
   .inperson-sky-blitz {
     animation: none;
   }
@@ -2782,7 +2818,7 @@ body.inperson-sheetview .sidebar-popout {
   .inperson-sky-blaetter ellipse { transform: translateY(40px); }
   .inperson-sky-fahnen line { transform: translateX(40px); }
   .inperson-sky-rauch circle { opacity: 0.3; }
-  .inperson-sky-meteore line { opacity: 0.8; }
+  .inperson-sky-meteore > g { opacity: 0.8; }
   .inperson-sky-strahlen path { opacity: 0.25; }
 }
 
@@ -2842,4 +2878,16 @@ body.inperson-sheetview .sidebar-popout {
 
 @media (prefers-reduced-motion: reduce) {
   .inperson-sv-zug.dran { animation: none; }
+}
+
+.inperson-sky-source {
+  flex: 0 0 auto;
+  max-width: 60%;
+}
+
+/* Der Platzhalter, in den Calendarias Kuppel umgehaengt wird. Er bringt seine
+   Groesse aus dem fremden Element mit, darf also nicht selbst welche setzen. */
+.inperson-clock-sky-fremd {
+  width: auto;
+  height: auto;
 }

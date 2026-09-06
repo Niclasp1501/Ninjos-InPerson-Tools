@@ -1,5 +1,28 @@
 # Changelog
 
+## 14.2611.60 — 2026-09-06
+
+**Der Spielleiter wählt, wer die Kuppel zeichnet.** Auf der Seite „Zeit &
+Wetter" steht jetzt eine Wahl: unsere eigene Kuppel — ein paar Dutzend bewegte
+Formen, läuft auf jedem Tablet — oder Calendarias eigene, mit allen
+Partikeleffekten. Die sieht besser aus und braucht die Grafikeinheit des
+Geräts; auf einem Tablet, dem wir gerade das Spielfeld abgeschaltet haben, ist
+das ein echter Unterschied. Ohne Calendaria erscheint die Wahl gar nicht.
+
+Deren Kuppel wird nicht nachgebaut, sondern ausgeliehen: Calendaria baut sie,
+wir hängen genau dieses Element in unsere Leiste. Eine sichtbare fremde Kuppel
+wird dabei nie angetastet — hat der Spielleiter deren HUD selbst offen, bleibt
+es bei unserer.
+
+**Unsere Kuppel näher am Original.** Nebeneinandergehalten war unser
+Tageshimmel zu satt, die Sonne zu groß und ihr Schein so weit, dass er den
+halben Himmel ausbleichte; das Herbstlaub trieb in drei dicken Blättern statt
+einem Dutzend kleiner. Alles vier angeglichen.
+
+**Nachts bewegt sich endlich etwas.** Die Sterne funkeln, jeder in seinem
+eigenen Takt, und der Hof um den Mond atmet. Vorher stand das Nachtbild still,
+während tagsüber die Sonne zog.
+
 ## 14.2611.59 — 2026-09-06
 
 **Alle 41 Wetter von Calendaria haben jetzt ihr eigenes Bild.** Bisher waren

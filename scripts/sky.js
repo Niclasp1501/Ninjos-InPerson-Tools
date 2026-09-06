@@ -199,7 +199,7 @@ function mondBild(cx, cy, mond, deckkraft = 1) {
     <defs><radialGradient id="${id}" cx="${lichtSeite}" cy="35%" r="75%">
       <stop offset="0" stop-color="#ffffff"/><stop offset="0.55" stop-color="${farbe}"/><stop offset="1" stop-color="${farbe}" stop-opacity="0.82"/>
     </radialGradient></defs>
-    <circle cx="${cx}" cy="${cy}" r="${GESTIRN * 1.8}" fill="#dfe8ff" opacity="0.14"/>
+    <circle class="inperson-sky-mondhof" cx="${cx}" cy="${cy}" r="${GESTIRN * 1.8}" fill="#dfe8ff" opacity="0.14"/>
     <circle cx="${cx}" cy="${cy}" r="${GESTIRN * 1.25}" fill="#dfe8ff" opacity="0.1"/>
     <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="#1f2635"/>
     <path d="${mondPfad(x, y, GESTIRN, anteil)}" fill="url(#${id})"/>
@@ -284,14 +284,25 @@ export function himmelsbogen(wetter = null) {
   // Nacht wie Calendarias Sternenfeld (tiefes Nachtblau nach fast Schwarz),
   // Tag aus dessen Kuppel abgelesen (Himmelblau nach Dunst am Horizont).
   const nacht = ["#0d1033", "#0a0a1a", "#05050f"];
-  const tagfarben = ["#8ec6ee", "#b9dcf3", "#dcebf5"];
+  // Nebeneinandergehalten war unser Tageshimmel eine Spur zu satt und zu
+  // blau; Calendarias wirkt matter und geht zum Horizont in einen Dunst über
+  // statt in helles Blau. Abgelesen aus dem Vergleichsbild vom 06.09.2026.
+  const tagfarben = ["#86b4d2", "#aecee2", "#cfe0e8"];
   const himmel = nacht.map((f, i) => mischen(f, tagfarben[i], helligkeit));
   // Morgen- und Abendrot am Horizont, am stärksten mitten in der Dämmerung.
   const rot = Math.sin(Math.PI * helligkeit);
 
-  const sterne = helligkeit >= 1 ? "" : STERNE
-    .map(([sx, sy], i) => `<circle cx="${sx}" cy="${sy}" r="${i % 3 === 0 ? 1.4 : 1}" fill="#ffffff" opacity="${((i % 2 ? 0.85 : 0.5) * (1 - helligkeit)).toFixed(2)}"/>`)
-    .join("");
+  // Die Sterne funkeln, seit die Nacht sonst das einzige stille Bild war: Am
+  // Tag zieht die Sonne, bei Regen fällt etwas - nachts stand alles. Jeder
+  // Stern bekommt seine Grundhelligkeit als Variable und eine eigene
+  // Verzögerung, damit sie nicht im Gleichtakt blinken.
+  const sterne = helligkeit >= 1 ? "" : `<g class="inperson-sky-sterne">${STERNE
+    .map(([sx, sy], i) => {
+      const grund = ((i % 2 ? 0.85 : 0.5) * (1 - helligkeit)).toFixed(2);
+      return `<circle cx="${sx}" cy="${sy}" r="${i % 3 === 0 ? 1.4 : 1}" fill="#ffffff"
+        style="--stern:${grund};animation-delay:-${(i * 0.37).toFixed(2)}s"/>`;
+    })
+    .join("")}</g>`;
 
   const id = `${MODULE_ID}-sky`;
   let gestirn = "";
@@ -301,8 +312,9 @@ export function himmelsbogen(wetter = null) {
   if (helligkeit > 0) {
     const { x, y } = ort(tagesanteil);
     gestirn += `
-      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${GESTIRN * 3.2}" fill="url(#${id}-sonnenschein)"/>
-      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${GESTIRN}" fill="#ffe58a"/>`;
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(GESTIRN * 1.9).toFixed(1)}" fill="url(#${id}-sonnenschein)"/>
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(GESTIRN * 0.85).toFixed(1)}" fill="#ffdf82"/>
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(GESTIRN * 0.5).toFixed(1)}" fill="#fff6d2"/>`;
   }
   // Mond: solange es nicht voller Tag ist.
   const mond = helligkeit < 1 ? mondphase(calendar) : null;
@@ -320,7 +332,7 @@ export function himmelsbogen(wetter = null) {
         <stop offset="0.45" stop-color="#ff9a4a" stop-opacity="0"/><stop offset="1" stop-color="#ff9a4a" stop-opacity="${(0.55 * rot).toFixed(2)}"/>
       </linearGradient>
       <radialGradient id="${id}-sonnenschein">
-        <stop offset="0" stop-color="#ffe7a0" stop-opacity="0.9"/><stop offset="0.35" stop-color="#ffd76a" stop-opacity="0.45"/><stop offset="1" stop-color="#ffd76a" stop-opacity="0"/>
+        <stop offset="0" stop-color="#ffe7a0" stop-opacity="0.75"/><stop offset="0.45" stop-color="#ffd76a" stop-opacity="0.3"/><stop offset="1" stop-color="#ffd76a" stop-opacity="0"/>
       </radialGradient>
       <radialGradient id="${id}-rand" cx="50%" cy="100%" r="100%">
         <stop offset="0.7" stop-color="#000000" stop-opacity="0"/><stop offset="1" stop-color="#000000" stop-opacity="0.45"/>
@@ -409,17 +421,17 @@ export const WETTER_VORLAGEN = {
   "dust-devil":       { fahnen: 0.7, wirbel: 0.5, farbe: "#d3ad76" },
   // Fantasy
   "black-sun":        { dunkel: 0.85 },
-  "ley-surge":        { funken: 0.7, blitz: "#7fc6ff", farbe: "#6fc2ff" },
+  "ley-surge":        { funken: 0.9, blitz: "#7fc6ff", farbe: "#5ab8ff" },
   "aether-haze":      { nebel: 0.6, funken: 0.25, farbe: "#b98ade" },
   nullfront:          { rauschen: 0.8 },
-  "permafrost-surge": { flocken: 0.45, koerner: 0.3, farbe: "#bfe6f5" },
+  "permafrost-surge": { flocken: 0.5, koerner: 0.35, nebel: 0.3, farbe: "#bfe6f5" },
   gravewind:          { schemen: 0.8, farbe: "#9fd8b8" },
   veilfall:           { regen: 0.35, nebel: 0.3, farbe: "#c3b4e8" },
   "arcane-winds":     { fahnen: 0.7, funken: 0.45, farbe: "#c98ceb" },
   "acid-rain":        { regen: 0.6, farbe: "#9ade6a" },
   "blood-rain":       { regen: 0.7, farbe: "#cf4a5e" },
   "meteor-shower":    { meteore: 1 },
-  "spore-cloud":      { flocken: 0.4, langsam: true, farbe: "#b6d47a" },
+  "spore-cloud":      { flocken: 0.55, langsam: true, nebel: 0.2, farbe: "#a8c85e" },
   "divine-light":     { strahlen: 1 },
   "plague-miasma":    { nebel: 0.85, farbe: "#8fa055" }
 };
@@ -499,7 +511,8 @@ function malFlocken({ menge, farbe, wind, dichte, tempo, langsam }) {
     punkte.push(`<circle cx="${x}" cy="-3" r="${rr}" style="animation-delay:-${verzug}s"/>`);
   }
   return `<g class="inperson-sky-flocken" transform="rotate(${Math.round(-3 - 10 * wind)} ${RADIUS} ${RADIUS})"
-    fill="${farbe ?? "#ffffff"}" fill-opacity="0.85" style="--dauer:${dauer.toFixed(2)}s">${punkte.join("")}</g>`;
+    fill="${farbe ?? "#ffffff"}" fill-opacity="0.9" stroke="#20304a" stroke-opacity="0.3" stroke-width="0.4"
+    style="--dauer:${dauer.toFixed(2)}s">${punkte.join("")}</g>`;
 }
 
 /** Harte Körner: Hagel, Graupel, Eis - kurz und schnell. */
@@ -514,7 +527,8 @@ function malKoerner({ menge, farbe, wind, dichte, tempo }) {
     korn.push(`<ellipse cx="${x}" cy="-4" rx="1.4" ry="2.2" style="animation-delay:-${verzug}s"/>`);
   }
   return `<g class="inperson-sky-koerner" transform="rotate(${Math.round(-4 - 14 * wind)} ${RADIUS} ${RADIUS})"
-    fill="${farbe ?? "#eaf6ff"}" fill-opacity="0.95" style="--dauer:${dauer.toFixed(2)}s">${korn.join("")}</g>`;
+    fill="${farbe ?? "#eaf6ff"}" fill-opacity="0.95" stroke="#20304a" stroke-opacity="0.35" stroke-width="0.4"
+    style="--dauer:${dauer.toFixed(2)}s">${korn.join("")}</g>`;
 }
 
 /** Ziehende Wolkenbänke, die den Himmel dunkler machen. */
@@ -561,17 +575,20 @@ function malFahnen({ staerke, farbe, dichte, tempo }) {
 
 /** Taumelnde Blätter und Blüten. */
 function malBlaetter({ menge, farbe, dichte, tempo }) {
-  const n = Math.round((6 + 10 * menge) * dichte);
+  // Viele kleine statt weniger großer: Nebeneinander mit Calendaria fielen
+  // drei dicke Blätter auf, wo dort ein Dutzend kleiner trieb.
+  const n = Math.round((14 + 20 * menge) * dichte);
   const z = reihe(53, n * 3);
   const dauer = Math.max(3, 7 / tempo);
   const stueck = [];
   for (let i = 0; i < n; i++) {
     const x = Math.round(z[i * 3] * BREITE);
-    const gr = (1.6 + z[i * 3 + 1] * 1.4).toFixed(1);
+    const gr = (1.9 + z[i * 3 + 1] * 1.6).toFixed(1);
     const verzug = (z[i * 3 + 2] * dauer).toFixed(2);
     stueck.push(`<ellipse cx="${x}" cy="-4" rx="${gr}" ry="${(gr / 2).toFixed(1)}" style="animation-delay:-${verzug}s"/>`);
   }
-  return `<g class="inperson-sky-blaetter" fill="${farbe ?? "#e08a44"}" fill-opacity="0.9"
+  return `<g class="inperson-sky-blaetter" fill="${farbe ?? "#e08a44"}" fill-opacity="0.95"
+    stroke="#3a2a18" stroke-opacity="0.3" stroke-width="0.4"
     style="--dauer:${dauer.toFixed(2)}s">${stueck.join("")}</g>`;
 }
 
@@ -583,11 +600,14 @@ function malFunken({ menge, farbe, dichte, tempo }) {
   const funke = [];
   for (let i = 0; i < n; i++) {
     const x = Math.round(z[i * 3] * BREITE);
-    const rr = (0.7 + z[i * 3 + 1] * 1.1).toFixed(1);
+    const rr = (1.1 + z[i * 3 + 1] * 1.4).toFixed(1);
     const verzug = (z[i * 3 + 2] * dauer).toFixed(2);
     funke.push(`<circle cx="${x}" cy="${RADIUS - 2}" r="${rr}" style="animation-delay:-${verzug}s"/>`);
   }
-  return `<g class="inperson-sky-funken" fill="${farbe ?? "#8fd0ff"}" style="--dauer:${dauer.toFixed(2)}s">${funke.join("")}</g>`;
+  // Der weiche Rand ist der Schein: ein Funke ohne Hof ist ein Staubkorn.
+  return `<g class="inperson-sky-funken" fill="${farbe ?? "#8fd0ff"}"
+    stroke="${farbe ?? "#8fd0ff"}" stroke-opacity="0.35" stroke-width="2"
+    style="--dauer:${dauer.toFixed(2)}s">${funke.join("")}</g>`;
 }
 
 /** Aufsteigender Rauch. */
@@ -621,7 +641,7 @@ function malSchemen({ menge, farbe, tempo }) {
     const rx = Math.round(16 + z[i * 3 + 1] * 14);
     wisch.push(`<ellipse cx="-20" cy="${y}" rx="${rx}" ry="${Math.round(rx / 2.6)}" style="animation-delay:-${(i * dauer / 3).toFixed(2)}s"/>`);
   }
-  return `<g class="inperson-sky-schemen" fill="${farbe ?? "#9fd8b8"}" fill-opacity="${(0.22 * menge + 0.1).toFixed(2)}"
+  return `<g class="inperson-sky-schemen" fill="${farbe ?? "#9fd8b8"}" fill-opacity="${(0.3 * menge + 0.16).toFixed(2)}"
     style="--dauer:${dauer.toFixed(2)}s">${wisch.join("")}</g>`;
 }
 
@@ -629,12 +649,16 @@ function malSchemen({ menge, farbe, tempo }) {
 function malMeteore() {
   const z = reihe(101, 9);
   const bahnen = [];
-  for (let i = 0; i < 3; i++) {
-    const x = Math.round(20 + z[i * 3] * (BREITE - 60));
-    const y = Math.round(8 + z[i * 3 + 1] * 26);
-    bahnen.push(`<line x1="${x}" y1="${y}" x2="${x + 26}" y2="${y + 20}" style="animation-delay:-${(z[i * 3 + 2] * 9).toFixed(2)}s;animation-duration:${7 + i * 2}s"/>`);
+  for (let i = 0; i < 4; i++) {
+    const x = Math.round(16 + z[i * 2] * (BREITE - 64));
+    const y = Math.round(6 + z[i * 2 + 1] * 30);
+    const dauer = 3.5 + i * 1.1;
+    bahnen.push(`<g style="animation-delay:-${(z[i * 2] * dauer).toFixed(2)}s;animation-duration:${dauer}s">
+      <line x1="${x}" y1="${y}" x2="${x + 30}" y2="${y + 23}"/>
+      <circle cx="${x + 30}" cy="${y + 23}" r="1.6" fill="#fff4d8" stroke="none"/>
+    </g>`);
   }
-  return `<g class="inperson-sky-meteore" stroke="#ffd9a8" stroke-width="1.4" stroke-linecap="round">${bahnen.join("")}</g>`;
+  return `<g class="inperson-sky-meteore" stroke="#ffe0b0" stroke-width="1.6" stroke-linecap="round">${bahnen.join("")}</g>`;
 }
 
 /** Polarlicht: zwei weiche Bänder, die langsam atmen. */
@@ -658,7 +682,12 @@ function malStrahlen() {
     const versatz = -44 + i * 22;
     strahl.push(`<path d="M ${RADIUS} 0 L ${RADIUS + versatz - 9} ${RADIUS} L ${RADIUS + versatz + 9} ${RADIUS} Z" style="animation-delay:-${(i * 0.7).toFixed(1)}s"/>`);
   }
-  return `<g class="inperson-sky-strahlen" fill="#ffe9a8">${strahl.join("")}</g>`;
+  const id = `${MODULE_ID}-divine`;
+  return `<defs><radialGradient id="${id}" cx="50%" cy="0%" r="70%">
+      <stop offset="0" stop-color="#fff3c4" stop-opacity="0.75"/><stop offset="1" stop-color="#fff3c4" stop-opacity="0"/>
+    </radialGradient></defs>
+    <g class="inperson-sky-strahlen" fill="#ffeaa0">${strahl.join("")}</g>
+    <rect x="0" y="0" width="${BREITE}" height="${HOEHE}" fill="url(#${id})"/>`;
 }
 
 /** Hitzeflimmern: waagerechte Schlieren, die wandern. */
@@ -673,15 +702,18 @@ function malFlimmern({ menge }) {
 
 /** Rauschen: viele winzige Punkte, die flackern. */
 function malRauschen({ menge }) {
-  const n = Math.round(60 * menge);
+  const n = Math.round(90 * menge);
   const z = reihe(113, n * 2);
   const punkte = [];
   for (let i = 0; i < n; i++) {
     const x = Math.round(z[i * 2] * BREITE);
     const y = Math.round(z[i * 2 + 1] * RADIUS);
-    punkte.push(`<rect x="${x}" y="${y}" width="1.4" height="1.4" style="animation-delay:-${((i % 7) * 0.11).toFixed(2)}s"/>`);
+    punkte.push(`<rect x="${x}" y="${y}" width="2" height="2" style="animation-delay:-${((i % 7) * 0.11).toFixed(2)}s"/>`);
   }
-  return `<g class="inperson-sky-rauschen" fill="#c8c8d4">${punkte.join("")}</g>`;
+  // Der graue Schleier darunter: Auf einem hellen Mittagshimmel wären helle
+  // Punkte unsichtbar, und eine Nullfront soll den Himmel gerade auslöschen.
+  return `<rect x="0" y="0" width="${BREITE}" height="${HOEHE}" fill="#1b1b26" opacity="0.45"/>
+    <g class="inperson-sky-rauschen" fill="#d4d4e0">${punkte.join("")}</g>`;
 }
 
 /** Finsternis: der Himmel wird geschluckt. */

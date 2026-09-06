@@ -41,6 +41,20 @@
     </span>
   </label>
 
+  {{#if hasCalendaria}}
+    <label class="inperson-pick-row">
+      <span class="inperson-pick-name">
+        {{localize "INPERSON.Clock.Field.SkySource"}}
+        <em>{{localize "INPERSON.Clock.Field.SkySourceHint"}}</em>
+      </span>
+      <select name="skySource" class="inperson-sky-source">
+        {{#each skySourceOptions}}
+          <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>
+        {{/each}}
+      </select>
+    </label>
+  {{/if}}
+
   <label class="inperson-pick-row">
     <input type="checkbox" name="weather" {{checked weather}}>
     <span class="inperson-pick-name">

@@ -323,5 +323,9 @@
   "INPERSON.SheetView.BarSizeClock": "Time strip",
   "INPERSON.SheetView.LockPosition": "Lock position",
   "INPERSON.SheetView.YourTurn": "Your turn!",
-  "INPERSON.SheetView.NextTurn": "You're up next"
+  "INPERSON.SheetView.NextTurn": "You're up next",
+  "INPERSON.Clock.Field.SkySource": "Who draws the dome",
+  "INPERSON.Clock.Field.SkySourceHint": "Ours: a few dozen moving shapes, runs on any tablet. Calendaria's: their own dome with every particle effect - better looking, but it needs the device's graphics unit.",
+  "INPERSON.Clock.SkySource.Own": "Our dome (light on the device)",
+  "INPERSON.Clock.SkySource.Calendaria": "Calendaria's dome (better looking)"
 }

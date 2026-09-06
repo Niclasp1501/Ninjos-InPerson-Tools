@@ -107,6 +107,16 @@ export const SETTINGS = {
   /** Sonnen- und Mondbogen statt oder neben der Uhrzeit (world). */
   CLOCK_SKY: "clockSky",
   /**
+   * Wer die Kuppel zeichnet: "eigen" oder "calendaria" (world).
+   *
+   * Zwei Maltechniken für dasselbe Bild. Unsere kommt mit ein paar Dutzend
+   * SVG-Formen aus, die das CSS bewegt; Calendaria fährt eine PixiJS-Szene
+   * auf einer WebGL-Fläche auf. Die sieht besser aus und kostet mehr - auf
+   * einem Tablet, dem wir gerade das Spielfeld abgeschaltet haben, ist das
+   * kein kleiner Unterschied. Also entscheidet der Tisch, nicht wir.
+   */
+  CLOCK_SKY_SOURCE: "clockSkySource",
+  /**
    * Eigene Blattansicht statt Foundrys Oberfläche (world, Beta).
    *
    * Die einzige Funktion des Moduls, die einem Spieler den ganzen Bildschirm
