@@ -99,12 +99,24 @@ Gaming“) und die Seiten der genannten Module.
    bis mittel; Kampfverfolgung liefert die Hooks.
 2. **Geteilte Bilder auf den Fernsehern nach Zeit schließen** (Monk's Common
    Display, Close Player Art). Klein, passt zu den Szenen-Monitoren.
-3. **Echte Würfel** als Schalter in der Menüleiste (Kern-Funktion, nur der
-   Zugang fehlt). Klein.
-4. **Druckbares Charakterblatt** (Foundry Tabletop Helpers). Mittel; als
-   Backup für Tablets ohne Akku. Erst, wenn jemand es vermisst.
-5. **Handyformat** der Blattansicht. Ungeprüft. Erst, wenn ein Handy am Tisch
-   liegt.
+Beide sind gebaut (14.2611.58 und die Monitor-Fassung).
+
+### Entschieden dagegen — am 06.09.2026, endgültig
+
+Drei Punkte standen hier als „kleine Lücke“ und sind es nicht. Sie stehen
+weiter unten in der Katalogtabelle, weil andere Module sie anbieten; für
+**diesen** Tisch werden sie nie gebraucht, und sie gehören nicht wieder auf
+eine Liste:
+
+- **Echte-Würfel-Schalter** in der Menüleiste. Am Tisch wird mit echten
+  Würfeln gewürfelt *und* im Blatt geklickt, je nachdem; Foundrys Kern kann
+  das manuelle Eintragen ohnehin, erreichbar über den Einstellungen-Knopf.
+- **Druckbares Charakterblatt.** Gedacht als Rückfall für ein leeres Tablet —
+  ein Fall, den es hier nicht gibt.
+- **Handyformat** der Blattansicht. Am Tisch liegen Tablets, keine Handys.
+
+Wer das später doch will, fängt bei null an und trifft die Entscheidung neu;
+als offener Posten wird keiner davon weitergeführt.
 
 **Was wir haben und sonst niemand:** zwei Monitore mit getrennten Aufgaben,
 Einbrennschutz, Kartensperre mit Messung, Tausch zwischen Spielern am Tisch,
@@ -143,16 +155,22 @@ Spielabend am echten Tablet hoch und quer ohne Geist, ohne Flackern, mit FANG/
 NDRS-Knöpfen; Gegenstands- und Zauberfenster vom Blatt aus bedienbar; kein
 Konto in beiden Modi.
 
-## 5. Vorschlag für die Reihenfolge
+## 5. Was noch aussteht
 
-1. Tablet-Test der Blattansicht (du) — alles Weitere hängt daran.
-2. Einstellungen aufräumen: Bedienfenster aus der Liste, `actorPanel` nur mit
-   Sheet Only, Gerätschalter benennen, Reihenfolge. Eine Stunde.
-3. „Du bist dran“-Streifen in der Blattansicht. Ein Nachmittag.
-4. Echte-Würfel-Schalter in der Menüleiste. Eine Stunde.
-5. Geteilte Bilder auf den Monitoren nach Zeit schließen. Eine Stunde.
-6. README und Katalogtext neu, Mond-/Dämmerungsprüfung. Ein Nachmittag.
-7. Nach dem Sheet-Only-Abschied: Anbindung entfernen, „Beta“ streichen.
+Erledigt sind: Einstellungen aufgeräumt (14.2611.58), „Du bist dran“-Streifen
+(14.2611.58), README und Katalogtext (14.2611.58), Mond- und Wetterprüfung
+(`tools/test-sky.mjs`), das ganze Kalenderthema — 41 Wetter mit
+Himmelsfärbung bei Tag und Nacht, alle Monde samt Verstecken, Dämmerung,
+Unterphasen, abschaltbare Sonnenzeiten, überstimmbare Bewegung und
+Calendarias echte Kuppel als Alternative.
+
+Offen bleiben genau zwei Dinge, und beide hängen am Tisch, nicht am Code:
+
+1. **Tablet-Test der Blattansicht**, hoch und quer. Daran hängt der Ausgang
+   aus „(Beta)“ — siehe die Bedingungen oben.
+2. **Nach dem Sheet-Only-Abschied**: Anbindung entfernen, „Beta“ streichen.
+
+Alles andere ist entweder gebaut oder ausdrücklich verworfen (Abschnitt 2).
 
 Quellen: [Sheet Only](https://foundryvtt.com/packages/sheet-only),
 [Foundry Tabletop Helpers](https://foundryvtt.com/packages/foundry-tabletop-helpers),
