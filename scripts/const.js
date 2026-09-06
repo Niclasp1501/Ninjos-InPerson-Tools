@@ -117,6 +117,15 @@ export const SETTINGS = {
    */
   CLOCK_SKY_SOURCE: "clockSkySource",
   /**
+   * Sonnenauf- und -untergang im Erklärkasten der Kuppel (world).
+   *
+   * Nicht jeder Tisch will, dass die Spieler die Minute ablesen können, zu
+   * der es hell wird - manchmal ist "es dämmert bald" die bessere Auskunft
+   * als "04:41". Die Mondphase bleibt davon unberührt; sie steht am Himmel
+   * und ist kein Geheimnis.
+   */
+  CLOCK_SKY_TIMES: "clockSkyTimes",
+  /**
    * Eigene Blattansicht statt Foundrys Oberfläche (world, Beta).
    *
    * Die einzige Funktion des Moduls, die einem Spieler den ganzen Bildschirm

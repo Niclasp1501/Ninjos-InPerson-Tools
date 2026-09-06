@@ -327,5 +327,7 @@
   "INPERSON.Clock.Field.SkySource": "Who draws the dome",
   "INPERSON.Clock.Field.SkySourceHint": "Ours: a few dozen moving shapes, runs on any tablet. Calendaria's: their own dome with every particle effect - better looking, but it needs the device's graphics unit.",
   "INPERSON.Clock.SkySource.Own": "Our dome (light on the device)",
-  "INPERSON.Clock.SkySource.Calendaria": "Calendaria's dome (better looking)"
+  "INPERSON.Clock.SkySource.Calendaria": "Calendaria's dome (better looking)",
+  "INPERSON.Clock.Field.SkyTimes": "Sunrise and sunset in the tooltip",
+  "INPERSON.Clock.Field.SkyTimesHint": "Shows when the sun rises and sets when the dome is tapped or pointed at. Off means players read the hour off the arc but never a time. The moon phase stays either way."
 }

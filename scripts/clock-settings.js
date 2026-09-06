@@ -59,6 +59,7 @@ export class ClockSettings extends HandlebarsApplicationMixin(ApplicationV2) {
         { value: "eigen", label: "INPERSON.Clock.SkySource.Own" },
         { value: "calendaria", label: "INPERSON.Clock.SkySource.Calendaria" }
       ].map(o => ({ ...o, selected: get(SETTINGS.CLOCK_SKY_SOURCE) === o.value })),
+      skyTimes: get(SETTINGS.CLOCK_SKY_TIMES),
       // Ohne Calendaria hat die Wahl keinen zweiten Posten - dann steht sie
       // gar nicht erst da, statt eine Möglichkeit vorzugaukeln.
       hasCalendaria: !!game.modules.get("calendaria")?.active,
@@ -80,6 +81,7 @@ export class ClockSettings extends HandlebarsApplicationMixin(ApplicationV2) {
     await set(SETTINGS.CLOCK_SHOW_SEASON, !!data.season);
     await set(SETTINGS.CLOCK_SKY, !!data.sky);
     if (data.skySource) await set(SETTINGS.CLOCK_SKY_SOURCE, String(data.skySource));
+    await set(SETTINGS.CLOCK_SKY_TIMES, !!data.skyTimes);
 
     syncClock();
     refreshClock({ force: true });

@@ -177,6 +177,15 @@ function registerSettings() {
     onChange: () => refreshClock({ force: true })
   });
 
+  // Ob die Spieler die Uhrzeit von Auf- und Untergang ablesen dürfen.
+  S(SETTINGS.CLOCK_SKY_TIMES, {
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: true,
+    onChange: () => refreshClock({ force: true })
+  });
+
   // The four parts of the strip. All on the page, so the list keeps one row per
   // tool rather than five for this one.
   for (const key of [SETTINGS.CLOCK_DATE, SETTINGS.CLOCK_TIME, SETTINGS.CLOCK_SHOW_SEASON]) {

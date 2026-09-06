@@ -795,13 +795,21 @@ function uhr(stunden) {
 }
 
 function hinweisText(aufgang, untergang, mond, geschaetzt) {
-  const zeilen = [
-    game.i18n.format("INPERSON.Clock.SunTimes", { up: uhr(aufgang), down: uhr(untergang) })
-  ];
+  const zeilen = [];
+
+  // Die Uhrzeiten sind abschaltbar: Nicht jeder Tisch möchte, dass am Blatt
+  // abzulesen ist, wann es hell wird - manchmal ist "es dämmert bald" die
+  // bessere Auskunft als "04:41". Der Mond bleibt; er steht am Himmel.
+  let zeiten = true;
+  try { zeiten = game.settings.get(MODULE_ID, "clockSkyTimes") !== false; } catch { /* vor der Registrierung */ }
+  if (zeiten) {
+    zeilen.push(game.i18n.format("INPERSON.Clock.SunTimes", { up: uhr(aufgang), down: uhr(untergang) }));
+    if (geschaetzt) zeilen.push(game.i18n.localize("INPERSON.Clock.SunGuessed"));
+  }
+
   if (mond?.name) {
     zeilen.push(mond.mondname ? `${mond.mondname}: ${mond.name}` : mond.name);
   }
-  if (geschaetzt) zeilen.push(game.i18n.localize("INPERSON.Clock.SunGuessed"));
   return zeilen.join(" · ");
 }
 

@@ -41,6 +41,14 @@
     </span>
   </label>
 
+  <label class="inperson-pick-row">
+    <input type="checkbox" name="skyTimes" {{checked skyTimes}}>
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.Clock.Field.SkyTimes"}}
+      <em>{{localize "INPERSON.Clock.Field.SkyTimesHint"}}</em>
+    </span>
+  </label>
+
   {{#if hasCalendaria}}
     <label class="inperson-pick-row">
       <span class="inperson-pick-name">

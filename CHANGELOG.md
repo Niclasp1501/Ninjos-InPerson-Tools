@@ -1,5 +1,13 @@
 # Changelog
 
+## 14.2611.63 — 2026-09-06
+
+**Sonnenzeiten lassen sich abschalten.** Auf der Seite „Zeit & Wetter" steht
+jetzt, ob die Spieler beim Tippen auf die Kuppel ablesen dürfen, wann die
+Sonne auf- und untergeht. Aus heißt: Sie sehen am Bogen, wie weit der Tag
+ist, aber keine Uhrzeit — manchmal ist „es dämmert bald" die bessere Auskunft
+als „04:41". Die Mondphase bleibt in jedem Fall stehen; sie steht am Himmel.
+
 ## 14.2611.62 — 2026-09-06
 
 **Jede Kuppel bekommt ihre eigenen Farbkennungen.** Verläufe werden im SVG

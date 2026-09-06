@@ -290,7 +290,12 @@ function fillStrip(element, now) {
       const fremd = geliehen();
       const inhalt = fremd ? "" : bogen.svg;
       const klasse = fremd ? "inperson-clock-sky inperson-clock-sky-fremd" : "inperson-clock-sky";
-      parts.push(`<span class="${klasse}" data-tooltip-html="${foundry.utils.escapeHTML(bogen.hinweis)}">${inhalt}</span>`);
+      // Ohne Sonnenzeiten und ohne Mond bleibt nichts zu sagen - dann gar
+      // kein Erklärkasten statt eines leeren.
+      const hinweis = bogen.hinweis
+        ? ` data-tooltip-html="${foundry.utils.escapeHTML(bogen.hinweis)}"`
+        : "";
+      parts.push(`<span class="${klasse}"${hinweis}>${inhalt}</span>`);
     }
   }
 
