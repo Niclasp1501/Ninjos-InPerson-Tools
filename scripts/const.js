@@ -126,6 +126,17 @@ export const SETTINGS = {
    */
   CLOCK_SKY_TIMES: "clockSkyTimes",
   /**
+   * Bewegung in der Kuppel: "auto" | "immer" | "nie" (world).
+   *
+   * `auto` folgt dem Gerät - wer in den Bedienungshilfen oder im
+   * Energiesparmodus Animationen abgeschaltet hat, bekommt ein stilles Bild.
+   * Das ist grundsätzlich richtig, war am Tisch aber die falsche Antwort:
+   * Auf einem Android-Tablet blieb die Kuppel stumm, und niemand ahnte, dass
+   * die Ursache im Betriebssystem lag und nicht im Modul. Deshalb kann der
+   * Spielleiter es überstimmen - in beide Richtungen.
+   */
+  CLOCK_SKY_MOTION: "clockSkyMotion",
+  /**
    * Eigene Blattansicht statt Foundrys Oberfläche (world, Beta).
    *
    * Die einzige Funktion des Moduls, die einem Spieler den ganzen Bildschirm

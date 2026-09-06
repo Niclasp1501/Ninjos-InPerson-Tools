@@ -411,7 +411,25 @@ export function syncClock() {
   }
 }
 
+/**
+ * Die Wahl des Spielleiters über Bewegung an den Dokumentwurzel hängen.
+ *
+ * Das Stylesheet entscheidet damit selbst; hier steht nur, was gewollt ist.
+ * `auto` setzt keine Klasse und überlässt es der Medienabfrage - genau das
+ * war auf einem Android-Tablet das Problem: Der Energiesparmodus meldet dort
+ * "weniger Bewegung", und die Kuppel stand still, ohne dass jemand die
+ * Ursache im Betriebssystem vermutet hätte.
+ */
+export function bewegungAnwenden() {
+  let wahl = "auto";
+  try { wahl = String(game.settings.get(MODULE_ID, SETTINGS.CLOCK_SKY_MOTION) ?? "auto"); } catch { /* noch nicht registriert */ }
+  const wurzel = document.documentElement;
+  wurzel.classList.toggle("inperson-bewegung-immer", wahl === "immer");
+  wurzel.classList.toggle("inperson-bewegung-nie", wahl === "nie");
+}
+
 export function installClock() {
+  bewegungAnwenden();
   syncClock();
 
   Hooks.on("updateWorldTime", () => refreshClock());

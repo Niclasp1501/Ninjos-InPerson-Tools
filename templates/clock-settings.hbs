@@ -49,6 +49,18 @@
     </span>
   </label>
 
+  <label class="inperson-pick-row">
+    <span class="inperson-pick-name">
+      {{localize "INPERSON.Clock.Field.Motion"}}
+      <em>{{localize "INPERSON.Clock.Field.MotionHint"}}</em>
+    </span>
+    <select name="skyMotion" class="inperson-sky-source">
+      {{#each motionOptions}}
+        <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>
+      {{/each}}
+    </select>
+  </label>
+
   {{#if hasCalendaria}}
     <label class="inperson-pick-row">
       <span class="inperson-pick-name">

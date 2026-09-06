@@ -2828,37 +2828,78 @@ body.inperson-sheetview .sidebar-popout {
   92.5% { opacity: 0.2; }
 }
 
+/* Bewegung: Das Geraet entscheidet, der Spielleiter darf ueberstimmen.
+ *
+ * `prefers-reduced-motion` zu achten ist richtig - nur meldet Android das
+ * auch im Energiesparmodus, und dann stand die Kuppel still, ohne dass
+ * jemand die Ursache im Betriebssystem gesucht haette. Deshalb hebt
+ * "immer" die Ruhe wieder auf, und "nie" erzwingt sie auf jedem Geraet. */
 @media (prefers-reduced-motion: reduce) {
-  .inperson-sky-regen line,
-  .inperson-sky-koerner ellipse,
-  .inperson-sky-flocken circle,
-  .inperson-sky-blaetter ellipse,
-  .inperson-sky-wolke,
-  .inperson-sky-nebel-schwade,
-  .inperson-sky-fahnen line,
-  .inperson-sky-funken circle,
-  .inperson-sky-rauch circle,
-  .inperson-sky-wirbel,
-  .inperson-sky-schemen ellipse,
-  .inperson-sky-meteore > g,
-  .inperson-sky-aurora path,
-  .inperson-sky-strahlen path,
-  .inperson-sky-flimmern rect,
-  .inperson-sky-rauschen rect,
-  .inperson-sky-dunkel-ring,
-  .inperson-sky-sterne circle,
-  .inperson-sky-mondhof,
-  .inperson-sky-blitz {
-    animation: none;
+  :root:not(.inperson-bewegung-immer) {
+    .inperson-sky-regen line,
+    .inperson-sky-koerner ellipse,
+    .inperson-sky-flocken circle,
+    .inperson-sky-blaetter ellipse,
+    .inperson-sky-wolke,
+    .inperson-sky-nebel-schwade,
+    .inperson-sky-fahnen line,
+    .inperson-sky-funken circle,
+    .inperson-sky-rauch circle,
+    .inperson-sky-wirbel,
+    .inperson-sky-schemen ellipse,
+    .inperson-sky-meteore > g,
+    .inperson-sky-aurora path,
+    .inperson-sky-strahlen path,
+    .inperson-sky-flimmern rect,
+    .inperson-sky-rauschen rect,
+    .inperson-sky-dunkel-ring,
+    .inperson-sky-sterne circle,
+    .inperson-sky-mondhof,
+    .inperson-sky-blitz {
+      animation: none;
+    }
+    .inperson-sky-regen line,
+    .inperson-sky-koerner ellipse,
+    .inperson-sky-flocken circle,
+    .inperson-sky-blaetter ellipse { transform: translateY(40px); }
+    .inperson-sky-fahnen line { transform: translateX(40px); }
+    .inperson-sky-rauch circle { opacity: 0.3; }
+    .inperson-sky-meteore > g { opacity: 0.8; }
+    .inperson-sky-strahlen path { opacity: 0.25; }
   }
-  .inperson-sky-regen line,
-  .inperson-sky-koerner ellipse,
-  .inperson-sky-flocken circle,
-  .inperson-sky-blaetter ellipse { transform: translateY(40px); }
-  .inperson-sky-fahnen line { transform: translateX(40px); }
-  .inperson-sky-rauch circle { opacity: 0.3; }
-  .inperson-sky-meteore > g { opacity: 0.8; }
-  .inperson-sky-strahlen path { opacity: 0.25; }
+}
+
+:root.inperson-bewegung-nie {
+    .inperson-sky-regen line,
+    .inperson-sky-koerner ellipse,
+    .inperson-sky-flocken circle,
+    .inperson-sky-blaetter ellipse,
+    .inperson-sky-wolke,
+    .inperson-sky-nebel-schwade,
+    .inperson-sky-fahnen line,
+    .inperson-sky-funken circle,
+    .inperson-sky-rauch circle,
+    .inperson-sky-wirbel,
+    .inperson-sky-schemen ellipse,
+    .inperson-sky-meteore > g,
+    .inperson-sky-aurora path,
+    .inperson-sky-strahlen path,
+    .inperson-sky-flimmern rect,
+    .inperson-sky-rauschen rect,
+    .inperson-sky-dunkel-ring,
+    .inperson-sky-sterne circle,
+    .inperson-sky-mondhof,
+    .inperson-sky-blitz {
+      animation: none;
+    }
+    .inperson-sky-regen line,
+    .inperson-sky-koerner ellipse,
+    .inperson-sky-flocken circle,
+    .inperson-sky-blaetter ellipse { transform: translateY(40px); }
+    .inperson-sky-fahnen line { transform: translateX(40px); }
+    .inperson-sky-rauch circle { opacity: 0.3; }
+    .inperson-sky-meteore > g { opacity: 0.8; }
+    .inperson-sky-strahlen path { opacity: 0.25; }
 }
 
 

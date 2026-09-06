@@ -44,9 +44,34 @@ let eigenesHud = null;
 let haengtIn = null;
 let hookId = null;
 
+/**
+ * Kann dieses Gerät überhaupt WebGL?
+ *
+ * Calendarias Kuppel ist eine PixiJS-Szene und braucht eine Grafikeinheit.
+ * Genau die haben wir auf diesen Geräten gerade abgeschaltet (`core.noCanvas`),
+ * und ein älteres Android-Tablet gibt womöglich gar keinen Kontext mehr her -
+ * dann stünde dort eine leere Fläche statt einer Kuppel. Einmal geprüft und
+ * gemerkt; der Testkontext wird sofort wieder freigegeben, sonst hielten wir
+ * einen der wenigen Plätze besetzt, die ein Browser vergibt.
+ */
+let webgl = null;
+function webglMoeglich() {
+  if (webgl !== null) return webgl;
+  try {
+    const probe = document.createElement("canvas");
+    const kontext = probe.getContext("webgl2") ?? probe.getContext("webgl");
+    kontext?.getExtension("WEBGL_lose_context")?.loseContext();
+    webgl = !!kontext;
+  } catch {
+    webgl = false;
+  }
+  return webgl;
+}
+
 /** Läuft Calendaria, und hat es die Kuppel, die wir meinen? */
 export function calendariaKuppelMoeglich() {
   if (!game.modules.get("calendaria")?.active) return false;
+  if (!webglMoeglich()) return false;
   const HUD = globalThis.CALENDARIA?.apps?.HUD;
   if (typeof HUD !== "function") return false;
   // Ohne Leseerlaubnis für das HUD bekämen wir ein leeres Fenster.

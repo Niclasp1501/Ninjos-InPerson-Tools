@@ -24,7 +24,7 @@ import { buildSceneField } from "./scene-field.js";
 import {
   installActorPanel, removeActorPanel, applySidebarStyle, markPopout, isDirectoryPopoutApp
 } from "./actor-panel.js";
-import { installClock, syncClock, refreshClock } from "./clock.js";
+import { installClock, syncClock, refreshClock, bewegungAnwenden } from "./clock.js";
 import { willkommenEinrichten, willkommenZeigen } from "./willkommen.js";
 import { openClockSettings } from "./clock-settings.js";
 import { openTradeSettings } from "./trade-settings.js";
@@ -184,6 +184,20 @@ function registerSettings() {
     type: Boolean,
     default: true,
     onChange: () => refreshClock({ force: true })
+  });
+
+  // Bewegung in der Kuppel - siehe const.js.
+  S(SETTINGS.CLOCK_SKY_MOTION, {
+    scope: "world",
+    config: false,
+    type: String,
+    choices: {
+      auto: "INPERSON.Clock.Motion.Auto",
+      immer: "INPERSON.Clock.Motion.Always",
+      nie: "INPERSON.Clock.Motion.Never"
+    },
+    default: "auto",
+    onChange: () => bewegungAnwenden()
   });
 
   // The four parts of the strip. All on the page, so the list keeps one row per

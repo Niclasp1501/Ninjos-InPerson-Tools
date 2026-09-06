@@ -329,5 +329,10 @@
   "INPERSON.Clock.SkySource.Own": "Eigene Kuppel (sparsam)",
   "INPERSON.Clock.SkySource.Calendaria": "Calendarias Kuppel (schöner)",
   "INPERSON.Clock.Field.SkyTimes": "Sonnenzeiten im Erklärkasten",
-  "INPERSON.Clock.Field.SkyTimesHint": "Zeigt beim Tippen oder Zeigen auf die Kuppel, wann die Sonne auf- und untergeht. Aus heißt: Die Spieler sehen am Bogen, wie spät es ist, aber lesen keine Uhrzeit ab. Die Mondphase bleibt in jedem Fall stehen."
+  "INPERSON.Clock.Field.SkyTimesHint": "Zeigt beim Tippen oder Zeigen auf die Kuppel, wann die Sonne auf- und untergeht. Aus heißt: Die Spieler sehen am Bogen, wie spät es ist, aber lesen keine Uhrzeit ab. Die Mondphase bleibt in jedem Fall stehen.",
+  "INPERSON.Clock.Field.Motion": "Bewegung in der Kuppel",
+  "INPERSON.Clock.Field.MotionHint": "Regen, Schnee und Wolken bewegen sich. „Wie das Gerät“ folgt den Bedienungshilfen — Android meldet auch im Energiesparmodus „weniger Bewegung“, dann steht die Kuppel still. „Immer“ überstimmt das.",
+  "INPERSON.Clock.Motion.Auto": "Wie das Gerät es will",
+  "INPERSON.Clock.Motion.Always": "Immer bewegen",
+  "INPERSON.Clock.Motion.Never": "Nie bewegen"
 }

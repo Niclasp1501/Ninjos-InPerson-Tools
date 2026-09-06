@@ -1,5 +1,18 @@
 # Changelog
 
+## 14.2611.64 — 2026-09-06
+
+**Auf einem Android-Tablet stand die Kuppel still.** Der Grund lag nicht im
+Modul: Android meldet „weniger Bewegung" auch im Energiesparmodus und in den
+Bedienungshilfen, und unser Stylesheet hat das brav befolgt. Richtig ist das —
+nur ahnt niemand am Tisch, dass die Ursache im Betriebssystem liegt. Auf der
+Seite „Zeit & Wetter" steht jetzt **Bewegung in der Kuppel**: „Wie das Gerät
+es will" (wie bisher), „Immer bewegen" oder „Nie bewegen".
+
+Dazu ein Schutz für schwache Geräte: Kann der Browser kein WebGL, wird
+Calendarias Kuppel gar nicht erst ausgeliehen — dort stünde sonst eine leere
+Fläche. Es kommt dann unsere eigene.
+
 ## 14.2611.63 — 2026-09-06
 
 **Sonnenzeiten lassen sich abschalten.** Auf der Seite „Zeit & Wetter" steht

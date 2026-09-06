@@ -329,5 +329,10 @@
   "INPERSON.Clock.SkySource.Own": "Our dome (light on the device)",
   "INPERSON.Clock.SkySource.Calendaria": "Calendaria's dome (better looking)",
   "INPERSON.Clock.Field.SkyTimes": "Sunrise and sunset in the tooltip",
-  "INPERSON.Clock.Field.SkyTimesHint": "Shows when the sun rises and sets when the dome is tapped or pointed at. Off means players read the hour off the arc but never a time. The moon phase stays either way."
+  "INPERSON.Clock.Field.SkyTimesHint": "Shows when the sun rises and sets when the dome is tapped or pointed at. Off means players read the hour off the arc but never a time. The moon phase stays either way.",
+  "INPERSON.Clock.Field.Motion": "Motion in the dome",
+  "INPERSON.Clock.Field.MotionHint": "Rain, snow and clouds move. \"As the device wants\" follows the accessibility setting - Android reports \"reduce motion\" in battery saver too, and then the dome stands still. \"Always\" overrides that.",
+  "INPERSON.Clock.Motion.Auto": "As the device wants",
+  "INPERSON.Clock.Motion.Always": "Always move",
+  "INPERSON.Clock.Motion.Never": "Never move"
 }
