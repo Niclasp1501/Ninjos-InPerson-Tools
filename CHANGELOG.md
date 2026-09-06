@@ -1,5 +1,22 @@
 # Changelog
 
+## 14.2611.65 — 2026-09-06
+
+**Alle Monde einer Welt, nicht nur der erste.** Faerûn hat einen, aber ein
+Kalender darf beliebig viele führen — und wer eine Welt mit zwei Monden
+spielt, will beide sehen. Sie stehen jetzt hintereinander auf derselben Bahn,
+jeder mit eigener Phase und eigener Farbe; bei mehreren wird jeder etwas
+kleiner, damit sie sich auf 160 Pixeln nicht überlagern. Wer noch nicht
+aufgegangen ist, bleibt unter dem Horizont. Der Erklärkasten nennt jeden
+beim Namen.
+
+**Verbergen wird jetzt geachtet.** Calendaria kann Monde vor Spielern
+verstecken. Unsere Kuppel steht auf dem Tablet eines Spielers und hat das
+bisher übergangen — sie hätte verraten, was der Spielleiter verborgen hat.
+Ohne Erlaubnis bleibt der Himmel jetzt mondlos.
+
+`tools/test-sky.mjs` prüft beides mit einer erfundenen Welt aus zwei Monden.
+
 ## 14.2611.64 — 2026-09-06
 
 **Auf einem Android-Tablet stand die Kuppel still.** Der Grund lag nicht im

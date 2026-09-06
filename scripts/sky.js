@@ -119,25 +119,7 @@ function sonnenzeiten(calendar) {
  * `moons` ist ein Objekt, kein Feld - was mich einmal glauben ließ, diese Welt
  * habe gar keinen Mond.
  */
-function mondphase(calendar) {
-  const monde = Object.values(calendar?.moons ?? {});
-  const mond = monde.find(m => m?.visibility !== "hidden") ?? monde[0];
-  if (!mond?.cycleLength) return null;
-
-  // Läuft Calendaria, ist dessen Antwort die richtige - nicht, weil unsere
-  // Rechnung falsch wäre (sie traf dieselbe Phase), sondern weil der
-  // Spielleiter dessen Anzeige sieht und beide dasselbe zeigen müssen. Ohne
-  // Calendaria rechnen wir aus denselben Kalenderdaten selbst.
-  const fremd = globalThis.CALENDARIA?.api?.getMoonPhase?.();
-  if (Number.isFinite(fremd?.position)) {
-    return {
-      anteil: ((fremd.position % 1) + 1) % 1,
-      name: fremd.name ?? null,
-      mondname: mond.name ? game.i18n.localize(mond.name) : null,
-      farbe: aufhellen(mond.color) || "#e9e9e4"
-    };
-  }
-
+function mondphaseRechnen(calendar, mond) {
   const jahr = tageProJahr(calendar);
   const k = game.time.components;
   const heute = (k.year ?? 0) * jahr + tagImJahr(calendar, k)
@@ -162,6 +144,50 @@ function mondphase(calendar) {
     mondname: mond.name ? game.i18n.localize(mond.name) : null,
     farbe: aufhellen(mond.color) || "#e9e9e4"
   };
+}
+
+/**
+ * Alle Monde dieser Welt, jeder mit seiner eigenen Phase.
+ *
+ * Faerûn hat einen, aber ein Kalender darf beliebig viele führen - und wer
+ * eine Welt mit zwei Monden spielt, will beide am Himmel sehen. Bis
+ * 14.2611.64 zeichneten wir stur den ersten.
+ *
+ * **Verstecken wird geachtet.** Calendaria kann Monde vor Spielern verbergen
+ * (`hideMoonsFromPlayers`), und dann darf unsere Kuppel sie erst recht nicht
+ * zeigen: Sie steht auf dem Tablet eines Spielers. Ohne Erlaubnis kommt eine
+ * leere Liste zurück, und am Himmel steht nichts - der Bogen bleibt, die
+ * Sterne bleiben, nur der Mond fehlt.
+ */
+export function mondphasen(calendar) {
+  try {
+    const darf = globalThis.CALENDARIA?.permissions?.canViewMoons;
+    if (typeof darf === "function" && !darf()) return [];
+  } catch { /* keine Auskunft heißt: zeigen, wie ohne Calendaria */ }
+
+  const monde = Object.values(calendar?.moons ?? {}).filter(m => m?.cycleLength);
+  if (!monde.length) return [];
+
+  // Läuft Calendaria, sind dessen Antworten die richtigen - nicht, weil unsere
+  // Rechnung falsch wäre (sie trifft dieselbe Phase), sondern weil der
+  // Spielleiter dessen Anzeige sieht und beide dasselbe zeigen müssen. Die
+  // Farbe steht dort nicht mit drin; die holen wir über den Index nach.
+  const fremd = globalThis.CALENDARIA?.api?.getAllMoonPhases?.();
+  if (Array.isArray(fremd) && fremd.length) {
+    return fremd
+      .filter(p => Number.isFinite(p?.position))
+      .map(p => {
+        const roh = monde[p.moonIndex] ?? monde[0];
+        return {
+          anteil: ((p.position % 1) + 1) % 1,
+          name: p.name ?? null,
+          mondname: p.moonName ?? (roh?.name ? game.i18n.localize(roh.name) : null),
+          farbe: aufhellen(roh?.color) || "#e9e9e4"
+        };
+      });
+  }
+
+  return monde.filter(m => m.visibility !== "hidden").map(m => mondphaseRechnen(calendar, m));
 }
 
 /**
@@ -205,9 +231,10 @@ const STERNE = [
  * am Himmel steht), die beleuchtete Fläche mit einem Verlauf, der zum
  * Schattenrand hin leicht abdunkelt, und ein feiner heller Rand.
  */
-function mondBild(cx, cy, mond, deckkraft = 1) {
+function mondBild(cx, cy, mond, deckkraft = 1, groesse = 1) {
   const x = Number(cx);
   const y = Number(cy);
+  const r = GESTIRN * groesse;
   const anteil = mond?.anteil ?? 0.5;
   const farbe = mond?.farbe ?? "#e9e9e4";
   const id = kennung("moon");
@@ -216,11 +243,11 @@ function mondBild(cx, cy, mond, deckkraft = 1) {
     <defs><radialGradient id="${id}" cx="${lichtSeite}" cy="35%" r="75%">
       <stop offset="0" stop-color="#ffffff"/><stop offset="0.55" stop-color="${farbe}"/><stop offset="1" stop-color="${farbe}" stop-opacity="0.82"/>
     </radialGradient></defs>
-    <circle class="inperson-sky-mondhof" cx="${cx}" cy="${cy}" r="${GESTIRN * 1.8}" fill="#dfe8ff" opacity="0.14"/>
-    <circle cx="${cx}" cy="${cy}" r="${GESTIRN * 1.25}" fill="#dfe8ff" opacity="0.1"/>
-    <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="#1f2635"/>
-    <path d="${mondPfad(x, y, GESTIRN, anteil)}" fill="url(#${id})"/>
-    <circle cx="${cx}" cy="${cy}" r="${GESTIRN}" fill="none" stroke="#ffffff" stroke-opacity="0.3" stroke-width="0.7"/></g>`;
+    <circle class="inperson-sky-mondhof" cx="${cx}" cy="${cy}" r="${(r * 1.8).toFixed(1)}" fill="#dfe8ff" opacity="0.14"/>
+    <circle cx="${cx}" cy="${cy}" r="${(r * 1.25).toFixed(1)}" fill="#dfe8ff" opacity="0.1"/>
+    <circle cx="${cx}" cy="${cy}" r="${r.toFixed(1)}" fill="#1f2635"/>
+    <path d="${mondPfad(x, y, r, anteil)}" fill="url(#${id})"/>
+    <circle cx="${cx}" cy="${cy}" r="${r.toFixed(1)}" fill="none" stroke="#ffffff" stroke-opacity="0.3" stroke-width="0.7"/></g>`;
 }
 
 /**
@@ -336,13 +363,24 @@ export function himmelsbogen(wetter = null) {
       <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(GESTIRN * 0.5).toFixed(1)}" fill="#fff6d2"/>`;
   }
   // Mond: solange es nicht voller Tag ist.
-  const mond = helligkeit < 1 ? mondphase(calendar) : null;
+  // Alle Monde der Welt, einer hinter dem anderen auf derselben Bahn - so
+  // hält es Calendaria auch. Bei mehreren wird jeder etwas kleiner, sonst
+  // schieben sie sich auf 160 Pixeln übereinander. Wer noch nicht
+  // aufgegangen ist, bleibt unter dem Horizont; der vorderste steht immer da,
+  // damit bei Neumond nicht der ganze Himmel leer wirkt.
+  const monde = helligkeit < 1 ? mondphasen(calendar) : [];
   if (helligkeit < 1) {
-    const { x, y } = ort(nachtanteil);
-    gestirn += mondBild(x.toFixed(1), y.toFixed(1), mond, 1 - helligkeit);
+    const liste = monde.length ? monde : [null];
+    const groesse = Math.max(0.62, 1 - 0.09 * (liste.length - 1));
+    liste.forEach((mond, i) => {
+      const anteilDavon = nachtanteil - i * 0.11;
+      if (i > 0 && anteilDavon < 0) return;
+      const { x, y } = ort(Math.max(0, anteilDavon));
+      gestirn += mondBild(x.toFixed(1), y.toFixed(1), mond, 1 - helligkeit, groesse);
+    });
   }
 
-  const svg = `<svg class="inperson-sky" viewBox="0 0 ${BREITE} ${HOEHE}" width="${BREITE}" height="${HOEHE}" role="img" aria-label="${escape(hinweisText(aufgang, untergang, mond, geschaetzt))}">
+  const svg = `<svg class="inperson-sky" viewBox="0 0 ${BREITE} ${HOEHE}" width="${BREITE}" height="${HOEHE}" role="img" aria-label="${escape(hinweisText(aufgang, untergang, monde, geschaetzt))}">
     <defs>
       <linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stop-color="${himmel[0]}"/><stop offset="0.55" stop-color="${himmel[1]}"/><stop offset="1" stop-color="${himmel[2]}"/>
@@ -369,7 +407,7 @@ export function himmelsbogen(wetter = null) {
     <path d="M 0 ${boden} A ${RADIUS} ${RADIUS} 0 0 1 ${BREITE} ${boden}" fill="none" stroke="#4a4a4a" stroke-width="1.8"/>
   </svg>`;
 
-  return { svg, hinweis: hinweisText(aufgang, untergang, mond, geschaetzt) };
+  return { svg, hinweis: hinweisText(aufgang, untergang, monde, geschaetzt) };
 }
 
 /* ── Wetter ─────────────────────────────────────────────────────── */
@@ -794,7 +832,7 @@ function uhr(stunden) {
   return `${String(Math.floor(minuten / 60)).padStart(2, "0")}:${String(minuten % 60).padStart(2, "0")}`;
 }
 
-function hinweisText(aufgang, untergang, mond, geschaetzt) {
+function hinweisText(aufgang, untergang, monde, geschaetzt) {
   const zeilen = [];
 
   // Die Uhrzeiten sind abschaltbar: Nicht jeder Tisch möchte, dass am Blatt
@@ -807,7 +845,11 @@ function hinweisText(aufgang, untergang, mond, geschaetzt) {
     if (geschaetzt) zeilen.push(game.i18n.localize("INPERSON.Clock.SunGuessed"));
   }
 
-  if (mond?.name) {
+  // Jeder Mond mit Namen und Phase. Mehrere stehen untereinander, weil
+  // "Selûne: Letztes Viertel · Tears: Neumond" in einer Zeile nicht mehr zu
+  // lesen ist, sobald eine Welt drei Monde führt.
+  for (const mond of monde ?? []) {
+    if (!mond?.name) continue;
     zeilen.push(mond.mondname ? `${mond.mondname}: ${mond.name}` : mond.name);
   }
   return zeilen.join(" · ");

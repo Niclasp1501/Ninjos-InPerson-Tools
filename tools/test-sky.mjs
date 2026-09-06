@@ -10,7 +10,7 @@
  * Ausführen: node tools/test-sky.mjs
  */
 
-import { mondPfad, wetterArt, WETTER_VORLAGEN } from "../scripts/sky.js";
+import { mondPfad, wetterArt, WETTER_VORLAGEN, mondphasen } from "../scripts/sky.js";
 
 let fehler = 0;
 const pruefe = (name, bedingung, hinweis = "") => {
@@ -108,6 +108,73 @@ pruefe("gültige Sonderfarbe wird genommen",
   wetterArt({ fxPreset: "rain", fxColor: "#123456" })?.farbe === "#123456");
 pruefe("unsinnige Sonderfarbe wird verworfen",
   wetterArt({ fxPreset: "rain", fxColor: "\"><script>" })?.farbe === null);
+
+/* ── Die Monde ───────────────────────────────────────────────────── */
+
+/**
+ * Ein Kalender mit zwei Monden, wie ihn eine erfundene Welt hätte.
+ *
+ * Die Prüfung braucht Foundrys Globale nicht wirklich - nur die paar Stellen,
+ * die `mondphasen` anfasst. Sie werden hier gestellt und danach wieder
+ * weggeräumt, damit die Datei allein mit node läuft.
+ */
+function mitWelt(calendaria, tun) {
+  const vorherGame = globalThis.game;
+  const vorherCal = globalThis.CALENDARIA;
+  globalThis.game = {
+    i18n: { localize: s => s },
+    time: { components: { year: 0, month: 0, dayOfMonth: 10, hour: 22, minute: 0 } }
+  };
+  globalThis.CALENDARIA = calendaria;
+  try { return tun(); } finally {
+    globalThis.game = vorherGame;
+    globalThis.CALENDARIA = vorherCal;
+  }
+}
+
+const ZWEI_MONDE = {
+  months: { values: [{ days: 30 }, { days: 30 }] },
+  moons: {
+    selune: { name: "Selûne", color: "#C0C0C0", cycleLength: 30.4375, phases: { a: { name: "Vollmond", start: 0, end: 1 } } },
+    tears:  { name: "Tränen", color: "#8899AA", cycleLength: 12,      phases: { a: { name: "Neumond", start: 0, end: 1 } } }
+  }
+};
+
+// Ohne Calendaria: beide Monde selbst gerechnet.
+mitWelt(undefined, () => {
+  const monde = mondphasen(ZWEI_MONDE);
+  pruefe("zwei Monde ohne Calendaria", monde.length === 2, `${monde.length}`);
+  pruefe("beide tragen einen Namen", monde.every(m => m.mondname), JSON.stringify(monde.map(m => m.mondname)));
+  pruefe("beide haben eine eigene Farbe", monde[0].farbe !== monde[1].farbe, `${monde[0].farbe} / ${monde[1].farbe}`);
+});
+
+// Versteckte Monde bleiben weg, auch ohne Calendaria.
+mitWelt(undefined, () => {
+  const versteckt = { ...ZWEI_MONDE, moons: { ...ZWEI_MONDE.moons, tears: { ...ZWEI_MONDE.moons.tears, visibility: "hidden" } } };
+  pruefe("versteckter Mond fehlt", mondphasen(versteckt).length === 1);
+});
+
+// Mit Calendaria: dessen Antwort gilt, die Farbe kommt über den Index dazu.
+mitWelt({
+  permissions: { canViewMoons: () => true },
+  api: { getAllMoonPhases: () => [
+    { moonIndex: 0, moonName: "Selûne", name: "Letztes Viertel", position: 0.8 },
+    { moonIndex: 1, moonName: "Tränen", name: "Neumond", position: 0.02 }
+  ] }
+}, () => {
+  const monde = mondphasen(ZWEI_MONDE);
+  pruefe("Calendaria liefert beide", monde.length === 2);
+  pruefe("Anteil von Calendaria", Math.abs(monde[0].anteil - 0.8) < 1e-9, String(monde[0].anteil));
+  pruefe("Farbe aus dem Kalender nachgeholt", monde[1].farbe && monde[1].farbe !== monde[0].farbe);
+});
+
+// Und der wichtige Fall: Der Spielleiter verbirgt die Monde vor den Spielern.
+mitWelt({
+  permissions: { canViewMoons: () => false },
+  api: { getAllMoonPhases: () => [{ moonIndex: 0, moonName: "Selûne", name: "Vollmond", position: 0.5 }] }
+}, () => {
+  pruefe("verborgene Monde werden nicht gezeichnet", mondphasen(ZWEI_MONDE).length === 0);
+});
 
 console.log(fehler === 0 ? "\nalle Fälle richtig" : `\n${fehler} Fälle falsch`);
 process.exit(fehler === 0 ? 0 : 1);
