@@ -181,6 +181,9 @@ export function mondphasen(calendar) {
         return {
           anteil: ((p.position % 1) + 1) % 1,
           name: p.name ?? null,
+          // Die feinere Auskunft, wenn Calendaria sie mitliefert:
+          // "Aufsteigend Abnehmender Mond" statt nur "Abnehmender Mond".
+          unterphase: p.subPhaseName ?? null,
           mondname: p.moonName ?? (roh?.name ? game.i18n.localize(roh.name) : null),
           farbe: aufhellen(roh?.color) || "#e9e9e4"
         };
@@ -853,9 +856,14 @@ function hinweisText(aufgang, untergang, monde, geschaetzt) {
   // Jeder Mond mit Namen und Phase. Mehrere stehen untereinander, weil
   // "Selûne: Letztes Viertel · Tears: Neumond" in einer Zeile nicht mehr zu
   // lesen ist, sobald eine Welt drei Monde führt.
-  for (const mond of monde ?? []) {
-    if (!mond?.name) continue;
-    zeilen.push(mond.mondname ? `${mond.mondname}: ${mond.name}` : mond.name);
+  // Bei einem Mond die feinere Unterphase, bei mehreren die kurze: Vier
+  // Monde mal "Aufsteigend Abnehmender Mond" ergäben eine Zeile, die
+  // niemand mehr liest.
+  const liste = monde ?? [];
+  for (const mond of liste) {
+    const phase = (liste.length === 1 && mond?.unterphase) || mond?.name;
+    if (!phase) continue;
+    zeilen.push(mond.mondname ? `${mond.mondname}: ${phase}` : phase);
   }
   return zeilen.join(" · ");
 }

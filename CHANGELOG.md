@@ -1,5 +1,12 @@
 # Changelog
 
+## 14.2611.66 — 2026-09-06
+
+**Die feinere Mondphase im Erklärkasten.** Wo Calendaria sie kennt, steht
+jetzt „Aufsteigend Abnehmender Mond" statt nur „Abnehmender Mond" — aber nur
+bei einem Mond. Bei mehreren bleibt es beim kurzen Namen; vier Monde mal der
+langen Fassung ergäben eine Zeile, die niemand mehr liest.
+
 ## 14.2611.65 — 2026-09-06
 
 **Alle Monde einer Welt, nicht nur der erste.** Faerûn hat einen, aber ein
