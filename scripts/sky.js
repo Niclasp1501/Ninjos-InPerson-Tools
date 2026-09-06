@@ -370,10 +370,15 @@ export function himmelsbogen(wetter = null) {
   // damit bei Neumond nicht der ganze Himmel leer wirkt.
   const monde = helligkeit < 1 ? mondphasen(calendar) : [];
   if (helligkeit < 1) {
+    // Abstand und Größe sind gemessen, nicht geraten: Die Bahn ist ein
+    // Halbkreis mit Radius 61, also gut 190 Pixel lang. Bei 0,11 Abstand
+    // standen zwei Monde 21 Pixel auseinander und waren zusammen 25 breit -
+    // sie klebten aneinander. 0,17 sind 33 Pixel und lassen auch bei vier
+    // Monden eine Lücke.
     const liste = monde.length ? monde : [null];
-    const groesse = Math.max(0.62, 1 - 0.09 * (liste.length - 1));
+    const groesse = Math.max(0.55, 1 - 0.12 * (liste.length - 1));
     liste.forEach((mond, i) => {
-      const anteilDavon = nachtanteil - i * 0.11;
+      const anteilDavon = nachtanteil - i * 0.17;
       if (i > 0 && anteilDavon < 0) return;
       const { x, y } = ort(Math.max(0, anteilDavon));
       gestirn += mondBild(x.toFixed(1), y.toFixed(1), mond, 1 - helligkeit, groesse);
