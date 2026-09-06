@@ -2672,16 +2672,55 @@ body.inperson-sheetview .sidebar-popout {
   animation: inperson-sky-mondhof 6s ease-in-out infinite alternate;
 }
 
-/* Calendarias eigene Kuppel, in unsere Leiste umgehaengt: Sie bringt ihre
-   Platzierung aus deren HUD mit, wo sie ueber der Leiste schwebt. Hier ist
-   sie der Inhalt des Platzes, nicht sein Nachbar. */
-.inperson-clock-sky .dome.inperson-fremde-kuppel {
+/* Calendarias eigenes Kalenderfenster, in unsere Leiste umgehaengt.
+ *
+ * Umgehaengt wird das ganze Fenster, nicht nur die Kuppel - warum, steht in
+ * sky-calendaria.js. Hier bleibt davon nur die Kuppel uebrig: Das Fenster
+ * verliert seine feste Platzierung und wird auf die Groesse der Kuppel
+ * gestutzt, alles andere darin verschwindet. Weil das Element seine Klasse
+ * behaelt, greifen Calendarias eigene Regeln fuer Form, Rand und Schatten
+ * weiter - genau das ist der Sinn der Uebung. */
+.inperson-clock-sky > .calendaria-hud.inperson-fremde-kuppel {
   position: static !important;
   inset: auto !important;
   transform: none !important;
   display: block !important;
   opacity: 1 !important;
+  width: 10rem;
+  height: 5rem;
   margin: 0;
+  padding: 0;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  pointer-events: none;
+}
+
+/* Alles ausser der Kuppel: Datum, Uhrzeit und Knoepfe stehen in unserer
+   eigenen Leiste daneben und waeren hier doppelt. */
+.inperson-clock-sky > .calendaria-hud.inperson-fremde-kuppel .bar,
+.inperson-clock-sky > .calendaria-hud.inperson-fremde-kuppel .slice,
+.inperson-clock-sky > .calendaria-hud.inperson-fremde-kuppel .tray {
+  display: none !important;
+}
+
+/* Die Kuppel selbst fuellt den Platz. Ihre Rundung, ihr Rand und ihr
+   Innenschatten kommen weiterhin aus Calendarias Stylesheet. */
+.inperson-clock-sky > .calendaria-hud.inperson-fremde-kuppel .dome {
+  position: absolute !important;
+  inset: 0 !important;
+  bottom: 0 !important;
+  transform: none !important;
+  display: block !important;
+  opacity: 1 !important;
+  width: 100%;
+  height: 100%;
+}
+
+.inperson-clock-sky > .calendaria-hud.inperson-fremde-kuppel .content {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 @keyframes inperson-sky-fallen {

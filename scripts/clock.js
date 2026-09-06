@@ -319,11 +319,15 @@ function fillStrip(element, now) {
 
   // Calendarias Kuppel ist ein lebendes Element mit eigener Zeichenfläche;
   // sie wird umgehängt, nicht geschrieben. Klappt das nicht - fremdes HUD
-  // offen, Modul zu alt -, zeichnet der nächste Durchgang wieder unsere.
+  // offen, Modul zu alt -, bleibt der Platz nicht leer, sondern bekommt
+  // sofort unsere eigene. Eine Lücke wäre das schlechteste von beidem.
   const platz = element.querySelector(".inperson-clock-sky-fremd");
   if (platz) {
+    const bogen = himmelsbogen(now.weather);
     kuppelEinhaengen(platz).then(ok => {
-      if (!ok) platz.classList.remove("inperson-clock-sky-fremd");
+      if (ok || !platz.isConnected) return;
+      platz.classList.remove("inperson-clock-sky-fremd");
+      platz.innerHTML = bogen?.svg ?? "";
     });
   } else {
     kuppelLoslassen();

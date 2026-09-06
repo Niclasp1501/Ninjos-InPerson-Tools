@@ -1,5 +1,25 @@
 # Changelog
 
+## 14.2611.61 — 2026-09-06
+
+**Calendarias Kuppel erschien gar nicht — und dann ohne Wetter.** Zwei Fehler
+übereinander, beide behoben.
+
+Der erste: Unsere Zeitleiste baut sich jede Minute neu auf und nimmt dabei
+jedes Kind heraus, auch die ausgeliehene Kuppel. Für Calendaria war sie damit
+nicht verschwunden, sondern nur nicht mehr im Bild; es baute keine neue. Nach
+dem ersten Minutenwechsel blieb es für den Rest des Abends bei unserer.
+
+Der zweite steckte tiefer: Calendaria sucht seine Zeichenfläche **innerhalb
+seines eigenen Fensters**. Wer nur die Kuppel herausnimmt, lässt diese Suche
+ins Leere laufen — Himmel und Sonne standen da, aber nie fiel ein Tropfen,
+weil das Wetter nie wieder aufgetragen wurde. Jetzt wandert das ganze Fenster
+in die Leiste, aus dem Bild geschoben ist alles außer der Kuppel, und
+Calendaria verwaltet seine Fläche weiter, als wäre nichts gewesen.
+
+Scheitert das Ausleihen doch — ein sichtbares fremdes Kalenderfenster etwa —,
+steht dort sofort unsere eigene Kuppel statt einer Lücke.
+
 ## 14.2611.60 — 2026-09-06
 
 **Der Spielleiter wählt, wer die Kuppel zeichnet.** Auf der Seite „Zeit &
