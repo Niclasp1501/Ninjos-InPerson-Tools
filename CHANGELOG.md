@@ -1,5 +1,23 @@
 # Changelog
 
+## 14.2611.67 — 2026-09-06
+
+**Das Wetter färbt jetzt den Himmel.** Das war der eigentliche Unterschied zu
+Calendarias Kuppel — nicht die Tropfen, sondern der Himmel dahinter. Bei uns
+blieb er immer blau, und alles hing davor wie aufgeklebt. Jetzt wird er bei
+Regen grau, beim Sandsturm ockerfarben, beim Gewitter fast schwarz, beim
+Polarlicht tiefblau; je Wetter mit eigener Stärke, von 15 % bei Wind bis 95 %
+bei der Nullfront.
+
+**Eigene Himmelsfarben des Spielleiters werden übernommen.** Wer in Calendaria
+eigenes Wetter anlegt oder die Farben eines eingebauten übersteuert, sieht das
+auch in unserer Kuppel — beide Wege stehen in Welteinstellungen, die uns
+offenstehen.
+
+Die Farbwerte stammen aus Calendaria (MIT) und sind in der LICENSE
+ausgewiesen. Sie nachzubauen hätte geraten geheißen, und dann stünden zwei
+verschiedene Himmel über demselben Wetter nebeneinander auf dem Tisch.
+
 ## 14.2611.66 — 2026-09-06
 
 **Die feinere Mondphase im Erklärkasten.** Wo Calendaria sie kennt, steht

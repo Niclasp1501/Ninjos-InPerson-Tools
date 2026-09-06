@@ -79,10 +79,20 @@ for (const vorlage of VORLAGEN) {
   pruefe(`${vorlage} ergibt ein Bild`, !!art);
 }
 
+// Jedes Wetter färbt den Himmel - das ist der Unterschied, den der Tisch
+// gesehen hat. Fehlt die Zuordnung, bleibt die Kuppel blau und die Tropfen
+// hängen davor wie aufgeklebt.
+for (const vorlage of VORLAGEN) {
+  const art = wetterArt({ fxPreset: vorlage });
+  pruefe(`${vorlage} färbt den Himmel`, !!art?.toenung, JSON.stringify(art?.himmel));
+  pruefe(`${vorlage}: drei Himmelsfarben`, art?.toenung?.farben?.length === 3);
+  pruefe(`${vorlage}: Stärke zwischen 0 und 1`, art?.toenung?.staerke > 0 && art?.toenung?.staerke <= 1, String(art?.toenung?.staerke));
+}
+
 const BAUSTEINE = new Set([
   "regen", "flocken", "koerner", "wolken", "nebel", "fahnen", "blaetter", "funken",
   "rauch", "wirbel", "schemen", "meteore", "aurora", "strahlen", "flimmern",
-  "rauschen", "dunkel", "blitz", "farbe", "langsam"
+  "rauschen", "dunkel", "blitz", "farbe", "langsam", "himmel"
 ]);
 for (const [name, rezept] of Object.entries(WETTER_VORLAGEN)) {
   for (const teil of Object.keys(rezept)) {

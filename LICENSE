@@ -28,3 +28,40 @@ released under separate, proprietary licenses.
 
 This module contains no bundled third-party libraries. libWrapper is an optional
 runtime dependency and is not distributed with it.
+
+---
+
+Third-party material
+--------------------
+
+`scripts/sky.js` contains one table of colour values taken from **Calendaria**
+by 3 Death Saves (https://github.com/Sayshal/calendaria), used under the MIT
+licence: the per-weather sky tints (`HIMMELSTOENUNG`), a strength and three
+RGB values for each weather effect.
+
+They are copied rather than reinvented on purpose. The sky behind the rain is
+what makes both domes look alike, and a gamemaster running Calendaria sees its
+dome next to ours on the table; guessed values would have put two different
+skies side by side over the same weather.
+
+MIT License
+
+Copyright (c) 2025 3 Death Saves
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
