@@ -1,5 +1,18 @@
 # Changelog
 
+## 14.2611.69 — 2026-09-06
+
+**Wartungsstand.** An der Kuppel, den Leisten und den Einstellungen ändert
+sich nichts; die Auslieferung wiederholt 14.2611.68, deren Eintrag im
+Foundry-Katalog an einem Serverfehler von foundryvtt.com hängen blieb.
+
+Dazu zwei Dinge abseits des Moduls: Die Klassenprüfung in `tools/validate.mjs`
+sieht nur noch Namen an, die wirklich als Klasse geschrieben stehen — Element-
+Kennungen liegen im selben Namensraum und tauchten in jedem Lauf als Warnung
+auf, was den eigentlichen Zweck der Prüfung verdeckte. Und die Analyse hält
+fest, was für diesen Tisch endgültig nicht gebaut wird.
+
+
 ## 14.2611.68 — 2026-09-06
 
 **Das Wetter färbt jetzt den Himmel.** Das war der eigentliche Unterschied zu
