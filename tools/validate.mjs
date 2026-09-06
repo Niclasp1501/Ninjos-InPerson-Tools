@@ -131,10 +131,27 @@ if (codes.length === 2) {
 
 const css = (manifest.styles ?? []).map(read).join("\n");
 const markup = [...listDir("templates").filter(f => f.endsWith(".hbs")), ...scripts].map(read).join("\n");
-// Negative lookbehind: the module id "ninjos-inperson-tools" contains
-// "inperson-tools" as a substring and would otherwise be reported as an
-// unstyled class.
-const inMarkup = new Set([...markup.matchAll(/(?<![a-z-])inperson-[a-z-]+/g)].map(m => m[0]));
+// Only names that are actually used *as classes* count. Reading every
+// "inperson-…" string in the code was too coarse: element ids live in the
+// same namespace, and a name like "inperson-sv-groesse" is a handle for
+// getElementById, not a style hook - its styling comes from a class on the
+// same element. Those turned up as warnings in every single run and made the
+// real purpose of this check, catching a mistyped class, easy to overlook.
+//
+// Three places a class can be written, in markup and in scripts alike:
+const KLASSENSTELLEN = [
+  /class\s*=\s*["'`]([^"'`]*)/g,               // <div class="…"> and template literals
+  /className\s*=\s*["'`]([^"'`]*)/g,           // element.className = "…"
+  /classList\.\w+\(\s*["']([^"']+)/g           // classList.add/remove/toggle("…")
+];
+const inMarkup = new Set();
+for (const stelle of KLASSENSTELLEN) {
+  for (const treffer of markup.matchAll(stelle)) {
+    // Negative lookbehind: the module id "ninjos-inperson-tools" contains
+    // "inperson-tools" as a substring and would otherwise be reported.
+    for (const name of treffer[1].matchAll(/(?<![a-z-])inperson-[a-z-]+/g)) inMarkup.add(name[0]);
+  }
+}
 const inCss = new Set([...css.matchAll(/[.#][a-z-]*?(inperson-[a-z-]+)/g)].map(m => m[1]));
 const unstyled = [...inMarkup].filter(c => !inCss.has(c));
 if (unstyled.length) warn(`classes used without a CSS rule: ${unstyled.join(", ")}`);
