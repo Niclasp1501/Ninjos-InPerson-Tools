@@ -11,6 +11,10 @@ on:
       manifest:
         description: Manifest-URL einer bestimmten Fassung
         required: true
+      trocken:
+        description: Trockenlauf (true oder leer)
+        required: false
+        default: ""
 jobs:
   fragen:
     runs-on: ubuntu-latest
@@ -20,4 +24,4 @@ jobs:
         with:
           package-token: ${{ secrets.PACKAGE_TOKEN }}
           manifest-url: ${{ github.event.inputs.manifest }}
-          dry-run: true
+          dry-run: ${{ github.event.inputs.trocken }}
