@@ -1,5 +1,22 @@
 # Changelog
 
+## 14.2611.59 — 2026-09-06
+
+**Alle 41 Wetter von Calendaria haben jetzt ihr eigenes Bild.** Bisher waren
+es 21, und ein Sandsturm kam als Schneetreiben heraus. Neu dabei: Hitzewelle,
+Eissturm, Tornado und Hurrikan, Nordlicht, Kirschblüten und Herbstlaub,
+Waldbrandrauch, Staubteufel, Schwarze Sonne, Ley-Aufwallung, Ätherische
+Dunstglocke, Nullfront, Dauerfrostwelle, Grabwind, Schleierfall, Arkane Winde,
+Säureregen (grün), Blutregen (rot), Meteorschauer, Sporenwolke, Göttliches
+Licht und Pestnebel.
+
+Dazu kommen Calendarias Dichte-, Tempo- und Farbangaben an: Ein Blizzard
+treibt dichter und schneller als Schneefall, und wer sich eigenes Wetter
+anlegt, bekommt über Niederschlagsart und Wind trotzdem ein Bild.
+
+Neu: `tools/test-sky.mjs` prüft die Abdeckung und die Richtung der Mondsichel
+— die war zwei Fassungen lang seitenverkehrt, ohne dass es etwas gemerkt hat.
+
 ## 14.2611.58 — 2026-09-06
 
 **„Du bist dran!"** — in der Blattansicht steht es auf dem Tablet, solange der

@@ -124,9 +124,15 @@ function currentWeather() {
     // a table that belongs to another module and rots when they change it.
     wind: zone.wind ? { direction: zone.wind.direction, speed: zone.wind.speed } : null,
     precipitation: zone.precipitation?.type ? zone.precipitation : null,
-    // Calendarias Effektvorlage ("rain", "fog", "thunderstorm" …) - die
-    // Kuppel zeichnet danach Regen, Schnee, Nebel oder Wolken.
-    fxPreset: zone.fxPreset ?? null
+    // Calendarias Effektvorlage ("rain", "fog", "meteor-shower" …) samt
+    // Dichte, Tempo und Sonderfarbe: Daraus zeichnet die Kuppel ihr Wetter.
+    // Das Feld hudEffect, das dort dieselbe Aufgabe hat, wird beim Speichern
+    // verworfen - die Vorlage ist der einzige Schlüssel, der ankommt.
+    id: zone.id ?? null,
+    fxPreset: zone.fxPreset ?? null,
+    fxDensity: zone.fxDensity ?? null,
+    fxSpeed: zone.fxSpeed ?? null,
+    fxColor: zone.fxColor ?? null
   };
 }
 

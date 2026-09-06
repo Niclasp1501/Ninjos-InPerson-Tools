@@ -2568,16 +2568,25 @@ body.inperson-sheetview .sidebar-popout {
 
 
 /* ── Wetter in der Kuppel ────────────────────────────────────────────
-   Calendaria hat dafür eine PixiJS-Partikelszene. Wir kommen mit ein paar
-   Strichen, Punkten und Flächen aus, die das CSS bewegt - kein Canvas, keine
-   Grafik-Engine, und auf dem Tablet nichts, was den Akku leert. Wer Bewegung
-   abgeschaltet hat, bekommt das Wetter stehend. */
+   Calendaria hat dafür eine PixiJS-Partikelszene mit 41 Vorlagen. Wir kommen
+   mit Strichen, Punkten und Flächen aus, die das CSS bewegt — kein Canvas,
+   keine Grafik-Engine, und auf dem Tablet nichts, was den Akku leert. Wer
+   Bewegung abgeschaltet hat, bekommt das Wetter stehend. */
 .inperson-sky-regen line {
   animation: inperson-sky-fallen var(--dauer, 0.8s) linear infinite;
 }
 
+.inperson-sky-koerner ellipse {
+  animation: inperson-sky-fallen var(--dauer, 0.5s) linear infinite;
+}
+
 .inperson-sky-flocken circle {
   animation: inperson-sky-schweben var(--dauer, 4s) ease-in-out infinite;
+}
+
+.inperson-sky-blaetter ellipse {
+  animation: inperson-sky-taumeln var(--dauer, 6s) linear infinite;
+  transform-origin: center;
 }
 
 .inperson-sky-wolke {
@@ -2590,6 +2599,60 @@ body.inperson-sheetview .sidebar-popout {
 
 .inperson-sky-nebel-schwade {
   animation: inperson-sky-wabern 9s ease-in-out infinite alternate;
+}
+
+.inperson-sky-fahnen line {
+  animation: inperson-sky-wehen var(--dauer, 1.2s) linear infinite;
+}
+
+.inperson-sky-funken circle {
+  animation: inperson-sky-steigen var(--dauer, 3s) ease-out infinite;
+}
+
+.inperson-sky-rauch circle {
+  opacity: 0;
+  animation: inperson-sky-qualmen var(--dauer, 8s) ease-out infinite;
+}
+
+.inperson-sky-wirbel {
+  transform-origin: 50% 100%;
+  animation: inperson-sky-wirbeln 3.5s ease-in-out infinite alternate;
+}
+
+.inperson-sky-schemen ellipse {
+  animation: inperson-sky-schweifen var(--dauer, 12s) linear infinite;
+}
+
+.inperson-sky-meteore line {
+  opacity: 0;
+  animation: inperson-sky-sternschnuppe 8s ease-in infinite;
+}
+
+.inperson-sky-aurora path {
+  animation: inperson-sky-nordlicht 11s ease-in-out infinite alternate;
+}
+
+.inperson-sky-aurora-zwei {
+  animation-duration: 15s !important;
+  animation-delay: -4s;
+}
+
+.inperson-sky-strahlen path {
+  opacity: 0.25;
+  animation: inperson-sky-strahlen 5s ease-in-out infinite alternate;
+}
+
+.inperson-sky-flimmern rect {
+  animation: inperson-sky-flimmern 3.2s ease-in-out infinite alternate;
+}
+
+.inperson-sky-rauschen rect {
+  animation: inperson-sky-rauschen 0.6s steps(2, end) infinite;
+}
+
+.inperson-sky-dunkel-ring {
+  transform-origin: center;
+  animation: inperson-sky-schlucken 6s ease-in-out infinite alternate;
 }
 
 .inperson-sky-blitz {
@@ -2608,6 +2671,12 @@ body.inperson-sheetview .sidebar-popout {
   100% { transform: translate(-3px, 96px); }
 }
 
+@keyframes inperson-sky-taumeln {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  50%  { transform: translate(10px, 46px) rotate(180deg); }
+  100% { transform: translate(-6px, 94px) rotate(360deg); }
+}
+
 @keyframes inperson-sky-ziehen {
   from { transform: translateX(-24px); }
   to   { transform: translateX(24px); }
@@ -2618,6 +2687,68 @@ body.inperson-sheetview .sidebar-popout {
   to   { transform: translateX(10px);  opacity: calc(var(--dichte, 0.7) * 0.5); }
 }
 
+@keyframes inperson-sky-wehen {
+  from { transform: translateX(180px); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  to   { transform: translateX(-70px); opacity: 0; }
+}
+
+@keyframes inperson-sky-steigen {
+  from { transform: translateY(0) scale(1); opacity: 0; }
+  20%  { opacity: 0.9; }
+  to   { transform: translateY(-60px) scale(0.4); opacity: 0; }
+}
+
+@keyframes inperson-sky-qualmen {
+  from { transform: translateY(0) scale(0.5); opacity: 0; }
+  25%  { opacity: 0.4; }
+  to   { transform: translateY(-70px) scale(1.5); opacity: 0; }
+}
+
+@keyframes inperson-sky-wirbeln {
+  from { transform: skewX(-6deg) scaleX(0.9); }
+  to   { transform: skewX(6deg) scaleX(1.1); }
+}
+
+@keyframes inperson-sky-schweifen {
+  from { transform: translateX(0); opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  to   { transform: translateX(210px); opacity: 0; }
+}
+
+@keyframes inperson-sky-sternschnuppe {
+  0%, 88%   { opacity: 0; transform: translate(0, 0); }
+  90%       { opacity: 1; }
+  96%, 100% { opacity: 0; transform: translate(40px, 30px); }
+}
+
+@keyframes inperson-sky-nordlicht {
+  from { transform: translateX(-8px) scaleY(0.9); opacity: 0.55; }
+  to   { transform: translateX(8px) scaleY(1.15); opacity: 1; }
+}
+
+@keyframes inperson-sky-strahlen {
+  from { opacity: 0.12; }
+  to   { opacity: 0.4; }
+}
+
+@keyframes inperson-sky-flimmern {
+  from { transform: translateX(-6px) scaleY(0.6); }
+  to   { transform: translateX(6px) scaleY(1.4); }
+}
+
+@keyframes inperson-sky-rauschen {
+  0%, 100% { opacity: 0.15; }
+  50%      { opacity: 0.75; }
+}
+
+@keyframes inperson-sky-schlucken {
+  from { transform: scale(0.9); opacity: 0.35; }
+  to   { transform: scale(1.15); opacity: 0.7; }
+}
+
 @keyframes inperson-sky-blitz {
   0%, 91%, 93%, 100% { opacity: 0; }
   92% { opacity: 0.55; }
@@ -2626,14 +2757,33 @@ body.inperson-sheetview .sidebar-popout {
 
 @media (prefers-reduced-motion: reduce) {
   .inperson-sky-regen line,
+  .inperson-sky-koerner ellipse,
   .inperson-sky-flocken circle,
+  .inperson-sky-blaetter ellipse,
   .inperson-sky-wolke,
   .inperson-sky-nebel-schwade,
+  .inperson-sky-fahnen line,
+  .inperson-sky-funken circle,
+  .inperson-sky-rauch circle,
+  .inperson-sky-wirbel,
+  .inperson-sky-schemen ellipse,
+  .inperson-sky-meteore line,
+  .inperson-sky-aurora path,
+  .inperson-sky-strahlen path,
+  .inperson-sky-flimmern rect,
+  .inperson-sky-rauschen rect,
+  .inperson-sky-dunkel-ring,
   .inperson-sky-blitz {
     animation: none;
   }
-  .inperson-sky-regen line { transform: translateY(40px); }
-  .inperson-sky-flocken circle { transform: translateY(40px); }
+  .inperson-sky-regen line,
+  .inperson-sky-koerner ellipse,
+  .inperson-sky-flocken circle,
+  .inperson-sky-blaetter ellipse { transform: translateY(40px); }
+  .inperson-sky-fahnen line { transform: translateX(40px); }
+  .inperson-sky-rauch circle { opacity: 0.3; }
+  .inperson-sky-meteore line { opacity: 0.8; }
+  .inperson-sky-strahlen path { opacity: 0.25; }
 }
 
 
