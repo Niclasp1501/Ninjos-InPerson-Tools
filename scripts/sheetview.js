@@ -1264,6 +1264,16 @@ export function installSheetView() {
   Hooks.on("renderActorSheet", app => blattGezeichnet(app, app?.actor));
   Hooks.on("renderApplicationV2", app => {
     const doc = app?.document;
-    if (doc?.documentName === "Actor") blattGezeichnet(app, doc);
+    if (doc?.documentName !== "Actor") return;
+    /*
+     * Nur echte Blätter. Der Trefferwürfel-Dialog von dnd5e trägt denselben
+     * Akteur als `document` und wäre sonst zur Bühne geworden: ganzer Schirm,
+     * fest, ohne Schließen-Kreuz - "so groß, dass man nicht mehr rauskommt"
+     * (07.09.2026). Ein Blatt ist eine ActorSheetV2 oder trägt Foundrys
+     * Klasse `sheet`; ein Dialog tut beides nicht.
+     */
+    const SheetV2 = foundry.applications?.sheets?.ActorSheetV2;
+    const istBlatt = (SheetV2 && app instanceof SheetV2) || app.element?.classList.contains("sheet");
+    if (istBlatt) blattGezeichnet(app, doc);
   });
 }
