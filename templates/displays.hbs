@@ -78,10 +78,10 @@
 
       <div class="inperson-pair-add">
         <div class="inperson-pair-add-from"></div>
-        <i class="fa-solid fa-arrow-right"></i>
+        <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
         <div class="inperson-pair-add-to"></div>
         <button type="button" class="inperson-mini" data-action="addPair">
-          <i class="fa-solid fa-plus"></i> {{localize "INPERSON.Displays.PairAdd"}}
+          <i class="fa-solid fa-plus" aria-hidden="true"></i> {{localize "INPERSON.Displays.PairAdd"}}
         </button>
       </div>
     </div>
@@ -135,12 +135,16 @@
           <label>{{localize "INPERSON.Settings.IdleLogo.Name"}}</label>
           <div class="form-fields inperson-logo-row">
             <input type="text" name="idleLogo" value="{{logo}}" placeholder="{{localize 'INPERSON.Settings.IdleLogo.Placeholder'}}">
-            <button type="button" class="inperson-mini" data-action="pickLogo">
-              <i class="fa-solid fa-folder-open"></i>
+            <button type="button" class="inperson-mini" data-action="pickLogo"
+                    data-tooltip="{{localize 'INPERSON.Settings.IdleLogo.Pick'}}"
+                    aria-label="{{localize 'INPERSON.Settings.IdleLogo.Pick'}}">
+              <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
             </button>
             <button type="button" class="inperson-mini inperson-logo-clear"
-                    data-action="clearLogo" {{#unless hasLogo}}hidden{{/unless}}>
-              <i class="fa-solid fa-xmark"></i>
+                    data-action="clearLogo" {{#unless hasLogo}}hidden{{/unless}}
+                    data-tooltip="{{localize 'INPERSON.Settings.IdleLogo.Clear'}}"
+                    aria-label="{{localize 'INPERSON.Settings.IdleLogo.Clear'}}">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
             </button>
           </div>
           <p class="hint">{{localize "INPERSON.Settings.IdleLogo.Hint"}}</p>
@@ -151,7 +155,7 @@
 
         <div class="form-group">
           <button type="button" class="inperson-mini" data-action="testCover">
-            <i class="fa-solid fa-eye"></i> {{localize "INPERSON.Displays.TestCover"}}
+            <i class="fa-solid fa-eye" aria-hidden="true"></i> {{localize "INPERSON.Displays.TestCover"}}
           </button>
           <p class="hint">{{localize "INPERSON.Displays.TestCoverHint"}}</p>
         </div>
@@ -185,7 +189,7 @@
 
   <footer class="inperson-foot">
     <button type="submit" class="inperson-mini">
-      <i class="fa-solid fa-floppy-disk"></i> {{localize "INPERSON.Displays.Save"}}
+      <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> {{localize "INPERSON.Displays.Save"}}
     </button>
   </footer>
 </div>

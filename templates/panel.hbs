@@ -2,7 +2,7 @@
 
   <div class="inperson-master {{#if enabled}}on{{else}}off{{/if}}">
     <button type="button" data-action="toggleMaster" class="inperson-master-toggle">
-      <i class="fa-solid {{#if enabled}}fa-eye-slash{{else}}fa-eye{{/if}}"></i>
+      <i class="fa-solid {{#if enabled}}fa-eye-slash{{else}}fa-eye{{/if}}" aria-hidden="true"></i>
       <span>{{#if enabled}}{{localize "INPERSON.Panel.MasterOn"}}{{else}}{{localize "INPERSON.Panel.MasterOff"}}{{/if}}</span>
     </button>
     <p class="inperson-master-note">
@@ -16,10 +16,10 @@
 
   <div class="inperson-scene">
     <div class="inperson-scene-head">
-      <h3><i class="fa-solid fa-map"></i> {{sceneName}}</h3>
+      <h3><i class="fa-solid fa-map" aria-hidden="true"></i> {{sceneName}}</h3>
       <button type="button" data-action="measure" class="inperson-mini"
               data-tooltip="{{localize 'INPERSON.Panel.MeasureTooltip'}}">
-        <i class="fa-solid fa-ruler"></i> {{localize "INPERSON.Panel.Measure"}}
+        <i class="fa-solid fa-ruler" aria-hidden="true"></i> {{localize "INPERSON.Panel.Measure"}}
       </button>
     </div>
     <p class="inperson-scene-cost">
@@ -36,12 +36,12 @@
     {{#if showSplit}}
       <div class="inperson-split">
         <div class="inperson-split-row blocked">
-          <i class="fa-solid fa-ban"></i>
+          <i class="fa-solid fa-ban" aria-hidden="true"></i>
           <span class="inperson-split-label">{{localize "INPERSON.Panel.SplitActive"}}</span>
           <strong>{{sceneBlocked}}</strong>
         </div>
         <div class="inperson-split-row passing">
-          <i class="fa-solid fa-arrow-down"></i>
+          <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
           <span class="inperson-split-label">{{localize "INPERSON.Panel.SplitPassing"}}</span>
           <strong>{{scenePassing}}</strong>
         </div>
@@ -51,7 +51,7 @@
     {{#if showSaving}}
       <div class="inperson-split">
         <div class="inperson-split-row saving">
-          <i class="fa-solid fa-arrow-trend-down"></i>
+          <i class="fa-solid fa-arrow-trend-down" aria-hidden="true"></i>
           <span class="inperson-split-label">{{localize "INPERSON.Panel.WouldSave"}}</span>
           <strong>{{sceneSaving}}</strong>
         </div>
@@ -59,7 +59,7 @@
     {{/if}}
     {{#if sceneUnmeasured}}
       <p class="inperson-hint">
-        <i class="fa-solid fa-circle-info"></i>
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
         {{localize "INPERSON.Panel.MeasureHint"}}
       </p>
     {{/if}}
@@ -67,7 +67,7 @@
 
   {{#if hasMonitors}}
     <div class="inperson-monitors">
-      <h3><i class="fa-solid fa-display"></i> {{localize "INPERSON.Panel.MonitorsTitle"}}</h3>
+      <h3><i class="fa-solid fa-display" aria-hidden="true"></i> {{localize "INPERSON.Panel.MonitorsTitle"}}</h3>
 
       {{#if bmName}}
         <div class="inperson-monitor-row {{#unless bmActive}}offline{{/unless}}">
@@ -95,8 +95,8 @@
           <div class="inperson-choice">
             <button type="button" data-action="togglePin"
                     class="{{#if pinned}}active{{/if}}"
-                    data-tooltip="{{localize 'INPERSON.Panel.RolePinnedTip'}}">
-              <i class="fa-solid fa-thumbtack"></i>
+                    data-tooltip="{{localize 'INPERSON.Panel.RolePinnedTip'}}" aria-label="{{localize 'INPERSON.Panel.RolePinnedTip'}}">
+              <i class="fa-solid fa-thumbtack" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -115,7 +115,7 @@
             {{#if this.isGM}}<em class="inperson-tag">GM</em>{{/if}}
             {{#if this.isMonitor}}
               <em class="inperson-tag shield" title="{{localize 'INPERSON.Panel.MonitorProtected'}}">
-                <i class="fa-solid fa-shield-halved"></i> {{localize "INPERSON.Panel.MonitorTag"}}
+                <i class="fa-solid fa-shield-halved" aria-hidden="true"></i> {{localize "INPERSON.Panel.MonitorTag"}}
               </em>
             {{/if}}
             {{#unless this.active}}<em class="inperson-tag muted">{{localize "INPERSON.Panel.Offline"}}</em>{{/unless}}
@@ -134,10 +134,10 @@
                   title="{{localize 'INPERSON.Panel.Auto'}}">A</button>
           <button type="button" data-action="setUser" data-user-id="{{this.id}}" data-value="on"
                   class="{{#if this.isOn}}active{{/if}}"
-                  title="{{localize 'INPERSON.Panel.ForceOn'}}"><i class="fa-solid fa-eye-slash"></i></button>
+                  title="{{localize 'INPERSON.Panel.ForceOn'}}" aria-label="{{localize 'INPERSON.Panel.ForceOn'}}"><i class="fa-solid fa-eye-slash" aria-hidden="true"></i></button>
           <button type="button" data-action="setUser" data-user-id="{{this.id}}" data-value="off"
                   class="{{#if this.isOff}}active{{/if}}"
-                  title="{{localize 'INPERSON.Panel.ForceOff'}}"><i class="fa-solid fa-eye"></i></button>
+                  title="{{localize 'INPERSON.Panel.ForceOff'}}" aria-label="{{localize 'INPERSON.Panel.ForceOff'}}"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>
         </div>
       </li>
     {{/each}}
@@ -145,10 +145,10 @@
 
   <footer class="inperson-foot">
     <button type="button" data-action="pullPlayers" class="inperson-mini">
-      <i class="fa-solid fa-people-arrows"></i> {{localize "INPERSON.Pull.MenuEntry"}}
+      <i class="fa-solid fa-people-arrows" aria-hidden="true"></i> {{localize "INPERSON.Pull.MenuEntry"}}
     </button>
     <button type="button" data-action="refreshAll" class="inperson-mini">
-      <i class="fa-solid fa-rotate"></i> {{localize "INPERSON.Panel.RefreshAll"}}
+      <i class="fa-solid fa-rotate" aria-hidden="true"></i> {{localize "INPERSON.Panel.RefreshAll"}}
     </button>
   </footer>
 

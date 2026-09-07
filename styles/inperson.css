@@ -11,17 +11,17 @@
 
 .inperson-panel,
 #ninjos-inperson-tools-pill {
-  --tm-bg:       #fdfbf7;
+  --tm-bg:       var(--ninjo-grund);
   --tm-card:     #ffffff;
-  --tm-nav:      #f4f1ea;
-  --tm-text:     #1a1a1a;
-  --tm-border:   #dcd6cc;
-  --tm-red:      #8B0000;
+  --tm-nav:      var(--ninjo-leiste);
+  --tm-text:     var(--ninjo-text);
+  --tm-border:   var(--ninjo-rand);
+  --tm-red:      var(--ninjo-marke);
   --tm-red-rgb:  139, 0, 0;
-  --tm-gold:     #D4AF37;
+  --tm-gold:     var(--ninjo-akzent);
   --tm-gold-rgb: 212, 175, 55;
   --tm-onred:    #ffffff;
-  --tm-font:     'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --tm-font:     var(--ninjo-schrift);
   --tm-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
   --tm-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -1730,7 +1730,7 @@ body:has(.actors-sidebar.sidebar-popout:has(.window-content > *)) #inperson-so-a
   border-radius: 3px;
   background: #fdfbf7;
   color: #1a1a1a;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--ninjo-schrift);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -1790,7 +1790,7 @@ body:has(.actors-sidebar.sidebar-popout:has(.window-content > *)) #inperson-so-a
   color: #ffffff;
   border-bottom: 2px solid var(--tm-gold, #D4AF37);
   border-radius: 3px 3px 0 0;
-  font-family: var(--tm-font, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif);
+  font-family: var(--tm-font, var(--ninjo-schrift));
 }
 
 /* The title and the close/menu buttons sit in that header and would otherwise
@@ -2001,7 +2001,7 @@ span.inperson-icon svg {
   border-radius: 3px;
   background: #fdfbf7;
   color: #1a1a1a;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--ninjo-schrift);
   font-size: 14px;
   line-height: 1.35;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
@@ -2268,7 +2268,7 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
   border: 1px solid rgb(255 255 255 / 12%);
   border-radius: 14px;
   box-shadow: 0 4px 14px rgb(0 0 0 / 45%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--ninjo-schrift);
   touch-action: none;
   user-select: none;
   overflow: visible;
@@ -2342,7 +2342,7 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
   border: 1px solid rgb(255 255 255 / 12%);
   border-radius: 14px;
   box-shadow: 0 4px 14px rgb(0 0 0 / 45%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--ninjo-schrift);
   font-size: 13px;
 }
 
@@ -2920,7 +2920,7 @@ body.inperson-sheetview .sidebar-popout {
   border: 1px solid rgb(255 255 255 / 18%);
   background: rgb(20 20 24 / 92%);
   color: #e6e2d8;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--ninjo-schrift);
   font-size: 17px;
   font-weight: 600;
   letter-spacing: .01em;

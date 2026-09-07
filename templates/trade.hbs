@@ -14,7 +14,7 @@
         interface - see trade-window.js #outcome. --}}
   <div class="inperson-trade-wait inperson-trade-over {{outcomeKind}}">
     <img class="inperson-portrait big" src="{{themImg}}" alt="">
-    <i class="fa-solid {{outcomeIcon}}"></i>
+    <i class="fa-solid {{outcomeIcon}}" aria-hidden="true"></i>
     <p class="inperson-trade-ask">{{outcome}}</p>
     <button type="button" data-action="dismiss" class="inperson-big go">
       {{localize "INPERSON.Trade.Close"}}
@@ -37,17 +37,17 @@
     <p class="inperson-trade-who">{{themUser}}</p>
     <div class="inperson-trade-answer">
       <button type="button" data-action="answerYes" class="inperson-big">
-        <i class="fa-solid fa-check"></i> {{localize "INPERSON.Trade.Yes"}}
+        <i class="fa-solid fa-check" aria-hidden="true"></i> {{localize "INPERSON.Trade.Yes"}}
       </button>
       <button type="button" data-action="answerNo" class="inperson-big ghost">
-        <i class="fa-solid fa-xmark"></i> {{localize "INPERSON.Trade.No"}}
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i> {{localize "INPERSON.Trade.No"}}
       </button>
     </div>
   </div>
 
 {{else if running}}
   <div class="inperson-trade-wait">
-    <i class="fa-solid fa-spinner fa-spin"></i>
+    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
     <p>{{localize "INPERSON.Trade.Running"}}</p>
   </div>
 
@@ -63,7 +63,7 @@
           {{meName}}
           <em>{{meUser}}</em>
         </span>
-        {{#if meAccepted}}<em class="inperson-tag ok"><i class="fa-solid fa-check"></i> {{localize "INPERSON.Trade.Accepted"}}</em>{{/if}}
+        {{#if meAccepted}}<em class="inperson-tag ok"><i class="fa-solid fa-check" aria-hidden="true"></i> {{localize "INPERSON.Trade.Accepted"}}</em>{{/if}}
       </h3>
 
       <div class="inperson-trade-side">
@@ -89,7 +89,7 @@
         {{/each}}
         {{#each meOffer.coins}}
           <div class="inperson-trade-row coins">
-            <i class="fa-solid fa-coins"></i>
+            <i class="fa-solid fa-coins" aria-hidden="true"></i>
             <span class="inperson-trade-name">{{this.amount}} {{this.label}}</span>
           </div>
         {{/each}}
@@ -97,10 +97,10 @@
 
       <div class="inperson-trade-tools">
         <button type="button" data-action="pickItems" class="inperson-big">
-          <i class="fa-solid fa-box-open"></i> {{localize "INPERSON.Trade.PickItems"}}
+          <i class="fa-solid fa-box-open" aria-hidden="true"></i> {{localize "INPERSON.Trade.PickItems"}}
         </button>
         <button type="button" data-action="pickCoins" class="inperson-big">
-          <i class="fa-solid fa-coins"></i> {{localize "INPERSON.Trade.PickCoins"}}
+          <i class="fa-solid fa-coins" aria-hidden="true"></i> {{localize "INPERSON.Trade.PickCoins"}}
         </button>
       </div>
     </div>
@@ -113,7 +113,7 @@
           {{themName}}
           <em>{{themUser}}</em>
         </span>
-        {{#if themAccepted}}<em class="inperson-tag ok"><i class="fa-solid fa-check"></i> {{localize "INPERSON.Trade.Accepted"}}</em>{{/if}}
+        {{#if themAccepted}}<em class="inperson-tag ok"><i class="fa-solid fa-check" aria-hidden="true"></i> {{localize "INPERSON.Trade.Accepted"}}</em>{{/if}}
       </h3>
 
       <div class="inperson-trade-side">
@@ -139,7 +139,7 @@
         {{/each}}
         {{#each themOffer.coins}}
           <div class="inperson-trade-row coins">
-            <i class="fa-solid fa-coins"></i>
+            <i class="fa-solid fa-coins" aria-hidden="true"></i>
             <span class="inperson-trade-name">{{this.amount}} {{this.label}}</span>
           </div>
         {{/each}}
@@ -149,15 +149,15 @@
 
   <footer class="inperson-foot inperson-trade-foot">
     <button type="button" data-action="cancel" class="inperson-big ghost">
-      <i class="fa-solid fa-xmark"></i> {{localize "INPERSON.Trade.Cancel"}}
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i> {{localize "INPERSON.Trade.Cancel"}}
     </button>
     {{#if meAccepted}}
       <button type="button" data-action="withdraw" class="inperson-big warn">
-        <i class="fa-solid fa-rotate-left"></i> {{localize "INPERSON.Trade.Withdraw"}}
+        <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> {{localize "INPERSON.Trade.Withdraw"}}
       </button>
     {{else}}
       <button type="button" data-action="accept" class="inperson-big go">
-        <i class="fa-solid fa-check"></i> {{localize "INPERSON.Trade.Accept"}}
+        <i class="fa-solid fa-check" aria-hidden="true"></i> {{localize "INPERSON.Trade.Accept"}}
       </button>
     {{/if}}
   </footer>
@@ -168,9 +168,9 @@
       <div class="inperson-pick-head">
         <h3>
           {{#if (eq mode "items")}}
-            <i class="fa-solid fa-box-open"></i> {{localize "INPERSON.Trade.PickItems"}}
+            <i class="fa-solid fa-box-open" aria-hidden="true"></i> {{localize "INPERSON.Trade.PickItems"}}
           {{else}}
-            <i class="fa-solid fa-coins"></i> {{localize "INPERSON.Trade.PickCoins"}}
+            <i class="fa-solid fa-coins" aria-hidden="true"></i> {{localize "INPERSON.Trade.PickCoins"}}
           {{/if}}
         </h3>
         <button type="button" data-action="backToTable" class="inperson-mini">
@@ -215,7 +215,7 @@
                     </button>
                   </div>
                 {{else}}
-                  <i class="fa-solid {{#if this.on}}fa-circle-check{{else}}fa-circle{{/if}} inperson-pick-mark"></i>
+                  <i class="fa-solid {{#if this.on}}fa-circle-check{{else}}fa-circle{{/if}} inperson-pick-mark" aria-hidden="true"></i>
                 {{/if}}
               </div>
             {{/each}}
@@ -253,7 +253,7 @@
           {{localize "INPERSON.Trade.Cancel"}}
         </button>
         <button type="button" data-action="applyPick" class="inperson-big go">
-          <i class="fa-solid fa-check"></i> {{localize "INPERSON.Trade.PutOnTable"}}
+          <i class="fa-solid fa-check" aria-hidden="true"></i> {{localize "INPERSON.Trade.PutOnTable"}}
         </button>
       </footer>
     </div>

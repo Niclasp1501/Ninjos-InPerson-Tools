@@ -92,3 +92,37 @@ Use that method for any future claim about bandwidth.
 `ParticleEffect#lookupTexture` (`particle-generator.mjs:2986`) bypasses the
 wrapper via `PIXI.Texture.from`. Affects weather and particle art under
 `ui/particles/` — 68 KB in total, cached and local. Not worth a second wrapper.
+
+
+## Oberfläche: die acht Regeln
+
+Sie stehen vollständig in der [CLAUDE.md des Workspace](../../CLAUDE.md),
+Abschnitt „Regelgrundsätze für die Oberfläche der Foundry-Module", und gelten
+für jedes Modul: Fenster passen ins Bild · die Marke steht in einer Datei · die
+Schrift liefert Foundry · kein sichtbarer Text ohne Sprachschlüssel · die
+Rückmeldung steht dort, wo der Mensch hinschaut · jeder Knopf hat einen Namen ·
+Unwiderrufliches fragt vorher · neue Fenster sind ApplicationV2.
+
+Zwei Dateien werden dafür **kopiert, nicht geteilt** — wie `willkommen.js`:
+
+| Datei | Angepasst wird |
+|---|---|
+| `styles/ninjo-marke.css` | nichts, sie ist überall identisch |
+| `scripts/fensterpassen.js` | nur der `MODUL`-Block ganz oben |
+
+Verbessert man eine davon, gehört sie in alle Module nachgezogen.
+
+### Was hier gilt
+
+**Fensterklasse:** `ninjos-inperson-tools` — sie hängt an jedem Fenster
+dieses Moduls und ist die einzige, die `fensterpassen.js` braucht.
+
+**Regel 5 stammt von hier.** Die Rückmeldung im Fenster statt als Toast
+(`trade.hbs`, `trade-window.js#outcome`) ist die Lösung, die jetzt für alle
+Module gilt: Sheet Only blendet Foundrys Benachrichtigungen aus, und wer am
+Tablet sitzt, sieht sie nie.
+
+**Offen:** Das Panel und die Monitor-Einstellungen melden weiter per Toast — für
+die Spielleitung am Schreibtisch in Ordnung, aber wo ein Spieler betroffen ist,
+gehört die Meldung ins Fenster. Und sechs `aria`-Attribute auf 1049 Zeilen
+Vorlage sind zu wenig für ein Modul, das auf Tablets bedient wird.

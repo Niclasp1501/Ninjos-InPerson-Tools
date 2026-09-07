@@ -34,6 +34,7 @@ import { onTradeSocket } from "./trade.js";
 import { installTradeWindow } from "./trade-window.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
 import { openLog as openTradeLog } from "./trade-log.js";
+import { fensterPassenEinrichten } from "./fensterpassen.js";
 import {
   installMonitorWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
   getSceneDisplay, getPinnedScene, getCompanionScene, setCompanionScene,
@@ -753,7 +754,10 @@ function registerKeybindings() {
   game.keybindings.register(MODULE_ID, "openPanel", {
     name: "INPERSON.Keybind.OpenPanel.Name",
     hint: "INPERSON.Keybind.OpenPanel.Hint",
-    editable: [{ key: "KeyT", modifiers: ["Alt"] }],
+    editable: [{ key: "KeyT", modifiers: ["Shift"] }],
+    // Shift+T wie Shift+G (FANG), Shift+R (NDRS) und Shift+W (Player Wheel).
+    // Bis zum 07.09.2026 stand hier Alt+T - die einzige Abweichung in der
+    // Familie. Wer sie zurueck will, stellt sie in Foundrys Tastenkuerzeln um.
     restricted: true,               // GM only - the panel manages other users
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
     onDown: () => {
@@ -774,6 +778,7 @@ Hooks.once("init", () => {
 });
 
 Hooks.once("ready", async () => {
+  fensterPassenEinrichten();
   // First thing: carry over what the previous module id had stored.
   await migrateFromOldId();
 

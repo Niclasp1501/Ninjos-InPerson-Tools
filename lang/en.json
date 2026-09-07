@@ -147,6 +147,8 @@
   "INPERSON.Settings.IdleLogo.Name": "Image on the cover",
   "INPERSON.Settings.IdleLogo.Hint": "Drifts slowly across the black. Without one a small gold dot appears instead, so the screen does not look broken.",
   "INPERSON.Settings.IdleLogo.Placeholder": "Path to an image",
+  "INPERSON.Settings.IdleLogo.Pick": "Choose an image",
+  "INPERSON.Settings.IdleLogo.Clear": "Remove the image",
   "INPERSON.Displays.PairsHint": "Battlemaps with a companion of their own. They can be made and undone here; the same pairing also appears in that battlemap's own scene configuration.",
   "INPERSON.Settings.KeepTokens.Name": "Keep loading token artwork",
   "INPERSON.Settings.KeepTokens.Hint": "Recommended. Token images are small and players need to tell their figures apart. Turning this off leaves tokens black as well.",
