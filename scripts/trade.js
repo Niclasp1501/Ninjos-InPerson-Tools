@@ -70,7 +70,7 @@ export function characterOf(user) {
 }
 
 /** Player characters this account owns outright. */
-function ownedCharacters(user) {
+export function ownedCharacters(user) {
   return game.actors.filter(a => a.type === "character" && a.testUserPermission(user, "OWNER"));
 }
 

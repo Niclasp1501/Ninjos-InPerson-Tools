@@ -23,7 +23,7 @@
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
-import { characterOf } from "./trade.js";
+import { characterOf, ownedCharacters } from "./trade.js";
 import { openTrade } from "./trade-start.js";
 import { mountClockInto } from "./clock.js";
 import { queueSweep, removeShells, hideShells, isGhost } from "./shells.js";
@@ -57,6 +57,8 @@ function ankerBauen(id, klasse) {
 const ZOOM_KEY = `${MODULE_ID}.sheetviewZoom`;
 
 let laufend = false;
+/** Für welches Blatt die Rechte-Meldung schon kam. */
+let gemeldet = null;
 
 /* ── Wann läuft sie ──────────────────────────────────────────────── */
 
@@ -74,7 +76,7 @@ export function sheetViewWanted() {
   // Charakter, auch den am Laptop, der seine Szenenliste braucht.
   const wer = game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_USERS) ?? {};
   if (wer[game.user.id] !== true) return false;
-  return !!characterOf(game.user);
+  return !!buehnenAktor();
 }
 
 export function sheetViewRunning() {
@@ -83,9 +85,47 @@ export function sheetViewRunning() {
 
 /* ── Die Bühne ───────────────────────────────────────────────────── */
 
+/**
+ * Wer auf der Bühne steht.
+ *
+ * **Nicht mehr fest der zugewiesene Hauptcharakter.** So war es bis zum
+ * 07.09.2026, und es hatte zwei Fehler: Wechselte der Spielleiter die
+ * Zuweisung, hing die Bühne am alten Blatt und meldete bei jeder Aktualisierung
+ * fehlende Rechte; und ein Spieler mit zwei Charakteren konnte nie wechseln -
+ * Sheet Only kann das, und so wird es am Tisch auch erwartet.
+ *
+ * Jetzt gilt: der zuletzt gewählte Charakter, je Gerät gemerkt, sofern der
+ * Spieler ihn noch besitzt. Sonst der zugewiesene, sonst der erste eigene.
+ * Gewählt wird durch Öffnen: Wer im Verzeichnis einen eigenen Charakter
+ * antippt, hat damit die Bühne gewechselt.
+ */
+function buehnenKey() {
+  return `${MODULE_ID}.buehne.${game.user.id}`;
+}
+
+function buehnenAktor() {
+  let gemerkt = null;
+  try { gemerkt = game.actors.get(localStorage.getItem(buehnenKey()) ?? ""); } catch { }
+  if (gemerkt?.type === "character" && gemerkt.isOwner) return gemerkt;
+  const zugewiesen = characterOf(game.user);
+  if (zugewiesen?.isOwner) return zugewiesen;
+  return ownedCharacters(game.user)[0] ?? null;
+}
+
+/** Ist das ein Blatt, das die Bühne übernehmen darf? */
+function buehnentauglich(actor) {
+  return actor?.type === "character" && actor.isOwner && actor.id !== buehnenAktor()?.id;
+}
+
+function buehneWechseln(actor) {
+  try { localStorage.setItem(buehnenKey(), actor.id); } catch { }
+  alteBuehneRaeumen();
+  actor.sheet?.element?.classList.add("inperson-stage-sheet");
+  console.log(`${MODULE_ID} | Bühne: ${actor.name}`);
+}
+
 function blattApp() {
-  const actor = characterOf(game.user);
-  return actor?.sheet ?? null;
+  return buehnenAktor()?.sheet ?? null;
 }
 
 /**
@@ -102,7 +142,7 @@ function blattApp() {
  * Charakter gehört, verliert die Klasse und wird geschlossen.
  */
 function alteBuehneRaeumen() {
-  const aktuell = characterOf(game.user)?.id;
+  const aktuell = buehnenAktor()?.id;
   for (const el of document.querySelectorAll(".inperson-stage-sheet")) {
     const app = foundry.applications.instances?.get(el.id) ?? ui.windows?.[el.dataset.appid];
     const wessen = app?.actor?.id ?? app?.document?.id;
@@ -119,12 +159,18 @@ async function blattZeigen() {
   try {
     if (!sheet.rendered) await sheet.render(true);
   } catch (err) {
-    // Ohne Rechte am eigenen Hauptcharakter gibt es keine Bühne - das soll
-    // der Spieler lesen können, nicht nur die Konsole.
+    // Ohne Rechte gibt es keine Bühne - das soll der Spieler lesen können,
+    // nicht nur die Konsole. Aber einmal je Blatt, nicht bei jeder
+    // Aktualisierung: Die Haken rufen hierher, sooft sich etwas ändert.
     console.warn(`${MODULE_ID} | Blatt lässt sich nicht öffnen`, err);
-    ui.notifications?.warn(game.i18n.format("INPERSON.SheetView.NoSheet", { name: sheet.actor?.name ?? "?" }));
+    const id = sheet.actor?.id ?? sheet.document?.id;
+    if (gemeldet !== id) {
+      gemeldet = id;
+      ui.notifications?.warn(game.i18n.format("INPERSON.SheetView.NoSheet", { name: sheet.actor?.name ?? "?" }));
+    }
     return;
   }
+  gemeldet = null;
   sheet.element?.classList.add("inperson-stage-sheet");
 }
 
@@ -1170,7 +1216,8 @@ export function installSheetView() {
   // das Blatt gleich mit.
   const wiederZeigen = app => {
     if (!laufend) return;
-    if (app?.actor?.id !== characterOf(game.user)?.id && app?.document?.id !== characterOf(game.user)?.id) return;
+    const buehne = buehnenAktor()?.id;
+    if (app?.actor?.id !== buehne && app?.document?.id !== buehne) return;
     setTimeout(() => { if (laufend) blattZeigen(); }, 50);
   };
   Hooks.on("closeActorSheet", wiederZeigen);
@@ -1207,14 +1254,16 @@ export function installSheetView() {
 
   // Das Blatt wird bei jedem Akteurswechsel neu gezeichnet und verliert dabei
   // unsere Klasse.
-  Hooks.on("renderActorSheet", app => {
-    if (laufend && app?.actor?.id === characterOf(game.user)?.id) {
-      app.element?.classList.add("inperson-stage-sheet");
-    }
-  });
+  // Und: Ein eigener Charakter, den der Spieler öffnet, übernimmt die Bühne -
+  // so wechselt man sie, wie bei Sheet Only.
+  const blattGezeichnet = (app, actor) => {
+    if (!laufend || !actor) return;
+    if (buehnentauglich(actor)) buehneWechseln(actor);
+    if (actor.id === buehnenAktor()?.id) app.element?.classList.add("inperson-stage-sheet");
+  };
+  Hooks.on("renderActorSheet", app => blattGezeichnet(app, app?.actor));
   Hooks.on("renderApplicationV2", app => {
-    if (laufend && app?.document?.id === characterOf(game.user)?.id) {
-      app.element?.classList.add("inperson-stage-sheet");
-    }
+    const doc = app?.document;
+    if (doc?.documentName === "Actor") blattGezeichnet(app, doc);
   });
 }
