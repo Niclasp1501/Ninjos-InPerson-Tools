@@ -2,7 +2,9 @@
 [CmdletBinding()]
 param(
     [ValidateSet("prod", "testv14")]
-    [string]$Target = "testv14",
+    # Produktion ist die Voreinstellung. Der Testserver wird nur auf ausdruecklichen
+    # Wunsch angesprochen - ein Aufruf ohne Argument darf nie dort landen (07.09.2026).
+    [string]$Target = "prod",
     [switch]$DryRun
 )
 
