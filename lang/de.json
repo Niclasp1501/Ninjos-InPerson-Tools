@@ -287,6 +287,7 @@
   "INPERSON.SheetView.Name": "Blattansicht (Beta)",
   "INPERSON.SheetView.Hint": "Gibt Spielern den ganzen Bildschirm für ihr Charakterblatt und ersetzt Foundrys Oberfläche durch eine Leiste mit wenigen großen Knöpfen. Für Tablets am Tisch. Beta: erst einschalten, wenn du dabei bist — Spielleiter sind nie betroffen.",
   "INPERSON.SheetView.WhoHint": "Deine Charaktere",
+  "INPERSON.SheetView.NoSheet": "Das Blatt von {name} lässt sich nicht öffnen - dir fehlen die Rechte an diesem Charakter.",
   "INPERSON.SheetView.ChatHint": "Würfe und Nachrichten",
   "INPERSON.SheetView.NotesHint": "Notiz-Verzeichnis",
   "INPERSON.SheetView.TradeHint": "Mit jemandem tauschen",

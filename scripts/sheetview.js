@@ -88,10 +88,43 @@ function blattApp() {
   return actor?.sheet ?? null;
 }
 
+/**
+ * Die alte Bühne abräumen.
+ *
+ * Gemessen am 07.09.2026: Nadylos bekam einen anderen Hauptcharakter, und ab
+ * da kam bei jeder Aktualisierung die Meldung, er habe auf den *alten* keinen
+ * Zugriff - ein Blatt öffnete sich nicht. Das alte Blatt stand nämlich noch
+ * als Bühne da: fest, ganzer Schirm, `z-index` 20. Das neue wurde geöffnet,
+ * lag aber dahinter. Und das alte wurde bei jeder Änderung neu gezeichnet,
+ * jetzt ohne Rechte - daher die Meldung.
+ *
+ * Also: Jedes Blatt, das unsere Bühnenklasse trägt und nicht zum aktuellen
+ * Charakter gehört, verliert die Klasse und wird geschlossen.
+ */
+function alteBuehneRaeumen() {
+  const aktuell = characterOf(game.user)?.id;
+  for (const el of document.querySelectorAll(".inperson-stage-sheet")) {
+    const app = foundry.applications.instances?.get(el.id) ?? ui.windows?.[el.dataset.appid];
+    const wessen = app?.actor?.id ?? app?.document?.id;
+    if (wessen && wessen === aktuell) continue;
+    el.classList.remove("inperson-stage-sheet");
+    try { app?.close({ force: true }); } catch { el.remove(); }
+  }
+}
+
 async function blattZeigen() {
+  alteBuehneRaeumen();
   const sheet = blattApp();
   if (!sheet) return;
-  if (!sheet.rendered) await sheet.render(true);
+  try {
+    if (!sheet.rendered) await sheet.render(true);
+  } catch (err) {
+    // Ohne Rechte am eigenen Hauptcharakter gibt es keine Bühne - das soll
+    // der Spieler lesen können, nicht nur die Konsole.
+    console.warn(`${MODULE_ID} | Blatt lässt sich nicht öffnen`, err);
+    ui.notifications?.warn(game.i18n.format("INPERSON.SheetView.NoSheet", { name: sheet.actor?.name ?? "?" }));
+    return;
+  }
   sheet.element?.classList.add("inperson-stage-sheet");
 }
 
@@ -1142,6 +1175,13 @@ export function installSheetView() {
   };
   Hooks.on("closeActorSheet", wiederZeigen);
   Hooks.on("closeApplicationV2", wiederZeigen);
+
+  // Der Spielleiter gibt dem Spieler einen anderen Hauptcharakter: alte Bühne
+  // weg, neue her - ohne dass jemand neu laden muss.
+  Hooks.on("updateUser", (user, changes) => {
+    if (!laufend || user.id !== game.user.id || !("character" in changes)) return;
+    blattZeigen();
+  });
 
   // Über das eigene Kreuz geschlossen. Gemessen: Nach dem Klick steht das
   // Fenster eine volle Sekunde im Zustand "schließt" - Foundry wartet auf das
