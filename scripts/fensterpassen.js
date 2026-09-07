@@ -111,30 +111,6 @@ function fehlbetrag(el) {
 }
 
 /**
- * Das Bild, das der Mensch gerade sieht - nicht das, was die Seite glaubt.
- *
- * Faehrt die Bildschirmtastatur auf, legt sie sich ueber die Seite, ohne sie
- * zu verkleinern: `window.innerHeight` bleibt, was es war, und ein Fenster,
- * das danach ausgerichtet wird, steht zur Haelfte hinter der Tastatur. Genau
- * das ist am 07.09.2026 auf dem Tablet passiert - ein Dialog zum Eintragen
- * eines Ereignisses war unter der Tastatur nicht mehr zu erreichen.
- *
- * `visualViewport` meldet beides: wie hoch das sichtbare Fenster noch ist und
- * wie weit es dabei nach unten gerutscht ist. `oben` wird gebraucht, weil ein
- * Fenster mit `position: fixed` weiter zum Seitenanfang zaehlt, der Sichtbereich
- * aber verschoben sein kann.
- */
-function sichtbaresBild() {
-  const sicht = window.visualViewport;
-  if (!sicht) return { breite: window.innerWidth, hoehe: window.innerHeight, oben: 0 };
-  return {
-    breite: Math.round(sicht.width),
-    hoehe: Math.round(sicht.height),
-    oben: Math.round(sicht.offsetTop)
-  };
-}
-
-/**
  * Ein Fenster ins Bild ruecken - und ihm den Platz geben, den es braucht.
  *
  * Drei Dinge, in dieser Reihenfolge, und die Reihenfolge ist keine Willkuer:
@@ -145,9 +121,8 @@ export function insBildRuecken(app) {
   const el = element(app);
   if (!el || !el.isConnected) return;
 
-  const bild = sichtbaresBild();
-  const bildBreite = bild.breite;
-  const bildHoehe = bild.hoehe;
+  const bildBreite = window.innerWidth;
+  const bildHoehe = window.innerHeight;
   const hoechsteHoehe = bildHoehe - 2 * RAND;
   const masse = el.getBoundingClientRect();
 
@@ -218,13 +193,8 @@ export function insBildRuecken(app) {
 
   /* ── Lage ───────────────────────────────────────────────────────── */
 
-  // `bild.oben` verschiebt den erlaubten Bereich mit, wenn der Sichtbereich
-  // selbst nach unten gerutscht ist - sonst klemmt die Rechnung das Fenster in
-  // einen Streifen, den gerade niemand sieht.
-  const obenMin = bild.oben + RAND;
-  const obenMax = Math.max(obenMin, bild.oben + bildHoehe - hoehe - RAND);
   const links = Math.min(Math.max(RAND, nach.left), Math.max(RAND, bildBreite - breite - RAND));
-  const oben = Math.min(Math.max(obenMin, nach.top), obenMax);
+  const oben = Math.min(Math.max(RAND, nach.top), Math.max(RAND, bildHoehe - hoehe - RAND));
 
   /*
    * **Erst hinaufschieben, dann wachsen.** Foundry deckelt die Hoehe eines
@@ -319,7 +289,4 @@ export function fensterPassenEinrichten() {
    * beides.
    */
   window.visualViewport?.addEventListener("resize", nachziehen);
-  // Und "scroll": Das Sichtfenster selbst rutscht, wenn der Browser ein Feld
-  // ueber die Tastatur schiebt. Ohne das bliebe das Fenster zurueck.
-  window.visualViewport?.addEventListener("scroll", nachziehen);
 }

@@ -1,21 +1,19 @@
 /**
  * Prüft die Tastatur-Behandlung der Blattansicht.
  *
- * Das eigentliche Verhalten - fährt die Tastatur auf, rückt das Feld ins Bild -
- * lässt sich nur am Tablet sehen. Was sich hier prüfen lässt, ist die Mechanik
- * darunter, und genau dort saßen die Fallen:
+ * Das eigentliche Verhalten - fährt die Tastatur auf, rückt die Seite nach -
+ * lässt sich nur am Tablet sehen. Was sich hier prüfen lässt, ist die Rechnung,
+ * und genau dort saßen die Fallen:
  *
- *   - Foundrys Angabe zum Sichtbereich wird **ergänzt**, nicht ersetzt.
- *     `user-scalable=no` ist seine Entscheidung; wer die Zeile überschreibt,
- *     macht das Blatt am Tablet plötzlich zoombar.
- *   - Beim Beenden steht wieder exakt die ursprüngliche Angabe da.
  *   - Eine einfahrende Adressleiste ist keine Tastatur. Ohne Untergrenze
  *     zuckt das Blatt bei jedem Scrollen.
+ *   - Gehoben wird um den Fehlbetrag der **Unterkante**, nie weiter, als die
+ *     Tastatur hoch ist.
+ *   - Wächst die Tastatur nach, wird nachgelegt statt von vorn gerechnet.
+ *   - Tastatur zu oder Feld verlassen: exakt zurück, kein Rest am Körper.
  *
  * node tools/test-tastatur.mjs
  */
-
-const URSPRUNG = "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
 
 let fehler = 0;
 const pruefe = (name, ist, soll) => {
@@ -27,10 +25,30 @@ const pruefe = (name, ist, soll) => {
 /* ── Ein Browser, so klein wie er sein darf ──────────────────────── */
 
 const horcher = new Map();
-const merke = (ziel, art, fn) => horcher.set(`${ziel}:${art}`, fn);
+const merke = (ziel, art, fn) => {
+  const k = `${ziel}:${art}`;
+  horcher.set(k, [...(horcher.get(k) ?? []), fn]);
+};
+const vergiss = (ziel, art, fn) => {
+  const k = `${ziel}:${art}`;
+  const rest = (horcher.get(k) ?? []).filter(f => f !== fn);
+  if (rest.length) horcher.set(k, rest); else horcher.delete(k);
+};
+const feuere = k => { for (const fn of [...(horcher.get(k) ?? [])]) fn({ target: feld }); };
 
-const meta = { name: "viewport", content: URSPRUNG };
-const wurzelStil = new Map();
+const koerperStil = new Map();
+const feld = {
+  isConnected: true,
+  unten: 0,
+  closest: wahl => (wahl.includes("input") ? feld : null),
+  scrollIntoView: () => {},
+  // `unten` ist die Lage ohne Hub; das Rechteck wandert mit der Seite mit,
+  // genau wie getBoundingClientRect im Browser.
+  getBoundingClientRect: () => {
+    const h = parseInt((koerperStil.get("translate") ?? "0 -0px").split("-")[1], 10) || 0;
+    return { top: feld.unten - 40 - h, bottom: feld.unten - h };
+  }
+};
 
 globalThis.window = {
   innerHeight: 800,
@@ -39,68 +57,100 @@ globalThis.window = {
     height: 800,
     offsetTop: 0,
     addEventListener: (art, fn) => merke("sicht", art, fn),
-    removeEventListener: art => horcher.delete(`sicht:${art}`)
+    removeEventListener: (art, fn) => vergiss("sicht", art, fn)
   }
 };
 globalThis.document = {
-  querySelector: wahl => (wahl.includes("viewport") ? meta : null),
+  activeElement: null,
   addEventListener: (art, fn) => merke("dok", art, fn),
-  removeEventListener: art => horcher.delete(`dok:${art}`),
-  documentElement: {
+  removeEventListener: (art, fn) => vergiss("dok", art, fn),
+  body: {
     style: {
-      setProperty: (k, v) => wurzelStil.set(k, v),
-      removeProperty: k => wurzelStil.delete(k)
+      translate: undefined,
+      setProperty() {},
+      removeProperty: k => { if (k === "translate") document.body.style.translate = undefined; }
     }
   }
 };
+Object.defineProperty(document.body.style, "translate", {
+  get: () => koerperStil.get("translate"),
+  set: v => (v === undefined ? koerperStil.delete("translate") : koerperStil.set("translate", v))
+});
 
 const { tastaturStarten, tastaturBeenden } = await import("../scripts/tastatur.js");
+const hub = () => koerperStil.get("translate") ?? "";
 
-/* ── 1. Die Angabe wird ergänzt, nicht ersetzt ───────────────────── */
+const fokus = () => {
+  document.activeElement = feld;
+  feuere("dok:focusin");
+};
+const sichtwechsel = () => feuere("sicht:resize");
+const warten = ms => new Promise(r => setTimeout(r, ms));
 
 tastaturStarten();
-pruefe("Angabe ergänzt", meta.content, `${URSPRUNG}, interactive-widget=resizes-content`);
-pruefe("Foundrys eigene Angaben bleiben", meta.content.includes("user-scalable=no"), true);
 
-/* ── 2. Ohne Tastatur steht dort nichts ──────────────────────────── */
+/* ── 1. Adressleiste ist keine Tastatur ──────────────────────────── */
 
-pruefe("ohne Tastatur keine Variable", wurzelStil.has("--inperson-tastatur"), false);
+window.visualViewport.height = 750;   // 50 Pixel
+feld.unten = 790;
+fokus(); sichtwechsel(); await warten(400);
+pruefe("50 Pixel gelten nicht als Tastatur", hub(), "");
 
-/* ── 3. Eine einfahrende Adressleiste ist keine Tastatur ─────────── */
-
-window.visualViewport.height = 750;   // 50 Pixel - unter der Grenze
-horcher.get("sicht:resize")();
-pruefe("50 Pixel gelten nicht als Tastatur", wurzelStil.has("--inperson-tastatur"), false);
-
-/* ── 4. Eine echte Tastatur schon ────────────────────────────────── */
+/* ── 2. Feld über der Tastatur: nichts tun ───────────────────────── */
 
 window.visualViewport.height = 420;   // 380 Pixel Tastatur
-horcher.get("sicht:resize")();
-pruefe("Tastaturhöhe gemessen", wurzelStil.get("--inperson-tastatur"), "380px");
+feld.unten = 300;
+fokus(); sichtwechsel(); await warten(400);
+pruefe("sichtbares Feld bleibt, wo es ist", hub(), "");
 
-/* ── 5. Verschobenes Sichtfenster zählt mit ──────────────────────── */
+/* ── 3. Feld hinter der Tastatur: um den Fehlbetrag heben ────────── */
 
-// Der Browser hat die Seite hochgeschoben, um ein Feld freizulegen: Was hinter
-// der Tastatur liegt, ist Fensterhöhe minus (Sichthöhe + Versatz).
-window.visualViewport.offsetTop = 100;
-horcher.get("sicht:resize")();
-pruefe("Versatz des Sichtfensters abgezogen", wurzelStil.get("--inperson-tastatur"), "280px");
+// Unterkante 700, sichtbar bis 420, plus 24 Luft = 304
+feld.unten = 700;
+fokus(); sichtwechsel(); await warten(400);
+pruefe("um den Fehlbetrag der Unterkante gehoben", hub(), "0 -304px");
 
-/* ── 6. Beenden räumt vollständig auf ────────────────────────────── */
+/* ── 4. Nie weiter als die Tastatur hoch ist ─────────────────────── */
 
+feld.unten = 1200;                    // fehlte 804, Tastatur ist 380
+fokus(); sichtwechsel(); await warten(400);
+pruefe("Hub auf Tastaturhöhe gedeckelt", hub(), "0 -380px");
+
+/* ── 5. Tastatur wächst nach: nachlegen ──────────────────────────── */
+
+feld.unten = 700;                     // zurück auf die 304er-Lage
+fokus(); await warten(400);
+pruefe("Ausgang 304", hub(), "0 -304px");
+// Wortvorschläge: Tastatur 40 höher → fehlt 40 mehr
+window.visualViewport.height = 380;
+sichtwechsel();
+pruefe("bei nachwachsender Tastatur nachgelegt", hub(), "0 -344px");
+
+/* ── 6. Tastatur zu: alles zurück ────────────────────────────────── */
+
+window.visualViewport.height = 800;
+sichtwechsel();
+pruefe("Tastatur zu → Seite zurück", hub(), "");
+
+/* ── 7. Feld verlassen: zurück, Sprung zwischen Feldern nicht ────── */
+
+window.visualViewport.height = 420; feld.unten = 700;
+fokus(); await warten(400);
+pruefe("wieder gehoben", hub(), "0 -304px");
+feuere("dok:focusout");          // Fokus wandert zu einem anderen Feld
+await warten(80);
+pruefe("Sprung zwischen Feldern hüpft nicht", hub(), "0 -304px");
+document.activeElement = null;
+feuere("dok:focusout");
+await warten(80);
+pruefe("Feld verlassen → Seite zurück", hub(), "");
+
+/* ── 8. Beenden räumt vollständig auf ────────────────────────────── */
+
+fokus(); await warten(400);
 tastaturBeenden();
-pruefe("Angabe wiederhergestellt", meta.content, URSPRUNG);
-pruefe("Variable entfernt", wurzelStil.has("--inperson-tastatur"), false);
+pruefe("Beenden senkt", hub(), "");
 pruefe("Horcher abgemeldet", horcher.has("sicht:resize") || horcher.has("dok:focusin"), false);
-
-/* ── 7. Zweimal starten schadet nicht ────────────────────────────── */
-
-tastaturStarten();
-tastaturStarten();
-pruefe("Angabe nicht doppelt ergänzt",
-  (meta.content.match(/interactive-widget/g) ?? []).length, 1);
-tastaturBeenden();
-pruefe("nach doppeltem Start sauber", meta.content, URSPRUNG);
 
 console.log(fehler ? `\n${fehler} Fälle falsch` : "\nalle Fälle richtig");
 process.exit(fehler ? 1 : 0);
