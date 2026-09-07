@@ -2159,7 +2159,10 @@ body.inperson-sheetview .inperson-stage-sheet {
   bottom: auto !important;
   zoom: var(--inperson-sv-zoom, 1);
   width: calc(100vw / var(--inperson-sv-zoom, 1)) !important;
-  height: calc(100dvh / var(--inperson-sv-zoom, 1)) !important;
+  /* Die Bildschirmtastatur nimmt sich unten Platz: Wo der Browser den
+     Layoutbereich nicht selbst verkleinert, tut es diese Zahl - siehe
+     scripts/tastatur.js. Ohne Tastatur ist sie null. */
+  height: calc((100dvh - var(--inperson-tastatur, 0px)) / var(--inperson-sv-zoom, 1)) !important;
   max-width: none !important;
   max-height: none !important;
   margin: 0 !important;

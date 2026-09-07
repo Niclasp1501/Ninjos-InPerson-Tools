@@ -28,6 +28,7 @@ import { openTrade } from "./trade-start.js";
 import { mountClockInto } from "./clock.js";
 import { queueSweep, removeShells, hideShells, isGhost } from "./shells.js";
 import { installZug, zugStarten, zugBeenden } from "./sheetview-zug.js";
+import { tastaturStarten, tastaturBeenden } from "./tastatur.js";
 
 const BODY_CLASS = "inperson-sheetview";
 const BAR_ID = "inperson-sheetview-bar";
@@ -1064,6 +1065,7 @@ async function starten() {
   lageAnwenden();
   sperreAnwenden();
   zugStarten();
+  tastaturStarten();
   letzteLage = lage();
   // Das Tablet wird gedreht: Plätze und Größe der neuen Lage holen.
   window.addEventListener("resize", beimDrehen);
@@ -1087,6 +1089,7 @@ async function beenden() {
   document.body.classList.remove(BODY_CLASS);
   window.removeEventListener("resize", beimDrehen);
   zugBeenden();
+  tastaturBeenden();
   for (const id of [BAR_ANKER, UHR_ANKER, BAR_ID, UHR_ID]) document.getElementById(id)?.remove();
   feldSchliessen(LAUT_ID);
   feldSchliessen(GROESSE_ID);
