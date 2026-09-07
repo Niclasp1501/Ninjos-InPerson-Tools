@@ -2119,6 +2119,25 @@ body.inperson-sheetview #pause {
    Zeitleiste - Wetter und Mondphase hängen daran. Mit ausgeblendet, zeigte
    ein Finger auf der Leiste nichts mehr. */
 
+/*
+ * Fenster mit dem Finger ziehen.
+ *
+ * Foundry zieht Fenster über Zeigerereignisse auf der Kopfzeile, setzt dort
+ * aber kein `touch-action`. Ohne das wertet der Browser die Fingerbewegung als
+ * Wischen, schickt nach wenigen Pixeln `pointercancel`, und das Ziehen stirbt
+ * mitten in der Bewegung - am Tisch sah das aus, als ließen sich Gegenstands-
+ * fenster "nicht ordentlich ziehen" (07.09.2026). Mit der Maus fällt es nie
+ * auf. Dasselbe für den Griff zum Größenändern und die alte Fensterbauart.
+ */
+body.inperson-sheetview .application > .window-header,
+body.inperson-sheetview .app.window-app > .window-header,
+body.inperson-sheetview .window-resize-handle,
+body.inperson-sheetview .window-resizable-handle {
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
 body.inperson-sheetview {
   overflow: hidden;
   /* iOS: Gummiband-Scrollen würde das ganze Blatt beim Wischen wackeln lassen. */
