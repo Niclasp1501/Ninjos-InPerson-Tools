@@ -127,6 +127,34 @@ if (codes.length === 2) {
   } else ok(`${a} and ${b} carry the same keys`);
 }
 
+/* ── 3b. Handlebars in Attributen ────────────────────────────────── */
+
+/*
+ * Ein Ausdruck in einem Attribut darf keine doppelten Anfuehrungszeichen
+ * benutzen, wenn das Attribut selbst welche hat.
+ *
+ * Am 08.09.2026 stand in sheetview-settings.hbs
+ *
+ *     aria-label="{{localize ">
+ *
+ * Der Ausdruck war beim Einfuegen an der ersten Klammer abgeschnitten worden.
+ * Handlebars bricht die ganze Vorlage mit einem Parse-Fehler ab, das Fenster
+ * oeffnete sich gar nicht mehr - und keine der vorhandenen Pruefungen sah es:
+ * Der Schluessel war vorhanden, die Klassen stimmten, JSON und JS auch. Innen
+ * gehoeren einfache Anfuehrungszeichen hin.
+ */
+const HBS_IM_ATTRIBUT = /=\s*"\{\{[^}]*"/g;
+let hbsFehler = 0;
+for (const f of listDir("templates").filter(f => f.endsWith(".hbs"))) {
+  const text = read(f);
+  for (const treffer of text.matchAll(HBS_IM_ATTRIBUT)) {
+    const zeile = text.slice(0, treffer.index).split(/\r?\n/).length;
+    fail(`${f}:${zeile}: Handlebars-Ausdruck im Attribut mit doppelten Anfuehrungszeichen - innen ' benutzen`);
+    hbsFehler++;
+  }
+}
+if (!hbsFehler) ok("templates: keine Handlebars-Ausdruecke mit falschen Anfuehrungszeichen");
+
 /* ── 4. CSS classes ──────────────────────────────────────────────── */
 
 const css = (manifest.styles ?? []).map(read).join("\n");
