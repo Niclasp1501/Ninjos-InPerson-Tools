@@ -1,6 +1,6 @@
 # Ninjo's In-Person Tools
 
-**Current Version / Aktuelle Version:** `14.2611.58`
+**Current Version / Aktuelle Version:** `14.2611.72`
 
 Tools for running Foundry VTT at a physical table: the map is on a TV, the
 players only need their character sheet, dice and token — and yet every laptop
@@ -276,6 +276,14 @@ these devices (same machinery as map blocking), the chat opens on the player's
 own rolls, and a **"Your turn!"** banner appears while the player's character
 is up in combat, with **"You're up next"** one step before. Gamemasters are
 never affected.
+
+**Built for fingers, not for a mouse.** When the on-screen keyboard comes up,
+the whole page is lifted so the field being typed into stays above it - Foundry
+leaves the layout untouched when the keyboard opens, and a full-screen sheet has
+nothing left to scroll. Windows can be dragged by touch (Foundry sets no
+`touch-action` on its headers, so the browser used to cancel the drag after a
+few pixels), no window opens larger than the screen, and the stage follows the
+player: opening another character they own makes that sheet the full-screen one.
 
 Beta: the view is tested on a monitor and on tablets in progress; keep it off
 for players you are not sitting next to.
@@ -596,6 +604,15 @@ diesen Geräten abgeschaltet (dieselbe Maschinerie wie die Kartensperre), der
 Chat öffnet sich bei eigenen Würfen, und im Kampf steht **„Du bist dran!"** auf
 dem Tablet, solange der eigene Charakter am Zug ist — mit **„Gleich bist du
 dran"** eine Stelle davor. Spielleiter sind nie betroffen.
+
+**Für Finger gebaut, nicht für die Maus.** Fährt die Bildschirmtastatur auf,
+wird die ganze Seite angehoben, damit das Feld, in das gerade getippt wird, über
+ihr stehen bleibt — Foundry verkleinert die Seite dabei nicht, und ein Blatt über
+den ganzen Schirm hat nichts mehr zu scrollen. Fenster lassen sich mit dem Finger
+ziehen (Foundry setzt an seinen Titelzeilen kein `touch-action`, der Browser brach
+das Ziehen nach wenigen Pixeln ab), kein Fenster öffnet größer als der Schirm, und
+die Bühne folgt dem Spieler: Wer einen anderen eigenen Charakter öffnet, hat ihn
+im Vollbild.
 
 Beta: am Monitor geprüft, am Tablet in Arbeit; nur für Spieler einschalten,
 neben denen man sitzt.

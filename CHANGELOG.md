@@ -1,5 +1,33 @@
 # Changelog
 
+## 14.2611.72 — 2026-09-09
+
+**Der Abend am Tablet.** Alles hier stammt aus einer Sitzung, in der die
+Blattansicht zum ersten Mal wirklich mit Fingern bedient wurde — und mit Fingern
+fiel auf, was mit der Maus nie auffiel.
+
+- **Die Bildschirmtastatur verdeckt das Feld nicht mehr.** Sie schiebt jetzt die
+  ganze Seite hoch, wie Sheet Only es tut. Foundry verkleinert die Seite beim
+  Aufgehen der Tastatur nicht, und ein Blatt über den ganzen Schirm hat nichts
+  mehr zu scrollen — deshalb schrieb man vorher blind.
+- **Fenster lassen sich mit dem Finger ziehen.** Foundry setzt an seinen
+  Titelzeilen kein `touch-action`; der Browser hielt die Bewegung für ein
+  Wischen und brach das Ziehen nach wenigen Pixeln ab.
+- **Die Bühne folgt dem Spieler.** Wer einen anderen eigenen Charakter öffnet,
+  hat ihn im Vollbild; das Gerät merkt sich die Wahl. Vorher hing sie fest am
+  zugewiesenen Charakter und meldete nach einem Wechsel bei jeder Änderung
+  fehlende Rechte.
+- **Würfeldialoge werden nicht mehr zur Bühne.** „Trefferwürfel" öffnete
+  bildschirmfüllend und ohne Schließen-Kreuz — der Dialog trägt denselben Akteur
+  wie das Blatt, und daran hatten wir ihn erkannt.
+- **Das Einstellungsfenster der Blattansicht geht wieder auf.** Eine
+  abgeschnittene Zeichenkette in der Vorlage hatte es lautlos verhindert; der
+  Prüfer erkennt diesen Fehler ab jetzt selbst.
+
+Dazu, unsichtbar, aber wichtig: Unsere Regeln fassen keine fremden Fenster mehr
+an, jedes eigene Fenster passt in den Schirm, und Schrift und Farben kommen aus
+einer gemeinsamen Datei statt sechsmal aus dem Modul.
+
 ## 14.2611.71 — 2026-09-08
 
 ### Geändert
