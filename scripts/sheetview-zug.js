@@ -12,7 +12,7 @@
  * Kampfverfolgung.
  */
 
-import { characterOf } from "./trade.js";
+import { characterOf } from "./figuren.js";
 
 const ID = "inperson-sv-zug";
 

@@ -6,10 +6,11 @@
  * whichever tool has the most switches look like "the settings of the module".
  * Trading had three of them sitting among the table mode's.
  *
- * The page carries one thing the settings alone cannot: a way into the logbook.
- * The journal is there in the sidebar, but a gamemaster looking for "where did
- * the sword go" is looking at these settings, not at a list of journals - so
- * the door is where the question is asked.
+ * **Since 2026-09-08 there is one switch left.** The trade moved to Ninjo's
+ * DnD Shops & Trade; whether the gamemaster joins in, and whether trades are
+ * written down, are settings of that module now. What stays here is whether
+ * this module offers a way in at all - the button above the player list and in
+ * the Sheet Only bar - and the sentence saying where the rest went.
  *
  * Nothing is written until Save, and nothing re-renders while the form is being
  * filled in - a render rebuilds every field from stored values and throws away
@@ -18,7 +19,6 @@
 
 import { MODULE_ID, SETTINGS } from "./const.js";
 import { syncTradeButton } from "./trade-start.js";
-import { openLog } from "./trade-log.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -33,8 +33,7 @@ export class TradeSettings extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     position: { width: 580, height: "auto" },
     classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-displays"],
-    form: { handler: TradeSettings.#onSubmit, closeOnSubmit: true },
-    actions: { openLog: TradeSettings.#onOpenLog }
+    form: { handler: TradeSettings.#onSubmit, closeOnSubmit: true }
   };
 
   static PARTS = {
@@ -46,19 +45,12 @@ export class TradeSettings extends HandlebarsApplicationMixin(ApplicationV2) {
     const get = key => game.settings.get(MODULE_ID, key);
     return {
       trade: get(SETTINGS.TRADE),
-      withGM: get(SETTINGS.TRADE_WITH_GM),
-      log: get(SETTINGS.TRADE_LOG),
-      // Said here rather than left to be discovered at the table: a trade needs
-      // a gamemaster on the line, because only a gamemaster may create and
-      // delete items on somebody else's actor.
-      hasLog: !!game.journal.getName("Tauschbuch"),
+      // Is the module the trade moved to actually installed? If not, the button
+      // can only say where it went, and the page had better admit that.
+      shops: !!game.modules.get("ninjos-shops")?.active,
       // Two trade buttons side by side is the one collision worth naming.
       itemPiles: !!game.modules.get("item-piles")?.active
     };
-  }
-
-  static #onOpenLog() {
-    openLog();
   }
 
   static async #onSubmit(event, form, formData) {
@@ -66,8 +58,6 @@ export class TradeSettings extends HandlebarsApplicationMixin(ApplicationV2) {
     const set = (key, value) => game.settings.set(MODULE_ID, key, value);
 
     await set(SETTINGS.TRADE, !!data.trade);
-    await set(SETTINGS.TRADE_WITH_GM, !!data.withGM);
-    await set(SETTINGS.TRADE_LOG, !!data.log);
 
     syncTradeButton();
   }

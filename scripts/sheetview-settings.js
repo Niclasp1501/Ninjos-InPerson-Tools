@@ -15,7 +15,7 @@
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
-import { characterOf } from "./trade.js";
+import { characterOf } from "./figuren.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 

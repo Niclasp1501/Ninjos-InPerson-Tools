@@ -23,7 +23,7 @@
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
-import { characterOf, ownedCharacters } from "./trade.js";
+import { characterOf, ownedCharacters } from "./figuren.js";
 import { openTrade } from "./trade-start.js";
 import { mountClockInto } from "./clock.js";
 import { queueSweep, removeShells, hideShells, isGhost } from "./shells.js";

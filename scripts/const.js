@@ -162,18 +162,14 @@ export const SETTINGS = {
    * gemerkte lässt das Gerät seine Leistenplätze und -größen wegwerfen.
    */
   SHEETVIEW_RESET: "sheetViewReset",
-  /** Offer the trade button at all (world). */
-  TRADE: "trade",
   /**
-   * May a player offer a trade to the gamemaster? (world)
+   * Offer the way into the trade at all (world).
    *
-   * Off by default. A GM hands things out and takes them away directly; a
-   * request they have to answer in a window is a detour for them and clutters
-   * the partner list for everyone else.
+   * The trade itself moved to Ninjo's DnD Shops & Trade on 2026-09-08; the two
+   * switches that used to sit here - whether the gamemaster joins in, and
+   * whether trades are written down - went with it.
    */
-  TRADE_WITH_GM: "tradeWithGM",
-  /** Write every trade into the "Tauschbuch" journal (world). */
-  TRADE_LOG: "tradeLog"
+  TRADE: "trade"
 };
 
 /** Socket message types. */

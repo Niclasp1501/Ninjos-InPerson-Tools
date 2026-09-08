@@ -1,23 +1,24 @@
 {{!--
-  Built like the other tool pages: a heading that says what the tool is for, the
-  switches, and the one action that belongs to it - opening the logbook.
+  Trading: one switch, and the sentence saying where the rest of it lives.
+
+  Until 2026-09-08 there were three switches and a door into the logbook here.
+  The trade moved to Ninjo's DnD Shops & Trade; whether the gamemaster joins in
+  and whether trades are written down are settings of that module now. What
+  stays here is whether this module offers a way in at all.
 --}}
 <section class="inperson-body">
 
   <div class="inperson-scene">
     <div class="inperson-scene-head">
       <h3><i class="fa-solid fa-right-left" aria-hidden="true"></i> {{localize "INPERSON.TradeSettings.Group"}}</h3>
-      {{#if hasLog}}
-        <div class="inperson-pull-tools">
-          <button type="button" data-action="openLog" class="inperson-mini">
-            {{localize "INPERSON.TradeSettings.OpenLog"}}
-          </button>
-        </div>
-      {{/if}}
     </div>
     <p class="inperson-hint">
       <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-      {{localize "INPERSON.TradeSettings.GroupHint"}}
+      {{#if shops}}
+        {{localize "INPERSON.TradeSettings.Moved"}}
+      {{else}}
+        {{localize "INPERSON.TradeSettings.MovedMissing"}}
+      {{/if}}
     </p>
   </div>
 
@@ -26,22 +27,6 @@
     <span class="inperson-pick-name">
       {{localize "INPERSON.Settings.Trade.Name"}}
       <em>{{localize "INPERSON.Settings.Trade.Hint"}}</em>
-    </span>
-  </label>
-
-  <label class="inperson-pick-row">
-    <input type="checkbox" name="withGM" {{checked withGM}}>
-    <span class="inperson-pick-name">
-      {{localize "INPERSON.Settings.TradeWithGM.Name"}}
-      <em>{{localize "INPERSON.Settings.TradeWithGM.Hint"}}</em>
-    </span>
-  </label>
-
-  <label class="inperson-pick-row">
-    <input type="checkbox" name="log" {{checked log}}>
-    <span class="inperson-pick-name">
-      {{localize "INPERSON.Settings.TradeLog.Name"}}
-      <em>{{localize "INPERSON.Settings.TradeLog.Hint"}}</em>
     </span>
   </label>
 
@@ -58,5 +43,4 @@
       <span>{{localize "INPERSON.Clock.Save"}}</span>
     </button>
   </footer>
-
 </section>

@@ -30,10 +30,7 @@ import { openClockSettings } from "./clock-settings.js";
 import { openTradeSettings } from "./trade-settings.js";
 import { installSheetView, syncSheetView, sheetViewApi } from "./sheetview.js";
 import { openSheetViewSettings } from "./sheetview-settings.js";
-import { onTradeSocket } from "./trade.js";
-import { installTradeWindow } from "./trade-window.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
-import { openLog as openTradeLog } from "./trade-log.js";
 import { fensterPassenEinrichten } from "./fensterpassen.js";
 import {
   installMonitorWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
@@ -215,9 +212,11 @@ function registerSettings() {
     });
   }
 
-  // Trading has its own page, like every other tool here. Three switches in the
-  // flat list made the list look like the table mode's settings with strangers
-  // in it.
+  /*
+   * Only the switch that decides whether the button is there at all. The other
+   * two - whether the gamemaster joins in, and whether trades are written down -
+   * moved to Ninjo's DnD Shops & Trade together with the trade itself.
+   */
   S(SETTINGS.TRADE, {
     name: "INPERSON.Settings.Trade.Name",
     hint: "INPERSON.Settings.Trade.Hint",
@@ -226,24 +225,6 @@ function registerSettings() {
     type: Boolean,
     default: true,
     onChange: () => syncTradeButton()
-  });
-
-  S(SETTINGS.TRADE_WITH_GM, {
-    name: "INPERSON.Settings.TradeWithGM.Name",
-    hint: "INPERSON.Settings.TradeWithGM.Hint",
-    scope: "world",
-    config: false,
-    type: Boolean,
-    default: false
-  });
-
-  S(SETTINGS.TRADE_LOG, {
-    name: "INPERSON.Settings.TradeLog.Name",
-    hint: "INPERSON.Settings.TradeLog.Hint",
-    scope: "world",
-    config: false,
-    type: Boolean,
-    default: true
   });
 
   S(SETTINGS.DEFAULT_PLAYERS, {
@@ -726,10 +707,12 @@ function onSocket(payload) {
     applyStateChange();
     return;
   }
-  if (payload?.type === SOCKET.TRADE) {
-    onTradeSocket(payload);
-    return;
-  }
+  /*
+   * The trade moved to Ninjo's DnD Shops & Trade on 2026-09-08 and carries its
+   * own socket traffic there. A packet of this kind can only come from an old
+   * client that has not reloaded yet; dropping it is the honest answer.
+   */
+  if (payload?.type === SOCKET.TRADE) return;
   if (payload?.type === SOCKET.SCREENSAVER) {
     if (!game.user.isGM) return;
     setScreensaverState(payload.userId, !!payload.active);
@@ -794,8 +777,8 @@ Hooks.once("ready", async () => {
     getStats,
     resetStats,
     refresh: applyStateChange,
+    // Opens the trade in Shops & Trade, or says where it went.
     openTrade,
-    openTradeLog,
     // Die Leiste der Blattansicht nimmt Knöpfe anderer Module an - siehe
     // sheetview.js. FANG und NDRS melden sich hier an, statt in unserem DOM
     // nach einem Element zu suchen.
@@ -817,7 +800,6 @@ Hooks.once("ready", async () => {
   installScreensaver();
   installActorPanel();
   installClock();
-  installTradeWindow();
   installTradeButton();
   installSheetView();
   // Lock View may not have built its global yet when our `ready` runs; the

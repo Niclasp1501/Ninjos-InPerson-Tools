@@ -1,110 +1,50 @@
 /**
- * Starting a trade: the button and the partner list.
+ * The trade button - which now opens somebody else's window.
  *
- * The button sits where the person holding the tablet already looks - in Sheet
- * Only's row of buttons, next to the ones that module puts there - and, for
- * everybody else, above the player list. Both go to the same place.
+ * **The trade moved out on 2026-09-08.** It lives in Ninjo's DnD Shops & Trade
+ * now, on the same table its shop trading uses. Two trade windows in two
+ * modules, side by side, looking different and behaving differently, were
+ * exactly the inconsistency that table was built against.
  *
- * The list offers **only people who are logged in**. An offer to somebody who
- * is not there cannot be answered and would sit on the screen until it was
- * cancelled by hand; and at a table where everyone is in the same room, the
- * question "who is online" has an obvious answer anyway.
+ * What stayed here is the way in. The button sits where the person holding the
+ * tablet already looks - in Sheet Only's row of buttons - and, for everybody
+ * else, above the player list. Both now call over to Shops.
+ *
+ * **And the note.** Somebody who looks for the trade here and silently does not
+ * find it concludes the module is broken. This module has users who have never
+ * heard of the other one, so when Shops is not installed the button says where
+ * the function went rather than doing nothing.
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
-import {
-  possiblePartners, requestTrade, currentTrade, gmPresent, characterOf, whyNot
-} from "./trade.js";
 import { mountButtonInSheetOnly, unmountFromSheetOnly, styleAsSheetOnlyButton } from "./sheet-only.js";
-import { TradeWindow } from "./trade-window.js";
 import { notify } from "./notify.js";
-
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 const BUTTON_ID = "inperson-trade-button";
 
-/**
- * Why somebody cannot trade, as a key.
- *
- * Written out rather than built from the reason with a template string: the
- * validator reads the source to check that every key exists in both languages,
- * and a key it cannot see is a key nobody notices is missing.
- */
-const WHY = {
-  none: "INPERSON.Trade.Why.none",
-  many: "INPERSON.Trade.Why.many"
-};
-
-export class TradePartnerDialog extends HandlebarsApplicationMixin(ApplicationV2) {
-  static DEFAULT_OPTIONS = {
-    id: "ninjos-inperson-tools-trade-partner",
-    tag: "div",
-    window: { title: "INPERSON.Trade.Ask", icon: "fa-solid fa-right-left", resizable: true },
-    position: { width: 460, height: "auto" },
-    classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-trade-partner"],
-    actions: { choose: TradePartnerDialog.#onChoose }
-  };
-
-  static PARTS = {
-    body: {
-      template: `modules/${MODULE_ID}/templates/trade-partner.hbs`,
-      scrollable: ["", ".inperson-partner-list"]
-    }
-  };
-
-  /** @override */
-  async _prepareContext() {
-    const all = possiblePartners()
-      .map(p => ({
-        ...p,
-        // The reason travels as finished text. Whoever reads this window is
-        // looking for what to do next, not for a code word.
-        why: p.reason ? game.i18n.localize(WHY[p.reason]) : null
-      }))
-      .sort((a, b) => (a.actorName ?? a.userName).localeCompare(b.actorName ?? b.userName));
-
-    const mine = characterOf(game.user);
-    return {
-      partners: all.filter(p => p.actorId),
-      blocked: all.filter(p => !p.actorId),
-      hasPartners: all.some(p => p.actorId),
-      nobody: all.length === 0,
-      noGM: !gmPresent(),
-      myActorName: mine?.name ?? null
-    };
-  }
-
-  static #onChoose(event, target) {
-    const actorId = characterOf(game.user)?.id;
-    if (!actorId) return notify(game.i18n.localize("INPERSON.Trade.NoCharacter"), "warn");
-    requestTrade({
-      userId: target.dataset.userId,
-      actorId: target.dataset.actorId
-    }, actorId);
-    this.close();
-  }
-}
+/** The module the trade moved to. */
+const SHOPS = "ninjos-shops";
 
 /**
- * Open the partner list, or bring the running trade back up.
+ * Hand over, or say where it went.
  *
- * Two things behind one button on purpose: with a trade running, "Tauschen" can
- * only sensibly mean "show me the trade", and a second entry point that opens a
- * partner list nobody can use would be one more thing to explain.
+ * The call is deliberately narrow: one named function on the other module's
+ * `api`. Anything wider would be this module reaching into the internals of
+ * another one, and the dependency is optional in both directions - neither
+ * module needs the other to work.
  */
 export function openTrade() {
-  if (currentTrade()) return TradeWindow.refresh();
-  if (!characterOf(game.user)) {
-    // Two different problems, two different sentences. "No character" and
-    // "several characters, none of them named as yours" need opposite fixes.
-    return notify(game.i18n.localize(
-      whyNot(game.user) === "many" ? "INPERSON.Trade.PickOne" : "INPERSON.Trade.NoCharacter"
-    ), "warn");
-  }
-  if (!gmPresent()) {
-    return notify(game.i18n.localize("INPERSON.Trade.NoGM"), "warn");
-  }
-  return new TradePartnerDialog().render({ force: true });
+  const shops = game.modules.get(SHOPS);
+  const start = shops?.active ? shops.api?.tauschStarten : null;
+  if (typeof start === "function") return void start();
+
+  // Not a toast: Sheet Only hides Foundry's notifications along with the rest
+  // of the interface, and this sentence is the whole point of the button.
+  foundry.applications.api.DialogV2.prompt({
+    window: { title: game.i18n.localize("INPERSON.Trade.Moved.Title") },
+    content: `<p>${game.i18n.localize("INPERSON.Trade.Moved.Text")}</p>`,
+    ok: { label: game.i18n.localize("INPERSON.Trade.Moved.Ok") }
+  }).catch(() => {});
 }
 
 /* -------------------------------------------- */
@@ -138,9 +78,7 @@ function installSheetOnlyButton() {
  * a matter of taste: `#ui-left` carries `pointer-events: none` (foundry2.css
  * 15378) so that the canvas stays reachable through the gaps in the interface,
  * and only `#players-active` and `#players-inactive` switch it back on (8432).
- * A button sitting one level higher renders perfectly and cannot be clicked -
- * which is exactly what happened outside Sheet Only, where the bar of that
- * module gave the button a home that had no such rule.
+ * A button sitting one level higher renders perfectly and cannot be clicked.
  *
  * Rebuilt on every render of that element rather than kept: Foundry replaces
  * the whole list whenever somebody connects, and a stored reference would point
