@@ -1,5 +1,28 @@
 # Changelog
 
+## 14.2611.71 — 2026-09-08
+
+### Geändert
+- **Der Tausch ist nach Ninjo's DnD Shops & Trade umgezogen.** Er und der
+  Handel mit einem Händler sind dieselbe Sache aus zwei Richtungen; zwei
+  Tauschfenster, die je nach installiertem Modul anders aussahen und sich
+  anders bedienten, halfen niemandem. Der Tisch dort kann alles, was dieser
+  konnte, und behält einen laufenden Tausch über ein Neuladen hinweg.
+- **Der Weg dorthin bleibt hier.** Beide Knöpfe stehen, wo sie standen — über
+  der Spielerliste und in der Leiste der Blattansicht — und öffnen jetzt den
+  Tisch des anderen Moduls. Ist es nicht eingeschaltet, sagt der Knopf, wo die
+  Funktion steckt, statt nichts zu tun: Dieses Modul hat Nutzer, die von dem
+  anderen nie gehört haben.
+- **Von drei Schaltern blieb einer** — ob dieses Modul den Weg überhaupt
+  anbietet. Ob die Spielleitung mittauscht und ob Tausche aufgeschrieben
+  werden, sind Einstellungen des anderen Moduls.
+
+### Entfernt
+- `trade.js`, `trade-window.js`, `trade-mover.js`, `trade-log.js` und ihre
+  beiden Vorlagen, dazu 52 Sprachschlüssel, die nur sie benutzten. Die drei
+  Helfer für „welche Figur spielt dieses Konto" waren nie Sache des Tauschs
+  und werden von der Blattansicht gebraucht; sie stehen jetzt in `figuren.js`.
+
 ## 14.2611.69 — 2026-09-06
 
 **Wartungsstand.** An der Kuppel, den Leisten und den Einstellungen ändert

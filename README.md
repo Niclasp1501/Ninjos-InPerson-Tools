@@ -294,13 +294,16 @@ the strip shows is the gamemaster's choice on the **Time & weather** page.
 
 ### Trading
 
-Two players put items and coin on a shared table window; nothing moves until
-both agree, and the move is carried out on the gamemaster's client so
-ownership never depends on a player's rights. Containers travel with their
-contents, coins in containers included. Optionally every trade is written into
-a "Tauschbuch" journal. Whether players may trade at all, whether the
-gamemaster appears as a partner, and whether the logbook is kept, is set on the
-**Trading** page.
+**Moved to [Ninjo's DnD Shops & Trade](https://github.com/Niclasp1501/Ninjos-Shops)
+in September 2026.** Trading between two players and trading with a merchant
+are the same thing from two directions, and two trade windows that looked and
+behaved differently depending on what was installed helped nobody.
+
+The way in stays here: the button above the player list and the one in the
+sheet view bar both open that module's table. Without it installed, the button
+says where the function went. Whether this module offers that way in at all is
+still set on the **Trading** page; whether the gamemaster joins in and whether
+trades are written down are settings of the other module now.
 
 ### Installation
 
@@ -327,7 +330,7 @@ Acht Bereiche, unabhängig voneinander nutzbar:
 | [Spieler holen](#spieler-holen) | gezielt einzelne Spieler auf eine Szene ziehen |
 | [Blattansicht (Beta)](#blattansicht-beta) | ein Tablet zeigt nur das Charakterblatt |
 | [Zeit & Wetter](#zeit--wetter) | Datum, Uhrzeit, Wetter und eine Sonnen-/Mondkuppel über dem Blatt |
-| [Tauschen](#tauschen) | zwei Spieler tauschen Gegenstände und Geld über einen Tisch |
+| [Tauschen](#tauschen) | der Weg zum Tauschtisch in Ninjo's DnD Shops & Trade |
 | [Zusammen mit Lock View](#zusammen-mit-lock-view) | Einpassung und Ansichtsrahmen folgen der Drehung |
 
 Getestet gegen **Foundry v14**, Mindestversion v13. Läuft eigenständig; wo
@@ -578,7 +581,8 @@ Leiste weiterhin Datum und Uhrzeit aus Foundrys eigenem Kalender.*
 Für die Tablets am Tisch. Der Spielleiter hakt auf der Seite **Blattansicht
 (Beta)** die Konten an; auf diesen Geräten verschwindet Foundrys Oberfläche,
 das Charakterblatt füllt den Schirm. Eine kleine **Menüleiste** hält bereit,
-was ein Spieler braucht: seine Charaktere, Chat, Notizen, Tauschen und die
+was ein Spieler braucht: seine Charaktere, Chat, Notizen, den Weg zum
+Tauschtisch und die
 Knöpfe anderer Module, die sich über
 `game.modules.get("ninjos-inperson-tools").api.sheetView.registerButton()`
 anmelden (Ninjo's FANG und NDRS tun das). Eine zweite Gruppe hat Schriftgröße,
@@ -611,13 +615,18 @@ Spielleiter auf der Seite **Zeit & Wetter**.
 
 ### Tauschen
 
-Zwei Spieler legen Gegenstände und Geld auf ein gemeinsames Tisch-Fenster;
-erst wenn beide zustimmen, wird etwas bewegt, und zwar auf dem Client des
-Spielleiters, damit das Eigentum nie an den Rechten eines Spielers hängt.
-Behälter reisen mit Inhalt, Münzen in Behältern eingeschlossen. Wahlweise wird
-jeder Tausch ins Journal „Tauschbuch" geschrieben. Ob Spieler überhaupt
-tauschen dürfen, ob der Spielleiter als Partner erscheint und ob das Buch
-geführt wird, steht auf der Seite **Tauschen**.
+**Im September 2026 nach [Ninjo's DnD Shops & Trade](https://github.com/Niclasp1501/Ninjos-Shops)
+umgezogen.** Der Tausch zwischen zwei Spielern und der Handel mit einem
+Händler sind dieselbe Sache aus zwei Richtungen; zwei Tauschfenster, die je
+nach installiertem Modul anders aussahen und sich anders bedienten, halfen
+niemandem.
+
+Der Weg dorthin bleibt hier: Der Knopf über der Spielerliste und der in der
+Leiste der Blattansicht öffnen beide den Tisch jenes Moduls. Ist es nicht
+installiert, sagt der Knopf, wo die Funktion steckt. Ob dieses Modul den Weg
+überhaupt anbietet, steht weiter auf der Seite **Tauschen**; ob die
+Spielleitung mittauscht und ob Tausche aufgeschrieben werden, sind
+Einstellungen des anderen Moduls.
 
 ### Installation
 
