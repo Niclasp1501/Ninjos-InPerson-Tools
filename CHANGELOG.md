@@ -1,5 +1,27 @@
 # Changelog
 
+## 14.2611.73 — 2026-09-09
+
+**Fremde Fenster bleiben im Bild — auch ohne Shops.** Ein Dialog, an dessen
+Rand niemand mehr kommt, ist kaputt, gleich wer ihn gebaut hat: Am Tisch
+öffnete dnd5es Trefferwürfel-Fenster größer als das Tablet, ohne Rand zum
+Ziehen und ohne Schließen-Kreuz. Die Rettung dafür war zuerst in Ninjo's DnD
+Shops & Trade entstanden, weil sie dort beim Umzug des Handels geschrieben
+wurde — nur ist ein zu großes Fenster ein Problem des Tisches, und das
+Tischmodul ist dieses hier. Wer Shops nicht installiert hatte, stand ohne da.
+
+Jetzt tragen es beide Module, und eine feste Reihenfolge entscheidet, wer die
+Arbeit macht: In-Person Tools zuerst, Shops, wenn es allein läuft. Bewusst eine
+feste Liste statt „wer zuerst geladen wird" — sonst verhielte sich dieselbe
+Installation je nach Zufall anders, und ein Fenster würde von zwei unserer
+Module nacheinander verschoben.
+
+Vergrößert wird an fremden Fenstern **nie** etwas, auch keine Mindestgröße
+erzwungen: Wer ein Fenster gebaut hat, kennt seinen Inhalt. Wir machen es nur
+kleiner, wenn es über den Schirm hinausläuft, und rücken es hinein. Abschalten
+lässt sich das mit **„Auch fremde Fenster ins Bild rücken"** in den
+Einstellungen.
+
 ## 14.2611.72 — 2026-09-09
 
 **Der Abend am Tablet.** Alles hier stammt aus einer Sitzung, in der die
