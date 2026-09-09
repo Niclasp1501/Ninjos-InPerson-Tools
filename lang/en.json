@@ -156,6 +156,8 @@
   "INPERSON.Settings.HideProgress.Hint": "Foundry shows its scene loading bar even when every file comes from the browser cache or was blocked. It reports processing, not bandwidth, which is misleading here. This only hides the display, nothing about loading changes.",
   "INPERSON.Settings.ShowPill.Name": "This device: status badge",
   "INPERSON.Settings.ShowPill.Hint": "Small badge along the bottom edge of a player's screen while table mode runs there. It explains that the black map is deliberate.",
+  "INPERSON.Settings.ForeignWindows.Name": "Keep other windows on screen too",
+  "INPERSON.Settings.ForeignWindows.Hint": "Windows from other modules and the system are capped to the screen when they run past it — otherwise a tablet leaves you with neither an edge to drag nor a close button. Nothing is ever made larger. When Ninjo's DnD Shops & Trade is installed as well, this setting is the one in charge.",
   "INPERSON.Settings.IdleEnabled.Name": "Use a screensaver",
   "INPERSON.Settings.IdleEnabled.Hint": "For displays on an OLED. With this off nothing happens at all - everything below appears only once you say yes here.",
   "INPERSON.Settings.IdleMode.Name": "Which kind",

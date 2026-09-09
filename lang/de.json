@@ -156,6 +156,8 @@
   "INPERSON.Settings.HideProgress.Hint": "Foundry zeigt seinen Szenen-Ladebalken auch dann, wenn alle Dateien aus dem Browser-Cache kommen oder blockiert wurden. Er meldet also Verarbeitung, nicht Bandbreite - und wirkt dadurch irreführend. Blendet nur die Anzeige aus, am Laden selbst ändert sich nichts.",
   "INPERSON.Settings.ShowPill.Name": "Dieses Gerät: Statusanzeige",
   "INPERSON.Settings.ShowPill.Hint": "Kleine Anzeige am unteren Rand des Spieler-Bildschirms, solange der Tischmodus dort läuft. Sie erklärt, dass die schwarze Karte Absicht ist.",
+  "INPERSON.Settings.ForeignWindows.Name": "Auch fremde Fenster ins Bild rücken",
+  "INPERSON.Settings.ForeignWindows.Hint": "Fenster anderer Module und des Systems werden auf Bildschirmgröße begrenzt, wenn sie darüber hinauslaufen — sonst kommt man am Tablet weder an den Rand noch an das Schließen-Kreuz. Größer gemacht wird nie etwas. Ist Ninjo's DnD Shops & Trade ebenfalls installiert, übernimmt diese Einstellung hier die Führung.",
   "INPERSON.Settings.IdleEnabled.Name": "Bildschirmschoner verwenden",
   "INPERSON.Settings.IdleEnabled.Hint": "Für Monitore an einem OLED. Ist das aus, passiert überhaupt nichts - alles Weitere erscheint erst, wenn du hier zusagst.",
   "INPERSON.Settings.IdleMode.Name": "Auf welche Art",

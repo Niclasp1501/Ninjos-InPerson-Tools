@@ -492,6 +492,15 @@ function registerSettings() {
     onChange: () => updatePill()
   });
 
+  S("fremdeFensterKlemmen", {
+    name: "INPERSON.Settings.ForeignWindows.Name",
+    hint: "INPERSON.Settings.ForeignWindows.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
   // Das Bedienfenster (Alt+T) steht nicht mehr in dieser Liste: Es ist ein
   // Betriebsfenster, keine Einstellung, und neben "Tischmodus einrichten" las
   // es sich wie ein zweiter Weg zu denselben Schaltern. Erreichbar über Alt+T,
