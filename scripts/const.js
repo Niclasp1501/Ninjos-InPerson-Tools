@@ -156,6 +156,7 @@ export const SETTINGS = {
   SHEETVIEW_NO_CANVAS: "sheetViewNoCanvas",
   /** Chat aufklappen, sobald der Spieler selbst etwas würfelt oder benutzt (world). */
   SHEETVIEW_CHAT_ON_USE: "sheetViewChatOnUse",
+  SHEETVIEW_EDIT_PEN: "sheetViewEditPen",
   /**
    * Zeitstempel je Konto: `{ [userId]: ms }` (world). Der Spielleiter kommt an
    * den Gerätespeicher eines Tablets nicht heran; ein neuerer Stempel als der

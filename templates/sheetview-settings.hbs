@@ -50,6 +50,12 @@
       <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.NoCanvasHint'}}" aria-hidden="true"></i>
     </label>
 
+    <label class="inperson-pick-row {{#if editPen}}on{{/if}}">
+      <input type="checkbox" name="editPen" {{checked editPen}}>
+      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.EditPen"}}</span>
+      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.EditPenHint'}}" aria-hidden="true"></i>
+    </label>
+
     <label class="inperson-pick-row {{#if chatOnUse}}on{{/if}}">
       <input type="checkbox" name="chatOnUse" {{checked chatOnUse}}>
       <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ChatOnUse"}}</span>

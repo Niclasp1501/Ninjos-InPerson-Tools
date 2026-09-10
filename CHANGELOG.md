@@ -1,5 +1,17 @@
 # Changelog
 
+## 14.2611.74 — 2026-09-10
+
+**Die Bearbeiten-Feder an Journalseiten bleibt sichtbar.** Foundry holt sie erst
+hervor, wenn der Mauszeiger in ihre Nähe kommt (`.journal-entry-page:hover
+.edit-container button`). Ein Finger löst keinen Hover aus, also war sie am
+Tablet gar nicht da: Wer einen Rückblick über FANG anlegen wollte, musste blind
+auf die Stelle tippen, an der sie sitzt. In der Blattansicht steht sie jetzt
+dauerhaft, für jedes Journal.
+
+Neu in den Einstellungen der Blattansicht: **„Bearbeiten-Feder immer zeigen"**,
+ab Werk an. Wer den festen Platz nicht mag, schaltet ihn dort ab.
+
 ## 14.2611.73 — 2026-09-09
 
 **Fremde Fenster bleiben im Bild — auch ohne Shops.** Ein Dialog, an dessen

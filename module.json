@@ -2,7 +2,7 @@
   "id": "ninjos-inperson-tools",
   "title": "Ninjo's In-Person Tools",
   "description": "Werkzeuge fuer Foundry VTT beim Spielen am echten Tisch: Karten-Downloads auf Spieler-Tablets unterbinden, zwei Szenen-Monitore mit getrennten Aufgaben und Einbrennschutz steuern, hochkante Karten quer drehen, einzelne Spieler auf eine Szene holen. Fuer die Tablets: eine Blattansicht (Beta), die den ganzen Schirm dem Charakterblatt gibt - mit Menueleiste, Chat, Notizen, dem Weg zum Tauschtisch von Ninjo's DnD Shops & Trade, Knoepfen anderer Module und dem Hinweis, wer am Zug ist - fuer Finger gebaut: die Bildschirmtastatur schiebt die Seite hoch statt das Feld zu verdecken, Fenster lassen sich ziehen und bleiben im Bild; dazu eine Zeitleiste mit Datum, Uhrzeit, Wetter, Jahreszeit und einer Kuppel fuer Sonne, Mond und Wetter. Wetter und Mondphase kommen aus Calendaria, wenn es installiert ist; ohne laeuft alles aus dem Weltkalender. Arbeitet auch mit Sheet Only und Lock View zusammen.",
-  "version": "14.2611.73",
+  "version": "14.2611.74",
   "compatibility": {
     "minimum": "13",
     "verified": "14"

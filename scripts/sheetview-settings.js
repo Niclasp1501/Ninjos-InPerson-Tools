@@ -54,6 +54,7 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
     return {
       enabled: game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW),
       noCanvas: game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_NO_CANVAS),
+      editPen: game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_EDIT_PEN),
       chatOnUse: game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_CHAT_ON_USE),
       users,
       hasUsers: users.length > 0
@@ -87,6 +88,7 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
     }
     await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_CHAT_ON_USE, !!data.chatOnUse);
     await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_NO_CANVAS, !!data.noCanvas);
+    await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_EDIT_PEN, !!data.editPen);
     await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_USERS, chosen);
     // Der Hauptschalter zuletzt: Sein onChange baut die Ansicht auf den
     // Clients, und die soll die Liste schon kennen.

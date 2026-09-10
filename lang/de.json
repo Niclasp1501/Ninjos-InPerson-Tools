@@ -263,6 +263,8 @@
   "INPERSON.SheetView.NoCanvasHint": "Das Tablet rechnet keine Szene mehr durch — dieselbe Maschinerie wie im Tischmodus. Das Gerät fragt einmal nach einem Neuladen.",
   "INPERSON.SheetView.ChatOnUse": "Chat beim Würfeln aufklappen",
   "INPERSON.SheetView.ChatOnUseHint": "Sobald der Spieler selbst würfelt oder etwas benutzt, öffnet sich der Chat, damit er das Ergebnis sieht. Würfe anderer öffnen nichts.",
+  "INPERSON.SheetView.EditPen": "Bearbeiten-Feder immer zeigen",
+  "INPERSON.SheetView.EditPenHint": "Foundry blendet die Feder an einer Journalseite nur ein, solange der Mauszeiger in ihrer Nähe ist. Auf einem Tablet gibt es keinen Mauszeiger: Die Feder bleibt unsichtbar, und man trifft sie nur blind. In der Blattansicht (Tabletmodus) steht sie damit dauerhaft da. Gilt für jedes Journal, auch für den Rückblick aus FANG.",
   "INPERSON.SheetView.ResetZoom": "Schrift zurücksetzen",
   "INPERSON.SheetView.Settings": "Einstellungen",
   "INPERSON.SheetView.Volume": "Lautstärke",

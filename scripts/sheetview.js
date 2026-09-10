@@ -1131,6 +1131,21 @@ function markieren() {
   }
 }
 
+/**
+ * Die Bearbeiten-Feder an Journalseiten dauerhaft zeigen.
+ *
+ * Foundry blendet sie nur bei `:hover` ein. Ein Finger loest keinen Hover aus,
+ * also war sie am Tablet unsichtbar und nur blind zu treffen - gemeldet am
+ * 10.09.2026 beim Anlegen eines Rueckblicks ueber FANG, gilt aber fuer jedes
+ * Journal. Wer den festen Platz nicht will, schaltet ihn in den Einstellungen
+ * der Blattansicht ab.
+ */
+export function federAnwenden() {
+  let immer = true;
+  try { immer = game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_EDIT_PEN) !== false; } catch { }
+  document.body.classList.toggle("inperson-feder-immer", laufend && immer);
+}
+
 /* ── An und aus ──────────────────────────────────────────────────── */
 
 async function starten() {
@@ -1145,6 +1160,7 @@ async function starten() {
   sperreAnwenden();
   zugStarten();
   tastaturStarten();
+  federAnwenden();
   letzteLage = lage();
   // Das Tablet wird gedreht: Plätze und Größe der neuen Lage holen.
   window.addEventListener("resize", beimDrehen);
@@ -1169,6 +1185,7 @@ async function beenden() {
   window.removeEventListener("resize", beimDrehen);
   zugBeenden();
   tastaturBeenden();
+  document.body.classList.remove("inperson-feder-immer");
   for (const id of [BAR_ANKER, UHR_ANKER, BAR_ID, UHR_ID]) document.getElementById(id)?.remove();
   feldSchliessen(LAUT_ID);
   feldSchliessen(GROESSE_ID);

@@ -263,6 +263,8 @@
   "INPERSON.SheetView.NoCanvasHint": "The tablet stops rendering scenes altogether - the same machinery as table mode. The device asks once to reload.",
   "INPERSON.SheetView.ChatOnUse": "Open the chat on a roll",
   "INPERSON.SheetView.ChatOnUseHint": "As soon as the player rolls or uses something themselves, the chat opens so they see the result. Other people's rolls open nothing.",
+  "INPERSON.SheetView.EditPen": "Always show the edit pen",
+  "INPERSON.SheetView.EditPenHint": "Foundry only reveals the pen on a journal page while the mouse pointer is near it. A tablet has no pointer: the pen stays invisible and can only be hit blindly. In the sheet view (tablet mode) it now stays put. Applies to every journal, including FANG's recap.",
   "INPERSON.SheetView.ResetZoom": "Reset text size",
   "INPERSON.SheetView.Settings": "Settings",
   "INPERSON.SheetView.Volume": "Volume",

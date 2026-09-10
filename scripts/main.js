@@ -28,7 +28,7 @@ import { installClock, syncClock, refreshClock, bewegungAnwenden } from "./clock
 import { willkommenEinrichten, willkommenZeigen } from "./willkommen.js";
 import { openClockSettings } from "./clock-settings.js";
 import { openTradeSettings } from "./trade-settings.js";
-import { installSheetView, syncSheetView, sheetViewApi } from "./sheetview.js";
+import { installSheetView, syncSheetView, sheetViewApi, federAnwenden } from "./sheetview.js";
 import { openSheetViewSettings } from "./sheetview-settings.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
 import { fensterPassenEinrichten } from "./fensterpassen.js";
@@ -136,6 +136,13 @@ function registerSettings() {
     type: Boolean,
     default: true,
     onChange: blattAbgleichen
+  });
+  S(SETTINGS.SHEETVIEW_EDIT_PEN, {
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: true,
+    onChange: () => federAnwenden()
   });
   S(SETTINGS.SHEETVIEW_CHAT_ON_USE, {
     scope: "world",

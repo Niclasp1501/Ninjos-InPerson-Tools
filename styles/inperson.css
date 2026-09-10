@@ -2142,6 +2142,24 @@ body.inperson-sheetview .window-resizable-handle {
   -webkit-touch-callout: none;
 }
 
+/*
+ * Die Bearbeiten-Feder an Journalseiten, dauerhaft.
+ *
+ * Foundry setzt sie auf `visibility: hidden` und holt sie erst bei `:hover`
+ * hervor (foundry2.css: `.journal-entry-page:hover .edit-container button`).
+ * Ein Finger loest keinen Hover aus: Am Tablet blieb sie unsichtbar, und man
+ * traf sie nur, wenn man wusste, wo sie sitzt.
+ *
+ * `!important`, obwohl unsere Ebene ohnehin nach Foundrys kommt: In derselben
+ * Ebene liegen auch Monk's Enhanced Journal und Journal Page Popout, und wer
+ * dort spaeter gewinnt, entscheidet die Ladereihenfolge.
+ */
+body.inperson-feder-immer .journal-entry-page .edit-container button,
+body.inperson-feder-immer .journal-entry-page .edit-container a {
+  visibility: visible !important;
+  pointer-events: all !important;
+}
+
 body.inperson-sheetview {
   overflow: hidden;
   /* iOS: Gummiband-Scrollen würde das ganze Blatt beim Wischen wackeln lassen. */
