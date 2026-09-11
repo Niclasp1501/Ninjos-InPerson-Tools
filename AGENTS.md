@@ -9,6 +9,13 @@ The first number is the **Foundry** major version, not ours. It was briefly set
 to 15 by mistake; the validator now rejects a mismatch with
 `compatibility.verified`.
 
+## Changelog
+
+`CHANGELOG.md` is written in **English**, like the commits. Foundry's package
+page and GitHub show one text to every reader; there is no per-language
+changelog. The whole file was German until 2026-09-11 and was translated then.
+No `—` or `–` as a dash between clauses (workspace rule 4a).
+
 ## Before every release
 
 ```bash
