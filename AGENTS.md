@@ -9,6 +9,24 @@ The first number is the **Foundry** major version, not ours. It was briefly set
 to 15 by mistake; the validator now rejects a mismatch with
 `compatibility.verified`.
 
+## Licence
+
+In-Person Tools is **not open source** for every version after 14.2611.74:
+all rights reserved, free to use, same model as Ninjo's Shops and FANG.
+Versions up to 14.2611.74 were MIT and stay MIT. Consequences for anyone
+working here:
+
+- **No code under a copyleft licence** (GPL, AGPL, LGPL) goes into the module.
+  Permissive code (MIT, ISC, BSD, Apache) is fine, but its notice goes into the
+  THIRD-PARTY section of `LICENSE`, and a minified copy keeps its licence
+  header. Today that section says the module ships nothing from outside; keep
+  it true.
+- **Anything loaded at runtime from another server** (a CDN, Google Fonts) is
+  listed there too, and is better bundled: every such request sends the
+  player's IP address to a third party.
+- **`assets/ninjo.png` is the author's brand mark** and is not covered by any
+  licence. It stays excluded by name.
+
 ## Changelog
 
 `CHANGELOG.md` is written in **English**, like the commits. Foundry's package

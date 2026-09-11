@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+**New licence: free to use, but no longer open source.** From the next version
+on, In-Person Tools is released under its own licence instead of MIT. Nothing
+changes for using it: installing, playing, running paid games and adapting it
+for your own table stay allowed and free. What now needs written permission is
+redistributing it, bundling it into another package and selling it. Versions up
+to and including 14.2611.74 stay under the MIT License. The full terms are in
+`LICENSE`.
+
 ## 14.2611.74 - 2026-09-10
 
 **The edit pen on journal pages stays visible.** Foundry only brings it out when

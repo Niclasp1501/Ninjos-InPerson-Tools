@@ -683,4 +683,6 @@ See `AGENTS.md` for the full set of notes.
 
 ## License / Lizenz
 
-MIT — see [LICENSE](LICENSE).
+In-Person Tools is free to install and use, including for paid games, but it is **not open source**. For every version after 14.2611.74, all rights are reserved except those granted in [LICENSE](LICENSE): you may use it and modify it for your own table, but not redistribute, rebundle or sell it. Versions up to and including 14.2611.74 were released under the MIT License and stay under it. The Ninjo logo (`assets/ninjo.png`) is not covered by any licence.
+
+Die In-Person Tools sind kostenlos und dürfen auch für bezahlte Runden benutzt werden, sind aber **nicht Open Source**. Für jede Version nach 14.2611.74 sind alle Rechte vorbehalten, außer denen in der [LICENSE](LICENSE): Nutzen und für den eigenen Tisch anpassen ja, weitergeben, in andere Pakete packen oder verkaufen nein. Die Versionen bis einschließlich 14.2611.74 sind unter der MIT-Lizenz erschienen und bleiben es. Das Ninjo-Logo (`assets/ninjo.png`) fällt unter keine Lizenz.
