@@ -16,6 +16,16 @@ page and GitHub show one text to every reader; there is no per-language
 changelog. The whole file was German until 2026-09-11 and was translated then.
 No `—` or `–` as a dash between clauses (workspace rule 4a).
 
+**Every GitHub release carries the changelog section of its version as its
+text.** Until 2026-09-11 every release body was empty: whoever was offered an
+update and clicked the release saw nothing. Fix it with the next release: copy
+`.github/scripts/release_notes.py` from `Ninjos-DnD5e5.5-Uebersetzung`, run it
+as a step before the release action, and give the action
+`body_path: release-notes.md`. **Adjust its pattern first:** it looks for
+`## [<version>]`, and this changelog writes `## 14.2611.74 - 2026-09-10`
+without brackets. Unchanged, the release would only say that no section was
+found. Do not edit bodies of releases that are already out.
+
 ## Before every release
 
 ```bash
