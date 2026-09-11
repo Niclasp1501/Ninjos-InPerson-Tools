@@ -1,1678 +1,1492 @@
 # Changelog
 
-## 14.2611.74 — 2026-09-10
-
-**Die Bearbeiten-Feder an Journalseiten bleibt sichtbar.** Foundry holt sie erst
-hervor, wenn der Mauszeiger in ihre Nähe kommt (`.journal-entry-page:hover
-.edit-container button`). Ein Finger löst keinen Hover aus, also war sie am
-Tablet gar nicht da: Wer einen Rückblick über FANG anlegen wollte, musste blind
-auf die Stelle tippen, an der sie sitzt. In der Blattansicht steht sie jetzt
-dauerhaft, für jedes Journal.
-
-Neu in den Einstellungen der Blattansicht: **„Bearbeiten-Feder immer zeigen"**,
-ab Werk an. Wer den festen Platz nicht mag, schaltet ihn dort ab.
-
-## 14.2611.73 — 2026-09-09
-
-**Fremde Fenster bleiben im Bild — auch ohne Shops.** Ein Dialog, an dessen
-Rand niemand mehr kommt, ist kaputt, gleich wer ihn gebaut hat: Am Tisch
-öffnete dnd5es Trefferwürfel-Fenster größer als das Tablet, ohne Rand zum
-Ziehen und ohne Schließen-Kreuz. Die Rettung dafür war zuerst in Ninjo's DnD
-Shops & Trade entstanden, weil sie dort beim Umzug des Handels geschrieben
-wurde — nur ist ein zu großes Fenster ein Problem des Tisches, und das
-Tischmodul ist dieses hier. Wer Shops nicht installiert hatte, stand ohne da.
-
-Jetzt tragen es beide Module, und eine feste Reihenfolge entscheidet, wer die
-Arbeit macht: In-Person Tools zuerst, Shops, wenn es allein läuft. Bewusst eine
-feste Liste statt „wer zuerst geladen wird" — sonst verhielte sich dieselbe
-Installation je nach Zufall anders, und ein Fenster würde von zwei unserer
-Module nacheinander verschoben.
-
-Vergrößert wird an fremden Fenstern **nie** etwas, auch keine Mindestgröße
-erzwungen: Wer ein Fenster gebaut hat, kennt seinen Inhalt. Wir machen es nur
-kleiner, wenn es über den Schirm hinausläuft, und rücken es hinein. Abschalten
-lässt sich das mit **„Auch fremde Fenster ins Bild rücken"** in den
-Einstellungen.
-
-## 14.2611.72 — 2026-09-09
-
-**Der Abend am Tablet.** Alles hier stammt aus einer Sitzung, in der die
-Blattansicht zum ersten Mal wirklich mit Fingern bedient wurde — und mit Fingern
-fiel auf, was mit der Maus nie auffiel.
-
-- **Die Bildschirmtastatur verdeckt das Feld nicht mehr.** Sie schiebt jetzt die
-  ganze Seite hoch, wie Sheet Only es tut. Foundry verkleinert die Seite beim
-  Aufgehen der Tastatur nicht, und ein Blatt über den ganzen Schirm hat nichts
-  mehr zu scrollen — deshalb schrieb man vorher blind.
-- **Fenster lassen sich mit dem Finger ziehen.** Foundry setzt an seinen
-  Titelzeilen kein `touch-action`; der Browser hielt die Bewegung für ein
-  Wischen und brach das Ziehen nach wenigen Pixeln ab.
-- **Die Bühne folgt dem Spieler.** Wer einen anderen eigenen Charakter öffnet,
-  hat ihn im Vollbild; das Gerät merkt sich die Wahl. Vorher hing sie fest am
-  zugewiesenen Charakter und meldete nach einem Wechsel bei jeder Änderung
-  fehlende Rechte.
-- **Würfeldialoge werden nicht mehr zur Bühne.** „Trefferwürfel" öffnete
-  bildschirmfüllend und ohne Schließen-Kreuz — der Dialog trägt denselben Akteur
-  wie das Blatt, und daran hatten wir ihn erkannt.
-- **Das Einstellungsfenster der Blattansicht geht wieder auf.** Eine
-  abgeschnittene Zeichenkette in der Vorlage hatte es lautlos verhindert; der
-  Prüfer erkennt diesen Fehler ab jetzt selbst.
-
-Dazu, unsichtbar, aber wichtig: Unsere Regeln fassen keine fremden Fenster mehr
-an, jedes eigene Fenster passt in den Schirm, und Schrift und Farben kommen aus
-einer gemeinsamen Datei statt sechsmal aus dem Modul.
-
-## 14.2611.71 — 2026-09-08
-
-### Geändert
-- **Der Tausch ist nach Ninjo's DnD Shops & Trade umgezogen.** Er und der
-  Handel mit einem Händler sind dieselbe Sache aus zwei Richtungen; zwei
-  Tauschfenster, die je nach installiertem Modul anders aussahen und sich
-  anders bedienten, halfen niemandem. Der Tisch dort kann alles, was dieser
-  konnte, und behält einen laufenden Tausch über ein Neuladen hinweg.
-- **Der Weg dorthin bleibt hier.** Beide Knöpfe stehen, wo sie standen — über
-  der Spielerliste und in der Leiste der Blattansicht — und öffnen jetzt den
-  Tisch des anderen Moduls. Ist es nicht eingeschaltet, sagt der Knopf, wo die
-  Funktion steckt, statt nichts zu tun: Dieses Modul hat Nutzer, die von dem
-  anderen nie gehört haben.
-- **Von drei Schaltern blieb einer** — ob dieses Modul den Weg überhaupt
-  anbietet. Ob die Spielleitung mittauscht und ob Tausche aufgeschrieben
-  werden, sind Einstellungen des anderen Moduls.
-
-### Entfernt
-- `trade.js`, `trade-window.js`, `trade-mover.js`, `trade-log.js` und ihre
-  beiden Vorlagen, dazu 52 Sprachschlüssel, die nur sie benutzten. Die drei
-  Helfer für „welche Figur spielt dieses Konto" waren nie Sache des Tauschs
-  und werden von der Blattansicht gebraucht; sie stehen jetzt in `figuren.js`.
-
-## 14.2611.69 — 2026-09-06
-
-**Wartungsstand.** An der Kuppel, den Leisten und den Einstellungen ändert
-sich nichts; die Auslieferung wiederholt 14.2611.68, deren Eintrag im
-Foundry-Katalog an einem Serverfehler von foundryvtt.com hängen blieb.
-
-Dazu zwei Dinge abseits des Moduls: Die Klassenprüfung in `tools/validate.mjs`
-sieht nur noch Namen an, die wirklich als Klasse geschrieben stehen — Element-
-Kennungen liegen im selben Namensraum und tauchten in jedem Lauf als Warnung
-auf, was den eigentlichen Zweck der Prüfung verdeckte. Und die Analyse hält
-fest, was für diesen Tisch endgültig nicht gebaut wird.
-
-
-## 14.2611.68 — 2026-09-06
-
-**Das Wetter färbt jetzt den Himmel.** Das war der eigentliche Unterschied zu
-Calendarias Kuppel — nicht die Tropfen, sondern der Himmel dahinter. Bei uns
-blieb er immer blau, und alles hing davor wie aufgeklebt. Jetzt wird er bei
-Regen grau, beim Sandsturm ockerfarben, beim Gewitter fast schwarz, beim
-Polarlicht tiefgrün; je Wetter mit eigener Stärke, von 15 % bei Wind bis 95 %
-bei der Nullfront.
-
-Die Farben sind unsere eigenen: eine Handvoll Stimmungen mit je einer
-Grundfarbe, aus der oben und unten mechanisch entstehen — oben abgedunkelt,
-zum Horizont hin aufgehellt, weil dort das Restlicht steht. Drei Werte für
-jedes der 41 Wetter zu pflegen hieße 123 Zahlen, die niemand mehr
-nachvollzieht; so ändert man eine.
-
-**Eigene Himmelsfarben des Spielleiters werden übernommen.** Wer in Calendaria
-eigenes Wetter anlegt oder die Farben eines eingebauten übersteuert, sieht das
-auch in unserer Kuppel — beide Wege stehen in Welteinstellungen, die uns
-offenstehen.
-
-## 14.2611.66 — 2026-09-06
-
-**Die feinere Mondphase im Erklärkasten.** Wo Calendaria sie kennt, steht
-jetzt „Aufsteigend Abnehmender Mond" statt nur „Abnehmender Mond" — aber nur
-bei einem Mond. Bei mehreren bleibt es beim kurzen Namen; vier Monde mal der
-langen Fassung ergäben eine Zeile, die niemand mehr liest.
-
-## 14.2611.65 — 2026-09-06
-
-**Alle Monde einer Welt, nicht nur der erste.** Faerûn hat einen, aber ein
-Kalender darf beliebig viele führen — und wer eine Welt mit zwei Monden
-spielt, will beide sehen. Sie stehen jetzt hintereinander auf derselben Bahn,
-jeder mit eigener Phase und eigener Farbe; bei mehreren wird jeder etwas
-kleiner, damit sie sich auf 160 Pixeln nicht überlagern. Wer noch nicht
-aufgegangen ist, bleibt unter dem Horizont. Der Erklärkasten nennt jeden
-beim Namen.
-
-**Verbergen wird jetzt geachtet.** Calendaria kann Monde vor Spielern
-verstecken. Unsere Kuppel steht auf dem Tablet eines Spielers und hat das
-bisher übergangen — sie hätte verraten, was der Spielleiter verborgen hat.
-Ohne Erlaubnis bleibt der Himmel jetzt mondlos.
-
-`tools/test-sky.mjs` prüft beides mit einer erfundenen Welt aus zwei Monden.
-
-## 14.2611.64 — 2026-09-06
-
-**Auf einem Android-Tablet stand die Kuppel still.** Der Grund lag nicht im
-Modul: Android meldet „weniger Bewegung" auch im Energiesparmodus und in den
-Bedienungshilfen, und unser Stylesheet hat das brav befolgt. Richtig ist das —
-nur ahnt niemand am Tisch, dass die Ursache im Betriebssystem liegt. Auf der
-Seite „Zeit & Wetter" steht jetzt **Bewegung in der Kuppel**: „Wie das Gerät
-es will" (wie bisher), „Immer bewegen" oder „Nie bewegen".
-
-Dazu ein Schutz für schwache Geräte: Kann der Browser kein WebGL, wird
-Calendarias Kuppel gar nicht erst ausgeliehen — dort stünde sonst eine leere
-Fläche. Es kommt dann unsere eigene.
-
-## 14.2611.63 — 2026-09-06
-
-**Sonnenzeiten lassen sich abschalten.** Auf der Seite „Zeit & Wetter" steht
-jetzt, ob die Spieler beim Tippen auf die Kuppel ablesen dürfen, wann die
-Sonne auf- und untergeht. Aus heißt: Sie sehen am Bogen, wie weit der Tag
-ist, aber keine Uhrzeit — manchmal ist „es dämmert bald" die bessere Auskunft
-als „04:41". Die Mondphase bleibt in jedem Fall stehen; sie steht am Himmel.
-
-## 14.2611.62 — 2026-09-06
-
-**Jede Kuppel bekommt ihre eigenen Farbkennungen.** Verläufe werden im SVG
-über einen Namen angesprochen, und der gilt im ganzen Dokument. Standen zwei
-Kuppeln nebeneinander, holten sich beide den Verlauf der ersten — im Prüfbild
-waren dadurch sämtliche Nachtkuppeln taghell. In der Leiste steht nur eine,
-aber falsch war es trotzdem.
-
-Damit ließ sich endlich prüfen, wonach der Tisch gefragt hat: **alle 41 Wetter
-bei Tag und bei Nacht.** Beide Fassungen zeigen ihr Wetter — Regen fällt auch
-im Dunkeln, das Polarlicht kommt nachts erst zur Geltung, und die
-Nachtkuppeln sind dunkelblau mit funkelnden Sternen statt taghell.
-
-## 14.2611.61 — 2026-09-06
-
-**Calendarias Kuppel erschien gar nicht — und dann ohne Wetter.** Zwei Fehler
-übereinander, beide behoben.
-
-Der erste: Unsere Zeitleiste baut sich jede Minute neu auf und nimmt dabei
-jedes Kind heraus, auch die ausgeliehene Kuppel. Für Calendaria war sie damit
-nicht verschwunden, sondern nur nicht mehr im Bild; es baute keine neue. Nach
-dem ersten Minutenwechsel blieb es für den Rest des Abends bei unserer.
-
-Der zweite steckte tiefer: Calendaria sucht seine Zeichenfläche **innerhalb
-seines eigenen Fensters**. Wer nur die Kuppel herausnimmt, lässt diese Suche
-ins Leere laufen — Himmel und Sonne standen da, aber nie fiel ein Tropfen,
-weil das Wetter nie wieder aufgetragen wurde. Jetzt wandert das ganze Fenster
-in die Leiste, aus dem Bild geschoben ist alles außer der Kuppel, und
-Calendaria verwaltet seine Fläche weiter, als wäre nichts gewesen.
-
-Scheitert das Ausleihen doch — ein sichtbares fremdes Kalenderfenster etwa —,
-steht dort sofort unsere eigene Kuppel statt einer Lücke.
-
-## 14.2611.60 — 2026-09-06
-
-**Der Spielleiter wählt, wer die Kuppel zeichnet.** Auf der Seite „Zeit &
-Wetter" steht jetzt eine Wahl: unsere eigene Kuppel — ein paar Dutzend bewegte
-Formen, läuft auf jedem Tablet — oder Calendarias eigene, mit allen
-Partikeleffekten. Die sieht besser aus und braucht die Grafikeinheit des
-Geräts; auf einem Tablet, dem wir gerade das Spielfeld abgeschaltet haben, ist
-das ein echter Unterschied. Ohne Calendaria erscheint die Wahl gar nicht.
-
-Deren Kuppel wird nicht nachgebaut, sondern ausgeliehen: Calendaria baut sie,
-wir hängen genau dieses Element in unsere Leiste. Eine sichtbare fremde Kuppel
-wird dabei nie angetastet — hat der Spielleiter deren HUD selbst offen, bleibt
-es bei unserer.
-
-**Unsere Kuppel näher am Original.** Nebeneinandergehalten war unser
-Tageshimmel zu satt, die Sonne zu groß und ihr Schein so weit, dass er den
-halben Himmel ausbleichte; das Herbstlaub trieb in drei dicken Blättern statt
-einem Dutzend kleiner. Alles vier angeglichen.
+## 14.2611.74 - 2026-09-10
+
+**The edit pen on journal pages stays visible.** Foundry only brings it out when
+the mouse pointer comes near it (`.journal-entry-page:hover
+.edit-container button`). A finger triggers no hover, so on the tablet it simply
+was not there: whoever wanted to create a recap through FANG had to tap blindly
+at the spot where it sits. In the sheet view it now stays in place permanently,
+for every journal.
+
+New in the sheet view settings: **"Always show the edit pen"**, on by default.
+Whoever does not like the fixed spot switches it off there.
+
+## 14.2611.73 - 2026-09-09
+
+**Other modules' windows stay on screen, even without Shops.** A dialog whose
+edge nobody can reach any more is broken, no matter who built it: at the table,
+dnd5e's hit dice window opened larger than the tablet, with no edge to drag and
+no close cross. The fix for that was first written in Ninjo's DnD Shops & Trade,
+because it was needed there when the trade moved over. But a window that is too
+large is a problem of the table, and the table module is this one. Whoever did
+not have Shops installed was left without it.
+
+Now both modules carry it, and a fixed order decides who does the work: In-Person
+Tools first, Shops when it runs alone. Deliberately a fixed list rather than
+"whoever loads first": otherwise the same installation would behave differently
+by chance, and a window would be moved by two of our modules one after the other.
+
+Nothing is ever **enlarged** on another module's window, and no minimum size is
+forced either: whoever built a window knows its content. We only make it smaller
+when it runs past the screen, and move it inside. It can be switched off with
+**"Also keep other windows on screen"** in the settings.
+
+## 14.2611.72 - 2026-09-09
+
+**The evening at the tablet.** Everything here comes from one session in which
+the sheet view was really operated with fingers for the first time, and with
+fingers came what never showed with a mouse.
+
+- **The on-screen keyboard no longer covers the field.** It now pushes the whole
+  page up, as Sheet Only does. Foundry does not shrink the page when the keyboard
+  opens, and a sheet filling the whole screen has nothing left to scroll, which is
+  why you used to type blind.
+- **Windows can be dragged with a finger.** Foundry sets no `touch-action` on its
+  title bars; the browser took the movement for a swipe and cancelled the drag
+  after a few pixels.
+- **The stage follows the player.** Whoever opens another character of their own
+  gets it in full screen; the device remembers the choice. Before, it was stuck on
+  the assigned character and reported missing permissions on every change after a
+  switch.
+- **Roll dialogs no longer become the stage.** "Hit Dice" opened full screen and
+  without a close cross. The dialog carries the same actor as the sheet, and that
+  is how we had recognised it.
+- **The sheet view settings window opens again.** A cut-off string in the template
+  had silently prevented it; the validator now catches this error by itself.
+
+Plus, invisible but important: our rules no longer touch other modules' windows,
+every window of ours fits on the screen, and fonts and colours come from one shared
+file instead of six times from the module.
+
+## 14.2611.71 - 2026-09-08
+
+### Changed
+- **The trade has moved to Ninjo's DnD Shops & Trade.** It and trading with a
+  merchant are the same thing from two directions; two trade windows that looked
+  and worked differently depending on the installed module helped nobody. The table
+  there can do everything this one could, and keeps a running trade across a
+  reload.
+- **The way there stays here.** Both buttons are where they were, above the player
+  list and in the sheet view bar, and now open the other module's table. If it is
+  not enabled, the button says where the feature lives instead of doing nothing:
+  this module has users who have never heard of the other one.
+- **Of three switches, one remains**: whether this module offers the way at all.
+  Whether the gamemaster trades too and whether trades are written down are
+  settings of the other module.
+
+### Removed
+- `trade.js`, `trade-window.js`, `trade-mover.js`, `trade-log.js` and their two
+  templates, plus 52 language keys only they used. The three helpers for "which
+  character does this account play" were never the trade's business and are
+  needed by the sheet view; they now live in `figuren.js`.
+
+## 14.2611.69 - 2026-09-06
+
+**Maintenance release.** Nothing changes on the dome, the bars or the settings;
+the release repeats 14.2611.68, whose entry in the Foundry catalogue got stuck on
+a server error at foundryvtt.com.
+
+Plus two things outside the module: the class check in `tools/validate.mjs` now
+only looks at names that are really written as a class. Element ids live in the
+same namespace and showed up as a warning on every run, which hid the actual
+purpose of the check. And the analysis records what will definitely not be built
+for this table.
+
+
+## 14.2611.68 - 2026-09-06
+
+**The weather now colours the sky.** That was the real difference from
+Calendaria's dome: not the drops, but the sky behind them. Ours always stayed
+blue, and everything hung in front of it as if stuck on. Now it turns grey in the
+rain, ochre in a sandstorm, almost black in a thunderstorm, deep green under the
+aurora; with its own strength per weather, from 15 % for wind to 95 % for the
+null front.
+
+The colours are our own: a handful of moods, each with one base colour from which
+top and bottom follow mechanically, darkened at the top and lightened towards the
+horizon, because that is where the remaining light is. Keeping three values for
+each of the 41 weathers would mean 123 numbers nobody can follow any more; this way
+you change one.
+
+**The gamemaster's own sky colours are taken over.** Whoever creates their own
+weather in Calendaria or overrides the colours of a built-in one sees that in our
+dome too; both ways live in world settings we can read.
 
-**Nachts bewegt sich endlich etwas.** Die Sterne funkeln, jeder in seinem
-eigenen Takt, und der Hof um den Mond atmet. Vorher stand das Nachtbild still,
-während tagsüber die Sonne zog.
-
-## 14.2611.59 — 2026-09-06
+## 14.2611.66 - 2026-09-06
+
+**The finer moon phase in the tooltip.** Where Calendaria knows it, it now says
+"Waxing Waning Moon" rather than only "Waning Moon", but only with one moon. With
+several it stays with the short name; four moons times the long version would make
+a line nobody reads any more.
+
+## 14.2611.65 - 2026-09-06
+
+**All the moons of a world, not only the first.** Faerûn has one, but a calendar
+may carry as many as it likes, and whoever plays a world with two moons wants to
+see both. They now stand one behind the other on the same track, each with its own
+phase and colour; with several, each gets a little smaller so they do not overlap
+on 160 pixels. One that has not risen yet stays below the horizon. The tooltip
+names each one.
 
-**Alle 41 Wetter von Calendaria haben jetzt ihr eigenes Bild.** Bisher waren
-es 21, und ein Sandsturm kam als Schneetreiben heraus. Neu dabei: Hitzewelle,
-Eissturm, Tornado und Hurrikan, Nordlicht, Kirschblüten und Herbstlaub,
-Waldbrandrauch, Staubteufel, Schwarze Sonne, Ley-Aufwallung, Ätherische
-Dunstglocke, Nullfront, Dauerfrostwelle, Grabwind, Schleierfall, Arkane Winde,
-Säureregen (grün), Blutregen (rot), Meteorschauer, Sporenwolke, Göttliches
-Licht und Pestnebel.
+**Hiding is now respected.** Calendaria can hide moons from players. Our dome sits
+on a player's tablet and ignored that until now; it would have given away what the
+gamemaster had hidden. Without permission the sky now stays moonless.
 
-Dazu kommen Calendarias Dichte-, Tempo- und Farbangaben an: Ein Blizzard
-treibt dichter und schneller als Schneefall, und wer sich eigenes Wetter
-anlegt, bekommt über Niederschlagsart und Wind trotzdem ein Bild.
+`tools/test-sky.mjs` checks both with an invented world of two moons.
+
+## 14.2611.64 - 2026-09-06
+
+**On an Android tablet the dome stood still.** The reason was not in the module:
+Android reports "reduced motion" in power-saving mode and in the accessibility
+settings too, and our stylesheet dutifully obeyed. That is correct, but nobody at
+the table suspects the cause lies in the operating system. The "Time & Weather"
+page now has **Motion in the dome**: "As the device wants" (as before), "Always
+move" or "Never move".
 
-Neu: `tools/test-sky.mjs` prüft die Abdeckung und die Richtung der Mondsichel
-— die war zwei Fassungen lang seitenverkehrt, ohne dass es etwas gemerkt hat.
+Plus a safeguard for weak devices: if the browser cannot do WebGL, Calendaria's
+dome is not borrowed at all, since an empty area would stand there otherwise. Ours
+comes instead.
+
+## 14.2611.63 - 2026-09-06
+
+**Sun times can be switched off.** The "Time & Weather" page now says whether
+players may read off when the sun rises and sets by tapping the dome. Off means:
+they see from the arc how far the day has gone, but no clock time. Sometimes "dusk
+is coming" is a better answer than "04:41". The moon phase stays in any case; it
+is in the sky.
+
+## 14.2611.62 - 2026-09-06
+
+**Every dome gets its own colour ids.** Gradients in SVG are addressed by a name,
+and that name applies to the whole document. When two domes stood side by side,
+both took the gradient of the first; in the test image every night dome was
+therefore bright as day. Only one sits in the bar, but it was wrong all the same.
+
+That finally made it possible to check what the table had asked for: **all 41
+weathers by day and by night.** Both versions show their weather: rain falls in the
+dark too, the aurora only comes into its own at night, and the night domes are dark
+blue with twinkling stars instead of bright as day.
 
-## 14.2611.58 — 2026-09-06
+## 14.2611.61 - 2026-09-06
+
+**Calendaria's dome did not appear at all, and then without weather.** Two errors
+on top of each other, both fixed.
 
-**„Du bist dran!"** — in der Blattansicht steht es auf dem Tablet, solange der
-eigene Charakter im Kampf am Zug ist (rot, mit kurzem Brummen, wo das Gerät es
-kann), und „Gleich bist du dran" eine Stelle davor. Sonst nichts.
+The first: our time bar rebuilds itself every minute and takes out every child in
+the process, including the borrowed dome. For Calendaria it had not disappeared,
+it was just no longer in view; so it built no new one. After the first change of
+minute, it stayed with ours for the rest of the evening.
 
-**Einstellungen aufgeräumt.** Das Bedienfenster steht nicht mehr in der
-Einstellungsliste (Alt+T, Statuspille oder der Knopf auf der Tischmodus-Seite);
-„Akteursauswahl von Sheet Only ersetzen" erscheint nur, wenn Sheet Only aktiv
-ist; die zwei Geräteschalter heißen „Dieses Gerät: …"; die Seiten stehen in
-der Reihenfolge Tischmodus, Monitore, Blattansicht, Zeit & Wetter, Tauschen.
+The second went deeper: Calendaria looks for its drawing surface **inside its own
+window**. Whoever takes out only the dome lets that search run into nothing: sky
+and sun were there, but not a drop ever fell, because the weather was never applied
+again. Now the whole window moves into the bar, everything except the dome is
+pushed out of view, and Calendaria keeps managing its surface as if nothing had
+happened.
 
-README und Katalogtext beschreiben jetzt auch Blattansicht, Zeit & Wetter und
-Tauschen.
+If the borrowing fails after all (a visible calendar window of another module, for
+instance), our own dome stands there at once instead of a gap.
 
-## 14.2611.57 — 2026-09-06
+## 14.2611.60 - 2026-09-06
 
-**Wetter in der Kuppel.** Regen, Nieselregen, Schnee, Graupel, Hagel, Nebel,
-Wolken und Gewitter — nach Calendarias Effektvorlage, als bewegte Striche,
-Flocken und Schwaden im SVG. Kein Canvas, keine Grafik-Engine; wer Bewegung
-abgeschaltet hat, bekommt das Wetter stehend. Wind neigt Regen und Schnee.
+**The gamemaster chooses who draws the dome.** The "Time & Weather" page now
+offers a choice: our own dome (a few dozen moving shapes, runs on any tablet) or
+Calendaria's own, with all its particle effects. That one looks better and needs
+the device's graphics unit; on a tablet whose game canvas we have just switched
+off, that is a real difference. Without Calendaria the choice does not appear at
+all.
 
-## 14.2611.56 — 2026-09-06
+Its dome is not rebuilt but borrowed: Calendaria builds it, and we hang exactly
+that element into our bar. A visible dome of the other module is never touched; if
+the gamemaster has its HUD open, ours stays.
 
-**Die Kuppel dämmert.** Eine Stunde vor Sonnenaufgang beginnt der Himmel zu
-blauen, mit Morgenrot am Horizont; die Sterne verblassen, der Mond auch, und
-die Sonne steigt mit ihrem Schein hinter dem Horizont herauf. Abends dasselbe
-zurück. Vorher schaltete die Kuppel hart am Aufgang um — um 05:00 war
-Calendarias Kuppel noch dunkel, unsere schon Tag.
+**Our dome closer to the original.** Held side by side, our daytime sky was too
+saturated, the sun too large and its glow so wide that it bleached half the sky;
+the autumn leaves drifted in three thick leaves instead of a dozen small ones. All
+four adjusted.
 
-Dazu: Sonnenauf- und -untergang kommen jetzt aus dem Weltkalender
-(`sunrise()`/`sunset()`, wenn Calendaria sie anhängt) statt aus der eigenen
-Näherung — 04:41 statt 04:34. Und die Kuppel hat Calendarias Maße (160 × 80),
-dessen Nachtblau, einen Innenschatten und einen Rand in der Farbe der Pille.
+**At night something finally moves.** The stars twinkle, each at its own rhythm,
+and the halo around the moon breathes. Before, the night picture stood still while
+the sun moved by day.
 
-Was bewusst nicht kommt: Regen, Schnee, Nebel und die übrigen Partikel. Das
-ist bei Calendaria eine PixiJS-Szene; auf einem Tablet, dessen Spielfeld wir
-abschalten, wäre eine zweite Grafik-Engine für eine Kuppel der falsche Preis.
+## 14.2611.59 - 2026-09-06
 
-## 14.2611.55 — 2026-09-06
+**All 41 of Calendaria's weathers now have their own picture.** Until now there
+were 21, and a sandstorm came out as a snow flurry. New: heat wave, ice storm,
+tornado and hurricane, aurora, cherry blossom and autumn leaves, wildfire smoke,
+dust devil, black sun, ley surge, ethereal haze, null front, permafrost wave,
+grave wind, veilfall, arcane winds, acid rain (green), blood rain (red), meteor
+shower, spore cloud, divine light and plague fog.
 
-**Hochkant starten die Leisten 80 px höher.** Ganz unten liegt im Inventar die
-Münzzeile, und die Menüleiste lag genau darauf.
+Calendaria's density, speed and colour settings are applied too: a blizzard drifts
+denser and faster than snowfall, and whoever creates their own weather still gets
+a picture through precipitation type and wind.
 
-## 14.2611.54 — 2026-09-06
+New: `tools/test-sky.mjs` checks the coverage and the direction of the crescent
+moon, which was mirrored for two releases without anything noticing.
 
-**Der Bearbeiten-Schalter des Blatts ist wieder da.** Tidys Spielen/Bearbeiten
-sitzt in der Fensterkopfzeile und wurde von der Regel „alle Kopfknöpfe außer ⋮
-weg“ mit ausgeblendet.
+## 14.2611.58 - 2026-09-06
 
-## 14.2611.53 — 2026-09-06
+**"Your turn!"** In the sheet view it stands on the tablet while your own character
+has the turn in combat (red, with a short buzz where the device can do it), and
+"You're up next" one place before. Nothing else.
 
-**„Position festhalten“ als Kippschalter.** Das dunkle Häkchen-Kästchen war
-auf dem dunklen Feld nicht als solches zu erkennen.
+**Settings tidied up.** The control window is no longer in the settings list (Alt+T,
+the status pill or the button on the table mode page); "Replace Sheet Only's actor
+picker" only appears when Sheet Only is active; the two device switches are called
+"This device: …"; the pages are in the order table mode, displays, sheet view, time
+& weather, trading.
 
-## 14.2611.52 — 2026-09-06
+The README and the catalogue text now also describe the sheet view, time & weather
+and trading.
 
-**Kein Geist mehr nach dem Kreuz.** Wer Charaktere oder Notizen über das
-Kreuz des Fensters schloss, behielt den Rahmen als Geist; über die Menüleiste
-nie. Jetzt greift beim Schließen über Foundry derselbe Weg: sofort unsichtbar,
-dann aufräumen.
+## 14.2611.57 - 2026-09-06
 
-**Leisten festhalten.** Im Größenfeld ein Schalter: festgehaltene Leisten
-lassen sich nicht mehr ziehen. Je Gerät; der ↺-Knopf des Spielleiters hebt
-es mit auf.
+**Weather in the dome.** Rain, drizzle, snow, sleet, hail, fog, clouds and
+thunderstorms, following Calendaria's effect template, as moving strokes, flakes and
+wisps in SVG. No canvas, no graphics engine; whoever has switched motion off gets the
+weather standing still. Wind tilts rain and snow.
 
-**Kleinere Startgröße.** Beide Leisten beginnen bei 90 % statt 100 %
-(unter 1100 px 80 %, unter 850 px 70 %).
+## 14.2611.56 - 2026-09-06
 
-## 14.2611.51 — 2026-09-06
+**The dome has dawn and dusk.** An hour before sunrise the sky begins to turn blue,
+with a red glow on the horizon; the stars fade, so does the moon, and the sun rises
+with its glow from behind the horizon. The same in reverse in the evening. Before,
+the dome switched hard at sunrise; at 05:00 Calendaria's dome was still dark and ours
+already day.
 
-**Der Größenregler flackert nicht mehr.** Das Regler-Feld zoomte mit dem
-Faktor der Menüleiste mit und wurde bei jedem Schritt neu platziert — der
-Regler rutschte unter dem Finger weg. Das Feld nimmt jetzt nur noch die
-Bildschirmstufe und wird erst beim Loslassen nachgesetzt.
+Also: sunrise and sunset now come from the world calendar (`sunrise()`/`sunset()`,
+when Calendaria attaches them) instead of our own approximation, 04:41 instead of
+04:34. And the dome has Calendaria's dimensions (160 × 80), its night blue, an inner
+shadow and a border in the colour of the pill.
 
-## 14.2611.50 — 2026-09-06
+What deliberately does not come: rain, snow, fog and the other particles. In
+Calendaria that is a PixiJS scene; on a tablet whose game canvas we switch off, a
+second graphics engine for a dome would be the wrong price.
 
-**Flackern beim Ziehen, zweiter Anlauf.** Während des Ziehens lagen auf der
-Leiste eine Skalierung und ein `drop-shadow`-Filter — auf einem gezoomten
-Element rastert das Tablet damit jedes Bild neu. Jetzt nur ein heller Rand.
-Dazu wird das Kontextmenü unterdrückt, das Android nach langem Druck öffnet
-und das die Berührung genau beim Beginn des Ziehens abbricht.
+## 14.2611.55 - 2026-09-06
 
-## 14.2611.49 — 2026-09-06
+**In portrait the bars start 80 px higher.** At the very bottom of the inventory is
+the coin row, and the menu bar lay exactly on it.
 
-**Kein Flattern mehr beim Ziehen der Menüleiste.** Auf dem Tablet feuert
-`resize`, wenn die Browserleiste beim Ziehen ein- oder ausklappt — und darauf
-wurden beide Leisten neu angeordnet, mitten im Ziehen. Jetzt: während gezogen
-wird nichts, und ohne Wechsel zwischen hoch und quer auch nichts.
+## 14.2611.54 - 2026-09-06
 
-Die Knopfleiste heißt jetzt überall **Menüleiste**.
+**The sheet's edit toggle is back.** Tidy's play/edit sits in the window header and
+was hidden along with everything by the rule "all header buttons except ⋮ go".
 
-## 14.2611.48 — 2026-09-06
+## 14.2611.53 - 2026-09-06
 
-**Im Größenfeld steht die Zeitleiste zuerst**, dann die Knopfleiste — so wie
-beide auf dem Schirm stehen.
+**"Keep position" as a toggle switch.** The dark checkbox could not be recognised as
+one on the dark field.
 
-**Kein Flattern beim Ziehen.** Jede Leiste hängt jetzt in einem ungezoomten
-Anker; nur der wird verschoben, der Zoom wirkt innen. Vorher wurde die
-gezoomte Leiste selbst gesetzt, und ihre Pixel waren nicht die des
-Bildschirms — Chrome und Safari legen das sogar verschieden aus.
+## 14.2611.52 - 2026-09-06
 
-**Erklärkästen per Antippen.** Ein Finger auf Wetter oder Kuppel zeigt den
-Kasten sechs Sekunden lang; auf Maus-Hover war kein Verlass am Tablet.
+**No more ghost after the cross.** Whoever closed characters or notes with the
+window's cross kept the frame as a ghost; through the menu bar never. Closing through
+Foundry now takes the same route: invisible at once, then clean up.
 
-## 14.2611.47 — 2026-09-06
+**Pin the bars.** A switch in the size field: pinned bars can no longer be dragged.
+Per device; the gamemaster's ↺ button lifts it too.
 
-**Größe je Leiste, und kein Flattern mehr.** Knopfleiste und Zeitleiste haben
-jetzt je einen eigenen Regler — mit einem gemeinsamen wirkten sie ungleich.
-Und ein gezogener Platz bleibt beim Schieben des Reglers stehen: Vorher
-standen seine Koordinaten in gezoomten Pixeln und wanderten mit jedem Schritt.
+**Smaller starting size.** Both bars start at 90 % instead of 100 % (80 % below 1100
+px, 70 % below 850 px).
 
-Behoben: Wetter und Mond zeigten in der Blattansicht keinen Erklärkasten mehr
-(`#tooltip` war mit ausgeblendet).
+## 14.2611.51 - 2026-09-06
 
-## 14.2611.46 — 2026-09-06
+**The size slider no longer flickers.** The slider field zoomed along with the menu
+bar's factor and was repositioned at every step, so the slider slid away under the
+finger. The field now only takes the screen step and is only repositioned on
+release.
 
-**Der Mond zeigt jetzt die richtige Phase.** Die Rechnung stimmte (Calendaria
-und wir sagten beide „Abnehmender Mond“), die Zeichnung nicht: Der
-Schattenrand war falsch herum gebogen, aus 82 % hell links wurde eine Sichel
-rechts. Dazu ist Calendarias eigene Antwort jetzt die Quelle, wenn es läuft —
-Spieler und Spielleiter sehen garantiert dasselbe. Ohne Calendaria rechnen
-wir weiter selbst, jetzt mit `referencePhase` als Index und `cycleDayAdjust`.
+## 14.2611.50 - 2026-09-06
 
-**Plätze und Größe je Lage.** Hoch und quer merken sich getrennt, wohin die
-Leisten gezogen wurden und wie groß sie sind; beim Drehen holt das Gerät die
-Werte der neuen Lage. Alles liegt im Gerätespeicher und überlebt Neuladen und
-Neuanmelden.
+**Flicker while dragging, second attempt.** During the drag the bar carried a scale
+and a `drop-shadow` filter; on a zoomed element the tablet re-rasterises every frame
+with that. Now just a light border. Also, the context menu that Android opens after a
+long press, and that cancels the touch exactly at the start of a drag, is suppressed.
 
-**Zurücksetzen durch den Spielleiter.** Auf der Seite „Blattansicht (Beta)“
-hat jedes Konto einen ↺-Knopf: Lage, Größe und Schrift der Leisten gehen auf
-diesem Konto zurück auf die Startwerte — auf allen seinen Geräten, sofort
-wenn es angemeldet ist, sonst beim nächsten Laden.
+## 14.2611.49 - 2026-09-06
 
-## 14.2611.45 — 2026-09-06
+**No more fluttering when dragging the menu bar.** On the tablet `resize` fires when
+the browser bar folds in or out during the drag, and both bars were rearranged on
+that, mid-drag. Now: nothing happens while dragging, and nothing without a change
+between portrait and landscape either.
 
-**Haltezeit-Einstellung wieder raus.** Sie stand einen Tag auf der Seite des
-Spielleiters und war dort eine Entwicklerschraube: Wer die Ansicht einrichtet,
-will nicht über Millisekunden entscheiden. Fest 400 ms, wie es am Tisch
-funktioniert hat.
+The button bar is now called the **menu bar** everywhere.
 
-## 14.2611.44 — 2026-09-06
+## 14.2611.48 - 2026-09-06
 
-**Leistengröße vom Spieler einstellbar.** Ein Regler in der zweiten
-Knopfgruppe (60–140 %), je Gerät gemerkt. Die automatischen Stufen nach
-Bildschirmbreite (85 % unter 1100 px, 72 % unter 850 px) sind nur noch der
-Ausgangspunkt — hochkant war die volle Größe gerade richtig, quer zu groß,
-und das entscheidet besser, wer das Tablet in der Hand hat.
+**The size field lists the time bar first**, then the button bar, the way both stand
+on the screen.
 
-Behoben: Beim ersten Ziehen nach dem Laden sprang die Knopfleiste um eine
-halbe Breite zur Seite (Griff nach dem Wechsel des transforms gemessen).
+**No fluttering when dragging.** Each bar now hangs in an unzoomed anchor; only that
+is moved, and the zoom acts inside. Before, the zoomed bar itself was positioned, and
+its pixels were not those of the screen; Chrome and Safari even interpret that
+differently.
 
-## 14.2611.42 — 2026-09-06
+**Tooltips by tapping.** A finger on the weather or the dome shows the box for six
+seconds; mouse hover could not be relied on at the tablet.
 
-**Hochformat: Leisten unten.** Hochkant sitzen die Attribute im Kopf des
-Blatts genau dort, wo die Leisten quer noch über dem Banner schweben —
-gemessen: die Knopfleiste lag auf STÄ, GES und KON. Im Hochformat stehen
-beide jetzt unten in der Mitte, die Zeitleiste über der Knopfleiste; beim
-Drehen ordnen sie sich neu. Gezogene Plätze gewinnen weiterhin.
+## 14.2611.47 - 2026-09-06
 
-**Das Blatt kommt wieder, wenn es geschlossen wird.** Escape schließt in
-Foundry das oberste Fenster — in dieser Ansicht das Blatt, und der Schirm
-war schwarz. Jetzt öffnet es sich sofort wieder; Escape im Lautstärkefeld
-bleibt beim Feld.
-
-**Einstellungsseite entschlackt.** Drei Erklärkästen sind raus, die Texte
-stecken hinter (i); die Kontenliste ist das Erste, was man sieht.
+**Size per bar, and no more fluttering.** The button bar and the time bar now each
+have their own slider; with a shared one they looked uneven. And a dragged position
+stays put while the slider moves: before, its coordinates were in zoomed pixels and
+wandered with every step.
 
-## 14.2611.41 — 2026-09-06
-
-**Lautstärke in der Leiste.** Ein Knopf in der zweiten Gruppe öffnet drei
-Regler — Musik, Umgebung, Oberfläche — unter der Leiste. Es sind Foundrys
-Geräte-Einstellungen; das Tablet neben dem Fernseher kann stumm sein, ohne
-dass der Tisch etwas merkt.
+Fixed: weather and moon no longer showed a tooltip in the sheet view (`#tooltip` had
+been hidden along with the rest).
 
-Entschieden: Seitenfenster bleiben **über** dem Blatt (kein Schmalermachen),
-Sheet Only bleibt vorerst installiert, kein Konto bekommt beides.
-
-## 14.2611.40 — 2026-09-05
+## 14.2611.46 - 2026-09-06
 
-**Die Blattansicht bekommt ihre eigene Seite — und wählt Konten einzeln.** Der
-Beta-Schalter allein traf jeden Spieler mit Charakter, auch den am Laptop, der
-seine Szenenliste braucht. Jetzt: Hauptschalter plus Liste der Spielerkonten
-mit Häkchen, wie beim Tischmodus. Spielleiter stehen nicht in der Liste.
-
-Dazu auf derselben Seite: **Spielfeld abschalten** (dieselbe Maschinerie wie
-im Tischmodus; das Tablet fragt einmal nach einem Neuladen), **Chat beim
-Würfeln aufklappen** (nur bei eigenen Nachrichten) und die **Haltezeit** zum
-Verschieben der Leisten.
-
-**Knöpfe anderer Module.** Die Leiste nimmt Knöpfe über
-`game.modules.get("ninjos-inperson-tools").api.sheetView.registerButton()`
-an; wer vor uns fertig ist, bekommt den Hook `ninjosInPersonTools.ready`.
-Kein Element mit fremder Kennung, das jemand im DOM suchen müsste. FANG und
-NDRS melden sich ab ihren nächsten Fassungen darüber an.
-
-In der zweiten Knopfgruppe neu: **Schrift zurücksetzen** und **Einstellungen**
-(Foundrys Einstellungsfenster — Lautstärke, Sprache, Moduleinstellungen, an
-die ein Spieler sonst nicht mehr käme).
-
-**Der Mond ist wieder gezeichnet.** Das Phasenbild des Kalendermoduls war auf
-28 Pixel weder rund noch scharf. Jetzt eine Vektorscheibe mit echter Phase aus
-dem Kalender, leichtem Verlauf und Hof.
-
-## 14.2611.39 — 2026-09-05
-
-**Die Kuppel steht hinter der Zeitleiste**, ihr Fuß verschwindet unter der
-Pille — wie im Original. Vorn aufgelegt sah sie aus wie ein Aufkleber. Ein Kind
-kann nicht hinter den Hintergrund seines Elternteils; also liegt der
-Hintergrund der Pille jetzt auf einem Pseudoelement über der Kuppel, der Text
-darüber. Dazu zwei Positionsfehler, die erst am Bildschirm auffielen: Die Kuppel
-stand 66 Pixel über dem oberen Rand (falscher Bezug), und die Pille war nach
-rechts verrutscht (geerbtes `left: 50%` als Versatz).
-
-Neu dabei: `ANALYSE-blattansicht-vs-sheet-only.md` — was Sheet Only kann, wo
-wir stehen, was fehlt, und die offene Frage, ob ein Seitenfenster das Blatt
-schmaler macht oder es überdeckt.
-
-## 14.2611.38 — 2026-09-05
-
-**Die Kuppel sitzt mittig auf der Zeitleiste, der Text darunter** — wie im
-Original. Zuvor stand sie links und der Text daneben; das war die falsche
-Anordnung, nicht nur die falsche Größe. Dazu größer (152 × 78) und der Himmel
-in dunklem Nachtblau statt Türkis.
-
-## 14.2611.37 — 2026-09-05
-
-**Die Leisten starten oben in der Mitte**, über dem Banner des Blatts: die
-Zeitleiste mit Kuppel oben, die Knopfleiste direkt darunter — so, wie der Tisch
-sie sich hingeschoben hatte. Die Knopfleiste setzt sich beim Start unter die
-Zeitleiste, weil die mit Kuppel deutlich höher ist als ohne. Verschobene Plätze
-gewinnen weiterhin.
-
-## 14.2611.36 — 2026-09-05
-
-**Die Kopfzeilen-Knöpfe des Blatts sind in der Blattansicht weg** — bis auf
-den ⋮ mit den Blatt-Einstellungen. Bildpfad kopieren, Fenster ausklappen,
-Porträt/Token, UUID kopieren: Schreibtisch-Werkzeug, auf einem Tablet ohne
-Zwischenablage und zweites Fenster nur Ziele für Fehlgriffe.
-
-## 14.2611.35 — 2026-09-05
-
-**Das Blatt füllt den Schirm Kante an Kante, wie bei Sheet Only.** Zwei Umwege
-sind wieder ausgebaut. Oben hatte ich die Fensterkopfzeile ganz entfernt und
-dann zehn Pixel Luft gelassen, damit das Porträt nicht am Rand klebt — im Spalt
-war der blaue Seitenhintergrund zu sehen. Sheet Only behält die Kopfzeile und
-versteckt nur den Schließen-Knopf; sie gibt dem Blatt oben von selbst seinen
-dunklen Rand. Genau so jetzt. Unten lag ein roter Sockel: eine `padding-bottom`
-auf dem Fensterinhalt, die dessen Hintergrund freilegte. Weg damit — die Leisten
-liegen einfach über dem Blatt, wie ihre Vorbilder auch.
-
-**Kein Gold an den Leisten.** Das ist HUD über dem Blatt, nicht das
-D&D-Fensterdesign; dort war der Goldrand viel zu laut. Beide Leisten tragen
-jetzt denselben leisen Rand wie die Zeitleiste von Anfang an, der Saum der
-Kuppel ist auf die Hälfte gedämpft.
-
-## 14.2611.34 — 2026-09-05
-
-**Die Knopfleiste ist deckend, dunkel und passt zur Zeitleiste.** Vorher war
-sie eine halbdurchsichtige helle Pille mit Weichzeichner — auf einfarbigem
-Grund hübsch, hier aber über der Kante zwischen dem roten Sockel des Blatts
-und dem dunkelblauen Seitenhintergrund, und beides schimmerte durch: oben rot,
-unten blau, dazwischen Matsch. Dazu eckige Knöpfe in einer runden Form, die sie
-an den Enden anschnitt.
-
-Jetzt undurchsichtig, damit der Untergrund keine Rolle spielt; dunkel mit
-Goldrand wie die Zeitleiste daneben, damit die beiden als Paar lesbar sind; und
-abgerundete Quadrate in einer nur wenig runderen Leiste, damit nichts
-anschneidet. Die Zeitleiste hat denselben Goldrand bekommen.
-
-## 14.2611.33 — 2026-09-05
-
-**Die Himmelskuppel sitzt jetzt auf der Zeitleiste, nicht in ihr.** Dreimal
-hatte ich den Bogen in die Leiste gesetzt und sie damit auf 86 Pixel
-aufgeblasen. Im Original ist die Leiste dünn und die Kuppel steht oben darauf
-wie ein Uhrglas. Genau so ist es jetzt: eine 34 Pixel flache Pille, links eine
-Halbkuppel mit Goldrand, die darüber hinausragt, der Mond darin gut erkennbar.
-
-**Das Blatt hat oben Luft.** Bei `inset: 0` saß das Porträt auf dem ersten
-Pixel und die Kopfzeile wirkte abgeschnitten. Zehn Pixel Rand, wie Sheet Only
-ihn aus demselben Grund lässt.
-
-**Was Sheet Only am Blatt für den Finger ändert, gilt hier ebenso:** dünne
-Rollbalken, kein Größengriff, engere Reiter-Ränder bei Tidy5e, und unten Platz
-für die beiden Leisten, damit die letzte Zeile nicht darunter verschwindet.
-
-**Das Aufblitzen beim Schließen ist weg — gemessen, nicht vermutet.** `close()`
-ist asynchron; bis es fertig war, stand der Rahmen ein, zwei Bilder lang da.
-Das Verstecken passiert jetzt synchron im Klick selbst, das Schließen danach.
-Alle 16 Millisekunden nachgesehen, 700 Millisekunden lang, drei Flächen: null
-Proben, in denen noch ein Rahmen zu sehen war. Vorher zeigte ihn schon die
-erste. Ein Seitenleisten-Fenster ist in der Blattansicht überhaupt nur dann
-sichtbar, wenn wir es geöffnet haben — alles andere, Geister eingeschlossen,
-bleibt unsichtbar. Der Akteure-Knopf im Sheet-Only-Modus versteckt den Rahmen
-ebenfalls, bevor er ihn schließt.
-
-## 14.2611.32 — 2026-09-05
-
-**Beim Ziehen flog alles mit.** Wer die Knopfleiste anfasste, verschob auch die
-Zeitleiste. Der Grund war ein Anfängerfehler von mir: Die Funktion, die eine
-Leiste verschiebbar macht, läuft **zweimal** — einmal je Leiste —, aber
-Griffpunkt und gegriffenes Element lagen als gemeinsame Variablen daneben. Also
-las die eine, was die andere gerade gesetzt hatte, und beide bewegten sich.
-
-Jede Leiste hat jetzt ihren eigenen Zustand. Geteilt bleibt nur die eine Angabe,
-die geteilt gehört: ob gerade gezogen wurde, damit der Klick danach nicht auch
-noch einen Knopf auslöst.
-
-## 14.2611.31 — 2026-09-05
-
-**Die Phantomseite ist weg — es waren drei Fehler, nicht einer.** Gefunden, weil
-diesmal alle Wege durchprobiert wurden statt nur der eine, der schon
-funktionierte.
-
-*Ein Wettlauf.* Öffnen und Schließen sind beide asynchron und dauern
-unterschiedlich lang; wer zweimal kurz hintereinander tippt, startet das zweite,
-bevor das erste fertig ist. Gemessen: zwölf Runden schnelles Auf und Zu ließen
-**zwei Fenster offen**. Die Umschaltungen laufen jetzt der Reihe nach.
-
-*Ein Rahmen ohne Anwendung.* Foundry meldete für das Notiz-Verzeichnis
-`rendered: false` und ließ sein Element trotzdem im Dokument stehen. Meine
-Prüfung suchte nach *leeren* Rahmen — dieser hatte Inhalt und rutschte durch.
-Jetzt wird gefragt, was die Anwendung selbst über sich sagt; das ist die
-verlässlichere Auskunft.
-
-*Und ein hausgemachter.* Das Akteursverzeichnis bauen wir selbst, weil Monks
-Little Details `renderPopout` abfängt — es hängt deshalb **nicht** an
-`app.popout`, und genau dort habe ich es zu schließen versucht. Es blieb offen
-und meldete dabei fröhlich `rendered: true`. Wir merken uns jetzt, was wir
-aufgeklappt haben.
-
-Geprüft: einzeln auf und zu, zwölf Runden im 450-Millisekunden-Takt, fünfzehn im
-60er, fünfundzwanzig im 30er. Danach jedes Mal null offene Fenster.
-
-## 14.2611.30 — 2026-09-05
-
-Drei Fehler in der Blattansicht, die ich hätte sehen müssen, statt Zahlen aus
-dem DOM zu lesen.
-
-**Die Schriftknöpfe taten nichts.** Sie setzten eine Schriftgröße, und Tidy5e
-setzt seine Maße selbst — unsere Variable erreichte keines davon. Gemessen: eine
-Schaltfläche blieb bei 140 × 28 Pixeln, egal wie oft man drückte. Jetzt über
-`zoom`, damit werden daraus 196 × 39. Und weil `zoom` auch den Kasten skaliert
-— aus `100vw` wurden bei Faktor 1,4 dreitausend Pixel auf einem
-zweitausend-Pixel-Schirm —, wird die Größe des Blattes gegen den Zoom gerechnet.
-Es füllt jetzt bei jedem Faktor genau das Fenster.
-
-**Die beiden Leisten lagen aufeinander.** Ein gespeicherter Platz aus früheren
-Fassungen legte die Knöpfe mitten auf die Uhr. Ein gemerkter Platz wird jetzt
-verworfen, wenn er die andere Leiste überdeckt.
-
-**Und sie schnitten das Blatt oben ab.** Dort steht bei jedem Charakterblatt die
-Kopfzeile mit Name, Bild und Werten. Beide sind an den unteren Rand gezogen —
-links die Knöpfe, rechts die Zeit. Das ist der leerste Teil jedes Blattes, und
-auf einem Tablet der, den der Daumen erreicht.
-
-## 14.2611.29 — 2026-09-05
-
-**Symbole statt Wörter** in der Leiste der Blattansicht. Wörter machen sie breit
-und sind in jeder Sprache anders lang; das Symbol bleibt gleich groß, der Name
-steht im Tooltip und in der Bedienhilfe. Dazu ein runder, durchscheinender
-Rahmen und ein abgesetzter Umschalter in Modulrot.
-
-**Die Leiste klebt nicht mehr an der Zeitleiste.** Sie stand mittig oben, die
-Zeit direkt darunter — zwei Dinge, die wie ein Block aussahen. Jetzt links oben
-und rechts oben, mit Abstand.
-
-**Das Geisterfenster ist weg.** Wer eine Fläche öffnete und schloss, ließ einen
-leeren Rahmen zurück — dasselbe Problem, das das Akteurspanel schon einmal
-hatte. Dessen Lösung lag dort vergraben; sie steht jetzt in `shells.js`, und
-beide benutzen sie. Foundry räumt die Hülle zu keinem festen Zeitpunkt weg,
-deshalb wird mehrfach nachgesehen.
-
-**Und ein Fehler beim Verschieben:** Wer `left` setzt, ohne `right` zu löschen,
-hat beides gesetzt — das Element wird gedehnt statt verschoben. Gemessen: 107
-Pixel hingen über den rechten Rand hinaus, obwohl der Code klemmt.
-
-## 14.2611.28 — 2026-09-05
-
-**Zeitleiste und Knopfleiste sind getrennt.** Mit dem Himmelsbogen darin wurde
-die Knopfleiste 833 Pixel breit und 96 hoch — alles andere als klein. Es sind
-auch zwei verschiedene Dinge: die eine wird bedient, die andere angeschaut.
-Jetzt 277 × 54 für die Knöpfe, die Zeit steht daneben, beide für sich
-verschiebbar mit eigenem gemerktem Platz.
-
-## 14.2611.27 — 2026-09-05
-
-**Die Leiste der Blattansicht ist jetzt klein, durchscheinend und
-verschiebbar.** Meine erste Fassung stellte neun Knöpfe nebeneinander und klebte
-oben in der Mitte fest — falsch in allen drei Punkten.
-
-*Klein, weil sie umschaltet:* Sie zeigt eine Gruppe zur Zeit, und ein ☰ wechselt.
-Vorn steht, was man dauernd braucht (Wer, Chat, Notiz, Tausch), dahinter das,
-was man einmal am Abend tut (Schriftgröße, Vollbild, Abmelden). Es fällt nichts
-weg, es steht nur nicht alles gleichzeitig da.
-
-*Verschiebbar per langem Druck:* Auf einem Touchscreen ist jede Berührung erst
-einmal ein Tipp. Zöge die Leiste sofort, wäre kein Knopf mehr zu treffen. Also
-kurz halten, dann folgt sie — und wer gezogen hat, löst beim Loslassen keinen
-Knopf aus. Der Platz wird je Gerät gemerkt, aber nur zurückgeholt, wenn er auf
-diesem Schirm auch liegt: Wer die Leiste am großen Monitor nach außen schiebt,
-soll sie auf dem Tablet wiederfinden.
-
-*Durchscheinend*, weil sie auf dem Blatt liegt und nicht verdecken soll, was
-darunter steht.
-
-## 14.2611.26 — 2026-09-05
-
-**Der Himmelsbogen nimmt jetzt Calendarias eigene Mondbilder.** Zuerst hatte ich
-die Sichel selbst gezeichnet, um nicht an fremden Dateien zu hängen — am Tisch
-sah das schlechter aus als das Vorbild, und das Vorbild *ist* das Bild, dessen
-Pfad ohnehin in den Phasendaten steht. Also wird es genommen, wenn es da ist,
-und selbst gezeichnet, wenn nicht.
-
-Außerdem ist der Bogen eine **Kuppel** statt eines flachen Streifens und wird
-eins zu eins dargestellt: 190 × 76 Pixel. Zweimal war er zu klein geraten, beide
-Male aus demselben Denkfehler — ich hatte ihn als Teil der Leiste gedacht und
-auf deren Höhe gestaucht. Er ist aber ein Bild und bestimmt seine eigene Größe.
-
-## 14.2611.25 — 2026-09-05
-
-**Erste Fassung der eigenen Blattansicht — als Beta, standardmäßig aus.**
-Sie gibt Spielern den ganzen Bildschirm für ihr Charakterblatt und ersetzt
-Foundrys Oberfläche durch eine schwebende Leiste: Wer, Chat, Notiz, Tausch,
-Schrift kleiner und größer, Vollbild, Abmelden — dazu die Zeitleiste. Entwurf
-und Begründungen in `KONZEPT-blattansicht.md`.
-
-**Verdecken statt umbauen.** Foundrys Oberfläche bleibt vollständig da und
-funktionsfähig; sie wird nur nicht gezeigt. Module, die Teile davon
-voraussetzen, laufen weiter, und der Weg zurück ist eine Klasse am `body`.
-
-**Die Meldungen bleiben sichtbar** — der eine Punkt, an dem wir es bewusst
-anders machen. Wer `#notifications` mit ausblendet, nimmt sich die Möglichkeit,
-dem Spieler überhaupt noch etwas zu sagen; genau dafür brauchte es im
-Sheet-Only-Modus einen eigenen Streifen.
-
-Spielleiter sind nie betroffen: Sie brauchen die Oberfläche, die hier
-verschwindet.
-
-## 14.2611.24 — 2026-09-05
-
-**Ein Sonnen- und Mondbogen in der Zeitleiste.** Er zeigt, wo Sonne oder Mond
-gerade stehen, mit der Phase des Mondes — ein Blick sagt „die Sonne ist seit
-einer Stunde weg", wofür man sonst rechnen müsste. Einzuschalten unter
-„Zeit & Wetter"; standardmäßig aus.
-
-**Gerechnet, nicht abgeschrieben.** Alles kommt aus dem Weltkalender, den jeder
-Client hat: `daylight` liefert längsten und kürzesten Tag samt Sonnenwenden,
-daraus die Taglänge für heute; `moons` liefert Zykluslänge, Bezugsdatum und die
-acht Phasen. Geprüft gegen die Werte dieser Welt — Tag 171 ergibt 16 Stunden,
-Tag 354 genau 8. Die Mondsicheln zeichnen wir selbst, statt die Bilddateien
-eines anderen Moduls zu laden; sonst hinge die Leiste an dessen Vorhandensein.
-Ohne Kalenderangaben fällt der Bogen auf 06:00/18:00 zurück und lässt den Mond
-weg, statt zu verschwinden.
-
-Der Rechentest fand dabei gleich einen Fehler: Aus 19,99993 Stunden wurde
-„19:60", weil die Minuten für sich gerundet auf 60 kamen. Jetzt wird erst auf
-Minuten gerundet und dann geteilt.
-
-## 14.2611.23 — 2026-09-05
-
-**Der Akteure-Knopf öffnete das Verzeichnis nicht mehr.** Die Ursache liegt
-nicht bei uns, landet aber auf unserem Knopf: Monks Little Details umwickelt
-`ActorDirectory.prototype.renderPopout` und öffnet bei eingeschalteter Option
-„open-actor" stattdessen das eigene Charakterblatt — ohne das Original
-aufzurufen und ohne etwas zurückzugeben (dessen Zeile 293). Für einen Spieler
-mit zugewiesenem Charakter im Sheet-Only-Modus ist dieses Blatt ohnehin das
-Einzige auf dem Schirm. Also passierte sichtbar nichts.
-
-Für deren Seitenleisten-Reiter ist das eine vertretbare Idee — ein Klick auf
-„Akteure" heißt dort plausibel „mein Charakter". Für unseren Knopf nicht: Er
-heißt Akteure und muss das Verzeichnis zeigen. Kommt der höfliche Weg leer
-zurück, bauen wir das Fenster jetzt selbst, genau wie Foundrys eigener Code es
-tut — und lassen deren Einstellung in Ruhe.
-
-## 14.2611.22 — 2026-09-05
-
-**Sheet Onlys Journal-Knopf sah aus, als täte er nichts.** Er tut etwas: Er
-klappt Foundrys Notiz-Verzeichnis als schmale Spalte am rechten Rand auf. Nur
-war die **201 Pixel hoch** — ein kleiner Kasten in der oberen rechten Ecke, den
-man auf einem Tablet schlicht übersieht.
-
-Der Grund liegt bei uns: Wir heften in diesem Modus das Akteursverzeichnis
-selbst an den rechten Rand, weil Foundry die Lage einer ausgeklappten
-Seitenleiste aus der Position ihres Reiters berechnet — und der steckt in Sheet
-Only im versteckten `#interface`. Für unser eigenes Verzeichnis hatten wir das
-gelöst, für die der Nachbarn nicht. Das war die falsche Hälfte einer Reparatur.
-
-Jetzt gilt dieselbe Verankerung für **jedes** ausgeklappte Seitenleisten-Fenster,
-solange Sheet Only läuft: rechter Rand, volle Höhe. Außerhalb dieses Modus
-ändert sich nichts — dort stimmt Foundrys eigene Platzierung.
-
-## 14.2611.21 — 2026-09-05
-
-**Der Tausch hat jetzt seine eigene Seite**, wie Tischmodus, Monitore und
-Zeitleiste. Seine drei Schalter standen als einzige noch flach in der
-Einstellungsliste und ließen diese aussehen wie die Einstellungen des
-Tischmodus mit Fremden darin.
-
-Auf der Seite steht außerdem der Weg ins **Tauschbuch**. Das Journal liegt zwar
-in der Seitenleiste, aber wer „wo ist das Schwert hin" nachschlägt, schaut in
-diese Einstellungen und nicht in eine Liste von Journalen — also ist die Tür
-dort, wo die Frage gestellt wird. Ist Item Piles aktiv, weist die Seite darauf
-hin, dass dessen Tauschknopf besser abgeschaltet wird.
-
-## 14.2611.20 — 2026-09-05
-
-**Die Leiste ist eine Spielleiter-Sache, keine Geräte-Sache.** Die vier
-Schalter waren pro Gerät gedacht — der Gedanke war, jeder solle über seinen
-eigenen Bildschirm bestimmen. Der Tisch hat anders entschieden, und das ist
-richtig: Was die Leiste trägt, ist eine Darstellungsfrage für die ganze Runde,
-wie die Szene, auf die alle schauen. Alle fünf gelten jetzt weltweit, die Seite
-öffnet nur der Spielleiter, und ein Spieler muss mitten im Spiel durch keine
-Einstellungsseite geführt werden. Der doppelte Wetterschalter ist wieder weg —
-der alte behält die Aufgabe, die er immer hatte.
-
-**Der Wind steht jetzt mit Calendarias eigenem Wort und Zahlenband da**:
-„Wind aus S · Stark, 41–60 km/h". Die *eine* Zahl aus dessen HUD („58 km/h")
-wird bewusst nicht übernommen, und der Grund steht in dessen Quelltext:
-`getWindSpeedKph` würfelt sie bei jedem Aufruf neu zwischen den Grenzen der
-Stufe und speichert sie nirgends. Sie ändert sich, wenn man den Zeiger wegnimmt
-und wieder hinbewegt, und zwei Leute am selben Wind bekommen zwei verschiedene
-Werte. Das Band ist dieselbe Auskunft, nur ohne Würfel — und alle sehen
-dasselbe. Ist bei Calendaria Meilen eingestellt, rechnet die Leiste mit.
-
-## 14.2611.19 — 2026-09-05
-
-**Jeder Teil der Leiste lässt sich einzeln ein- und ausblenden.** Datum,
-Uhrzeit, Wetter, Jahreszeit — auf einer eigenen Seite „Zeit & Wetter", nicht als
-fünf weitere Zeilen in der Einstellungsliste. Zwei Gruppen, weil es zwei Arten
-von Schalter sind: vier gehören dem Gerät in deiner Hand, einer der ganzen
-Runde. Nebeneinander als gleich aussehende Häkchen hätte nichts verraten, dass
-einer davon den Abend für alle ändert. Die Weltzeile sieht nur der Spielleiter —
-und wird beim Speichern nicht angefasst, wenn sie gar nicht im Formular stand,
-sonst könnte jeder Spieler das Wetter stillschweigend für den Tisch abschalten.
-
-**Die Chips zeigen jetzt, was das Kalendermodul wirklich weiß.** Auf der Leiste
-ist Platz für ein Wort; im Tooltip stehen die lange Beschreibung, die Temperatur
-und der Wind: „Windig / Starke Winde / 11 °C / Wind aus S · Stärke 3". Die
-Windrichtung wird aus Grad in eine Himmelsrichtung gerechnet — das ist stabile
-Arithmetik. Die Windstärke bleibt eine Stufe und wird nicht in km/h umgerechnet:
-dafür müsste man eine Tabelle abschreiben, die einem anderen Modul gehört.
-
-**Und die Greifhand ist weg.** Die Leiste hatte `pointer-events: none` — das
-klang richtig, sie ist ja eine Beschriftung. Nur reicht das den Zeiger an das
-weiter, was darunter liegt, und das ist Sheet Onlys ziehbare Knopfleiste: eine
-Greifhand, die nichts greifen konnte, und Tooltips, die nie auslösen konnten.
-
-## 14.2611.18 — 2026-09-05
-
-**Die Leiste läuft auch ohne Calendaria** — geprüft, nicht angenommen. Foundrys
-eigener Kalender „Simplified Gregorian" schreibt seine Jahreszeiten
-ausschließlich über `monthStart`/`monthEnd` auf, 1-basiert, und sein Winter läuft
-von Monat 12 bis Monat 2, also über den Jahreswechsel. Neun Fälle gegen beide
-Kalender laufen jetzt als `tools/test-clock-seasons.mjs` durch, beide
-Jahreswechsel eingeschlossen. Ohne Kalendermodul fehlt nur das Wetter; Datum,
-Uhrzeit und Jahreszeit stehen weiterhin da. Der Einstellungstext behauptete das
-Gegenteil und ist berichtigt.
-
-**Beim Laden steht nicht mehr zehn Sekunden lang das falsche Datum.** Die
-Nachschau läuft in der ersten Viertelminute im Sekundentakt und danach langsam —
-ein Zeichenkettenvergleich, gebaut wird weiterhin nur bei echtem Minutenwechsel.
-
-## 14.2611.17 — 2026-09-05
-
-**Die Zeitleiste war da, nur nicht zu sehen.** Sheet Only hängt in seinen
-Container ausschließlich die Akteursliste und die eigene Knopfleiste; das
-Charakterblatt ist eine gewöhnliche Foundry-Anwendung am `body` und wird darüber
-gemalt. Eine Leiste, die im Flex-Fluss dieses Containers bleibt, landet, wo Flex
-sie hinlegt — auf einem echten Client gemessen: links 1001, oben 538 eines
-2333×1104-Fensters. Mitten auf dem Schirm und hinter dem Blatt. Vorhanden, 34
-Pixel hoch, in jeder Hinsicht richtig, außer dass niemand sie sehen konnte.
-
-Sie steht jetzt oben in der Mitte, auf derselben Ebene wie Sheet Onlys eigene
-Knöpfe, und nimmt keine Fingertipps an — sie ist eine Beschriftung, kein
-Bedienelement, und darf dem Blatt darunter nichts wegnehmen.
-
-## 14.2611.16 — 2026-09-05
-
-**Die Zeitleiste zeigte den ganzen Abend ein falsches Datum.** Auf dem ersten
-echten Sheet-Only-Client stand dort „31 Juli, -9", während die Welt auf
-„1 Eleasis, 1492" stand. Calendaria setzt seinen Harptos-Kalender ein, *nachdem*
-unser `ready` gelaufen ist — die erste Zeichnung benutzte also noch Foundrys
-voreingestellten gregorianischen Kalender. Korrigiert hat sich das nie: die
-Leiste zeichnet bei `updateWorldTime` neu, und das Spiel war pausiert.
-
-Ein Datum, das falsch ist und sich nicht bewegt, ist schlimmer als gar keins —
-eine Anzeige, die aussieht wie eine Uhr, zieht niemand in Zweifel. Jetzt schaut
-die Leiste alle zehn Sekunden noch einmal hin. Das ist nur ein Vergleich; gebaut
-wird weiterhin nur, wenn sich die angezeigte Minute wirklich geändert hat.
-
-## 14.2611.15 — 2026-09-04
-
-**Meldungen erreichten die Spieler nie, für die dieses Modul gebaut ist.**
-Sheet Only blendet die Oberfläche nicht teilweise aus, sondern ganz — Foundrys
-`#notifications` eingeschlossen (dessen index.js:902). Jedes „Roxy hat
-abgelehnt", jedes „kein Spielleiter angemeldet", jedes „Tausch abgeschlossen"
-wurde erzeugt, protokolliert und von niemandem gesehen.
-
-**Der Tausch endet jetzt mit einem Bild statt mit einer Meldung.** Das Fenster
-verschwindet nicht mehr wortlos, sondern wird zur Antwort: Porträt des anderen,
-ein Satz, ein Knopf. Wer selbst abgelehnt hat, liest, was er getan hat; die
-andere Seite liest, was ihr geschehen ist — „Roxy hat abgelehnt" ist für Roxy
-der falsche Satz. Nach zwölf Sekunden schließt es sich von selbst, außer wenn
-etwas schiefging: das ist die eine Nachricht, die gelesen worden sein muss.
-
-**Warnungen vor dem Tausch** — kein Charakter zugewiesen, kein Spielleiter da,
-schon in einem Tausch — erscheinen im Sheet-Only-Modus jetzt als Streifen in
-dessen eigenem Behälter, dem einzigen Teil der Seite, der dort noch sichtbar
-ist. Außerhalb bleibt es bei Foundrys Meldungen.
-
-## 14.2611.14 — 2026-09-04
-
-**Das Tauschfenster ließ sich nicht zurückholen.** Wer im Sheet-Only-Modus
-danebentippte, schob es in den Hintergrund — und dort gibt es keine Leiste,
-keine Fensterliste, überhaupt keine sichtbare Oberfläche, mit der man es wieder
-nach vorn holen könnte. Eine Sackgasse, kein Schönheitsfehler. Sheet Only kennt
-das Problem selbst und löst es mit einem festen `z-index` (dessen style.css 65
-und 173); sein Behälter setzt Kinder auf 1000 und die Akteursliste auf 1001,
-genau das lag über uns. Das Tauschfenster steht jetzt auf 9000 — über allem
-davon, aber unter dem Würfelauflöser, der einen Wurf blockiert und gewinnen
-muss. Zusätzlich holt der Tauschknopf ein laufendes Fenster wieder nach vorn.
-
-**Auf dem Tablet hing es unten heraus.** 640 Pixel Höhe, darüber die
-Browserleiste — und ganz unten die zwei Knöpfe, die den Tausch beenden. Die
-waren schlicht nicht da. Die Größe ist jetzt ein Wunsch, der auf den
-tatsächlichen Bildschirm heruntergerechnet wird, auch beim Drehen des Geräts.
-
-Unter 620 Pixeln Breite stehen die beiden Seiten des Tischs übereinander statt
-nebeneinander.
-
-## 14.2611.13 — 2026-09-04
-
-**Die Gegenstandssymbole sind jetzt wirklich da.** Der letzte Versuch — den SVG
-als CSS-Maske zu verwenden — hat nicht getragen. dnd5e löst dasselbe Problem für
-sich, indem es die Datei holt und den SVG in die Seite einsetzt, wo `--icon-fill`
-greift (`dnd5e.mjs:64044`, sein `<dnd5e-icon>`). Genau diesen Weg gehen wir
-jetzt auch: einmal je Pfad geholt, Skripte herausgeworfen, in unserem Rot
-gezeichnet. Das braucht dnd5e nicht — es funktioniert für jedes System.
-
-**Bilder der Beteiligten.** Wessen Spalte welche ist, war eine graue Zeile mit
-einem Namen darin. Jetzt steht das Porträt des Charakters darüber, in der
-Partnerliste, und groß auf der Anfrage — quer über den Tisch erkennbar, ohne zu
-lesen. Name und Konto stehen untereinander, damit zwei ähnliche Namen
-unterscheidbar bleiben.
-
-**Zustimmung sieht man an der ganzen Spalte**, nicht an einem Wort in der
-Kopfzeile: goldener Rahmen, warmer Grund. Es ist die eine Angabe auf diesem
-Bildschirm, die darüber entscheidet, ob der nächste Fingertipp fremdes Eigentum
-bewegt.
-
-## 14.2611.12 — 2026-09-04
-
-Drei Fehler, zwei davon hätten Sachen verschieben können, ohne dass jemand
-zugestimmt hat.
-
-**Ein Spielleiter konnte nichts beantworten.** Alle Nachrichten laufen über den
-Spielleiter-Client — aber ein Socket liefert nie an den eigenen Absender zurück.
-War der Spielleiter selbst einer der beiden Tauschenden, redete er also ins
-Leere: sein „Ablehnen" wurde nie verarbeitet, kein Fenster schloss sich, niemand
-bekam eine Meldung. Betraf genauso Zustimmen, Ändern und Abbrechen.
-
-**Zwei angemeldete Spielleiter hätten jeden Tausch doppelt ausgeführt.** Jeder
-Gegenstand zweimal angelegt, jede Münze zweimal verschoben. Diese Welt hat zwei
-Spielleiterkonten, es hätte also nur beider Anwesenheit bedurft. Jetzt ist genau
-einer zuständig: `game.users.activeGM` — den bestimmt jeder Client gleich, ohne
-Absprache.
-
-**Geld in Behältern stand nicht auf dem Tisch.** Es wanderte mit dem Behälter
-mit, was richtig ist, aber angezeigt wurde nur der Inhalt an Gegenständen. Damit
-wechselte Geld den Besitzer, das keiner der beiden je gesehen hatte — genau das,
-was dieses Fenster verhindern soll. Steht jetzt in der Zeile unter dem Behälter,
-verschachtelte Behälter eingerechnet.
-
-Dazu: Eine Ablehnung nennt jetzt den Namen dessen, der abgelehnt hat.
-
-Der Zustandsautomat wird ab jetzt ohne Browser geprüft — drei Foundry-Clients
-werden nachgebaut, samt der Regel, dass ein Socket nicht an den Absender
-zurückliefert. Genau diese Regel war der Fehler oben, und ein Test, der sie nicht
-nachbildet, hätte ihn nie gefunden.
-
-## 14.2611.11 — 2026-09-04
-
-Vier Dinge am Tausch, nachdem er das erste Mal am Tisch lief.
-
-**Die Gegenstandssymbole waren unsichtbar, nicht abwesend.** dnd5e zeichnet sie
-als SVG mit `fill: var(--icon-fill, #fff)`. Ein `<img>` ist ein eigenes
-Dokument, unsere Variablen kommen dort nicht an, also gewinnt der Rückfallwert:
-weiß auf Pergament. SVGs werden jetzt als Maske verwendet statt als Bild
-geladen, die Farbe kommt von uns. Das gilt für jedes System und färbt die
-Symbole nebenbei in unser Rot statt in das, was das System zufällig mitbringt.
-
-**Mengen bei Gegenständen wie beim Geld.** Vorher hatten Münzen 0/−10/−/+/+10/alles
-und Gegenstände nur Minus und Plus. Acht von zwanzig Pfeilen zu übergeben ist
-derselbe Vorgang wie acht von zwanzig Goldmünzen; jetzt sind es dieselben Knöpfe.
-Bei Dingen, die es nur einmal gibt, bleibt es beim Antippen.
-
-**Der Fensterrahmen ist jetzt auch D&D.** Bisher war nur das Innere unserer
-Fenster gestaltet, der Rahmen darum blieb Foundrys Dunkelgrau — ein
-Pergamentblatt in einer schwarzen Kiste. Kopfzeile dunkelrot mit goldener Linie,
-Gold um das ganze Fenster, wie FANG es macht. Gilt für **alle** Fenster des
-Moduls, nicht nur die des Tauschs; zwei Aussehen in einem Modul war genau das
-Problem.
-
-**Ziehen und Ablegen** kommt später. Auf dem Tablet kann es ohnehin nicht der
-Hauptweg sein — dass `drop` dort nicht feuert, war der Anlass für die ganze
-Funktion —, aber am Rechner wäre es bequem.
-
-## 14.2611.10 — 2026-09-04
-
-**Spieler können jetzt untereinander tauschen** — mit dem Finger, im
-Sheet-Only-Modus, ohne ein weiteres Modul. Zwei Leute legen Gegenstände und Geld
-auf einen Tisch, und erst wenn beide zustimmen, wird etwas bewegt.
-
-Der Anlass ist, dass es dafür bereits eine Lösung gibt, die am echten Tisch nicht
-funktioniert. Item Piles zieht Gegenstände per Maus von einer Liste in die
-andere, und **das HTML5-Ereignis `drop` feuert auf einem Touchscreen überhaupt
-nicht.** Auf dem Tablet, für das dieses Modul existiert, ist dieser Tausch also
-nicht bedienbar — unabhängig davon, wie er eingestellt ist.
-
-Hier ist deshalb alles ein Tippen. Zeilen sind 44 Pixel hoch, Mengen haben ein
-Minus und ein Plus, und nichts braucht eine zweite Hand.
-
-**Der Tisch ist das Fenster, die Auswahl legt sich darüber.** Ein Charakter mit
-sechzig Gegenständen würde beide Seiten sonst auf eine Liste starren lassen, in
-der niemand mehr sieht, worauf man sich eigentlich einigt. Der Tisch zeigt darum
-nur, was daraufliegt; das Aussuchen passiert in einer Fläche, die ihn verdeckt
-und wieder verschwindet. Solange ausgesucht wird, geht nichts über die Leitung —
-der Partner sieht die Änderung einmal, am Ende, und nicht bei jedem Tippen.
-
-**Der Spielleiter hält die Wahrheit.** Jede Änderung geht an seinen Client, der
-die eine echte Fassung des Tauschs führt und sie an beide zurückschickt. Das
-klingt nach einem Umweg und bringt dreierlei auf einmal: Die beiden Angebote
-können nicht auseinanderlaufen, weil es nur eines gibt; niemand kann behaupten,
-der andere habe etwas anderes zugesagt; und die Regel „ohne Spielleiter kein
-Tausch" — die ohnehin gilt, weil nur er auf einem fremden Charakter Gegenstände
-anlegen und löschen darf — ist keine Sonderbehandlung mehr, sondern einfach die
-Funktionsweise.
-
-**Jede Änderung setzt beide Zustimmungen zurück.** Ohne das könnte eine Seite
-zustimmen, auf die andere warten und im letzten Moment etwas vom Tisch nehmen.
-
-Beim Verschieben selbst gelten drei Regeln, und sie sind der Grund, warum das
-Ganze ein eigenes Modul-Kapitel bekommen hat: **erst aufschreiben, dann
-anfassen** — der Eintrag im Tagebuch „Tauschbuch" entsteht, solange beide
-Inventare noch unberührt sind, und sagt deshalb immer, was *gemeint* war, auch
-wenn das Verschieben auf halber Strecke umfällt. **Erst anlegen, dann löschen** —
-bricht es dazwischen ab, existiert der Gegenstand zweimal statt gar nicht.
-**Nichts anfassen, was nicht auf dem Tisch lag** — insbesondere wird nichts in
-vorhandene Stapel des Empfängers einsortiert; ein Stapel, der mit dem Tausch
-nichts zu tun hat, wird nicht verändert.
-
-**Behälter wandern ganz.** Ein Beutel nimmt seinen Inhalt mit, samt der
-verschachtelten Behälter darin und samt des Geldes, das im Beutel liegt. Was
-darin ist, steht auf dem Tisch als Zeile unter dem Beutel — „Beutel" allein sagt
-nicht, was übergeben wird.
-
-Angeboten werden kann nur **Mitspielern, die gerade angemeldet sind.** Ein
-Angebot an jemanden, der nicht da ist, kann niemand beantworten.
-
-Drei Einstellungen: ob getauscht werden darf, ob der Spielleiter als Partner
-erscheint (aus), und ob das Tauschbuch geführt wird (an).
-
-*Wer Item Piles ebenfalls einsetzt, schaltet dessen `showTradeButton` besser ab —
-sonst stehen zwei Tauschknöpfe nebeneinander.*
-
-## 14.2611.9 — 2026-09-01
-
-**Im Sheet-Only-Modus stehen jetzt Datum und Uhrzeit über dem Charakterblatt** —
-und auf Wunsch Wetter und Jahreszeit dazu. Der Anlass ist eine Lücke, die man
-erst am Tisch bemerkt: Sheet Only blendet die Oberfläche nicht teilweise aus,
-sondern ganz. Damit ist auch die Uhr eines Kalendermoduls weg, und keine
-Einstellung holt sie zurück, weil es nichts mehr gibt, worin sie erscheinen
-könnte. Ausgerechnet am echten Tisch, wo die Leute sitzen, die nach der Uhrzeit
-fragen.
-
-Die Werte werden **gelesen, nicht geliehen.** `game.time` erreicht jeden Client,
-ob er ein Spielfeld hat oder nicht; das Wetter steht in einer Welteinstellung von
-Calendaria. Dessen HUD bleibt unangetastet — es umzuhängen hieße, sich bei jedem
-Zeitschritt mit seinem Neuzeichnen anzulegen, und es erscheint alle ein bis drei
-Wochen neu.
-
-Das hat einen zweiten Nutzen, mit dem ich nicht gerechnet hatte: **Die Worte sind
-unsere.** Calendarias Harptos-Kalender nennt seine Wochentage „Onesday" bis
-„Tenday" als feste Zeichenketten, ohne Übersetzungsschlüssel dahinter — keine
-Sprachdatei käme da heran. Die Leiste formatiert selbst und zeigt Deutsch.
-
-Neu gezeichnet wird nur bei einem Wechsel der **angezeigten Minute**. Läuft die
-Uhr in Echtzeit mit einem Vielfachen — bei mir zwei Spielsekunden je echter
-Sekunde —, feuert `updateWorldTime` im Sekundentakt. Sechzig Neuaufbauten für
-eine sichtbare Änderung, ausgerechnet auf den Tablets, die am wenigsten übrig
-haben.
-
-Ob die Leiste erscheint, entscheidet **jedes Gerät für sich**; ob Wetter und
-Jahreszeit mitlaufen, die Spielleitung. So steht es auch im Werkzeugkasten-
-Konzept: Was ein Spieler je anfasst, gehört in die einfache Liste, nicht in ein
-Fenster, das nur die Spielleitung öffnen kann.
-
-Aussehen und Maße sind an einer laufenden Calendaria-Leiste abgenommen — Text
-`rgb(224 224 224)`, Signika, die Uhr in Monospace, damit die Minuten den Streifen
-nicht seitlich verschieben. Die Regeln sind trotzdem eigene: Calendarias
-Stilvorlage sind 253 KB, die an ATLAS-Farbvariablen hängen, welche nicht einmal
-auf `:root` liegen. Wo es diese Variablen gibt, folgt die Leiste ihnen; wo nicht,
-greifen eigene Werte.
-
-Manifest und README sagen das jetzt auch: `sheet-only` und `calendaria` stehen
-als empfohlene Module drin, mit Begründung, und beide Sprachfassungen der README
-haben einen Abschnitt dazu.
-
-## 14.2611.8 — 2026-09-01
-
-**Die Akteursauswahl von Sheet Only lässt sich jetzt durch ein Seitenpanel
-ersetzen** — eine Funktion, die bisher in FANG steckte. Dort war sie am falschen
-Ort: Sie räumt die Oberfläche eines fremden Moduls um, damit man bequemer am
-Tisch spielt. Das ist die Aufgabe dieses Moduls, nicht die eines Werkzeugs für
-Beziehungsgeflechte.
-
-Eingeschaltet blendet sie den Auswahlknopf von Sheet Only aus und setzt einen an
-seine Stelle, der Foundrys Akteursverzeichnis rechts am Rand aufklappt; das
-Charakterblatt gibt dafür 300 Pixel her und holt sie sich danach zurück.
-**Standardmäßig aus** — ein Modul, das ungefragt in der Oberfläche eines anderen
-umräumt, ist ein schlechter Gast.
-
-Die Abwehr gegen Foundrys leere Fensterhüllen ist unverändert mitgezogen. Sie
-ist der Grund, warum der Code so misstrauisch aussieht: Nach dem Schließen bleibt
-in v13 der Rahmen ohne Inhalt stehen. Dann hält die CSS-Bedingung das Blatt
-schmal neben nichts, und der Knopf weigert sich, noch einmal zu öffnen. Deshalb
-wird mehrfach nachgeräumt — als Mikrotask, nach 0, 50 und 250 Millisekunden und
-über fünf Bildwechsel, weil Foundry die Hülle zu keinem festen Zeitpunkt entfernt.
-
-Neu dazu kommt `sheet-only.js`: alles, was dieses Modul über Sheet Onlys Aufbau
-weiß, an einer Stelle. Sheet Only ist für Foundry 13.351 eingetragen, während wir
-auf 14 laufen — wenn dort etwas wandert, ist künftig ein Selektor falsch statt
-vieler.
-
-## 14.2611.6 — 2026-08-29
-
-**Die Marke gleitet jetzt, statt zu springen** — und mein Grund dagegen war
-falsch herum gedacht. Ich hatte geschrieben, ein Gleiten würde „jeden Pixel auf
-dem Weg beleuchten". Das stimmt und ist genau das Argument *dafür*: Einbrennen
-entsteht durch anhaltende Last auf demselben Pixel. Eine Marke über eine Bahn zu
-verteilen ist schonender, als sie eine halbe Minute lang auf einen Fleck zu
-setzen. Ruhiger anzusehen ist es obendrein.
-
-Fünfundzwanzig Sekunden je Wegstrecke, weich ein- und ausklingend. Die erste
-Platzierung bleibt sprunghaft — sonst würde die Marke jedes Mal aus der Ecke
-hereinfahren, wenn die Blende hochgeht. In der Vorschau sind die Wege kürzer,
-sonst sieht man in acht Sekunden keine Bewegung.
-
-**Das gewählte Bild wird nicht mehr abgedunkelt.** Ich hatte es auf 45 % gesetzt,
-mit Verweis auf den Einbrennschutz. Das war übervorsichtig: Die Marke ist klein,
-bewegt sich ständig, und ringsum ist alles schwarz. Wer ein Bild aussucht, will
-sein Bild sehen.
-
-## 14.2611.5 — 2026-08-29
-
-**Die Begleitszenen sind jetzt ein Editor, keine Liste.** Bisher konnte man dort
-nur ansehen und auflösen — angelegt wurde eine Verknüpfung ausschließlich in der
-Szenen-Konfiguration der jeweiligen Battlemap. Das ist der halbe Weg: Wer einen
-Überblick über alle Paare hat, will von dort aus auch eines hinzufügen können.
-
-Unter der Liste stehen jetzt zwei Szenenfelder und ein Knopf. Beide nehmen eine
-gezogene Szene aus der Seitenleiste oder öffnen die Suchliste — dasselbe Feld
-wie in der Szenen-Konfiguration.
-
-Angelegt und aufgelöst wird sofort, nicht erst beim Speichern: Eine Verknüpfung
-ist ein Merkmal der Battlemap, kein Wert dieses Formulars. Sie bis zum Speichern
-zurückzuhalten hieße, dass ein Abbrechen die eine Hälfte rückgängig macht und
-die andere nicht.
-
-**„Blende ansehen" zeigte den Punkt statt des gewählten Bildes.** Der Knopf las
-die *gespeicherte* Einstellung — und die ist in genau dem Moment noch leer, in
-dem man ihn braucht: Man hat eben eine Datei gewählt und will sie sehen, bevor
-man speichert. Wer das tat, sah den Punkt und musste annehmen, seine Wahl sei
-nicht angekommen.
-
-Die Vorschau nimmt jetzt den Pfad, wie er im Formular steht.
-
-Dazu aus dem Test: Die Schriftfarbe im Szenenfeld steht auf `inherit` statt auf
-unserer eigenen. Das Feld erscheint an zwei Orten mit entgegengesetztem Grund —
-Foundrys dunklem Szenenfenster und unseren hellen Seiten — und `inherit` ist in
-beiden richtig. Vorher stimmte es nur zufällig: `--tm-text` ist außerhalb unserer
-Fenster nicht definiert, die Regel griff ins Leere und erbte dasselbe.
-
-## 14.2611.3 — 2026-08-29
-
-Zwei Fehler, im Betrieb gefunden.
-
-**Die Suchliste war kaum lesbar.** Ich hatte den Zeilen Grund und Ausrichtung
-gegeben, aber keine Schriftfarbe — also erbten sie Foundrys helle Themenfarbe auf
-unserem Pergamentgrund. Gemessen: 0,16 Helligkeitsunterschied. Derselbe Fehler
-wie bei „Begleitszenen" in 14.2610.5, diesmal an vier Stellen auf einmal. Steht
-jetzt als Regel in `AGENTS.md`: Wer Schrift oder Grund setzt, setzt auch die
-Farbe.
-
-**Fehlende Vorschaubilder brechen die Anzeige.** Eine Szene trägt einen Pfad zu
-einem Vorschaubild, dessen Datei es nicht mehr gibt — „53. Pirate Ship" zeigt auf
-eines, das der Server mit 404 beantwortet. Das Dokument weiß davon nichts, also
-muss die Prüfung dort passieren, wo es sich zeigt: am Bildelement. Schlägt das
-Laden fehl, tritt jetzt das Ersatzbild an die Stelle.
-
-## 14.2611.2 — 2026-08-29
-
-**Die Begleitszene wird nicht mehr aus einer Liste mit 125 Einträgen gewählt.**
-Ein Auswahlfeld ist dafür in zwei Hinsichten die falsche Form: Einen Namen darin
-zu finden heißt, eine Liste zu durchsuchen, die anders sortiert ist als die
-Erinnerung — und ist er gewählt, steht dort ein Name und sonst nichts. Kein Bild
-der Szene, und „53. Pirate Ship" ist von „53. Pirate Ship (Nacht)" nicht zu
-unterscheiden.
-
-Stattdessen ein Feld mit drei Wegen hinein, weil Leute unterschiedlich ankommen:
+**The moon now shows the right phase.** The calculation was right (Calendaria and we
+both said "Waning Moon"), the drawing was not: the shadow edge curved the wrong way,
+so 82 % lit on the left became a crescent on the right. Calendaria's own answer is now
+the source when it runs, so players and gamemaster are guaranteed to see the same.
+Without Calendaria we keep calculating ourselves, now with `referencePhase` as an index
+and `cycleDayAdjust`.
+
+**Positions and size per orientation.** Portrait and landscape remember separately
+where the bars were dragged and how large they are; on rotation the device fetches the
+values of the new orientation. Everything lives in device storage and survives a
+reload and a new login.
+
+**Reset by the gamemaster.** On the "Sheet view (beta)" page every account has a ↺
+button: position, size and font of the bars go back to the start values on this
+account, on all its devices, at once if it is logged in, otherwise on the next load.
+
+## 14.2611.45 - 2026-09-06
+
+**Hold time setting removed again.** It stood on the gamemaster's page for one day and
+was a developer's knob there: whoever sets up the view does not want to decide about
+milliseconds. Fixed at 400 ms, as it worked at the table.
+
+## 14.2611.44 - 2026-09-06
+
+**Bar size adjustable by the player.** A slider in the second button group (60 to 140
+%), remembered per device. The automatic steps by screen width (85 % below 1100 px, 72
+% below 850 px) are now only the starting point: in portrait the full size was just
+right, in landscape too large, and whoever holds the tablet decides that better.
+
+Fixed: on the first drag after loading, the button bar jumped sideways by half its
+width (the grip was measured after the change of transform).
+
+## 14.2611.42 - 2026-09-06
+
+**Portrait: bars at the bottom.** In portrait the attributes sit in the sheet header
+exactly where the bars float above the banner in landscape; measured, the button bar lay
+on STR, DEX and CON. In portrait both now stand at the bottom centre, the time bar above
+the button bar; on rotation they rearrange. Dragged positions still win.
+
+**The sheet comes back when it is closed.** Escape closes the topmost window in
+Foundry, which in this view is the sheet, and the screen was black. Now it reopens at
+once; Escape in the volume field stays with the field.
+
+**Settings page slimmed down.** Three explanation boxes are gone, the texts sit behind
+(i); the account list is the first thing you see.
+
+## 14.2611.41 - 2026-09-06
+
+**Volume in the bar.** A button in the second group opens three sliders (music,
+ambience, interface) below the bar. They are Foundry's device settings; the tablet next
+to the television can be silent without the table noticing.
+
+Decided: side windows stay **above** the sheet (no narrowing), Sheet Only stays
+installed for now, no account gets both.
+
+## 14.2611.40 - 2026-09-05
+
+**The sheet view gets its own page, and chooses accounts individually.** The beta
+switch alone hit every player with a character, including the one at the laptop who
+needs their scene list. Now: a master switch plus a list of player accounts with
+checkboxes, as for table mode. Gamemasters are not in the list.
+
+Also on the same page: **switch off the game canvas** (the same machinery as in table
+mode; the tablet asks once for a reload), **open the chat when rolling** (only for your
+own messages) and the **hold time** for moving the bars.
+
+**Buttons of other modules.** The bar accepts buttons through
+`game.modules.get("ninjos-inperson-tools").api.sheetView.registerButton()`; whoever is
+ready before us gets the hook `ninjosInPersonTools.ready`. No element with a foreign id
+that someone would have to search for in the DOM. FANG and NDRS register through it from
+their next releases.
+
+New in the second button group: **reset font** and **settings** (Foundry's settings
+window: volume, language, module settings, which a player could not reach otherwise).
+
+**The moon is drawn again.** The calendar module's phase image was neither round nor
+sharp at 28 pixels. Now a vector disc with the real phase from the calendar, a light
+gradient and a halo.
+
+## 14.2611.39 - 2026-09-05
+
+**The dome stands behind the time bar**, its base disappearing under the pill, as in
+the original. Laid on top it looked like a sticker. A child cannot go behind its
+parent's background; so the pill's background now lies on a pseudo-element above the
+dome, with the text above that. Plus two positioning errors that only showed on the
+screen: the dome stood 66 pixels above the top edge (wrong reference), and the pill had
+slipped to the right (an inherited `left: 50%` as an offset).
+
+New as well: `ANALYSE-blattansicht-vs-sheet-only.md`, what Sheet Only can do, where we
+stand, what is missing, and the open question of whether a side window makes the sheet
+narrower or covers it.
+
+## 14.2611.38 - 2026-09-05
+
+**The dome sits centred on the time bar, the text below it**, as in the original.
+Before, it stood on the left and the text next to it; that was the wrong arrangement,
+not only the wrong size. Also larger (152 × 78), and the sky in dark night blue instead
+of turquoise.
+
+## 14.2611.37 - 2026-09-05
+
+**The bars start at the top centre**, above the sheet's banner: the time bar with the
+dome on top, the button bar directly below, the way the table had moved them. On start
+the button bar places itself under the time bar, because with the dome it is much taller
+than without. Moved positions still win.
+
+## 14.2611.36 - 2026-09-05
+
+**The sheet's header buttons are gone in the sheet view**, except the ⋮ with the sheet
+settings. Copy image path, pop out the window, portrait/token, copy UUID: desk tools,
+and on a tablet without a clipboard and a second window only targets for mistakes.
+
+## 14.2611.35 - 2026-09-05
+
+**The sheet fills the screen edge to edge, as with Sheet Only.** Two detours are gone
+again. At the top I had removed the window header entirely and then left ten pixels of
+air so the portrait would not stick to the edge; the blue page background showed in the
+gap. Sheet Only keeps the header and only hides the close button; the header gives the
+sheet its dark edge at the top by itself. Exactly that now. At the bottom lay a red
+plinth: a `padding-bottom` on the window content that exposed its background. Gone: the
+bars simply lie above the sheet, as their models do.
+
+**No gold on the bars.** This is a HUD over the sheet, not the D&D window design; the
+gold border was far too loud there. Both bars now carry the same quiet border the time
+bar had from the start, and the dome's rim is dimmed by half.
+
+## 14.2611.34 - 2026-09-05
+
+**The button bar is opaque, dark and matches the time bar.** Before, it was a
+semi-transparent light pill with a blur, pretty on a plain ground, but here it sat over
+the edge between the sheet's red plinth and the dark blue page background, and both
+shimmered through: red at the top, blue at the bottom, mush in between. Plus square
+buttons in a round shape that clipped them at the ends.
+
+Now opaque, so the ground does not matter; dark with a gold border like the time bar
+next to it, so the two read as a pair; and rounded squares in a bar that is only a
+little rounder, so nothing is clipped. The time bar got the same gold border.
+
+## 14.2611.33 - 2026-09-05
+
+**The sky dome now sits on the time bar, not in it.** Three times I had put the arc into
+the bar and blown it up to 86 pixels that way. In the original the bar is thin and the
+dome stands on top like a watch glass. That is exactly how it is now: a pill 34 pixels
+flat, on the left a half dome with a gold rim that rises above it, the moon clearly
+recognisable inside.
+
+**The sheet has air at the top.** With `inset: 0` the portrait sat on the first pixel
+and the header looked cut off. A ten-pixel margin, as Sheet Only leaves for the same
+reason.
+
+**What Sheet Only changes on the sheet for the finger applies here too:** thin scroll
+bars, no resize handle, tighter tab margins in Tidy5e, and room at the bottom for the
+two bars so the last row does not disappear under them.
+
+**The flash on closing is gone, measured, not assumed.** `close()` is asynchronous; until
+it finished, the frame stood there for one or two frames. Hiding now happens
+synchronously in the click itself, closing afterwards. Checked every 16 milliseconds for
+700 milliseconds, three surfaces: zero samples in which a frame could still be seen.
+Before, the very first sample showed it. A sidebar window is only visible in the sheet
+view at all if we opened it; everything else, ghosts included, stays invisible. The actors
+button in Sheet Only mode also hides the frame before closing it.
+
+## 14.2611.32 - 2026-09-05
+
+**Everything flew along when dragging.** Whoever grabbed the button bar moved the time
+bar too. The reason was a beginner's mistake of mine: the function that makes a bar
+draggable runs **twice**, once per bar, but the grip point and the grabbed element sat
+next to it as shared variables. So one read what the other had just set, and both moved.
+
+Each bar now has its own state. Only the one piece of information that belongs shared
+stays shared: whether a drag just happened, so the click after it does not also trigger
+a button.
+
+## 14.2611.31 - 2026-09-05
+
+**The phantom page is gone, and it was three errors, not one.** Found because this time
+every path was tried instead of only the one that already worked.
+
+*A race.* Opening and closing are both asynchronous and take different lengths of time;
+whoever taps twice in quick succession starts the second before the first has finished.
+Measured: twelve rounds of quick open and close left **two windows open**. The toggles now
+run one after the other.
+
+*A frame without an application.* Foundry reported `rendered: false` for the notes
+directory and still left its element in the document. My check looked for *empty* frames;
+this one had content and slipped through. Now we ask what the application says about
+itself, which is the more reliable answer.
+
+*And one of our own making.* We build the actor directory ourselves, because Monk's Little
+Details intercepts `renderPopout`; it therefore does **not** hang on `app.popout`, and that
+is exactly where I tried to close it. It stayed open and cheerfully reported `rendered:
+true`. We now remember what we opened.
+
+Checked: open and closed singly, twelve rounds at a 450-millisecond rhythm, fifteen at 60,
+twenty-five at 30. Zero open windows afterwards every time.
+
+## 14.2611.30 - 2026-09-05
+
+Three errors in the sheet view that I should have seen instead of reading numbers from the
+DOM.
+
+**The font buttons did nothing.** They set a font size, and Tidy5e sets its own
+dimensions; our variable reached none of them. Measured: a button stayed at 140 × 28 pixels
+however often you pressed. Now through `zoom`, which makes it 196 × 39. And because `zoom`
+also scales the box (at a factor of 1.4, `100vw` became three thousand pixels on a
+two-thousand-pixel screen), the sheet's size is calculated against the zoom. It now fills
+exactly the window at every factor.
+
+**The two bars lay on top of each other.** A saved position from earlier releases put the
+buttons right on the clock. A remembered position is now discarded if it covers the other
+bar.
+
+**And they cut off the top of the sheet.** That is where every character sheet has its
+header with name, image and values. Both are moved to the bottom edge: the buttons on the
+left, the time on the right. It is the emptiest part of every sheet, and on a tablet the
+one the thumb reaches.
+
+## 14.2611.29 - 2026-09-05
+
+**Icons instead of words** in the sheet view bar. Words make it wide and are a different
+length in every language; the icon stays the same size, and the name is in the tooltip and
+the accessibility label. Plus a round, translucent frame and a set-off toggle in module red.
+
+**The bar no longer sticks to the time bar.** It stood at the top centre with the time
+directly below, two things that looked like one block. Now top left and top right, with
+space between.
+
+**The ghost window is gone.** Whoever opened and closed an area left an empty frame
+behind, the same problem the actor panel had once before. Its solution was buried there; it
+now lives in `shells.js`, and both use it. Foundry clears the shell at no fixed moment, so
+we look several times.
+
+**And an error when moving:** whoever sets `left` without clearing `right` has set both,
+and the element is stretched instead of moved. Measured: 107 pixels hung over the right
+edge although the code clamps.
+
+## 14.2611.28 - 2026-09-05
+
+**Time bar and button bar are separate.** With the sky arc in it, the button bar became 833
+pixels wide and 96 tall, anything but small. They are also two different things: one is
+operated, the other looked at. Now 277 × 54 for the buttons, the time next to them, both
+movable on their own with their own remembered position.
+
+## 14.2611.27 - 2026-09-05
+
+**The sheet view bar is now small, translucent and movable.** My first version put nine
+buttons side by side and stuck to the top centre, wrong on all three counts.
+
+*Small, because it switches:* it shows one group at a time, and a ☰ switches. In front is
+what you need all the time (who, chat, note, trade), behind it what you do once an evening
+(font size, full screen, log out). Nothing is dropped, it just does not all stand there at
+once.
+
+*Movable by long press:* on a touchscreen every touch is a tap first. If the bar dragged at
+once, no button could be hit any more. So hold briefly, then it follows, and whoever dragged
+triggers no button on release. The position is remembered per device, but only restored if
+it actually lies on this screen: whoever pushes the bar outwards on the large monitor should
+find it again on the tablet.
+
+*Translucent*, because it lies on the sheet and should not cover what is underneath.
+
+## 14.2611.26 - 2026-09-05
+
+**The sky arc now uses Calendaria's own moon images.** At first I drew the crescent myself
+so as not to depend on someone else's files. At the table that looked worse than the
+original, and the original *is* the image whose path is in the phase data anyway. So it is
+used when it is there, and drawn when not.
+
+Also, the arc is a **dome** instead of a flat strip and is shown one to one: 190 × 76 pixels.
+Twice it came out too small, both times from the same thinking error: I had thought of it as
+part of the bar and squeezed it to the bar's height. But it is an image and sets its own
+size.
+
+## 14.2611.25 - 2026-09-05
+
+**First version of our own sheet view, as a beta, off by default.** It gives players the
+whole screen for their character sheet and replaces Foundry's interface with a floating bar:
+who, chat, note, trade, font smaller and larger, full screen, log out, plus the time bar.
+Design and reasoning in `KONZEPT-blattansicht.md`.
+
+**Cover rather than rebuild.** Foundry's interface stays completely there and working; it is
+just not shown. Modules that rely on parts of it keep running, and the way back is one class
+on the `body`.
+
+**The notifications stay visible**, the one point where we deliberately differ. Whoever hides
+`#notifications` too takes away any way of telling the player anything; that is exactly why
+Sheet Only mode needed a strip of its own.
+
+Gamemasters are never affected: they need the interface that disappears here.
+
+## 14.2611.24 - 2026-09-05
+
+**A sun and moon arc in the time bar.** It shows where the sun or moon stands right now, with
+the moon's phase; one glance says "the sun has been gone for an hour", which you would
+otherwise have to work out. Switched on under "Time & Weather"; off by default.
+
+**Calculated, not copied.** Everything comes from the world calendar every client has:
+`daylight` supplies the longest and shortest day with the solstices, and from that the day
+length for today; `moons` supplies cycle length, reference date and the eight phases. Checked
+against this world's values: day 171 gives 16 hours, day 354 exactly 8. We draw the moon
+crescents ourselves instead of loading another module's image files; otherwise the bar would
+depend on that module being there. Without calendar data the arc falls back to 06:00/18:00 and
+leaves the moon out instead of disappearing.
+
+The calculation test found an error straight away: 19.99993 hours became "19:60", because the
+minutes, rounded on their own, came to 60. Now we round to minutes first and divide afterwards.
+
+## 14.2611.23 - 2026-09-05
+
+**The actors button no longer opened the directory.** The cause is not ours, but it lands on
+our button: Monk's Little Details wraps `ActorDirectory.prototype.renderPopout` and, with the
+"open-actor" option on, opens the user's own character sheet instead, without calling the
+original and without returning anything (its line 293). For a player with an assigned
+character in Sheet Only mode that sheet is the only thing on the screen anyway. So visibly
+nothing happened.
+
+For its sidebar tab that is a defensible idea: a click on "Actors" plausibly means "my
+character" there. Not for our button: it says Actors and has to show the directory. If the
+polite route comes back empty, we now build the window ourselves, exactly as Foundry's own
+code does, and leave that module's setting alone.
+
+## 14.2611.22 - 2026-09-05
+
+**Sheet Only's journal button looked as if it did nothing.** It does something: it opens
+Foundry's notes directory as a narrow column on the right edge. Only it was **201 pixels
+tall**, a small box in the top right corner that you simply overlook on a tablet.
+
+The reason is ours: in this mode we pin the actor directory to the right edge ourselves,
+because Foundry calculates the position of an expanded sidebar from the position of its tab,
+and in Sheet Only that sits in the hidden `#interface`. We had solved this for our own
+directory, not for the neighbours'. That was the wrong half of a repair.
+
+Now the same anchoring applies to **every** expanded sidebar window while Sheet Only runs:
+right edge, full height. Outside this mode nothing changes; Foundry's own placement is right
+there.
+
+## 14.2611.21 - 2026-09-05
+
+**Trading now has its own page**, like table mode, displays and the time bar. Its three
+switches were the only ones still flat in the settings list and made it look like the table
+mode settings with strangers in them.
+
+The page also has the way into the **trade ledger**. The journal is in the sidebar, but
+whoever looks up "where did the sword go" looks in these settings and not in a list of
+journals, so the door is where the question is asked. If Item Piles is active, the page points
+out that its trade button is better switched off.
+
+## 14.2611.20 - 2026-09-05
+
+**The bar is a gamemaster matter, not a device matter.** The four switches were meant per
+device, the idea being that everyone decides about their own screen. The table decided
+otherwise, and rightly: what the bar carries is a display question for the whole group, like
+the scene everyone looks at. All five now apply to the world, only the gamemaster opens the
+page, and a player does not have to be led through a settings page mid-game. The duplicate
+weather switch is gone again; the old one keeps the job it always had.
+
+**The wind now shows with Calendaria's own word and speed band**: "Wind from S · Strong, 41-60
+km/h". The *single* number from its HUD ("58 km/h") is deliberately not taken over, and the
+reason is in its source code: `getWindSpeedKph` rolls it anew between the limits of the level on
+every call and stores it nowhere. It changes when you move the pointer away and back, and two
+people looking at the same wind get two different values. The band is the same information,
+only without the dice, and everyone sees the same. If Calendaria is set to miles, the bar
+converts along.
+
+## 14.2611.19 - 2026-09-05
+
+**Every part of the bar can be shown or hidden individually.** Date, time, weather, season, on
+a page of their own, "Time & Weather", not as five more lines in the settings list. Two groups,
+because there are two kinds of switch: four belong to the device in your hand, one to the whole
+group. Side by side as identical checkboxes, nothing would have given away that one of them
+changes the evening for everyone. Only the gamemaster sees the world row, and it is not touched
+on save if it was not in the form at all; otherwise any player could quietly switch the weather
+off for the table.
+
+**The chips now show what the calendar module really knows.** The bar has room for one word;
+the tooltip carries the long description, the temperature and the wind: "Windy / Strong winds /
+11 °C / Wind from S · Force 3". The wind direction is converted from degrees into a compass
+point, which is stable arithmetic. The wind strength stays a level and is not converted into
+km/h: that would mean copying a table that belongs to another module.
+
+**And the grabbing hand is gone.** The bar had `pointer-events: none`, which sounded right,
+since it is a label. Only that passes the pointer on to whatever lies beneath, which is Sheet
+Only's draggable button bar: a grabbing hand that could grab nothing, and tooltips that could
+never trigger.
+
+## 14.2611.18 - 2026-09-05
+
+**The bar also runs without Calendaria**, checked, not assumed. Foundry's own "Simplified
+Gregorian" calendar writes its seasons exclusively through `monthStart`/`monthEnd`, 1-based,
+and its winter runs from month 12 to month 2, across the turn of the year. Nine cases against
+both calendars now run as `tools/test-clock-seasons.mjs`, both turns of the year included.
+Without a calendar module only the weather is missing; date, time and season are still there.
+The setting text claimed the opposite and has been corrected.
+
+**The wrong date no longer stands for ten seconds on load.** The check runs every second in the
+first quarter minute and slowly after that. It is a string comparison; building still only
+happens on a real change of minute.
+
+## 14.2611.17 - 2026-09-05
+
+**The time bar was there, just not visible.** Sheet Only puts only the actor list and its own
+button bar into its container; the character sheet is an ordinary Foundry application on the
+`body` and is painted over it. A bar that stays in that container's flex flow lands where flex
+puts it: measured on a real client, left 1001, top 538 of a 2333×1104 window. In the middle of
+the screen and behind the sheet. Present, 34 pixels tall, right in every respect, except that
+nobody could see it.
+
+It now stands at the top centre, on the same layer as Sheet Only's own buttons, and takes no
+taps: it is a label, not a control, and must not take anything away from the sheet below.
+
+## 14.2611.16 - 2026-09-05
+
+**The time bar showed a wrong date all evening.** On the first real Sheet Only client it said
+"31 July, -9" while the world stood at "1 Eleasis, 1492". Calendaria installs its Harptos
+calendar *after* our `ready` has run, so the first drawing still used Foundry's default
+Gregorian calendar. It never corrected itself: the bar redraws on `updateWorldTime`, and the
+game was paused.
+
+A date that is wrong and does not move is worse than none: nobody doubts a display that looks
+like a clock. Now the bar looks again every ten seconds. That is only a comparison; building
+still only happens when the displayed minute has really changed.
+
+## 14.2611.15 - 2026-09-04
+
+**Notifications never reached the players this module is built for.** Sheet Only does not hide
+the interface partially but entirely, Foundry's `#notifications` included (its index.js:902).
+Every "Roxy declined", every "no gamemaster logged in", every "trade completed" was created,
+logged and seen by nobody.
+
+**The trade now ends with a picture instead of a notification.** The window no longer
+disappears without a word but becomes the answer: the other person's portrait, one sentence,
+one button. Whoever declined reads what they did; the other side reads what happened to them.
+"Roxy declined" is the wrong sentence for Roxy. After twelve seconds it closes by itself,
+except when something went wrong: that is the one message that must have been read.
+
+**Warnings before trading** (no character assigned, no gamemaster there, already in a trade)
+now appear in Sheet Only mode as a strip in its own container, the only part of the page still
+visible there. Outside it, Foundry's notifications remain.
+
+## 14.2611.14 - 2026-09-04
+
+**The trade window could not be brought back.** Whoever tapped beside it in Sheet
+Only mode pushed it into the background, and there is no bar there, no window list,
+no visible interface at all to bring it forward again. A dead end, not a cosmetic
+flaw. Sheet Only knows the problem itself and solves it with a fixed `z-index` (its
+style.css 65 and 173); its container sets children to 1000 and the actor list to
+1001, and exactly that lay above us. The trade window now stands at 9000, above all
+of that but below the dice resolver, which blocks a roll and has to win. In addition,
+the trade button brings a running window forward again.
+
+**On the tablet it hung out at the bottom.** 640 pixels tall with the browser bar
+above it, and at the very bottom the two buttons that end the trade. They were simply
+not there. The size is now a wish that is scaled down to the actual screen, also when
+the device is rotated.
+
+Below 620 pixels of width the two sides of the table stand one above the other rather
+than side by side.
+
+## 14.2611.13 - 2026-09-04
+
+**The item icons are really there now.** The last attempt, using the SVG as a CSS
+mask, did not hold. dnd5e solves the same problem for itself by fetching the file and
+inserting the SVG into the page, where `--icon-fill` takes effect (`dnd5e.mjs:64044`,
+its `<dnd5e-icon>`). We now take exactly that route too: fetched once per path, scripts
+thrown out, drawn in our red. It does not need dnd5e; it works for any system.
+
+**Pictures of those involved.** Which column belonged to whom was a grey row with a
+name in it. Now the character's portrait stands above it, in the partner list, and
+large on the request, recognisable across the table without reading. Name and account
+stand one above the other so two similar names stay distinguishable.
+
+**Agreement shows on the whole column**, not as a word in the header: a gold border, a
+warm ground. It is the one piece of information on this screen that decides whether the
+next tap moves someone else's property.
+
+## 14.2611.12 - 2026-09-04
+
+Three errors, two of which could have moved things without anyone agreeing.
+
+**A gamemaster could not answer anything.** All messages go through the gamemaster's
+client, but a socket never delivers back to its own sender. If the gamemaster was one of
+the two trading, they were talking into the void: their "decline" was never processed,
+no window closed, nobody got a message. The same applied to agreeing, changing and
+cancelling.
+
+**Two logged-in gamemasters would have carried out every trade twice.** Every item
+created twice, every coin moved twice. This world has two gamemaster accounts, so both
+being present would have been enough. Now exactly one is responsible:
+`game.users.activeGM`, which every client determines the same way without consultation.
+
+**Money in containers was not shown on the table.** It travelled with the container,
+which is right, but only the items inside were displayed. So money changed hands that
+neither side had ever seen, which is exactly what this window is meant to prevent. It
+now stands in the row below the container, nested containers included.
+
+Also: a refusal now names whoever declined.
+
+The state machine is now tested without a browser: three Foundry clients are simulated,
+including the rule that a socket does not deliver back to the sender. That very rule was
+the error above, and a test that does not reproduce it would never have found it.
+
+## 14.2611.11 - 2026-09-04
+
+Four things about the trade, after it ran at the table for the first time.
+
+**The item icons were invisible, not absent.** dnd5e draws them as SVG with `fill:
+var(--icon-fill, #fff)`. An `<img>` is a document of its own, our variables do not reach
+it, so the fallback wins: white on parchment. SVGs are now used as a mask instead of
+being loaded as an image, and the colour comes from us. That works for any system and
+colours the icons in our red on the side, instead of whatever the system happens to
+bring.
+
+**Quantities for items as for money.** Before, coins had 0/-10/-/+/+10/all and items only
+minus and plus. Handing over eight of twenty arrows is the same act as eight of twenty
+gold coins; now they are the same buttons. For things that exist only once, a tap
+remains.
+
+**The window frame is now D&D too.** Until now only the inside of our windows was styled,
+and the frame around it stayed Foundry's dark grey: a sheet of parchment in a black box.
+The header is dark red with a gold line, gold around the whole window, as FANG does it.
+It applies to **all** of the module's windows, not only the trade's; two looks in one
+module was exactly the problem.
+
+**Drag and drop** comes later. On the tablet it cannot be the main way anyway (that `drop`
+does not fire there was the reason for the whole feature), but at the computer it would be
+convenient.
+
+## 14.2611.10 - 2026-09-04
+
+**Players can now trade with each other**, with a finger, in Sheet Only mode, without
+another module. Two people put items and money on a table, and only when both agree is
+anything moved.
+
+The reason is that a solution for this already exists that does not work at a real table.
+Item Piles drags items with the mouse from one list to the other, and **the HTML5 `drop`
+event does not fire on a touchscreen at all.** On the tablet this module exists for, that
+trade cannot be used, however it is configured.
+
+So everything here is a tap. Rows are 44 pixels tall, quantities have a minus and a plus,
+and nothing needs a second hand.
+
+**The table is the window, and picking lies over it.** A character with sixty items would
+otherwise leave both sides staring at a list in which nobody can see what is actually being
+agreed. So the table only shows what is on it; picking happens in a layer that covers it and
+goes away again. While picking, nothing goes over the wire: the partner sees the change
+once, at the end, and not with every tap.
+
+**The gamemaster holds the truth.** Every change goes to their client, which keeps the one
+real copy of the trade and sends it back to both. That sounds like a detour and buys three
+things at once: the two offers cannot drift apart, because there is only one; nobody can
+claim the other agreed to something else; and the rule "no gamemaster, no trade" (which
+holds anyway, since only the gamemaster may create and delete items on another's character)
+is no longer a special case but simply how it works.
+
+**Every change resets both agreements.** Without that, one side could agree, wait for the
+other and take something off the table at the last moment.
+
+For the moving itself three rules apply, and they are why the whole thing got a chapter of
+its own in the module: **write it down first, then touch it**. The entry in the "trade
+ledger" journal is made while both inventories are still untouched, and so always says what
+was *meant*, even if the moving falls over halfway. **Create first, then delete**: if it
+breaks in between, the item exists twice rather than not at all. **Touch nothing that was not
+on the table**: in particular nothing is sorted into the recipient's existing stacks; a stack
+that has nothing to do with the trade is not changed.
+
+**Containers travel whole.** A pouch takes its contents along, including nested containers
+inside it and the money in the pouch. What is inside stands on the table as a row below the
+pouch; "pouch" alone does not say what is handed over.
+
+Offers can only be made **to fellow players who are logged in right now.** An offer to
+someone who is not there cannot be answered.
+
+Three settings: whether trading is allowed, whether the gamemaster appears as a partner (off),
+and whether the trade ledger is kept (on).
+
+*Whoever also uses Item Piles should switch off its `showTradeButton`, otherwise two trade
+buttons stand side by side.*
+
+## 14.2611.9 - 2026-09-01
+
+**In Sheet Only mode the date and time now stand above the character sheet**, and on
+request the weather and season too. The reason is a gap you only notice at the table: Sheet
+Only does not hide the interface partially but entirely. That also removes a calendar
+module's clock, and no setting brings it back, because nothing is left for it to appear in.
+Right at the real table, where the people sit who ask for the time.
+
+The values are **read, not borrowed.** `game.time` reaches every client, with or without a
+game canvas; the weather sits in a world setting of Calendaria. Its HUD stays untouched:
+re-hanging it would mean fighting its redraw at every time step, and it gets a new release
+every one to three weeks.
+
+That has a second benefit I had not expected: **the words are ours.** Calendaria's Harptos
+calendar names its weekdays "Onesday" to "Tenday" as fixed strings, with no translation key
+behind them, so no language file could reach them. The bar formats by itself and shows German.
+
+It only redraws on a change of the **displayed minute**. If the clock runs in real time with a
+multiplier (for me two game seconds per real second), `updateWorldTime` fires every second.
+Sixty rebuilds for one visible change, and on the tablets that have the least to spare.
+
+**Each device decides for itself** whether the bar appears; the gamemaster decides whether
+weather and season come along. That is also what the toolbox concept says: what a player ever
+touches belongs in the simple list, not in a window only the gamemaster can open.
+
+Look and dimensions are taken from a running Calendaria bar: text `rgb(224 224 224)`, Signika,
+the clock in monospace so the minutes do not shift the strip sideways. The rules are our own
+all the same: Calendaria's stylesheet is 253 KB hanging on ATLAS colour variables that do not
+even sit on `:root`. Where those variables exist the bar follows them; where not, our own
+values apply.
+
+The manifest and README now say so too: `sheet-only` and `calendaria` are listed as
+recommended modules with a reason, and both language versions of the README have a section on
+it.
+
+## 14.2611.8 - 2026-09-01
+
+**Sheet Only's actor picker can now be replaced by a side panel**, a feature that until now
+lived in FANG. It was in the wrong place there: it rearranges another module's interface so
+that playing at the table is more comfortable. That is this module's job, not that of a tool
+for webs of relationships.
+
+When switched on it hides Sheet Only's picker button and puts one in its place that opens
+Foundry's actor directory on the right edge; the character sheet gives up 300 pixels for it
+and takes them back afterwards. **Off by default**: a module that rearranges another's
+interface without being asked is a bad guest.
+
+The defence against Foundry's empty window shells moved along unchanged. It is the reason the
+code looks so suspicious: after closing, v13 leaves the frame without content behind. Then the
+CSS condition keeps the sheet narrow next to nothing, and the button refuses to open again. That
+is why we clean up several times: as a microtask, after 0, 50 and 250 milliseconds, and over
+five frames, because Foundry removes the shell at no fixed moment.
+
+New is `sheet-only.js`: everything this module knows about Sheet Only's structure in one place.
+Sheet Only is registered for Foundry 13.351 while we run on 14; if something moves there, one
+selector will be wrong in future instead of many.
+
+## 14.2611.6 - 2026-08-29
+
+**The mark now glides instead of jumping**, and my reason against it was the wrong way round. I
+had written that gliding would "light every pixel along the way". That is true and is exactly
+the argument *for* it: burn-in comes from sustained load on the same pixel. Spreading a mark over
+a path is gentler than setting it on one spot for half a minute. It is calmer to look at, too.
+
+Twenty-five seconds per leg, easing in and out. The first placement stays a jump; otherwise the
+mark would drive in from the corner every time the blanking lifts. In the preview the paths are
+shorter, since otherwise you would see no movement in eight seconds.
+
+**The chosen image is no longer darkened.** I had set it to 45 %, citing burn-in protection.
+That was overcautious: the mark is small, moves constantly, and everything around it is black.
+Whoever chooses an image wants to see their image.
+
+## 14.2611.5 - 2026-08-29
+
+**Companion scenes are now an editor, not a list.** Until now you could only view and dissolve
+them there; a link was created exclusively in the scene configuration of the battlemap
+concerned. That is half the way: whoever has an overview of all pairs wants to add one from
+there too.
+
+Below the list there are now two scene fields and a button. Both accept a scene dragged from the
+sidebar or open the search list, the same field as in the scene configuration.
+
+Creating and dissolving happen at once, not on save: a link is a property of the battlemap, not
+a value of this form. Holding it back until save would mean that cancelling undoes one half and
+not the other.
+
+**"Preview blanking" showed the dot instead of the chosen image.** The button read the *saved*
+setting, and that is still empty exactly when you need it: you have just chosen a file and want
+to see it before saving. Whoever did that saw the dot and had to assume their choice had not
+arrived.
+
+The preview now takes the path as it stands in the form.
+
+From the test as well: the text colour in the scene field is `inherit` rather than our own. The
+field appears in two places with opposite grounds (Foundry's dark scene window and our light
+pages), and `inherit` is right in both. Before, it was only right by chance: `--tm-text` is not
+defined outside our windows, so the rule reached into nothing and inherited the same thing.
+
+## 14.2611.3 - 2026-08-29
+
+Two errors, found in operation.
+
+**The search list was barely readable.** I had given the rows a ground and alignment but no text
+colour, so they inherited Foundry's light theme colour on our parchment ground. Measured: 0.16
+difference in lightness. The same error as with "Companion scenes" in 14.2610.5, this time in four
+places at once. It is now a rule in `AGENTS.md`: whoever sets a font or a ground also sets the
+colour.
+
+**Missing thumbnails break the display.** A scene carries a path to a thumbnail whose file no
+longer exists; "53. Pirate Ship" points at one the server answers with 404. The document knows
+nothing of it, so the check has to happen where it shows: at the image element. If loading fails,
+the fallback image now takes its place.
+
+## 14.2611.2 - 2026-08-29
+
+**The companion scene is no longer chosen from a list of 125 entries.** A select box is the wrong
+form for it in two ways: finding a name in it means searching a list sorted differently from
+memory, and once chosen, a name stands there and nothing else. No picture of the scene, and "53.
+Pirate Ship" cannot be told apart from "53. Pirate Ship (Night)".
+
+Instead, a field with three ways in, because people arrive differently:
 
 | | |
 |---|---|
-| **Ziehen** | eine Szene aus der Seitenleiste auf das Feld — der schnellste Weg, wenn sie ohnehin vor einem liegt |
-| **Wählen** | öffnet eine Liste, in die man tippen kann, für die übrigen 120 |
-| **Leeren** | nimmt sie wieder heraus |
+| **Drag** | a scene from the sidebar onto the field, the fastest way when it lies in front of you anyway |
+| **Choose** | opens a list you can type into, for the other 120 |
+| **Clear** | takes it out again |
 
-Die gewählte Szene steht mit **ihrem eigenen Vorschaubild** da. Genau das kann
-ein Auswahlfeld nicht, und es ist der Grund, warum ein Fehlgriff bisher erst
-auffiel, wenn die Battlemap aktiviert wurde und der zweite Bildschirm den
-falschen Raum zeigte.
+The chosen scene stands there with **its own thumbnail**. That is exactly what a select box cannot
+do, and it is why a wrong choice only showed when the battlemap was activated and the second screen
+showed the wrong room.
 
-Das Feld liegt als eigenes Stück (`scene-field.js`) vor, denn dieselbe
-125-Einträge-Liste steht auf der Monitor-Seite noch zweimal — Ruhebild und
-Standard-Begleitszene. Die ziehen als Nächstes nach.
+The field exists as a piece of its own (`scene-field.js`), because the same 125-entry list appears
+twice more on the displays page, for the idle image and the default companion scene. Those follow
+next.
 
-Nebenbei: Eine Szene lässt sich nicht mehr als ihre eigene Begleitszene setzen.
-Das Auswahlfeld hatte sie ausgeschlossen, ein Ziehen hätte es zugelassen.
+On the side: a scene can no longer be set as its own companion scene. The select box had excluded
+it, a drag would have allowed it.
 
-## 14.2611.1 — 2026-08-29
+## 14.2611.1 - 2026-08-29
 
-**Ein Fenster je Werkzeug.** Das Modul ist ein Werkzeugkasten: Downloads am Tisch
-sperren, zwei Bildschirme steuern, Karten drehen. Die drei haben nichts
-miteinander zu tun außer dem Anlass. In einer flachen Liste sahen die
-Einstellungen desjenigen Werkzeugs, das die meisten hat, aus wie „die
-Einstellungen des Moduls" — und genau das war eingetreten: **alle neun sichtbaren
-Einträge gehörten dem Tischmodus.**
+**One window per tool.** The module is a toolbox: block downloads at the table, control two
+screens, rotate maps. The three have nothing to do with each other except the occasion. In a flat
+list, the settings of whichever tool has the most looked like "the settings of the module", and
+that is exactly what had happened: **all nine visible entries belonged to table mode.**
 
-Neu unter *Moduleinstellungen*:
+New under *Module settings*:
 
 ```
-Für diesen Client          [automatisch ▾]   ← je Gerät, Spieler sehen es
-Statusanzeige einblenden   [✓]               ← je Gerät
-Steuerung öffnen           [Bedienfenster]
-Tischmodus                 [Einrichten…]
-Szenen-Monitore            [Einrichten…]
+For this client            [automatic ▾]   ← per device, players see it
+Show status indicator      [✓]             ← per device
+Open controls              [Control window]
+Table mode                 [Set up…]
+Scene displays             [Set up…]
 ```
 
-Fünf Zeilen — und fünf bleiben es auch, wenn Werkzeuge dazukommen. Ein neues
-Werkzeug ist eine Zeile, nicht fünfzehn.
+Five lines, and five they stay when tools are added. A new tool is one line, not fifteen.
 
-Beim Sortieren fiel eine zweite Achse auf, die leicht zu übersehen ist: **wer
-etwas einstellt.** Drei Einstellungen gehören dem einzelnen Gerät, und es sind
-die einzigen, die ein Spieler je anfasst. Wandern sie in ein Fenster, das nur der
-Spielleiter öffnen darf, sind sie für Spieler weg — sie bleiben deshalb in der
-Liste.
+Sorting revealed a second axis that is easy to overlook: **who sets something.** Three settings
+belong to the individual device, and they are the only ones a player ever touches. If they moved
+into a window only the gamemaster may open, they would be gone for players, so they stay in the
+list.
 
-Im Fenster „Tischmodus" erscheint „Token-Bilder weiter laden" jetzt nur noch,
-wenn „Alles Schwere" blockiert wird. Bei der Vorgabe wird ohnehin nur die
-Hintergrundkarte gesperrt — dann gibt es für die Einstellung nichts zu tun, und
-die Frage zu stellen lädt dazu ein, ihr eine Wirkung zu unterstellen.
+In the "Table mode" window, "Keep loading token images" now only appears when "Everything heavy" is
+blocked. With the default only the background map is blocked anyway; then the setting has nothing
+to do, and asking the question invites people to assume it has an effect.
 
-**Kein Fenster für die Szenendrehung**, obwohl das Konzept zunächst eines vorsah.
-Sie hat null Einstellungen: Die Drehung steht je Szene, die Lock-View-Anpassung
-läuft von selbst. Ein Fenster, in dem nur steht, ob Lock View erkannt wurde, ist
-ein Fenster ohne Inhalt.
+**No window for scene rotation**, although the concept first planned one. It has zero settings:
+rotation is set per scene, and the Lock View adjustment runs by itself. A window that only says
+whether Lock View was detected is a window without content.
 
-**Ein Name statt zwei.** Im Konzept stand „Kartensperre" für das, was das Modul
-an 21 Stellen „Tischmodus" nennt. Angeglichen.
+**One name instead of two.** The concept said "map block" for what the module calls "table mode" in
+21 places. Aligned.
 
-## 14.2610.8 — 2026-08-29
+## 14.2610.8 - 2026-08-29
 
-**Ein Bild auszuwählen warf das halbe Formular weg.** Der Haken bei
-„Bildschirmschoner verwenden" verschwand, und Speichern schrieb danach den
-gelöschten Zustand zurück.
+**Choosing an image threw away half the form.** The tick on "Use screensaver" disappeared, and
+saving then wrote the cleared state back.
 
-Ursache war eine Zeile in der Dateiauswahl: Nach der Wahl rief sie `render()`
-auf, um die Vorschau zu zeigen — und ein Rendern baut das Formular **aus den
-gespeicherten Werten** neu auf. Alles, was eingestellt und noch nicht gespeichert
-war, fiel dabei zurück auf den alten Stand. Das gewählte Bild übrigens mit; es
-sah nur nicht so aus, weil das Feld kurz davor beschrieben wurde.
+The cause was one line in the file picker: after the choice it called `render()` to show the
+preview, and a render rebuilds the form **from the saved values**. Everything set and not yet saved
+fell back to the old state. The chosen image too, by the way; it just did not look like it, because
+the field had been written to shortly before.
 
-Während des Bearbeitens wird jetzt **nirgends** mehr gerendert. Vorschau und
-Löschknopf stehen dauerhaft im Formular und werden nur ein- und ausgeblendet,
-und dasselbe galt für das Auflösen einer Begleitszene — auch das hätte deine
-Eingaben verworfen. Ein Pfad, der von Hand eingetippt wird, erscheint jetzt
-ebenfalls in der Vorschau.
+Now **nothing** is rendered any more while editing. Preview and delete button stay in the form
+permanently and are only shown and hidden, and the same applied to dissolving a companion scene,
+which would also have discarded your entries. A path typed in by hand now also appears in the
+preview.
 
-## 14.2610.7 — 2026-08-29
+## 14.2610.7 - 2026-08-29
 
-**Zurückgenommen: drei der vier Einstellungen aus 14.2610.6 sind wieder da.**
-Bemängelt waren zwei, entfernt hatte ich vier. „Ladebalken ausblenden" war nie
-erwähnt, und bei der Statusanzeige stand eine Frage — eine Frage ist kein
-Auftrag. Zurück sind „Token-Bilder weiter laden", „Ladebalken bei Spielern
-ausblenden" und „Statusanzeige einblenden". Draußen bleibt nur „Token-Menü
-gerade halten". „Audio blockieren" war nie betroffen.
+**Reverted: three of the four settings from 14.2610.6 are back.** Two had been criticised, and I had
+removed four. "Hide the loading bar" was never mentioned, and the status indicator had a question
+next to it, and a question is not an order. Back are "Keep loading token images", "Hide the loading
+bar for players" and "Show status indicator". Only "Keep the token menu upright" stays out. "Block
+audio" was never affected.
 
-**Der Bildschirmschoner ist neu gegliedert — als Fragefolge statt als Formular.**
-Vorher standen alle Zeiten nebeneinander, und Szenenwechsel und Blende liefen
-als zwei Stufen *gleichzeitig*. Das war falsch gedacht: Es sind Alternativen.
+**The screensaver is restructured, as a sequence of questions instead of a form.** Before, all times
+stood side by side, and scene switching and blanking ran as two stages *at the same time*. That was
+the wrong idea: they are alternatives.
 
 ```
-Bildschirmschoner verwenden?          ← ohne Ja bleibt der Rest verborgen
-  └ nach wie vielen Minuten Ruhe
-  └ auf welche Art?
-      ├ Schwarze Blende über die laufende Szene   (Vorgabe)
-      │   └ wie lange sie liegt · Bild darauf · [Blende ansehen]
-      └ Auf andere Szenen wechseln
-          └ Ordner · Wechselintervall
+Use a screensaver?                  ← without yes the rest stays hidden
+  └ after how many minutes of quiet
+  └ in which way?
+      ├ Black blanking over the running scene   (default)
+      │   └ how long it stays · image on it · [Preview blanking]
+      └ Switch to other scenes
+          └ folder · switch interval
 ```
 
-Die Blende bleibt jetzt **auf derselben Szene** liegen, statt dass daneben noch
-Szenen gewechselt werden. Sie kommt und geht weiterhin: liegen für ihre Zeit,
-dann heben, dann nach der Wartezeit wieder darüber.
+The blanking now stays **on the same scene** instead of scenes being switched next to it. It still
+comes and goes: it stays for its time, then lifts, then after the waiting time covers again.
 
-**Knopf „Blende ansehen".** Zeigt sie auf dem eigenen Bildschirm für acht
-Sekunden, Klick oder Taste blendet sofort aus. Auf dem eigenen und nicht auf dem
-Monitor, weil die Frage „ist mein Bild zu groß" eine Darstellungsfrage ist — die
-Marke wird am Bildschirmanteil bemessen, sieht hier also aus wie später am
-Fernseher.
+**"Preview blanking" button.** Shows it on your own screen for eight seconds; a click or a key hides
+it at once. On your own screen rather than the display, because "is my image too large" is a
+question of presentation: the mark is sized by its share of the screen, so it looks here as it will
+later on the television.
 
-Verborgene Felder bleiben im Formular und werden mitgespeichert: Zwischen den
-Betriebsarten hin und her zu wechseln verliert nichts.
+Hidden fields stay in the form and are saved too: switching back and forth between the modes loses
+nothing.
 
-## 14.2610.6 — 2026-08-29
+## 14.2610.6 - 2026-08-29
 
-**Vier Schalter entfernt, die nie Entscheidungen waren.** Der Maßstab dahinter:
+**Four switches removed that were never decisions.** The measure behind it:
 
-> Gibt es einen Fall, in dem ein vernünftiger Mensch den anderen Wert wählt?
-> Wenn nein, ist das keine Einstellung, sondern eine Entscheidung, die nicht
-> getroffen wurde.
+> Is there a case in which a reasonable person picks the other value?
+> If not, it is not a setting but a decision that was not made.
 
-Alle vier waren bei Vorgabe — verstellt hatte sie nie jemand. Die Funktionen
-bleiben, festgenagelt auf den Wert, der immer richtig ist:
+All four were at their defaults; nobody had ever changed them. The features stay, fixed on the value
+that is always right:
 
-| Weg | Verhalten jetzt | Warum es nie eine Wahl war |
+| Removed | Behaviour now | Why it was never a choice |
 |---|---|---|
-| Token-Bilder weiter laden | laden immer | Ein Token-Bild ist ein paar Kilobyte, und es zu blocken kostet den Spieler das Erkennen der eigenen Figur — das Einzige, wofür er seinen Bildschirm überhaupt noch braucht |
-| Token-Menü gerade halten | immer gerade | War ein Notausgang für einen Zweifel, kein Wunsch. Inzwischen gemessen: um Foundrys eigenen Ankerpunkt gedreht bleibt die Beschriftung 6 px von ihrem Token — genauso nah wie ohne Drehung |
-| Ladebalken ausblenden | immer aus | Der Balken meldet Verarbeitung, nicht Bandbreite. Auf einem Client, dessen Dateien alle geblockt sind, zählt er munter auf 100 %, während nichts durchs Netz geht. Ihn zu zeigen ist keine Vorliebe, sondern eine falsche Aussage |
-| Statusanzeige einblenden | immer an | Sie ist das Einzige auf dem Spieler-Bildschirm, das die schwarze Karte erklärt. Ausblenden macht aus einer gewollten Ersparnis einen scheinbaren Defekt |
+| Keep loading token images | always load | A token image is a few kilobytes, and blocking it costs the player recognising their own figure, the only thing they still need their screen for |
+| Keep the token menu upright | always upright | It was an emergency exit for a doubt, not a wish. Measured since: rotated around Foundry's own anchor point, the label stays 6 px from its token, just as close as without rotation |
+| Hide the loading bar | always off | The bar reports processing, not bandwidth. On a client whose files are all blocked it happily counts to 100 % while nothing crosses the network. Showing it is not a preference but a false statement |
+| Show status indicator | always on | It is the only thing on the player's screen that explains the black map. Hiding it turns a deliberate saving into an apparent defect |
 
-Die Liste steht damit bei sechs Einträgen. Was übrig ist, sind echte
-Abwägungen: wen es standardmäßig trifft, wie viel geblockt wird, ob Audio mit
-dazu gehört (bricht `monks-sound-enhancements`), ob das Spielfeld ganz aus geht
-(spart mehr, verlangt einen Reload), Ausnahmepfade und die Wahl je Gerät.
+The list now stands at six entries. What is left are real trade-offs: whom it affects by default,
+how much is blocked, whether audio belongs to it (breaks `monks-sound-enhancements`), whether the
+game canvas goes off entirely (saves more, requires a reload), exception paths, and the choice per
+device.
 
-## 14.2610.5 — 2026-08-29
+## 14.2610.5 - 2026-08-29
 
-**Die Monitor-Seite lief über und ließ sich nicht scrollen.** Das Fenster wächst
-mit seinem Inhalt, und bei elf Feldern in drei Gruppen wuchs es über den unteren
-Bildschirmrand hinaus. Ein als scrollbar erklärter Bereich braucht aber eine
-*begrenzte* Höhe — sonst gibt es keinen Überhang, den er scrollen könnte.
+**The displays page overflowed and could not be scrolled.** The window grows with its content, and
+with eleven fields in three groups it grew past the bottom of the screen. But an area declared
+scrollable needs a *limited* height, otherwise there is no overflow for it to scroll.
 
-Der Inhalt ist jetzt gegen die Fensterhöhe gedeckelt und zweigeteilt: Die Felder
-scrollen, der Speichern-Knopf bleibt stehen. Ihn bei einem Formular, dessen
-ganzer Zweck das Speichern ist, aus der Reichweite zu scrollen, wäre eine eigene
-kleine Grausamkeit.
+The content is now capped against the window height and split in two: the fields scroll, the save
+button stays in place. Scrolling it out of reach on a form whose whole purpose is saving would be a
+small cruelty of its own.
 
-**Der Hauptschalter ist aus der Einstellungsliste raus.** Er war doppelt: als
-nacktes Häkchen in der Liste und als Knopf im Bedienfenster, der zusätzlich sagt,
-was er bewirkt („Tischmodus läuft — 6 Spieler laden gerade keine Karten mehr").
-Zwei Wege zum selben Schalter, einer davon schlechter. Die Steuerung ist über den
-Knopf direkt darüber erreichbar.
+**The master switch is out of the settings list.** It was there twice: as a bare checkbox in the
+list and as a button in the control window that also says what it does ("Table mode running, 6
+players are not loading maps right now"). Two ways to the same switch, one of them worse. The
+controls are reachable through the button directly above.
 
-Nachgezählt: In der Liste standen elf Einstellungen, genau eine davon war
-wirklich doppelt. Die übrigen zehn sind Werte, die es im Bedienfenster nicht
-gibt.
+Counted again: the list had eleven settings, exactly one of them really duplicated. The other ten
+are values that do not exist in the control window.
 
-**„Begleitszenen" war praktisch unsichtbar.** Die Überschrift setzte Schriftart
-und -größe, aber keine Farbe, und erbte damit Foundrys helle Themenfarbe auf
-unserem weißen Grund — gemessen 0,09 Helligkeitsunterschied. Der Fehler steckte
-schon vorher im Bedienfenster und ist beim Umzug mitgekommen.
+**"Companion scenes" was practically invisible.** The heading set font family and size but no colour,
+and so inherited Foundry's light theme colour on our white ground: measured 0.09 difference in
+lightness. The error was already in the control window and came along in the move.
 
-## 14.2610.4 — 2026-08-29
+## 14.2610.4 - 2026-08-29
 
-**Aufräumen nach einem Maßstab statt nach Gefühl.** Im Bedienfenster (`Alt+T`)
-standen Ruhebild, Standard-Begleitszene und die Begleitszenen-Übersicht — alles
-Dinge, die man einmal einstellt und beim Spielen nie anfasst. Der Maßstab, an
-dem das jetzt hängt:
+**Tidying up by a measure instead of by feel.** The control window (`Alt+T`) held the idle image, the
+default companion scene and the overview of companion scenes, all things you set once and never touch
+while playing. The measure it now hangs on:
 
-> Würde ich das mitten in der Sitzung anfassen, während sechs Leute warten?
+> Would I touch this mid-session while six people are waiting?
 
-Daraus fallen drei Orte:
+That gives three places:
 
-| Ort | Was |
+| Place | What |
 |---|---|
-| Einstellungsseite | Werte, die einmal gesetzt werden — Konten, Zeiten, Ruhebild, Standard-Begleitszene, Bild, Übersicht der Begleitszenen |
-| Rechtsklick auf eine Szene | alles zu *dieser einen* Szene — anzeigen, hier fixieren, Spieler holen, als Ruhebild, als Standard-Begleitszene |
-| Bedienfenster `Alt+T` | Zustand und Handlung *jetzt* — Hauptschalter, Spieler-Schalter, Fixierung, Auffrischen, Kosten der Szene |
+| Settings page | values set once: accounts, times, idle image, default companion scene, image, overview of companion scenes |
+| Right-click on a scene | everything about *this one* scene: view, pin here, bring players, as idle image, as default companion scene |
+| Control window `Alt+T` | state and action *now*: master switch, player switches, pinning, refresh, cost of the scene |
 
-Die beiden Auswahlfelder waren im Bedienfenster ohnehin doppelt: Beide gibt es
-seit Längerem als Rechtsklick-Eintrag auf der Szene, und dort sind sie schneller
-erreichbar, weil man die Szene ohnehin vor sich hat.
+The two select boxes were duplicated in the control window anyway: both have existed for a while as
+right-click entries on the scene, and they are quicker to reach there because you have the scene in
+front of you anyway.
 
-Das Bedienfenster ist damit 40 Zeilen kürzer und enthält nur noch Dinge, die
-während einer Sitzung gebraucht werden.
+The control window is now 40 lines shorter and only holds things needed during a session.
 
-## 14.2610.3 — 2026-08-29
+## 14.2610.3 - 2026-08-29
 
-**Eigene Seite für die Szenen-Monitore.** Alles zu den beiden Bildschirmen sitzt
-jetzt unter *Moduleinstellungen → Monitore einrichten* statt verstreut zwischen
-den Schaltern der Kartensperre. Downloads blocken und zwei Fernseher steuern sind
-verschiedene Aufgaben, die sich nur ein Modul teilen; in einer flachen Liste las
-sich das als Haufen zusammenhangloser Schalter.
+**A page of its own for the scene displays.** Everything about the two screens now sits under *Module
+settings, Set up displays* instead of scattered between the map block's switches. Blocking downloads
+and controlling two televisions are different jobs that only share a module; in a flat list it read as
+a heap of unrelated switches.
 
-Die Seite ist von Hand gebaut, nicht Foundrys Standardliste: Die Einstellungen
-wollen Gruppen und laufende Erklärung — welcher Monitor welcher ist, was beim
-Lösen passiert, wie die zwei Stufen des Einbrennschutzes zusammenspielen. Das
-trägt eine flache Liste nicht. Gespeichert wird erst beim Klick, ein halber
-Gedanke lässt sich also durch Schließen verwerfen.
+The page is built by hand, not Foundry's standard list: the settings want groups and a running
+explanation (which display is which, what happens on release, how the two stages of burn-in protection
+work together). A flat list cannot carry that. Nothing is saved until the click, so half a thought can
+be discarded by closing.
 
-**Die Blende pulsiert jetzt, statt liegen zu bleiben.** Das war der eigentliche
-Denkfehler in 14.2610.2: Sie ging hoch und blieb oben. Es ging aber nie darum,
-den Fernseher abzuschalten, sondern nur darum, dass kein Bild stundenlang
-stillsteht. Jetzt hebt sie sich nach der eingestellten Zeit wieder, die Szene ist
-zu sehen, und nach der Wartezeit legt sie sich erneut darüber. Neue Einstellung
-„Blende bleibt ... Minuten liegen", Vorgabe 3.
+**The blanking now pulses instead of staying down.** That was the real thinking error in 14.2610.2: it
+went up and stayed up. But it was never about switching the television off, only about no picture
+standing still for hours. Now it lifts again after the set time, the scene can be seen, and after the
+waiting time it covers again. New setting "Blanking stays for ... minutes", default 3.
 
-Der Szenenwechsel läuft dabei **weiter, während die Blende liegt** — es ist der
-einzige Moment, in dem ein Wechsel niemanden stört, und jedes Aufdecken zeigt so
-etwas anderes.
+Scene switching **keeps running while the blanking is down**: it is the only moment in which a switch
+disturbs nobody, and every uncovering shows something different.
 
-**Bild auf der Blende.** Statt des goldenen Punktes lässt sich eine eigene Datei
-wählen, die langsam über das Schwarz wandert. Größe nach Bildschirmanteil statt
-in Pixeln, damit dieselbe Datei am 24-Zoll-Monitor und am 75-Zoll-Fernseher passt.
+**Image on the blanking.** Instead of the gold dot you can choose your own file, which drifts slowly
+over the black. Size by share of the screen rather than in pixels, so the same file fits a 24-inch
+monitor and a 75-inch television.
 
-**Schrittweite auf 1 Minute** bei allen Ruhezeiten — zum Ausprobieren muss man
-nicht mehr fünf Minuten warten.
+**Step size of 1 minute** for all idle times: to try it out you no longer have to wait five minutes.
 
-## 14.2610.2 — 2026-08-29
+## 14.2610.2 - 2026-08-29
 
-**Schutz gegen Einbrennen auf dem Szenen-Monitor.** Zwei Stufen, jede einzeln
-abschaltbar: nach N Minuten Ruhe wechselt der Monitor durch einen Szenen-Ordner,
-nach weiteren M Minuten wird er schwarz mit einer kleinen wandernden Marke.
+**Burn-in protection on the scene display.** Two stages, each can be switched off: after N minutes of
+quiet the display cycles through a scene folder, after a further M minutes it goes black with a small
+wandering mark.
 
-Die Schwarzblende ist die eigentliche Maßnahme, nicht der Szenenwechsel. Ein
-schwarzes Pixel ist bei OLED aus und altert überhaupt nicht; eine helle Szene
-verschleißt das Panel weiter, auch wenn sich etwas darin bewegt. Bewegung
-bewahrt vor einem eingebrannten *Muster*, nicht vor dem Verschleiß. Der
-Szenenwechsel bleibt trotzdem drin — für die kurze Pause, in der jemand
-hinschaut.
+The black blanking is the real measure, not the scene switching. A black pixel on OLED is off and does
+not age at all; a bright scene keeps wearing the panel even if something moves in it. Movement protects
+against a burnt-in *pattern*, not against wear. The scene switching stays all the same, for the short
+break in which someone looks.
 
-Liegt nur eine Szene im Ordner, geht der Monitor einfach dorthin und bleibt.
-Damit ist der Fall „eine Szene mit Bewegung darin" ohne eigene Einstellung
-abgedeckt.
+If only one scene lies in the folder, the display simply goes there and stays. That covers the case "one
+scene with movement in it" without a setting of its own.
 
-Als Ruhe zählt, dass niemand außer den Monitoren etwas tut. Der
-`userActivity`-Rundruf trägt das ohnehin — Mauszeiger, Lineal, Ziele,
-Szenenwechsel. Ausgewertet wird der *Absender*, nicht die Nachricht: Die
-Monitore senden beim Wechseln selbst mit, und die eigene Bewegung als Aktivität
-zu zählen hieße, dass der Bildschirmschoner sich im Kreis selbst aufweckt.
+Quiet means that nobody apart from the displays does anything. The `userActivity` broadcast carries that
+anyway: mouse pointer, ruler, targets, scene changes. What is evaluated is the *sender*, not the message:
+the displays send along when switching themselves, and counting their own movement as activity would mean
+the screensaver waking itself up in a circle.
 
-Der Monitor meldet dem Spielleiter über den Socket, wenn er sich selbst
-beschäftigt. Ohne das würde die Buchführung aus 14.2609.14 die Bildschirmschoner-
-Szene pflichtbewusst als „da gehört er hin" ablegen — und das Fixierziel wäre
-nach der ersten Pause weg.
+The display reports to the gamemaster over the socket when it is keeping itself busy. Without that, the
+bookkeeping from 14.2609.14 would dutifully file the screensaver scene as "that is where it belongs", and
+the pin target would be gone after the first break.
 
-## 14.2610.1 — 2026-08-29
+## 14.2610.1 - 2026-08-29
 
-**Standard-Begleitszene.** Bisher zeigte ein nicht fixierter Szenen-Monitor
-schlicht dieselbe Karte wie der Battlemap-Monitor — also genau das, wofür man
-den zweiten Bildschirm nicht braucht. Jetzt lässt sich eine Szene hinterlegen,
-auf die er fällt, wenn die aktivierte Battlemap selbst keine Begleitszene
-benennt. Einzustellen in der Steuerung oder per Rechtsklick auf eine Szene.
+**Default companion scene.** Until now an unpinned scene display simply showed the same map as the
+battlemap display, which is exactly what you do not need the second screen for. Now a scene can be set that
+it falls back to when the activated battlemap names no companion scene of its own. Set it in the controls or
+by right-clicking a scene.
 
-Die gesamte Rangfolge steht jetzt an einer Stelle (`resolveDisplayTarget`), vom
-Genauesten zum Allgemeinsten:
+The whole order of precedence now sits in one place (`resolveDisplayTarget`), from the most specific to the
+most general:
 
 | | |
 |---|---|
-| 1 | eine an der Battlemap benannte Begleitszene |
-| 2 | fixiert — stehen bleiben |
-| 3 | die Standard-Begleitszene |
-| 4 | der Aktivierung folgen |
+| 1 | a companion scene named on the battlemap |
+| 2 | pinned: stay put |
+| 3 | the default companion scene |
+| 4 | follow the activation |
 
-Dass 1 über 2 steht, ist Absicht und war schon so: Eine von Hand gelegte
-Verknüpfung ist die genauere Anweisung als ein allgemeines „bleib stehen".
+That 1 stands above 2 is deliberate and was already so: a link made by hand is a more precise instruction
+than a general "stay put".
 
-**Nebenwirkung, bewusst:** Begleitszenen wirken jetzt auch bei gelöster
-Fixierung. Vorher griffen sie nur im fixierten Zustand, was mit der
-Standard-Begleitszene nicht mehr zusammengepasst hätte.
+**Side effect, deliberate:** companion scenes now also work when the pin is released. Before, they only took
+effect when pinned, which would no longer have fitted with the default companion scene.
 
-Außerdem wird die Deaktivierung der abgehenden Szene auf dem Szenen-Monitor
-jetzt ausnahmslos verschluckt. Sie lässt sich für sich genommen nicht
-beurteilen — die Entscheidung hängt an der Szene, die *aktiviert* wird, und die
-steht zu diesem Zeitpunkt nicht verlässlich fest. Nebenbei entfällt damit das
-kurze Schwarz zwischen zwei Szenen.
+Also, the deactivation of the outgoing scene on the scene display is now swallowed without exception. It
+cannot be judged on its own: the decision depends on the scene being *activated*, and that is not reliably
+known at that moment. On the side, this removes the brief black between two scenes.
 
-## 14.2609.14 — 2026-08-29
+## 14.2609.14 - 2026-08-29
 
-Drei Meldungen vom Tisch, eine gemeinsame Ursache.
+Three reports from the table, one common cause.
 
-**Fixieren aus dem Kontextmenü nimmt jetzt die angeklickte Szene.** Vorher
-fixierte es den Monitor dort, wo er zufällig stand — die Szene, auf die man
-ausdrücklich rechtsgeklickt hatte, wurde übergangen. Der Schalter in der
-Steuerung und `Alt+T` bedeuten weiterhin „bleib, wo du bist"; dort steht ja keine
-Szene in der Frage.
+**Pinning from the context menu now takes the scene that was clicked.** Before, it pinned the display
+wherever it happened to be; the scene you had expressly right-clicked was passed over. The switch in the
+controls and `Alt+T` still mean "stay where you are"; no scene is in question there.
 
-**Das Abzeichen klebte an der alten Szene,** wenn der Monitor von Hand
-verschoben wurde, und beim Lösen sprang die Ansicht dann scheinbar wahllos
-irgendwohin. Beides derselbe Grund: Der gespeicherte Wert steuert Abzeichen und
-Lösen, und er veraltete.
+**The badge stuck to the old scene** when the display was moved by hand, and on release the view then
+jumped seemingly at random. Both the same reason: the stored value controls badge and release, and it went
+stale.
 
-Bisher wurde jeder Weg einzeln nachgehalten — unser eigenes Schieben, der
-Begleitszenen-Sprung — womit jeder Weg unabgedeckt blieb, an den niemand gedacht
-hatte. Jetzt gibt es **eine** Stelle, die mitbekommt, dass der Monitor sich
-bewegt hat, gleich wodurch.
+Until now every route was tracked individually (our own moving, the companion scene jump), which left every
+route uncovered that nobody had thought of. Now there is **one** place that notices the display has moved,
+whatever moved it.
 
-Foundry hält `user.viewedScene` aus einem `userActivity`-Rundruf aktuell, feuert
-dabei aber keinen Hook, und die zuständige Methode ist privat und statisch, also
-nicht überschreibbar. Wir hören deshalb denselben Rundruf mit: Auf einem
-Socket-Ereignis dürfen mehrere Empfänger sitzen, und weil wir `sceneId` direkt
-aus der Nachricht lesen, ist die Reihenfolge egal. Nur bei gesetzter Fixierung —
-sonst steuert der Wert nichts und jede Schreibung wäre ein Rundruf an alle.
+Foundry keeps `user.viewedScene` current from a `userActivity` broadcast but fires no hook for it, and the
+responsible method is private and static, so it cannot be overridden. We therefore listen to the same
+broadcast: several receivers may sit on a socket event, and because we read `sceneId` directly from the
+message, the order does not matter. Only while pinned; otherwise the value controls nothing and every write
+would be a broadcast to all.
 
-`noteCompanionJump` aus 14.2609.9 entfällt damit; der Sprung ist eine Bewegung
-wie jede andere und wird mit erfasst.
+`noteCompanionJump` from 14.2609.9 is dropped with this; the jump is a movement like any other and is
+captured along with it.
 
-## 14.2609.13 — 2026-08-29
+## 14.2609.13 - 2026-08-29
 
-**Ein fixierter Szenen-Monitor wird nicht mehr mitgerissen.** Foundrys „alle
-Spieler hierher ziehen" holte ihn mit — also genau das, wogegen die Fixierung
-gedacht ist. Die Sperre auf `_onActivate` deckt nur die Szenen*aktivierung* ab;
-ein Zug läuft über `Scene#pullUsers` und ging bisher ungehindert durch.
+**A pinned scene display is no longer dragged along.** Foundry's "pull all players here" took it along too,
+which is exactly what pinning is meant to prevent. The lock on `_onActivate` only covers scene *activation*;
+a pull goes through `Scene#pullUsers` and passed unhindered until now.
 
-Gefiltert wird auf der Seite des Spielleiters, nicht auf dem Monitor: Die
-Socket-Nachricht eines pauschalen Zugs ist Byte für Byte dieselbe wie die
-unseres gezielten — der Monitor kann sie nicht auseinanderhalten, der
-Spielleiter schon, weil er den Aufruf macht. Gezielte Züge tragen deshalb eine
-Kennzeichnung und kommen weiterhin durch. Der Battlemap-Monitor bleibt
-unberührt, er folgt weiterhin allem.
+The filtering happens on the gamemaster's side, not on the display: the socket message of a blanket pull is
+byte for byte the same as that of our targeted one. The display cannot tell them apart, the gamemaster can,
+because they make the call. Targeted pulls therefore carry a marker and still get through. The battlemap
+display stays untouched; it still follows everything.
 
-**„Spieler hierher holen" wählt jetzt alle vor,** außer dem Szenen-Monitor. Wer
-schon auf der Szene steht, wird nicht mehr ausgelassen: Das Fenster ist trotzdem
-irgendwo anders hingescrollt, und der Sinn des Knopfes ist, dass danach alle
-dasselbe sehen.
+**"Bring players here" now preselects everyone** except the scene display. Whoever is already on the scene
+is no longer left out: the window has still scrolled somewhere else, and the point of the button is that
+everyone sees the same afterwards.
 
-## 14.2609.12 — 2026-08-29
+## 14.2609.12 - 2026-08-29
 
-**„Spieler hierher holen" steht jetzt auch im Szenen-Kontextmenü.** Der Dialog
-war fertig und über die Steuerung erreichbar, aber der Eintrag im Kontextmenü
-fehlte — obwohl die Anleitung ihn beschrieb. Der Import in `main.js` lag
-ungenutzt herum, was genau das verriet.
+**"Bring players here" is now also in the scene context menu.** The dialog was finished and reachable from
+the controls, but the entry in the context menu was missing, although the guide described it. The import in
+`main.js` lay around unused, which gave exactly that away.
 
-Aus dem Kontextmenü heraus zielt der Dialog auf die **angeklickte** Szene, nicht
-auf die gerade betrachtete. Das ist der eigentliche Gewinn gegenüber dem Knopf in
-der Steuerung: Leute irgendwohin holen, ohne selbst erst dorthin zu wechseln.
+From the context menu the dialog targets the **clicked** scene, not the one currently viewed. That is the
+real gain over the button in the controls: bring people somewhere without switching there yourself first.
 
-## 14.2609.11 — 2026-08-29
+## 14.2609.11 - 2026-08-29
 
-**Linealbeschriftungen bleiben am Lineal.** Bei gedrehten Szenen flogen sie in
-eine Ecke der Karte — die „25 ft" stand weit weg von der Strecke, zu der sie
-gehörte. Der Fehler war unserer: Die Gegendrehung, die die Schrift aufrecht
-hält, traf *jedes* direkte Kind von `#hud`.
+**Ruler labels stay with the ruler.** On rotated scenes they flew into a corner of the map: the "25 ft"
+stood far away from the distance it belonged to. The error was ours: the counter-rotation that keeps text
+upright hit *every* direct child of `#hud`.
 
-Das ist für ein Token-Menü richtig — 45 × 45 Pixel, am Token hängend, um die
-eigene Mitte gedreht bleibt es dort und steht gerade. Für `#measurement` ist es
-falsch: Der Container ist bildschirmfüllend (gemessen 2121 × 1624), und seine
-Kinder tragen ihre eigene Position. Dreht man ihn um seine Mitte, wandert alles
-darin quer über den Bildschirm.
+That is right for a token menu: 45 × 45 pixels, hanging on the token, rotated around its own centre it stays
+there and stands upright. It is wrong for `#measurement`: the container fills the screen (measured 2121 ×
+1624), and its children carry their own positions. Rotating it around its centre sends everything in it
+across the screen.
 
-Jetzt wird unterschieden: Angeheftete Menüs drehen um ihre Mitte, Lineal-
-beschriftungen und Sprechblasen einzeln um den Ankerpunkt, den Foundry ihnen
-ohnehin schon gibt. Gemessen: Um diesen Anker gedreht bleibt eine Beschriftung
-genauso nah an ihrem Wegpunkt wie ganz ohne Drehung (6 px), um die Mitte gedreht
-dreimal so weit.
+Now we distinguish: attached menus rotate around their centre, ruler labels and speech bubbles individually
+around the anchor point Foundry already gives them. Measured: rotated around that anchor a label stays just
+as close to its waypoint as without any rotation (6 px), rotated around the centre three times as far.
 
-Sprechblasen waren vom selben Fehler betroffen und sind mit erledigt.
+Speech bubbles were affected by the same error and are fixed with it.
 
-## 14.2609.10 — 2026-08-29
+## 14.2609.10 - 2026-08-29
 
-Verträglichkeit mit Lock View bei gedrehten Szenen.
+Compatibility with Lock View on rotated scenes.
 
-Lock View steuert bei vielen Tischen die Monitore, weiß aber seit 2.0.0 nichts
-mehr von Drehung. Sobald eine Szene bei uns auf 90° oder 270° steht, meint sein
-„Breite" etwas anderes als der Bildschirm — zwei Werte stimmen dann nicht mehr.
-Beides wird jetzt auf unserer Seite korrigiert, ohne Lock View zu verändern.
+Lock View controls the displays at many tables, but since 2.0.0 it knows nothing about rotation. As soon as a
+scene stands at 90° or 270° here, its "width" means something other than the screen, and two values no
+longer match. Both are now corrected on our side, without changing Lock View.
 
-**Einpassung.** `horizontal` rechnete die Szenenbreite gegen die Fensterbreite.
-Gedreht füllt aber die Szenen*höhe* den Bildschirm der Breite nach. Gemessen auf
-einer 3360 × 4340-Karte bei 2290 px Fensterbreite: Maßstab 0,6815 statt 0,5276 —
-die Karte war 29 % zu groß, Bug und Heck fielen weg. Betrifft ebenso
-`autoInside` und `autoOutside`; `physical` und `off` bleiben unberührt.
+**Fitting.** `horizontal` calculated the scene width against the window width. Rotated, though, the scene
+*height* fills the screen along its width. Measured on a 3360 × 4340 map at 2290 px window width: scale
+0.6815 instead of 0.5276; the map was 29 % too large, bow and stern fell off. `autoInside` and `autoOutside`
+are affected the same way; `physical` and `off` stay untouched.
 
-**Ansichtsrahmen.** Der Monitor meldete seinen sichtbaren Ausschnitt mit
-vertauschten Seiten, der Spielleiter sah einen Rahmen, der nicht stimmen konnte.
-Bei genau 90° und 270° bleibt ein Bildschirmrechteck in der Welt achsenparallel,
-nur mit getauschten Maßen — zwei Zahlen zu tauschen macht den Rahmen deshalb
-*exakt* richtig, nicht bloß ungefähr.
+**View frame.** The display reported its visible area with the sides swapped, and the gamemaster saw a frame
+that could not be right. At exactly 90° and 270° a screen rectangle stays axis-parallel in the world, only
+with swapped dimensions, so swapping two numbers makes the frame *exactly* right, not just roughly.
 
-**Hinweis im Szenen-Fenster,** wenn Lock View erkannt wurde und die Szene quer
-steht. Sonst sucht man den Zusammenhang später vergeblich.
+**A note in the scene window** when Lock View was detected and the scene is rotated. Otherwise you later
+search in vain for the connection.
 
-Alles über Merkmalsprüfung abgesichert: Ohne Lock View passiert nichts, das Modul
-bleibt eigenständig. Schlägt eine der beiden Korrekturen fehl — etwa weil ein
-Lock-View-Update die Methode umbaut — bleibt es beim bisherigen Verhalten statt
-bei einem Absturz.
+Everything is guarded by feature detection: without Lock View nothing happens, and the module stays
+self-contained. If one of the two corrections fails (say because a Lock View update rebuilds the method), the
+previous behaviour remains instead of a crash.
 
-Dazu zwei Fehler aus dem Testbetrieb: Beim Fixieren wird jetzt immer die Szene
-übernommen, auf der der Monitor gerade steht (vorher konnte ein alter Wert ihn
-im Moment des Fixierens woandershin reißen), und ein Sprung auf eine
-Begleitszene wird vom Spielleiter mitgeschrieben — der Monitor selbst darf keine
-Welt-Einstellung ändern, wodurch der gespeicherte Stand veraltete.
+Also two errors from test operation: pinning now always takes the scene the display is currently on (before,
+an old value could pull it elsewhere at the moment of pinning), and a jump to a companion scene is recorded by
+the gamemaster, since the display itself may not change a world setting, which let the stored state go stale.
 
-## 14.2608.1 — 2026-08-28
+## 14.2608.1 - 2026-08-28
 
-Vier UI-Anpassungen.
+Four interface adjustments.
 
-**Tastenkürzel.** `Alt+T` öffnet die Steuerung direkt. Alt-Kombinationen sind in
-Foundry praktisch unbelegt — Alt allein ist „Objekte hervorheben", Alt plus
-Buchstabe ist frei. Das Kürzel ist über Foundrys eigene Tastatur-Einstellungen
-änderbar und nur für Spielleiter aktiv.
+**Keyboard shortcut.** `Alt+T` opens the controls directly. Alt combinations are practically unused in
+Foundry: Alt alone is "highlight objects", Alt plus a letter is free. The shortcut can be changed through
+Foundry's own keybinding settings and is only active for gamemasters.
 
-**Scrollposition bleibt stehen.** Bisher sprang die Liste bei jedem Klick nach
-oben. Ursache war kein Foundry-Fehler, sondern eine fehlende Angabe: Der
-Handlebars-Mixin sichert Scrollpositionen über `PARTS[…].scrollable`, und genau
-die war nicht deklariert. Jetzt sind Panel und Spielerliste eingetragen.
+**The scroll position stays.** Until now the list jumped to the top on every click. The cause was not a
+Foundry bug but a missing declaration: the Handlebars mixin preserves scroll positions through
+`PARTS[…].scrollable`, and exactly that was not declared. Now the panel and the player list are registered.
 
-**„Vermessen" ist erklärt.** Drei Tooltips und ein Hinweistext: was der Knopf
-tut (nur Kopfzeilen abfragen, ein paar hundert Byte statt 35 MB), was die
-Summe bedeutet (was ein Spieler ohne Tischmodus laden würde) und was
-„unvermessen" heißt (fehlt in der Summe).
+**"Measure" is explained.** Three tooltips and a hint text: what the button does (only queries headers, a few
+hundred bytes instead of 35 MB), what the total means (what a player without table mode would load) and what
+"unmeasured" means (missing from the total).
 
-**Design auf das D&D-Aussehen umgestellt.** Layout unverändert, nur die Optik:
-Pergamentgrund `#fdfbf7`, Dunkelrot `#8B0000`, Gold `#D4AF37`, Segoe UI, 2 px
-Radien und die Schaltflächenform aus `fang.css`. Die Werte stehen bewusst fest
-im Modul statt als `var(--fang-...)` geerbt — sonst würde das Panel FANGs
-Cyberpunk-Variante mitmachen, sobald die eingeschaltet ist.
+**Design switched to the D&D look.** Layout unchanged, only the appearance: parchment ground `#fdfbf7`, dark
+red `#8B0000`, gold `#D4AF37`, Segoe UI, 2 px radii and the button shape from `fang.css`. The values are
+deliberately fixed in the module rather than inherited as `var(--fang-...)`; otherwise the panel would follow
+FANG's cyberpunk variant as soon as that is switched on.
 
-## 14.2607.6 — 2026-08-28
+## 14.2607.6 - 2026-08-28
 
-Zwei Ergebnisse aus der Live-Messreihe.
+Two results from the live measurement series.
 
-**Ladebalken.** Neue Einstellung „Ladebalken bei Spielern ausblenden" (Standard: an).
-Foundry zeigt seinen Szenen-Ladebalken auch dann, wenn jede Datei aus dem
-Browser-Cache kommt oder blockiert wurde — gemessen: 52 Dateien angezeigt,
-0,01 MB tatsächlich übertragen. Er meldet Verarbeitung, nicht Bandbreite, und ist
-in dieser Rolle irreführend. Umgesetzt über `displayProgress: false`, eine
-dokumentierte Option von `TextureLoader#load`. Blendet nur die Anzeige aus, am
-Ladeverhalten ändert sich nichts.
+**Loading bar.** New setting "Hide the loading bar for players" (default: on). Foundry shows its scene loading
+bar even when every file comes from the browser cache or was blocked: measured, 52 files shown, 0.01 MB actually
+transferred. It reports processing, not bandwidth, and is misleading in that role. Implemented through
+`displayProgress: false`, a documented option of `TextureLoader#load`. It only hides the display; the loading
+behaviour does not change.
 
-**Audio-Blockade kollidiert mit monks-sound-enhancements.** Gemessen: mit
-eingeschalteter Audio-Blockade und laufender Playlist füllte sich die Konsole mit
-4476 Ausnahmen im Sekundentakt (`Cannot read properties of null (reading
-'classList')` in `MSE_PlaylistDirectory.updateTimestamps`). Nach dem Abschalten:
-keine einzige in zehn Sekunden. Ursache ist, dass ein auf „fehlgeschlagen"
-gesetzter Sound von Foundry weiter als spielend geführt wird und MSE dafür kein
-DOM-Element findet. Der Fehler steckt in MSE, ausgelöst hat ihn Table Mode. Die
-Einstellung steht ohnehin standardmäßig auf aus; der Hinweistext nennt die
-Kollision jetzt beim Namen.
+**Audio blocking collides with monks-sound-enhancements.** Measured: with audio blocking on and a playlist
+running, the console filled with 4476 exceptions at a rate of one per second (`Cannot read properties of null
+(reading 'classList')` in `MSE_PlaylistDirectory.updateTimestamps`). After switching it off: not a single one in
+ten seconds. The cause is that Foundry keeps a sound set to "failed" listed as playing, and MSE finds no DOM
+element for it. The error is in MSE, table mode triggered it. The setting is off by default anyway; the hint text
+now names the collision.
 
-## 14.2607.5 — 2026-08-28
+## 14.2607.5 - 2026-08-28
 
-Die vorberechnete Sperrliste ist raus. Bei jeder Anfrage wird jetzt direkt an den
-Szenen-Dokumenten geprüft, ob die Datei ein Szenenhintergrund ist.
+The precomputed block list is gone. Every request now checks directly against the scene documents whether the
+file is a scene background.
 
-Die Vorberechnung war die Ursache des Fehlers aus 14.2607.4 und nicht dessen
-Lösung: Eine Liste, die zum richtigen Zeitpunkt gefüllt sein muss, kann zum
-falschen Zeitpunkt leer sein. Die Direktabfrage hat keine Initialisierungs-
-reihenfolge, keine Hooks und ist immer aktuell — auch für Szenen, die während
-der Sitzung entstehen.
+The precomputation was the cause of the error in 14.2607.4, not its solution: a list that has to be filled at the
+right moment can be empty at the wrong one. The direct query has no initialisation order and no hooks, and is
+always current, also for scenes created during the session.
 
-- `isSceneBackground()` ersetzt Set, Lazy-Aufbau und vier Hooks.
-- Kosten: ein Stringvergleich je Szene, nur für Clients im Tischmodus.
+- `isSceneBackground()` replaces the set, the lazy build and four hooks.
+- Cost: one string comparison per scene, only for clients in table mode.
 
-## 14.2607.4 — 2026-08-28
+## 14.2607.4 - 2026-08-28
 
-Fehler behoben, gefunden bei der zweiten Live-Messung: Beim **ersten** Zeichnen
-nach dem Beitreten wurde der Hintergrund nicht blockiert.
+Fixed an error found in the second live measurement: on the **first** draw after joining, the background was not
+blocked.
 
-Foundry zeichnet den Canvas während `setup`, also **vor** dem `ready`-Hook. Die
-Sperrliste wurde aber erst in `ready` gefüllt und war beim ersten Draw noch leer.
-Betroffen war ausgerechnet der häufigste Fall: ein Spieler, der die Sitzung
-betritt. Beim Vorladen fiel es nicht auf, weil das lange nach `ready` passiert.
+Foundry draws the canvas during `setup`, that is **before** the `ready` hook. But the block list was only filled in
+`ready` and was still empty on the first draw. It hit precisely the most common case: a player joining the session.
+It did not show when preloading, because that happens long after `ready`.
 
-- Die Liste wird jetzt träge beim ersten Zugriff aufgebaut, unabhängig von der
-  Hook-Reihenfolge, und zusätzlich schon in `setup`.
-- Neu in der API: `backgroundCount()` und `rebuild()` zur Diagnose.
+- The list is now built lazily on first access, independent of the hook order, and additionally already in `setup`.
+- New in the API: `backgroundCount()` and `rebuild()` for diagnosis.
 
-## 14.2607.3 — 2026-08-28
+## 14.2607.3 - 2026-08-28
 
-Umfang deutlich verengt. Neue Einstellung "Was blockiert wird", Standard:
-**nur die Hintergrundkarte**. Tiles, Effekte, Portraits, Handouts und Modul-Grafiken
-laufen wieder durch.
+Scope narrowed considerably. New setting "What is blocked", default: **only the background map**. Tiles, effects,
+portraits, handouts and module graphics go through again.
 
-Der Grund ist eine Abwägung, keine technische Notwendigkeit: Ein paar Megabyte zu
-viel kosten Bandbreite, eine fälschlich blockierte Datei kostet den Spielabend.
-Deshalb ist die Liste jetzt eine Sperrliste statt einer Freigabeliste — blockiert
-wird nur, was sich positiv als Szenenhintergrund identifizieren lässt.
+The reason is a trade-off, not a technical necessity: a few megabytes too many cost bandwidth, a wrongly blocked file
+costs the game evening. So the list is now a block list instead of an allow list: only what can be positively
+identified as a scene background is blocked.
 
-- Hintergründe und Vordergründe **aller** Szenen werden gesammelt, nicht nur die
-  der aktuellen. Die Vorladung kann jede Szene der Welt betreffen.
-- Die Liste folgt Szenen- und Level-Änderungen über Hooks.
-- Audio blockieren steht jetzt standardmäßig auf **aus**.
-- Wer den alten Umfang will, wählt "Alles Schwere (Karte, Tiles, Effekte)".
+- Backgrounds and foregrounds of **all** scenes are collected, not only the current one's. Preloading can affect any
+  scene in the world.
+- The list follows scene and level changes through hooks.
+- Audio blocking is now **off** by default.
+- Whoever wants the old scope chooses "Everything heavy (map, tiles, effects)".
 
-## 14.2607.2 — 2026-08-28
+## 14.2607.2 - 2026-08-28
 
-Erste Messung im Live-Betrieb auf foundry-1 (v14.367), Spieler-Client mit
-abgeschaltetem Spielfeld. Ein Klick auf "Szene vorladen" beim Spielleiter:
+First measurement in live operation on foundry-1 (v14.367), a player client with the game canvas switched off. One
+click on "Preload scene" by the gamemaster:
 
-| | Tischmodus aus | Tischmodus an |
+| | Table mode off | Table mode on |
 |---|---|---|
-| Übertragen | 58,86 MB | 0,00 MB |
-| Geladene Dateien | 71 | 0 |
+| Transferred | 58.86 MB | 0.00 MB |
+| Files loaded | 71 | 0 |
 
-Damit ist belegt, dass `core.noCanvas` die Vorladung nicht abfängt — die
-58,86 MB flossen auf einen Client, der gar kein Spielfeld hatte.
+That proves `core.noCanvas` does not catch the preloading: the 58.86 MB flowed to a client that had no game canvas
+at all.
 
-- SVG-Dateien und alle `icons/`-Verzeichnisse stehen jetzt auf der Ausnahmeliste.
-  Die Messung zeigte, dass sonst die Token-Statusmarker von System und Modulen
-  mitblockiert werden (`systems/dnd5e/icons/svg/statuses/*`, ein bis zwei KB je
-  Datei, aber sie tragen echte Information). Battlemaps sind nie SVG, die Regel
-  kostet also nichts.
+- SVG files and all `icons/` directories are now on the exception list. The measurement showed that otherwise the
+  token status markers of the system and modules are blocked too (`systems/dnd5e/icons/svg/statuses/*`, one or two
+  KB per file, but they carry real information). Battlemaps are never SVG, so the rule costs nothing.
 
-## 14.2607.1 — 2026-07-23
+## 14.2607.1 - 2026-07-23
 
-Erste Fassung.
+First version.
 
-- Blockiert Karten-, Tile-, Effekt- und Audio-Downloads auf zugewiesenen Clients
-  über einen Wrapper auf `TextureLoader#loadTexture` und `Sound#load`.
-- Schwarze Ersatztextur statt Netzwerkanfrage. Szenengeometrie, Raster, Wände,
-  Licht und Tokenpositionen bleiben unangetastet.
-- Token-Grafiken werden standardmäßig weiter geladen, abschaltbar.
-- Spritesheets, virtuelle Texturen und Core-Icons sind von der Blockade ausgenommen.
-- GM-Panel mit Dreifachschalter pro Spieler (Automatisch / Immer / Nie).
-- Monitor-Konten sind geschützt und laufen nie automatisch im Tischmodus. Erkennung
-  über `monitorDisplayName` aus FANG, sonst über die eigene Einstellung
-  (Standard `Monitor`). Nur ein ausdrückliches „Immer" hebt den Schutz auf.
-- Szenen-Vermessung per HEAD-Anfrage: zeigt die echten Bytes pro Client statt einer
-  Schätzung.
-- Statusanzeige auf betroffenen Clients, Rückmeldung der Zahlen ans GM-Panel.
-- Optionale Stufe „Spielfeld im Tischmodus ganz abschalten": setzt zusätzlich
-  `core.noCanvas` und bietet den Reload an. Table Mode gibt das Flag nur frei, wenn es
-  das selbst gesetzt hat, damit es sich nicht mit Sheet-Only darum streitet.
-- Deutsch und Englisch vollständig.
-- libWrapper wird genutzt wenn vorhanden, sonst eigener Fallback-Patch.
+- Blocks map, tile, effect and audio downloads on assigned clients through a wrapper on `TextureLoader#loadTexture`
+  and `Sound#load`.
+- A black placeholder texture instead of a network request. Scene geometry, grid, walls, lighting and token
+  positions stay untouched.
+- Token graphics keep loading by default, can be switched off.
+- Spritesheets, virtual textures and core icons are exempt from the block.
+- GM panel with a three-way switch per player (automatic / always / never).
+- Display accounts are protected and never run in table mode automatically. Detected through `monitorDisplayName`
+  from FANG, otherwise through the module's own setting (default `Monitor`). Only an explicit "always" lifts the
+  protection.
+- Scene measurement by HEAD request: shows the real bytes per client instead of an estimate.
+- Status indicator on affected clients, figures reported back to the GM panel.
+- Optional stage "switch the game canvas off entirely in table mode": additionally sets `core.noCanvas` and offers
+  the reload. Table mode only releases the flag if it set it itself, so it does not fight Sheet Only over it.
+- German and English complete.
+- libWrapper is used when present, otherwise a fallback patch of our own.
