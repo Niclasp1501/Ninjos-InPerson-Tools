@@ -2160,6 +2160,64 @@ body.inperson-feder-immer .journal-entry-page .edit-container a {
   pointer-events: all !important;
 }
 
+/* ── Zeigen am Tisch ─────────────────────────────────────────────────
+   Das Auswahlfenster: an wen geht die Seite. Es liegt am Tablet ueber dem
+   Blatt, also sind die Zeilen so hoch wie im Tausch (44 Pixel, ein Finger)
+   und die Liste scrollt, statt zu wachsen. */
+
+.inperson-zeigen .inperson-zeigen-was {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.inperson-zeigen-alle {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+/* Angetippt heisst: alle sind gewaehlt. Der Knopf sagt das ueber seinen
+   Zustand, nicht ueber einen zweiten Text daneben. */
+.inperson-zeigen-alle[aria-pressed="true"] {
+  background: var(--tm-red, #8B0000);
+  color: var(--tm-onred, #ffffff);
+}
+
+.inperson-zeigen-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 46vh;
+  overflow-y: auto;
+}
+
+.inperson-zeigen-liste img {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+/* Der Fernseher ist kein Mitspieler. Eine ruhige Linie darueber trennt ihn
+   von den Menschen, ohne ihn wie einen Fehler aussehen zu lassen. */
+.inperson-zeigen-tv {
+  margin-top: 6px;
+  border-top: 1px solid var(--tm-border, #dcd6cc);
+  padding-top: 8px;
+}
+
+/* Niemand gewaehlt: kurz aufblinken, statt eine Meldung zu zeigen, die in
+   der Blattansicht ohnehin niemand sieht. */
+.inperson-zeigen-fehlt {
+  animation: inperson-zeigen-blink 0.9s ease-in-out;
+}
+
+@keyframes inperson-zeigen-blink {
+  0%, 100% { background: inherit; }
+  50% { background: var(--tm-gold, #D4AF37); }
+}
+
 body.inperson-sheetview {
   overflow: hidden;
   /* iOS: Gummiband-Scrollen würde das ganze Blatt beim Wischen wackeln lassen. */

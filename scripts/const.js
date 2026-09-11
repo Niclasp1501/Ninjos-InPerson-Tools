@@ -157,6 +157,9 @@ export const SETTINGS = {
   /** Chat aufklappen, sobald der Spieler selbst etwas würfelt oder benutzt (world). */
   SHEETVIEW_CHAT_ON_USE: "sheetViewChatOnUse",
   SHEETVIEW_EDIT_PEN: "sheetViewEditPen",
+  SHOW_ALLOW: "showAllow",
+  SHOW_TV: "showTv",
+  SHOW_GM_COPY: "showGmCopy",
   /**
    * Zeitstempel je Konto: `{ [userId]: ms }` (world). Der Spielleiter kommt an
    * den Gerätespeicher eines Tablets nicht heran; ein neuerer Stempel als der

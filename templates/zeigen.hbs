@@ -1,0 +1,43 @@
+{{!--
+  An wen soll die Seite gehen?
+
+  Aufgebaut wie die Partnerliste im Tausch: eine Zeile je Person, gross genug
+  fuer einen Finger, das Bild links, der Name daneben. Der Fernseher steht
+  unten und traegt sein eigenes Symbol, damit niemand ihn fuer einen
+  Mitspieler haelt.
+--}}
+<div class="inperson-body">
+
+  <p class="inperson-hint inperson-zeigen-was">
+    <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+    {{localize "INPERSON.Show.Hint"}}
+  </p>
+
+  {{#if hatLeute}}
+    <button type="button" class="inperson-mini inperson-zeigen-alle" data-action="alle"
+            aria-pressed="{{#if alleAn}}true{{else}}false{{/if}}">
+      <i class="fa-solid fa-users" aria-hidden="true"></i> {{localize "INPERSON.Show.Everyone"}}
+    </button>
+
+    <div class="inperson-zeigen-liste">
+      {{#each leute}}
+        <label class="inperson-pick-row {{#if this.an}}on{{/if}} {{#if this.fernseher}}inperson-zeigen-tv{{/if}}">
+          <input type="checkbox" data-user="{{this.id}}" {{checked this.an}}>
+          <img src="{{this.img}}" alt="" aria-hidden="true">
+          <span class="inperson-pick-name">
+            {{this.name}}
+            {{#unless this.aktiv}}<em>{{localize "INPERSON.Show.Offline"}}</em>{{/unless}}
+          </span>
+        </label>
+      {{/each}}
+    </div>
+  {{else}}
+    <p class="inperson-hint">{{localize "INPERSON.Show.Nobody"}}</p>
+  {{/if}}
+
+  <footer class="inperson-foot">
+    <button type="button" class="inperson-mini" data-action="senden" {{#unless hatLeute}}disabled{{/unless}}>
+      <i class="fa-solid fa-eye" aria-hidden="true"></i> {{localize "INPERSON.Show.Send"}}
+    </button>
+  </footer>
+</div>

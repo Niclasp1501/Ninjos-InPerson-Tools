@@ -1,5 +1,42 @@
 # Changelog
 
+> From this version on the changelog is written in English. Who reads it are
+> the people who get offered an update in the Foundry catalogue, and most of
+> them do not read German. Older entries stay as they are.
+
+## 14.2611.75 - 2026-09-12
+
+**Players can show a journal page to the table.** Somebody finds a letter, a
+book, a map. Until now only the gamemaster could hold it up for everyone;
+a player could not, even for a page that belongs to them.
+
+Foundry has been able to do this all along, it was only missing a button:
+`Journal.show()` asks that you own the page, which is exactly the case for a
+personal note, but the button in the window header is shown to gamemasters
+only, and for owners it hides in the right-click menu of the page list. On a
+tablet that is a long press on a list which is rarely open.
+
+- **The eye sits in the header of the journal**, for anyone who owns the page
+  that is currently on screen.
+- **Pick who sees it**: everyone at the table, single players, or the
+  television. The scene display is a user account like any other, so showing
+  on the big screen costs nothing extra. The battlemap display stays out of
+  it, a letter does not belong on top of the fight.
+- **Showing is not giving.** The others read it while the window is open and
+  keep nothing afterwards: no copy, no permissions. Foundry grants the
+  recipient observer rights on their own machine for that moment and stores
+  nothing. Giving items is the trade in Ninjo's DnD Shops & Trade.
+- **Guard rails**, because the Foundry server relays such a request without
+  checking who sent it: only pages you own, at most one showing every five
+  seconds, and the gamemaster gets a whispered line in chat about what is
+  being passed around.
+
+Three new settings on the sheet view page, all on by default: players may
+show, the television counts as a recipient, and the gamemaster reads along.
+
+The concept for the two remaining parts, showing an image and showing an
+item, is in KONZEPT-zeigen.md.
+
 ## Unreleased
 
 **New licence: free to use, but no longer open source.** From the next version

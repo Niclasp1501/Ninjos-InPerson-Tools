@@ -29,6 +29,7 @@ import { willkommenEinrichten, willkommenZeigen } from "./willkommen.js";
 import { openClockSettings } from "./clock-settings.js";
 import { openTradeSettings } from "./trade-settings.js";
 import { installSheetView, syncSheetView, sheetViewApi, federAnwenden } from "./sheetview.js";
+import { installZeigen } from "./zeigen.js";
 import { openSheetViewSettings } from "./sheetview-settings.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
 import { fensterPassenEinrichten } from "./fensterpassen.js";
@@ -144,6 +145,13 @@ function registerSettings() {
     default: true,
     onChange: () => federAnwenden()
   });
+  /*
+   * Zeigen am Tisch. Drei Schalter, alle ab Werk an: Ein Spieler, der einem
+   * anderen einen Brief hinhaelt, ist das, was am Tisch ohnehin passiert.
+   */
+  S(SETTINGS.SHOW_ALLOW, { scope: "world", config: false, type: Boolean, default: true });
+  S(SETTINGS.SHOW_TV, { scope: "world", config: false, type: Boolean, default: true });
+  S(SETTINGS.SHOW_GM_COPY, { scope: "world", config: false, type: Boolean, default: true });
   S(SETTINGS.SHEETVIEW_CHAT_ON_USE, {
     scope: "world",
     config: false,
@@ -778,6 +786,7 @@ Hooks.once("init", () => {
 
 Hooks.once("ready", async () => {
   fensterPassenEinrichten();
+  installZeigen();
   // First thing: carry over what the previous module id had stored.
   await migrateFromOldId();
 

@@ -63,6 +63,28 @@
     </label>
   </div>
 
+  <h3 class="inperson-sv-sub"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{localize "INPERSON.SheetView.Showing"}}</h3>
+
+  <div class="inperson-sv-verhalten">
+    <label class="inperson-pick-row {{#if showAllow}}on{{/if}}">
+      <input type="checkbox" name="showAllow" {{checked showAllow}}>
+      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ShowAllow"}}</span>
+      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.ShowAllowHint'}}" aria-hidden="true"></i>
+    </label>
+
+    <label class="inperson-pick-row {{#if showTv}}on{{/if}}">
+      <input type="checkbox" name="showTv" {{checked showTv}}>
+      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ShowTv"}}</span>
+      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.ShowTvHint'}}" aria-hidden="true"></i>
+    </label>
+
+    <label class="inperson-pick-row {{#if showGmCopy}}on{{/if}}">
+      <input type="checkbox" name="showGmCopy" {{checked showGmCopy}}>
+      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ShowGmCopy"}}</span>
+      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.ShowGmCopyHint'}}" aria-hidden="true"></i>
+    </label>
+  </div>
+
   <footer class="inperson-foot">
     <button type="submit" class="inperson-master-toggle">
       <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
