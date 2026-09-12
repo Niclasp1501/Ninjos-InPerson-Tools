@@ -2218,6 +2218,82 @@ body.inperson-feder-immer .journal-entry-page .edit-container a {
   50% { background: var(--tm-gold, #D4AF37); }
 }
 
+/* Das Angebot beim Empfaenger: klein, zwei Knoepfe, eine Zahl, die laeuft.
+   Es darf den Schirm nicht uebernehmen, sonst waere es genau das, was es
+   verhindern soll. */
+
+.inperson-angebot-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inperson-angebot-wer {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.inperson-angebot-was {
+  font-weight: 600;
+  font-size: 1.1em;
+  margin: 0;
+}
+
+/* Die Restzeit steht im Text, nicht als Balken: Ein Balken zieht das Auge auf
+   sich, und hier soll man den Namen lesen, nicht die Uhr. */
+.inperson-angebot-zeit {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.inperson-angebot-knoepfe {
+  display: flex;
+  gap: 8px;
+}
+
+.inperson-angebot-knoepfe .inperson-mini {
+  flex: 1;
+}
+
+.inperson-angebot-ja {
+  background: var(--tm-red, #8B0000);
+  color: var(--tm-onred, #ffffff);
+}
+
+/* Wer liest gerade mit. Eine Zeile je Person, der Zustand rechts. */
+.inperson-zeigen-stand {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.inperson-zeigen-standzeile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--tm-border, #dcd6cc);
+  border-radius: 4px;
+}
+
+/* Wer zusieht, ist der Grund, warum das Fenster offen ist: hervorheben.
+   Ablehnung und Schweigen bleiben ruhig, das ist keine schlechte Nachricht. */
+.inperson-zeigen-standzeile[data-wie="sieht"] {
+  border-color: var(--tm-gold, #D4AF37);
+}
+
+.inperson-zeigen-standzeile[data-wie="nein"],
+.inperson-zeigen-standzeile[data-wie="abgelaufen"] {
+  opacity: 0.6;
+}
+
+.inperson-zeigen-stop {
+  width: 100%;
+}
+
 body.inperson-sheetview {
   overflow: hidden;
   /* iOS: Gummiband-Scrollen würde das ganze Blatt beim Wischen wackeln lassen. */

@@ -4,6 +4,32 @@
 > the people who get offered an update in the Foundry catalogue, and most of
 > them do not read German. Older entries stay as they are.
 
+## 14.2611.76 - 2026-09-12
+
+**Showing now asks first.** Since 14.2611.75 a player could show a journal page
+to the table, and it arrived unannounced. At a desk that is harmless. On a
+tablet it is not: in the sheet view a journal fills the whole screen, so
+somebody sorting their spells lost the screen without warning.
+
+- **An offer, not a takeover.** The recipient gets a small card with two
+  buttons and the name of whoever is showing. Only after "Have a look" does
+  the page open.
+- **The offer expires after ten seconds.** Nobody has to tidy up windows they
+  never wanted, which was the whole point. Dismissing it counts as declining,
+  never as consent.
+- **The television is not asked**, because nobody sits there to answer. It
+  gets the page straight away.
+- **Stopping closes it everywhere**, the television included. The picker stays
+  open after sending and turns into the status of the showing: one line per
+  person with what they did. Closing that window stops the showing too,
+  otherwise something would stay open elsewhere that nobody can close any
+  more.
+- **The gamemaster can stop it for everyone.** Their whispered chat line now
+  carries a button for it. They run the evening and have to be able to take
+  the table back. Another player cannot: the token of a showing is in every
+  offer and no secret, so without that check anyone could shut a window in
+  anyone's face.
+
 ## 14.2611.75 - 2026-09-12
 
 **Players can show a journal page to the table.** Somebody finds a letter, a

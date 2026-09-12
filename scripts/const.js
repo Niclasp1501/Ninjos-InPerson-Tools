@@ -188,6 +188,14 @@ export const SOCKET = {
    * display belongs" and the pin target would be lost the first time the table
    * took a break.
    */
+  /**
+   * Zeigen am Tisch. Drei Nachrichten, weil ein Angebot drei Wege hat: hin,
+   * zurueck, und das Beenden fuer alle. Foundrys eigenes `showEntry` kann nur
+   * den ersten Schritt und kennt kein Zumachen.
+   */
+  SHOW_OFFER: "showOffer",
+  SHOW_ANSWER: "showAnswer",
+  SHOW_CLOSE: "showClose",
   SCREENSAVER: "screensaver",
   /**
    * Everything belonging to a trade - request, offer, accept, cancel, and the

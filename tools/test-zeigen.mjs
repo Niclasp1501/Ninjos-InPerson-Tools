@@ -41,6 +41,7 @@ nutzer.get = id => nutzer.find(u => u.id === id) ?? null;
 
 const gezeigt = [];
 const geflüstert = [];
+const gesendet = [];
 
 globalThis.game = {
   user: { id: "u-ich", name: "Nadylos", isGM: false },
@@ -55,8 +56,13 @@ globalThis.ChatMessage = {
   create: m => geflüstert.push(m),
   getWhisperRecipients: () => ["u-gm"]
 };
+globalThis.game.socket = { emit: (_kanal, n) => gesendet.push(n) };
 globalThis.foundry = {
-  applications: { api: { ApplicationV2: class { }, HandlebarsApplicationMixin: B => class extends B { } } },
+  utils: { randomID: () => "t-" + gesendet.length },
+  applications: {
+    api: { ApplicationV2: class { }, HandlebarsApplicationMixin: B => class extends B { } },
+    instances: new Map()
+  },
   documents: {
     collections: {
       Journal: { show: async (seite, opts) => gezeigt.push({ seite: seite.name, users: opts.users }) }
@@ -88,18 +94,23 @@ einstellungen.showTv = true;
 const fremd = { name: "Geheimnis des Spielleiters", isOwner: false };
 const meins = { name: "Brief des Barons", isOwner: true };
 
-pruefe("fremde Seite wird nicht gezeigt", await Z.seiteZeigen(fremd, ["u-roxy"]), false);
+pruefe("fremde Seite wird nicht gezeigt", await Z.zeigenStarten(fremd, ["u-roxy"]), null);
 pruefe("und nichts ist hinausgegangen", gezeigt.length, 0);
-pruefe("ohne Empfänger passiert nichts", await Z.seiteZeigen(meins, []), false);
+pruefe("ohne Empfänger passiert nichts", await Z.zeigenStarten(meins, []), null);
 
-/* ── 3. Die eigene Seite geht an genau die Gewählten ──────────────── */
+/* ── 3. Menschen werden gefragt, der Fernseher nicht ─────────────── */
 
-pruefe("eigene Seite wird gezeigt", await Z.seiteZeigen(meins, ["u-roxy", "u-tv"]), true);
-pruefe("an genau diese Konten", gezeigt.at(-1), { seite: "Brief des Barons", users: ["u-roxy", "u-tv"] });
+const vorgang = await Z.zeigenStarten(meins, ["u-roxy", "u-tv"]);
+pruefe("der Vorgang läuft", !!vorgang, true);
+pruefe("der Fernseher bekommt die Seite sofort", gezeigt.at(-1), { seite: "Brief des Barons", users: ["u-tv"] });
+pruefe("der Mensch bekommt erst ein Angebot", gesendet.at(-1).type, "showOffer");
+pruefe("und zwar nur er", gesendet.at(-1).an, ["u-roxy"]);
+pruefe("sein Stand ist offen", vorgang.stand.get("u-roxy"), "gefragt");
+pruefe("der Fernseher sieht schon zu", vorgang.stand.get("u-tv"), "sieht");
 
 /* ── 4. Der Takt hält ────────────────────────────────────────────── */
 
-pruefe("sofort noch einmal: nein", await Z.seiteZeigen(meins, ["u-roxy"]), false);
+pruefe("sofort noch einmal: nein", await Z.zeigenStarten(meins, ["u-roxy"]), null);
 pruefe("es blieb bei einem Mal", gezeigt.length, 1);
 
 Z.taktMerken(Date.now() - 6000);
@@ -112,7 +123,7 @@ pruefe("und zwar nur an die Spielleitung", geflüstert[0].whisper, ["u-gm"]);
 
 einstellungen.showGmCopy = false;
 Z.taktMerken(Date.now() - 6000);
-await Z.seiteZeigen(meins, ["u-roxy"]);
+await Z.zeigenStarten(meins, ["u-roxy"]);
 pruefe("abgeschaltet bleibt der Chat still", geflüstert.length, 1);
 einstellungen.showGmCopy = true;
 
@@ -120,7 +131,32 @@ einstellungen.showGmCopy = true;
 
 einstellungen.showAllow = false;
 Z.taktMerken(Date.now() - 6000);
-pruefe("ausgeschaltet zeigt niemand etwas", await Z.seiteZeigen(meins, ["u-roxy"]), false);
+pruefe("ausgeschaltet zeigt niemand etwas", await Z.zeigenStarten(meins, ["u-roxy"]), null);
+
+/* ── 7. Wer darf das Zeigen beenden ──────────────────────────────── */
+
+const offen = { token: "t-1", von: "u-ich", seiteUuid: "x", name: "Brief" };
+
+pruefe("der Zeigende darf beenden",
+  Z.darfSchliessen({ token: "t-1", von: "u-ich" }, offen), true);
+pruefe("die Spielleitung darf beenden",
+  Z.darfSchliessen({ token: "t-1", von: "u-gm", gm: true }, offen), true);
+pruefe("ein anderer Mitspieler nicht",
+  Z.darfSchliessen({ token: "t-1", von: "u-roxy" }, offen), false);
+pruefe("eine fremde Kennung nicht",
+  Z.darfSchliessen({ token: "t-9", von: "u-ich" }, offen), false);
+pruefe("ohne laufenden Vorgang nichts",
+  Z.darfSchliessen({ token: "t-1", von: "u-ich" }, null), false);
+
+/* ── 8. Beenden geht an alle ─────────────────────────────────────── */
+
+einstellungen.showAllow = true;
+Z.taktMerken(Date.now() - 6000);
+await Z.zeigenStarten(meins, ["u-roxy"]);
+gesendet.length = 0;
+pruefe("beenden meldet sich", Z.zeigenBeenden(), true);
+pruefe("und zwar als Schliessen", gesendet.at(-1).type, "showClose");
+pruefe("ohne Vorgang gibt es nichts zu beenden", Z.zeigenBeenden(), false);
 
 console.log(fehler ? `\n${fehler} Fälle falsch` : "\nalle Fälle richtig");
 process.exit(fehler ? 1 : 0);

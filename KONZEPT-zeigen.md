@@ -133,17 +133,36 @@ einander dem Magier etwas zeigt, tippt nicht zweimal dieselbe Liste durch.
 
 ## 5. Was beim Empfänger passiert
 
-- **Am Tablet in der Blattansicht** liegt das Fenster über dem Blatt, passt in
-  den Schirm (dafür sorgt `fensterpassen.js` schon, auch für Foundrys eigene
-  Fenster) und geht mit dem Kreuz wieder zu.
-- **Am Fernseher** schließt es sich von selbst, nach einer Minute oder wenn der
-  Zeigende auf „Zeigen beenden" tippt. Am Fernseher steht niemand, der ein
-  Kreuz drücken könnte.
-- **Der Zeigende sieht, dass es angekommen ist**, im eigenen Fenster und nicht
-  als Meldung am Bildschirmrand. In der Blattansicht gibt es keine Meldungen
-  (Regel 5 der Oberflächengrundsätze).
+**Gefragt wird zuerst.** Die erste gebaute Fassung schickte die Seite sofort,
+und das war am Tablet falsch: In der Blattansicht füllt ein Journal den ganzen
+Schirm, und wer gerade seine Zauber sortiert, verliert ihn ohne Vorwarnung.
+Also kommt erst ein kleines Angebot mit zwei Knöpfen: „Ansehen" oder „Nein
+danke".
 
----
+**Das Angebot verfällt nach zehn Sekunden.** Wer nicht reagiert, bekommt
+nichts. Ohne diese Frist stünden am Ende eines Abends fünf Fenster offen, die
+jemand einzeln wegtippen muss, und genau das soll das Angebot ja verhindern.
+Wegtippen zählt wie Ablehnen, nie als Zustimmung.
+
+**Der Fernseher wird nicht gefragt.** Dort sitzt niemand, der antworten könnte,
+also bekommt er die Seite sofort.
+
+- **Am Tablet** liegt das Fenster über dem Blatt, passt in den Schirm (dafür
+  sorgt `fensterpassen.js`) und geht mit dem Kreuz wieder zu.
+- **Der Zeigende sieht, wer mitliest.** Das Auswahlfenster bleibt nach dem
+  Abschicken stehen und wird zur Anzeige des Vorgangs: eine Zeile je Person mit
+  ihrem Stand (gefragt, sieht zu, abgelehnt, keine Antwort).
+
+**Beenden gilt für alle.** Ein Knopf im selben Fenster schließt die Seite bei
+allen, auch am Fernseher. Das Fenster zu machen beendet das Zeigen ebenfalls,
+denn sonst bliebe bei den anderen etwas offen, das niemand mehr beenden kann.
+
+**Die Spielleitung kann dasselbe.** In ihrer geflüsterten Zeile im Chat steht
+ein Knopf „Bei allen schließen". Sie führt den Abend und muss den Tisch
+zurückholen können, ohne jemanden darum zu bitten. Ein anderer Mitspieler kann
+es nicht: Die Kennung des Vorgangs steht in jedem Angebot, ist also kein
+Geheimnis, und ohne diese Prüfung könnte jeder jedem das Fenster vor der Nase
+zuziehen.
 
 ## 6. Die Leitplanken
 

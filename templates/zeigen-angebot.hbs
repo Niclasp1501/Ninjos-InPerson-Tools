@@ -1,0 +1,29 @@
+{{!--
+  „Nadylos zeigt dir etwas."
+
+  Klein und mit zwei klaren Knoepfen. Die Zahl laeuft herunter: Wer nicht
+  antwortet, bekommt nichts, und das Fenster raeumt sich selbst weg.
+--}}
+<div class="inperson-body inperson-angebot-body">
+
+  <p class="inperson-angebot-wer">
+    <i class="fa-solid fa-hand-holding" aria-hidden="true"></i>
+    {{localize "INPERSON.Show.OfferText" von=von}}
+  </p>
+
+  <p class="inperson-angebot-was">{{was}}</p>
+
+  <p class="inperson-hint">
+    {{localize "INPERSON.Show.OfferHint"}}
+    <span class="inperson-angebot-zeit" aria-live="off">{{sekunden}}</span>
+  </p>
+
+  <footer class="inperson-foot inperson-angebot-knoepfe">
+    <button type="button" class="inperson-mini" data-action="nein">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i> {{localize "INPERSON.Show.Decline"}}
+    </button>
+    <button type="button" class="inperson-mini inperson-angebot-ja" data-action="ja">
+      <i class="fa-solid fa-eye" aria-hidden="true"></i> {{localize "INPERSON.Show.Accept"}}
+    </button>
+  </footer>
+</div>

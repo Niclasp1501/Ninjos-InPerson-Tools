@@ -101,6 +101,9 @@ for (const f of sources) {
     used.add(m[1]);
   }
 }
+// Show states are assembled at runtime from the state of one recipient.
+for (const s of ["gefragt", "sieht", "nein", "abgelaufen"]) used.add(`${PREFIX}Show.State.${s}`);
+
 // Reason keys are assembled at runtime from a state name.
 for (const r of ["disabled", "forcedOn", "forcedOff", "selfOn", "selfOff",
                  "monitor", "isGM", "default", "defaultOff"]) {

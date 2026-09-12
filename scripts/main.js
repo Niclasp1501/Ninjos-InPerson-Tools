@@ -29,7 +29,7 @@ import { willkommenEinrichten, willkommenZeigen } from "./willkommen.js";
 import { openClockSettings } from "./clock-settings.js";
 import { openTradeSettings } from "./trade-settings.js";
 import { installSheetView, syncSheetView, sheetViewApi, federAnwenden } from "./sheetview.js";
-import { installZeigen } from "./zeigen.js";
+import { installZeigen, zeigenSocket } from "./zeigen.js";
 import { openSheetViewSettings } from "./sheetview-settings.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
 import { fensterPassenEinrichten } from "./fensterpassen.js";
@@ -737,6 +737,12 @@ function onSocket(payload) {
    * client that has not reloaded yet; dropping it is the honest answer.
    */
   if (payload?.type === SOCKET.TRADE) return;
+  if (payload?.type === SOCKET.SHOW_OFFER
+    || payload?.type === SOCKET.SHOW_ANSWER
+    || payload?.type === SOCKET.SHOW_CLOSE) {
+    zeigenSocket(payload);
+    return;
+  }
   if (payload?.type === SOCKET.SCREENSAVER) {
     if (!game.user.isGM) return;
     setScreensaverState(payload.userId, !!payload.active);
