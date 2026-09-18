@@ -97,9 +97,21 @@ function installPlayersButton(element) {
   root.prepend(button);
 }
 
+/**
+ * Does this user have anything to trade with?
+ *
+ * A swap moves items between two characters. A gamemaster without an assigned
+ * character has no inventory and no purse to put on the table, so the button
+ * only sat in the way above the player list. Reported at the table on
+ * 2026-09-18. A gamemaster who does play a character keeps it.
+ */
+function canTrade() {
+  return !game.user.isGM || !!game.user.character;
+}
+
 /** Put the button wherever it belongs, or take it away again. */
 export function syncTradeButton(element) {
-  const on = game.settings.get(MODULE_ID, SETTINGS.TRADE);
+  const on = game.settings.get(MODULE_ID, SETTINGS.TRADE) && canTrade();
   if (!on) {
     unmountFromSheetOnly(BUTTON_ID + "-so");
     document.getElementById(BUTTON_ID + "-so")?.remove();

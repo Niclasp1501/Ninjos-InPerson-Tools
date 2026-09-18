@@ -4,6 +4,13 @@
 > the people who get offered an update in the Foundry catalogue, and most of
 > them do not read German. Older entries stay as they are.
 
+## Unreleased
+
+- **No trade button for a gamemaster without a character.** A swap moves
+  items between two characters, so above the gamemaster's player list the
+  button could only lead nowhere. It now shows for players, and for a
+  gamemaster only when a character is assigned.
+
 ## 14.2611.76 - 2026-09-12
 
 **Showing now asks first.** Since 14.2611.75 a player could show a journal page
