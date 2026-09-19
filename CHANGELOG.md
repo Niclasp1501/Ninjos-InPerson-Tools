@@ -4,8 +4,15 @@
 > the people who get offered an update in the Foundry catalogue, and most of
 > them do not read German. Older entries stay as they are.
 
-## Unreleased
+## 14.2611.77 - 2026-09-19
 
+- **No second calendar bar in the sheet view.** Calendaria shows its own HUD to
+  every user who has not switched it off, and that setting starts switched on.
+  A player joining for the first time therefore saw two calendar bars on the
+  tablet, ours and Calendaria's, with the same date and the same weather. While
+  our time bar is on the sheet, Calendaria's HUD now stays hidden. The player's
+  own setting is left alone: turn our time bar off, or leave the sheet view,
+  and Calendaria's HUD is back as before.
 - **No trade button for a gamemaster without a character.** A swap moves
   items between two characters, so above the gamemaster's player list the
   button could only lead nowhere. It now shows for players, and for a

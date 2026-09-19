@@ -2847,6 +2847,25 @@ body.inperson-sheetview .sidebar-popout {
   animation: inperson-sky-mondhof 6s ease-in-out infinite alternate;
 }
 
+/* Calendarias eigenes Kalenderfenster ausblenden, solange unsere Zeitleiste
+ * auf dem Blatt steht.
+ *
+ * Calendaria zeigt sein HUD jedem Benutzer, der es nicht selbst abgeschaltet
+ * hat: Die Einstellung "Kalender-HUD anzeigen" liegt je Benutzer und steht
+ * von Haus aus auf an. Ein Spieler, der zum ersten Mal an den Tisch kommt,
+ * hatte deshalb zwei Kalenderleisten uebereinander, unsere und die von
+ * Calendaria, mit demselben Datum und demselben Wetter.
+ *
+ * Gebunden an den Anker unserer Leiste, nicht an die Blattansicht allein:
+ * Wer die Zeitleiste abschaltet, bekommt Calendarias HUD zurueck, und beim
+ * Spielleiter am Schreibtisch gibt es den Anker gar nicht. Die Einstellung
+ * des Spielers bleibt unberuehrt; ausserhalb der Blattansicht gilt sie wie
+ * vorher. Unsere eigene, ausgeliehene Instanz traegt die Zusatzklasse und
+ * bleibt deshalb sichtbar. */
+body:has(> #inperson-sheetview-uhr-anker) .calendaria-hud:not(.inperson-fremde-kuppel) {
+  display: none !important;
+}
+
 /* Calendarias eigenes Kalenderfenster, in unsere Leiste umgehaengt.
  *
  * Umgehaengt wird das ganze Fenster, nicht nur die Kuppel - warum, steht in
