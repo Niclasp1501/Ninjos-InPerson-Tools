@@ -30,6 +30,10 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
     actions: { reset: SheetViewSettings.#onReset }
   };
 
+  /** Angehakte Kaestchen ueber ein Neuzeichnen hinweg, und die Horcher. */
+  #stand = null;
+  #horcher = null;
+
   static PARTS = {
     body: { template: `modules/${MODULE_ID}/templates/sheetview-settings.hbs`, scrollable: [".inperson-partner-list"] }
   };
@@ -62,6 +66,53 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
       users,
       hasUsers: users.length > 0
     };
+  }
+
+  /**
+   * Ein neues Konto taucht sofort in der Liste auf.
+   *
+   * Die Liste entstand bisher genau einmal, beim Öffnen. Wer das Fenster
+   * offen hatte, während ein Spieler angelegt wurde, suchte ihn darin
+   * vergeblich; am 20.09.2026 fehlte genau deshalb ein Konto, das es in der
+   * Welt längst gab. Foundry meldet jedes neue und jedes gelöschte Konto,
+   * also hören wir zu.
+   *
+   * **Nur Anlegen und Löschen, nicht Ändern.** `updateUser` kommt im
+   * laufenden Abend ständig - jede Farbe, jede Figur, jede Anmeldung. Ein
+   * Neuzeichnen mitten im Ausfüllen wäre schlimmer als die fehlende Zeile.
+   * Und weil auch ein neues Konto mitten im Ausfüllen kommen kann, werden
+   * die gesetzten Haken vorher gemerkt und danach wieder angebracht.
+   * @override
+   */
+  _onRender(context, options) {
+    super._onRender?.(context, options);
+
+    if (this.#stand) {
+      for (const [name, an] of this.#stand) {
+        const feld = this.element.querySelector(`input[name="${CSS.escape(name)}"]`);
+        if (!feld) continue;
+        feld.checked = an;
+        feld.closest(".inperson-pick-row")?.classList.toggle("on", an);
+      }
+      this.#stand = null;
+    }
+
+    if (this.#horcher) return;
+    const neuZeichnen = () => {
+      if (!this.rendered) return;
+      this.#stand = new Map([...this.element.querySelectorAll('input[type="checkbox"]')]
+        .map(feld => [feld.name, feld.checked]));
+      this.render({ parts: ["body"] });
+    };
+    this.#horcher = ["createUser", "deleteUser"].map(name => [name, Hooks.on(name, neuZeichnen)]);
+  }
+
+  /** @override */
+  _onClose(options) {
+    super._onClose?.(options);
+    for (const [name, kennung] of this.#horcher ?? []) Hooks.off(name, kennung);
+    this.#horcher = null;
+    this.#stand = null;
   }
 
   /**

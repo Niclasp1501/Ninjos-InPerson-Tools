@@ -4,6 +4,17 @@
 > the people who get offered an update in the Foundry catalogue, and most of
 > them do not read German. Older entries stay as they are.
 
+## 14.2611.78 - 2026-09-20
+
+- **A new account shows up in the sheet view list right away.** The list was
+  built once, when the window opened. Anyone who had it open while a player
+  account was created looked for that player in vain, and reopening the window
+  was the only way to find out. The window now listens for accounts being
+  created and deleted, and redraws. Ticks already set are kept across that
+  redraw. Changes to an account do not redraw: those arrive all evening long,
+  and a redraw in the middle of filling the form would be worse than a missing
+  row.
+
 ## 14.2611.77 - 2026-09-19
 
 - **No second calendar bar in the sheet view.** Calendaria shows its own HUD to
