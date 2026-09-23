@@ -1,685 +1,342 @@
 # Ninjo's In-Person Tools
 
-**Current Version / Aktuelle Version:** `14.2611.72`
+Foundry VTT for groups who play in the same room: the map stays on the TV, tablets show the
+character sheet, and a second screen can show something of its own.
 
-Tools for running Foundry VTT at a physical table: the map is on a TV, the
-players only need their character sheet, dice and token — and yet every laptop
-pulls the same megabytes over Wi-Fi on each scene change.
-
-*(Scroll down for German version / Scrolle weiter runter für die deutsche Version)*
+*(Scroll down for the German version / Weiter unten auf Deutsch)*
 
 ---
 
 ## 🇬🇧 English
 
-Eight areas, each usable on its own:
+If you play Foundry around a real table, you know the picture: the map is already up on the TV,
+your players really only need their character sheets on their laptops and tablets, and yet every
+single device downloads the same huge battlemap on every scene change. The Wi-Fi groans, the
+batteries drain, and the tablet ends up showing a tiny corner of the map anyway.
 
-| | |
-|---|---|
-| [Map blocking](#map-blocking) | player clients stop downloading the battlemap |
-| [Scene displays](#scene-displays) | two screens with separate jobs |
-| [Scene rotation](#scene-rotation) | portrait maps laid across a 16:9 screen |
-| [Bring players](#bring-players) | pull individual players to a scene |
-| [Sheet view (beta)](#sheet-view-beta) | a tablet shows nothing but the character sheet |
-| [Time & weather](#time--weather) | date, clock, weather and a sun/moon dome above the sheet |
-| [Trading](#trading) | two players swap items and coin across a table |
-| [Alongside Lock View](#alongside-lock-view) | rotation-aware fitting and viewbox |
+In-Person Tools are built for exactly these games. They make sure every device only gets what it
+actually needs, and they let two screens in the room show two different things. Every part works
+on its own, so you only switch on what you need.
 
-Tested against **Foundry v14**, minimum v13. Runs standalone; it fits in where
-other modules are present but needs none of them.
+### The map stays on the TV
 
-### Map blocking
+Map blocking stops the background map of a scene from being downloaded to your players' devices
+at all. Everything else arrives as usual: tokens, tiles, effects, portraits and handouts. The
+canvas stays fully usable too, so your players can still move their token, target and measure.
+The only thing missing is the map itself, which stays black.
 
-On assigned clients the **background map** of a scene is no longer downloaded.
-Everything else — tokens, tiles, effects, portraits, handouts — still loads. The
-canvas stays fully usable: grid, walls, lighting, targeting and measuring all
-work, only the map stays black.
+I measured what this saves on a real server, with one player and a single click on "Preload
+Scene":
 
-**Measured** on a production server, player client, one GM click on "preload
-scene":
-
-| | blocking off | on |
-|---|---|---|
+| | Blocking off | Blocking on |
+| --- | --- | --- |
 | Transferred | **58.86 MB** | **0.00 MB** |
 | Files | 71 | 0 |
 
-With six players that is roughly 500 MB per scene change that no longer crosses
-the Wi-Fi.
+With six players, that is roughly 500 MB that no longer has to cross your Wi-Fi on every scene
+change.
 
-`Alt+T` opens the controls, as does *Settings → Module Settings → Open
-controls*. There you find the master switch, a three-way toggle per player
-(automatic / always / never), and **Measure**, which asks the server for the
-file sizes of the scene — headers only, a few hundred bytes even for a 35 MB map
-— and then shows how much of it gets blocked and how much still arrives.
+Press `Shift+T` to open the controls. That is where you choose which players the blocking applies
+to, and where **Measure** tells you how much a scene would cost each device without it. To find
+out, the module only asks the server for the file sizes, which is a few hundred bytes even for a
+35 MB map.
 
-> **A warning about blocking audio.** Measured on 2026-08-28: with a playlist
-> running it crashes `monks-sound-enhancements` once a second. The missing null
-> check is Foundry's own (`playlist-directory.mjs:782`); this module provokes it
-> and, since 14.2609.x, swallows exactly that error while it is the cause.
-> The setting is off by default.
+One detail Foundry's own "Disable Game Canvas" setting does not cover: it only prevents drawing,
+not preloading. When you click "Preload Scene", every device still pulls the full scene, even one
+without a canvas. Map blocking closes exactly that gap.
 
-**Why this is needed even with the canvas disabled.** Foundry's own "Disable
-Game Canvas" only blocks drawing, not preloading:
+Music and ambient sound can be blocked the same way. That setting is off by default, because it
+does not get along with *Monk's Sound Enhancements*.
 
-```
-Canvas#draw     → loadSceneTextures     blocked by noCanvas
-Scenes#preload  → loadSceneTextures     NOT blocked
-```
+### Two screens, two jobs
 
-`Scenes#preload` is driven by a socket broadcast. One click on "preload scene"
-therefore makes **every** client pull the full scene — including those without
-a canvas. That is the gap this closes.
+If you have a second screen next to the TV with the map, it can show something else entirely: the
+tavern you are sitting in, the villain's portrait, or a mood scene while the fight goes on next
+door. Set up two accounts in the module settings. The **battlemap display** follows every scene
+you activate, as usual. The **scene display** can be pinned to a scene, and then it stays there
+whatever else you do.
 
-### Scene displays
+Right-click a scene to send it to the scene display, or hold Shift or Ctrl for the quick way. A
+gold icon in the navigation bar always shows what is running there, and after a reload the display
+returns to its own scene.
 
-For setups with two screens. Both accounts are named in the module settings;
-their names can be anything.
+**Companion scenes** make it really comfortable. Decide once which scene the scene display should
+show with a particular battlemap, and from then on it switches along by itself whenever you
+activate that map. For every map without a companion of its own, you can set a default.
 
-| Role | Behaviour |
-|---|---|
-| **Battlemap display** | follows every scene activation, as usual |
-| **Scene display** | can be pinned and then stays put |
+Both displays are automatically exempt from map blocking, by the way. A black TV is the last
+thing you want on game night.
 
-Both are automatically exempt from map blocking — a black TV is the one failure
-that ruins the evening.
+If your second screen is an OLED, **burn-in protection** helps. When nobody has done anything for
+a while, a black cover with a slowly drifting dot settles over the picture. Black pixels on an
+OLED are genuinely off and do not wear. As soon as someone moves again, the scene is right back.
+Instead of the cover, the display can wander through a folder of other scenes during the quiet
+time, and the drifting dot can be an image of your own.
 
-Right-click a scene for *"Show on scene display"* and *"Pin / release scene
-display"*; **Shift+click** or **Ctrl+click** does the former faster. Pinning
-from a scene row pins the display **to that scene** — it is sent there and held.
-Releasing needs no scene. The panel and `Alt+T` toggle instead mean "stay where
-you are" and take whatever the display is looking at.
+### Portrait maps across a wide screen
 
-A gold monitor badge in the navigation bar marks the scene currently on the
-display, and it follows the display wherever it goes — an activation, a
-companion jump, a manual move, anything. The assignment survives a reload: the
-display comes back to its scene, not to the active one.
+Plenty of maps are drawn in portrait, but your TV is wide. Set a rotation of 90, 180 or 270
+degrees in the scene configuration and the map fills the screen. The rotation belongs to the
+scene, so it applies to everyone. Mouse clicks, token menus, ruler labels and chat bubbles still
+land exactly where they belong, and the text stays upright and readable.
 
-**Companion scenes:** a battlemap can name the scene the display should show
-alongside it. Activating that battlemap moves the display there — even while
-pinned, because a pairing made by hand is a more precise instruction than a
-general "stay put". Set under *Scene configuration → Miscellaneous → Scene
-display*.
+### Bring just the people you need
 
-A **default companion scene** covers the battlemaps that name none of their own.
-Without it an unpinned display simply mirrors the battlemap — the one thing a
-second screen need not do. Set it on the displays page, or by right-clicking a
-scene. The order of precedence, most specific first:
+Out of the box, Foundry only knows "pull all players here". That drags the displays along too and
+yanks players out of their character sheets while they were just reading up on a spell. Right-
+click a scene and choose **Bring players here** to pick who comes along instead. Next to every
+name you see where that person is right now. The scene display is left where it is, and Foundry's
+own "pull everyone" leaves a pinned scene display alone as well.
 
-| | |
-|---|---|
-| 1 | a companion named on the battlemap itself |
-| 2 | pinned — hold still |
-| 3 | the default companion |
-| 4 | follow the activation, as Foundry would |
+### The tablet belongs to the character sheet
 
-**On release** the display either returns to the active scene or moves to a
-chosen idle scene, depending on the setting.
+The **sheet view** is made for your players' tablets and is still marked as beta. Pick the
+accounts, and on those devices Foundry's interface disappears. What remains is the character
+sheet across the whole screen and a small menu bar with everything a player needs during the
+evening: their characters, the chat, the journal, the trade table, and the buttons of other
+modules such as FANG and the DnD Reference Sheet. Text size, volume and fullscreen sit in a
+second bar next to it.
 
-**Burn-in protection**, for displays on an OLED. Off until you say otherwise;
-everything below appears only once you do. Then pick one of two ways — they are
-alternatives, not stages:
+Both bars can be moved with a long press and resized. Each tablet remembers its layout separately
+for portrait and landscape. In combat, **"You're up next"** appears in good time, followed by
+**"Your turn!"**, so nobody misses their move.
 
-| | |
-|---|---|
-| **Black cover** (default) | a black sheet lays itself over the scene that is showing, with one mark drifting across, and the scene stays where it is underneath |
-| **Scene swap** | the display moves through a folder of other scenes |
+Everything about the sheet view is built for fingers. When the on-screen keyboard comes up, the
+page slides up so the field you are typing in stays visible. Windows can be dragged with a finger
+and never open larger than the screen.
 
-The cover is much the stronger of the two: on an OLED a black pixel is genuinely
-*off* and does not age at all, while another bright scene wears the panel exactly
-as the first one did. Movement only saves you from a burnt-in pattern, never from
-the wear itself. The scene swap is for tables that would rather look at something.
+When a player finds a letter or a map, they can **show** that page from their journal to the
+others. Everyone else gets a small request first and decides whether to look, so nobody loses
+their screen in the middle of reading. The TV gets the page straight away. You can end any showing
+for everyone with one click.
 
-**The cover comes and goes.** It is not a way of switching the television off:
-the aim is only that no picture stands still for hours, so after its time is up
-it lifts, the scene is there to be looked at, and once the room has been quiet
-for the waiting time again it returns. Three minutes by default.
+Above the sheet there can also be a slim bar with the **date, time and weather**, together with a
+little sky dome: the sun by day, and the moon in its real phase by night. Rain, snow, fog and
+thunderstorms appear in it as soon as a calendar module such as *Calendaria* reports them.
+Without a calendar module the bar shows Foundry's own time.
 
-The drifting mark can be an image of your own instead of the plain dot, and
-**Show the cover** puts it on your own screen for a few seconds so you can judge
-it — the mark is sized against the screen, so it looks the same there as it will
-on the television.
+### Working with other modules
 
-Quiet means nobody except the displays themselves is doing anything. Cursors,
-scene changes, rulers, rolls and chat all reset the clock, and the first sign of
-life brings the display straight back where it belongs.
+In-Person Tools need no other module, but they work well with a few.
 
-All of this lives under *Module Settings → Set up displays*, together with the
-accounts and the companion scenes.
-
-### Scene rotation
-
-For maps drawn portrait that should lie across a 16:9 screen. Set under *Scene
-configuration → Miscellaneous → Scene rotation*: 0°, 90°, 180° or 270°.
-
-The rotation belongs to the **scene**, not to a client — a map drawn the wrong
-way round is wrong for everyone. Mouse input needs no correction; Foundry
-inverts the full world matrix, rotation included.
-
-The token HUD lives outside the canvas as HTML and does not turn by itself.
-The module turns its frame so the HUDs land on their tokens, and turns the
-labels back so the text stays upright.
-
-The same frame holds the **ruler labels** and chat bubbles. Those are not pinned
-boxes but sit in full-size overlay containers, so they are turned one by one
-rather than by the container — turning the container throws its contents right
-across the map.
-
-Where **Lock View** is installed, its fitting and its viewbox are turned along
-with the scene — see [Alongside Lock View](#alongside-lock-view). The scene
-configuration says so on the spot whenever a rotation is set.
-
-### Bring players
-
-Core only offers "pull everyone", which drags the displays along and yanks a
-player out of a character sheet. Right-click a scene → *"Bring players here"*,
-or the button in the controls. From the context menu it targets the scene you
-clicked, so you can send people somewhere without going there yourself.
-
-Everyone connected is ticked to start with; only the **scene display** is left
-out, because staying put is its job. Tick it anyway and it comes along — that
-counts as a deliberate choice and overrides the pin. Next to each name you see
-where that person currently is.
-
-A pinned scene display is also kept out of core's own "pull all players here".
-It stays where it was and a notice says so.
-
-### Alongside Lock View
-
-Lock View steers *what* the displays look at; this module decides what they
-download and which way round they stand. The two are made to run together, and
-the module corrects the one place where its own rotation would otherwise leave
-Lock View working from wrong numbers.
-
-At 90° and 270° the screen's width maps onto the world's **height**. Two Lock
-View values depend on that:
-
-| | Without the correction |
-|---|---|
-| **Fitting** | `horizontal` measures the scene's width against the window's width. Rotated, the axis filling the screen horizontally is the scene's *height*. |
-| **Viewbox** | A display reports its visible extent with the sides exchanged, so the GM sees a frame that cannot be right. |
-
-Measured on a 3360 × 4340 map in a 2290 px window: the fitting came out at scale
-0.6815 instead of 0.5276 — the map ran 29 % past the screen and lost its bow and
-stern. Corrected, it fills the width exactly. `autoInside` and `autoOutside` are
-corrected the same way.
-
-**`physical` scaling needs no correction** and is passed through untouched: it
-returns nothing but a scale, and rotation never changes the scale. The same goes
-for `off`.
-
-Lock View itself is not modified — the correction sits on our side, on the client
-that produces the value. Everything is behind a presence check, so without Lock
-View installed none of it runs and the module stays standalone. If a future Lock
-View release renames what we hook into, the correction quietly drops out and the
-display goes back to its old behaviour; nothing breaks.
-
-> **After updating this module, reload the display clients too.** The viewbox
-> correction runs on the client that *sends* the value, not on the one that draws
-> it. Reloading only the GM window leaves the displays on the old code, and the
-> frame stays crooked with no hint as to why.
-
-### Alongside Sheet Only
-
-Sheet Only puts a player in front of nothing but their character sheet, which is
-what you want on a tablet at the table. It gets there by hiding the interface
-outright — `#interface`, `#pause`, `#tooltip`, `#notifications` — and building
-its own container instead. Everything that normally lives in the Foundry UI is
-gone for that player, a calendar's clock included. No setting brings it back,
-because there is nothing left to show it in.
-
-Two additions fill that gap. Both do nothing at all without Sheet Only.
-
-**Date and time as a strip.** A slim bar above the sheet: the date, the clock,
-and — when a calendar module supplies them — the current weather with its
-temperature and the season. The values are read, not borrowed: `game.time`
-reaches every client whether or not it has a canvas, and the weather comes out of
-Calendaria's world setting. Its own HUD is left untouched, which is deliberate;
-re-parenting someone else's element means fighting their re-render on every tick.
-
-Reading rather than borrowing also means the wording is ours. Calendaria's
-bundled Harptos calendar names its weekdays "Onesday" to "Tenday" as plain
-strings with no translation keys behind them, so no language file could reach
-them — the strip formats its own.
-
-Redrawing is tied to the displayed minute, not to the event. With a real-time
-clock running at a multiplier, `updateWorldTime` fires every second; the strip
-would otherwise rebuild sixty times for one visible change, on the clients least
-able to spare it.
-
-Each device decides for itself whether to show the strip. Whether weather and
-season ride along is the GM's call.
-
-**The actor directory as a side panel.** Optional, and **off by default**. It
-hides Sheet Only's own selector and puts one in its place that docks Foundry's
-actor directory to the right edge; the sheet gives up 300 pixels and takes them
-back when the panel closes. It rearranges another module's interface, so it waits
-to be asked.
-
-*Verified with Calendaria for the calendar side. Without any calendar module the
-strip still shows date and time from Foundry's own.*
-
-### Sheet view (beta)
-
-For tablets at the table. The gamemaster ticks the accounts on the
-**Sheet view (beta)** page; on those devices Foundry's interface disappears and
-the character sheet fills the screen. A small **menu bar** keeps what a player
-needs: their characters, chat, journal, trading, and the buttons of other
-modules that register through `game.modules.get("ninjos-inperson-tools").api.sheetView.registerButton()`
-(Ninjo's FANG and NDRS do). A second group holds text size, volume, bar size,
-Foundry's settings, fullscreen and log out.
-
-Both bars can be dragged after a long press, sized per bar, and locked in
-place; positions and sizes are remembered per device and per orientation
-(portrait puts the bars at the bottom, landscape at the top). The gamemaster
-can reset a player's bars from the settings page. The canvas is switched off on
-these devices (same machinery as map blocking), the chat opens on the player's
-own rolls, and a **"Your turn!"** banner appears while the player's character
-is up in combat, with **"You're up next"** one step before. Gamemasters are
-never affected.
-
-**Built for fingers, not for a mouse.** When the on-screen keyboard comes up,
-the whole page is lifted so the field being typed into stays above it - Foundry
-leaves the layout untouched when the keyboard opens, and a full-screen sheet has
-nothing left to scroll. Windows can be dragged by touch (Foundry sets no
-`touch-action` on its headers, so the browser used to cancel the drag after a
-few pixels), no window opens larger than the screen, and the stage follows the
-player: opening another character they own makes that sheet the full-screen one.
-
-Beta: the view is tested on a monitor and on tablets in progress; keep it off
-for players you are not sitting next to.
-
-### Time & weather
-
-A slim strip with the date, the clock, the current weather with temperature and
-the season, and above it a **dome** with the sun by day and the moon with its
-real phase by night - twilight blends between the two, and rain, snow, fog,
-clouds and lightning show in the dome when a weather source reports them. The
-strip lives in the sheet view and in Sheet Only alike. Everything is read, not
-borrowed: date and sunrise come from the world calendar, weather and moon phase
-from Calendaria when it is installed; without any calendar module the strip
-still shows date and time and draws the dome from Foundry's own calendar. What
-the strip shows is the gamemaster's choice on the **Time & weather** page.
-
-### Trading
-
-**Moved to [Ninjo's DnD Shops & Trade](https://github.com/Niclasp1501/Ninjos-Shops)
-in September 2026.** Trading between two players and trading with a merchant
-are the same thing from two directions, and two trade windows that looked and
-behaved differently depending on what was installed helped nobody.
-
-The way in stays here: the button above the player list and the one in the
-sheet view bar both open that module's table. Without it installed, the button
-says where the function went. Whether this module offers that way in at all is
-still set on the **Trading** page; whether the gamemaster joins in and whether
-trades are written down are settings of the other module now.
+- **Lock View** decides what your displays look at. For rotated maps, this module converts Lock
+  View's fitting and view frame correctly, so a map fills the screen exactly instead of being cut
+  off at the edges.
+- **Sheet Only** gets the date and weather bar too, and if you like, the actor directory can dock
+  beside it as a side panel.
+- **Ninjo's DnD Shops & Trade** provides the trade table the sheet view opens. Without it, the
+  button tells you where to find the feature.
 
 ### Installation
 
-Install through the Foundry package browser, or by manifest URL:
+The module is in the official Foundry package catalogue. In Foundry, open the **Add-on Modules**
+tab, click **Install Module** and search for *Ninjo's In-Person Tools*. Then enable it in your
+world's module settings.
 
-```
-https://github.com/Niclasp1501/Ninjos-InPerson-Tools/releases/latest/download/module.json
-```
+You can also use this manifest URL:
+`https://github.com/Niclasp1501/Ninjos-InPerson-Tools/releases/latest/download/module.json`
 
-**libWrapper** is recommended but not required — without it the module falls
-back to its own patch.
+You need Foundry VTT v13 or v14, and the module works with any game system. **libWrapper** is
+recommended but not required.
+
+### For the curious: why nothing is downloaded at all
+
+Map blocking does not just hide the map. The request to the server is never made in the first
+place. That works because every image Foundry puts on the canvas passes through one single place
+in its code, whether it is drawn, preloaded or loaded later. That is where the module steps in and
+hands back a tiny black texture for blocked maps. The scene keeps its exact dimensions, because
+Foundry works out the size from the scene settings and never from the image. So tokens, walls and
+lights all stay precisely where they were.
+
+### Status
+
+The sheet view is still marked as beta while I keep testing it on tablets. It is best to switch it
+on first for players sitting next to you, so you notice straight away if something catches.
+
+The quickest way to report a problem is an issue on GitHub.
 
 ---
 
 ## 🇩🇪 Deutsch
 
-Acht Bereiche, unabhängig voneinander nutzbar:
+Wer mit Foundry am echten Tisch spielt, kennt das: Die Karte hängt längst am Fernseher, die
+Spieler brauchen auf ihren Laptops und Tablets eigentlich nur noch ihr Charakterblatt, und
+trotzdem lädt bei jedem Szenenwechsel jedes Gerät dieselbe riesige Battlemap herunter. Das WLAN
+ächzt, die Akkus leeren sich, und das Tablet zeigt am Ende doch nur ein winziges Stück Karte.
 
-| | |
-|---|---|
-| [Kartensperre](#kartensperre) | Spieler-Clients laden die Battlemap nicht mehr |
-| [Szenen-Monitore](#szenen-monitore) | zwei Bildschirme mit getrennten Aufgaben |
-| [Szenendrehung](#szenendrehung) | hochkante Karten quer auf 16:9 |
-| [Spieler holen](#spieler-holen) | gezielt einzelne Spieler auf eine Szene ziehen |
-| [Blattansicht (Beta)](#blattansicht-beta) | ein Tablet zeigt nur das Charakterblatt |
-| [Zeit & Wetter](#zeit--wetter) | Datum, Uhrzeit, Wetter und eine Sonnen-/Mondkuppel über dem Blatt |
-| [Tauschen](#tauschen) | der Weg zum Tauschtisch in Ninjo's DnD Shops & Trade |
-| [Zusammen mit Lock View](#zusammen-mit-lock-view) | Einpassung und Ansichtsrahmen folgen der Drehung |
+Die In-Person Tools sind genau für diese Runden gebaut. Sie sorgen dafür, dass jedes Gerät nur
+das bekommt, was es wirklich braucht, und dass zwei Bildschirme im Raum zwei verschiedene Dinge
+zeigen können. Jeder Bereich funktioniert für sich, du schaltest also nur ein, was du brauchst.
 
-Getestet gegen **Foundry v14**, Mindestversion v13. Läuft eigenständig; wo
-andere Module vorhanden sind, fügt es sich ein, braucht sie aber nicht.
+### Die Karte bleibt auf dem Fernseher
 
-### Kartensperre
+Die Kartensperre verhindert, dass die Hintergrundkarte einer Szene auf den Geräten deiner
+Spieler überhaupt heruntergeladen wird. Alles andere kommt ganz normal an: Token, Kacheln,
+Effekte, Porträts und Handzettel. Auch das Spielfeld selbst bleibt voll bedienbar, deine Spieler
+können also weiter ihre Figur bewegen, zielen und messen. Nur dort, wo sonst die Karte liegt,
+bleibt es schwarz.
 
-Auf zugewiesenen Clients wird die **Hintergrundkarte** der Szene nicht mehr
-heruntergeladen. Alles andere — Tokens, Tiles, Effekte, Portraits, Handouts —
-läuft normal durch. Der Canvas bleibt voll bedienbar: Raster, Wände, Licht,
-Zielen und Messen funktionieren weiter, nur die Karte bleibt schwarz.
+Was das bringt, habe ich auf einem echten Server nachgemessen, mit einem Spieler und einem
+einzigen Klick auf „Szene vorladen":
 
-**Gemessen** auf einem Produktionsserver, Spieler-Client, ein Klick des
-Spielleiters auf „Szene vorladen":
-
-| | Sperre aus | an |
-|---|---|---|
+| | Sperre aus | Sperre an |
+| --- | --- | --- |
 | Übertragen | **58,86 MB** | **0,00 MB** |
 | Dateien | 71 | 0 |
 
-Bei sechs Spielern sind das rund 500 MB pro Szenenwechsel, die nicht mehr durch
-das WLAN gehen.
+Bei sechs Spielern sind das rund 500 MB, die bei jedem Szenenwechsel nicht mehr durch dein WLAN
+müssen.
 
-`Alt+T` öffnet die Steuerung, ebenso *Einstellungen → Moduleinstellungen →
-Steuerung öffnen*. Dort finden sich der Hauptschalter, ein Dreifachschalter je
-Spieler (automatisch / immer / nie) und **Vermessen** — das fragt beim Server
-die Dateigrößen der Szene ab (nur Kopfzeilen, ein paar hundert Byte auch bei
-einer 35-MB-Karte) und zeigt darunter, wie viel davon blockiert wird und wie
-viel trotzdem ankommt.
+Mit `Shift+T` öffnest du die Steuerung. Dort legst du fest, für welche Spieler die Sperre gilt,
+und kannst mit **Vermessen** nachsehen, wie viel eine Szene jedes Gerät ohne Sperre kosten würde.
+Dafür fragt das Modul beim Server nur die Dateigrößen ab, das sind selbst bei einer 35 MB großen
+Karte nur ein paar hundert Byte.
 
-> **Warnung zur Audio-Sperre.** Gemessen am 28.08.2026: Bei laufender Playlist
-> bringt sie `monks-sound-enhancements` im Sekundentakt zum Absturz. Die
-> fehlende Null-Prüfung ist Foundrys eigene (`playlist-directory.mjs:782`);
-> dieses Modul löst sie aus und fängt sie seit 14.2609.x ab, solange es die
-> Ursache ist. Die Einstellung steht standardmäßig auf aus.
+Ein Detail, das Foundrys eigene Einstellung „Spielfeld deaktivieren" nicht abdeckt: Sie
+verhindert nur das Zeichnen, nicht das Vorladen. Klickst du auf „Szene vorladen", zieht sich
+deshalb trotzdem jedes Gerät die volle Szene, auch eines ganz ohne Spielfeld. Die Kartensperre
+schließt genau diese Lücke.
 
-**Warum das auch bei abgeschaltetem Spielfeld nötig ist.** Foundrys eigenes
-„Spielfeld deaktivieren" blockt nur das Zeichnen, nicht das Vorladen:
+Auch Musik und Geräusche lassen sich auf diese Weise sperren. Diese Einstellung ist ab Werk
+ausgeschaltet, weil sie sich mit dem Modul *Monk's Sound Enhancements* nicht verträgt.
 
-```
-Canvas#draw     → loadSceneTextures     von noCanvas geblockt
-Scenes#preload  → loadSceneTextures     NICHT geblockt
-```
+### Zwei Bildschirme, zwei Aufgaben
 
-Die Vorladung hängt an einem Rundruf über den Socket. Ein Klick auf „Szene
-vorladen" lässt daher **jeden** Client die volle Szene ziehen — auch die ohne
-Spielfeld. Genau diese Lücke wird geschlossen.
+Hast du neben dem Fernseher für die Karte noch einen zweiten Bildschirm, kann der etwas ganz
+anderes zeigen: die Taverne, in der ihr gerade sitzt, das Porträt des Schurken oder eine
+Stimmungsszene, während auf dem ersten Bildschirm gekämpft wird. Dafür legst du in den
+Moduleinstellungen zwei Konten an. Der **Battlemap-Monitor** folgt wie gewohnt jeder Szene, die du
+aktivierst. Den **Szenen-Monitor** kannst du auf einer Szene festhalten, und dann bleibt er dort,
+egal was du sonst tust.
 
-### Szenen-Monitore
+Per Rechtsklick auf eine Szene schickst du sie auf den Szenen-Monitor, mit gedrückter Umschalt-
+oder Strg-Taste geht es noch schneller. Ein goldenes Symbol in der Navigationsleiste zeigt dir
+jederzeit, was gerade dort läuft, und nach einem Neuladen kehrt der Monitor zu seiner Szene
+zurück.
 
-Für Aufbauten mit zwei Bildschirmen. Beide Konten werden in den
-Moduleinstellungen benannt, die Namen sind frei wählbar.
+Besonders bequem wird es mit **Begleitszenen**. Du legst einmal fest, welche Szene der
+Szenen-Monitor zu einer bestimmten Battlemap zeigen soll, und ab dann wechselt er beim
+Aktivieren der Karte von selbst mit. Für alle Karten ohne eigene Begleitszene kannst du eine
+Standardszene bestimmen.
 
-| Rolle | Verhalten |
-|---|---|
-| **Battlemap-Monitor** | folgt jedem Szenenwechsel, wie gewohnt |
-| **Szenen-Monitor** | lässt sich fixieren und bleibt dann stehen |
+Beide Monitore sind übrigens automatisch von der Kartensperre ausgenommen. Ein schwarzer
+Fernseher wäre schließlich das Letzte, was du an einem Spielabend brauchst.
 
-Beide sind automatisch von der Kartensperre ausgenommen — ein schwarzer
-Fernseher wäre der eine Fehler, der den Abend ruiniert.
+Läuft dein zweiter Bildschirm mit OLED, hilft der **Schutz gegen Einbrennen**. Wenn eine Weile
+niemand etwas tut, legt sich eine schwarze Blende mit einem langsam wandernden Punkt über das
+Bild. Schwarze Pixel sind auf einem OLED tatsächlich aus und nutzen sich nicht ab. Sobald sich am
+Tisch wieder etwas regt, ist die Szene sofort zurück. Statt der Blende kann der Monitor in der
+Ruhezeit auch durch einen Ordner mit anderen Szenen wandern, und statt des Punktes darf ein
+eigenes Bild über den Schirm ziehen.
 
-Rechtsklick auf eine Szene bietet *„Auf Szenen-Monitor anzeigen"* und
-*„Szenen-Monitor fixieren / lösen"*; **Umschalt+Klick** oder **Strg+Klick** tut
-Ersteres schneller. Fixieren aus einer Szenenzeile heraus fixiert den Monitor
-**auf genau diese Szene** — er wird dorthin geschickt und dort gehalten. Lösen
-braucht keine Szene. Der Schalter in der Steuerung und `Alt+T` bedeuten dagegen
-„bleib, wo du bist" und übernehmen, worauf der Monitor gerade steht.
+### Hochkante Karten quer auf den Bildschirm
 
-Ein goldenes Monitor-Symbol in der Navigationsleiste zeigt, welche Szene gerade
-dort läuft — und es folgt dem Monitor, wohin er auch wandert: Aktivierung,
-Begleitszene, Verschieben von Hand, gleich wodurch. Die Zuordnung überlebt einen
-Reload: Der Monitor kommt auf seine Szene zurück, nicht auf die aktive.
+Viele Karten sind hochkant gezeichnet, dein Fernseher ist aber breit. Stell in der
+Szenenkonfiguration eine Drehung um 90, 180 oder 270 Grad ein, und die Karte füllt den
+Bildschirm. Die Drehung gilt für die Szene und damit für alle am Tisch. Mausklicks, Token-Menüs,
+Linealbeschriftungen und Sprechblasen landen trotzdem genau dort, wo sie hingehören, und die
+Schrift bleibt lesbar aufrecht.
 
-**Begleitszenen:** Eine Battlemap kann die Szene benennen, die der Monitor dazu
-zeigen soll. Wird sie aktiviert, wechselt er dorthin — auch wenn er fixiert ist,
-denn eine von Hand gelegte Verknüpfung ist die genauere Anweisung als ein
-allgemeines „bleib stehen". Einzustellen unter *Szenen-Konfiguration →
-Verschiedenes → Szenen-Monitor*.
+### Nur die holen, die du brauchst
 
-Eine **Standard-Begleitszene** fängt die Battlemaps ab, die selbst keine
-benennen. Ohne sie zeigt ein nicht fixierter Monitor dieselbe Karte wie der
-Battlemap-Monitor — also genau das, wofür man den zweiten Bildschirm nicht
-braucht. Einzustellen auf der Monitor-Seite oder per Rechtsklick auf eine Szene. Die
-Rangfolge, vom Genauesten zum Allgemeinsten:
+Foundry kennt von Haus aus nur „alle Spieler hierher holen". Das reißt auch die Monitore mit
+und holt Spieler aus ihrem Charakterblatt, obwohl sie gerade nur ihre Zauber nachlesen wollten.
+Mit einem Rechtsklick auf eine Szene und **Spieler hierher holen** wählst du stattdessen aus,
+wer mitkommen soll. Neben jedem Namen siehst du, wo derjenige gerade ist. Den Szenen-Monitor
+lässt das Modul von sich aus stehen, und auch Foundrys eigenes „alle holen" lässt einen
+festgehaltenen Szenen-Monitor in Ruhe.
 
-| | |
-|---|---|
-| 1 | eine an der Battlemap benannte Begleitszene |
-| 2 | fixiert — stehen bleiben |
-| 3 | die Standard-Begleitszene |
-| 4 | der Aktivierung folgen, wie Foundry es täte |
+### Das Tablet gehört dem Charakterblatt
 
-**Schutz gegen Einbrennen**, für Monitore an einem OLED. Standardmäßig aus;
-alles Weitere erscheint erst, wenn du zusagst. Dann eine von zwei Arten — es sind
-Alternativen, keine Stufen:
+Die **Blattansicht** ist für die Tablets deiner Spieler gedacht und noch als Beta gekennzeichnet.
+Du wählst die Konten aus, und auf diesen Geräten verschwindet Foundrys Oberfläche. Übrig bleibt
+das Charakterblatt über den ganzen Bildschirm und eine kleine Menüleiste mit allem, was ein
+Spieler am Abend braucht: seine Charaktere, der Chat, die Notizen, der Tauschtisch und die Knöpfe
+anderer Module wie FANG und dem DnD Reference Sheet. Schriftgröße, Lautstärke und Vollbild
+liegen in einer zweiten Leiste daneben.
 
-| | |
-|---|---|
-| **Schwarze Blende** (Vorgabe) | legt sich über die laufende Szene, mit einer wandernden Marke darauf; die Szene bleibt darunter stehen |
-| **Szenenwechsel** | der Monitor wandert durch einen Ordner anderer Szenen |
+Beide Leisten lassen sich mit einem langen Druck verschieben und in der Größe anpassen. Jedes
+Tablet merkt sich die Einstellung getrennt für hochkant und quer. Im Kampf erscheint rechtzeitig
+**„Gleich bist du dran"** und dann **„Du bist dran!"**, damit niemand den eigenen Zug verpasst.
 
-Die Blende ist die deutlich wirksamere: Ein schwarzes Pixel ist bei OLED
-tatsächlich *aus* und altert überhaupt nicht, während eine andere helle Szene das
-Panel genauso weiter verschleißt wie die erste. Bewegung bewahrt nur vor einem
-eingebrannten *Muster*, nie vor dem Verschleiß selbst. Der Szenenwechsel ist für
-Tische, die lieber etwas ansehen.
+Alles an der Blattansicht ist für Finger gebaut. Wenn die Bildschirmtastatur aufgeht, rutscht
+die Seite nach oben, damit das Eingabefeld sichtbar bleibt. Fenster lassen sich mit dem Finger
+verschieben und öffnen nie größer als der Bildschirm.
 
-**Die Blende kommt und geht.** Es geht nicht darum, den Fernseher abzuschalten,
-sondern nur darum, dass kein Bild stundenlang stillsteht — nach ihrer Zeit hebt
-sie sich, die Szene ist zu sehen, und sobald wieder die Wartezeit lang Ruhe
-herrschte, legt sie sich erneut darüber. Vorgabe drei Minuten.
+Findet ein Spieler einen Brief oder eine Karte, kann er die Seite aus seinen Notizen den anderen
+**zeigen**. Die bekommen zuerst eine kleine Anfrage und entscheiden selbst, ob sie hinschauen
+wollen, damit niemandem mitten beim Nachlesen der Bildschirm weggenommen wird. Der Fernseher
+bekommt die Seite dagegen sofort. Du kannst jedes Zeigen mit einem Klick für alle beenden.
 
-Statt des Punktes lässt sich ein eigenes Bild darüber wandern lassen, und
-**„Blende ansehen"** zeigt sie für ein paar Sekunden auf dem eigenen Bildschirm.
-Die Marke wird am Bildschirmanteil bemessen, sieht dort also aus wie später am
-Fernseher.
+Über dem Blatt kann außerdem eine schmale Leiste mit **Datum, Uhrzeit und Wetter** stehen, dazu
+eine kleine Himmelskuppel mit Sonne am Tag und dem Mond in seiner echten Phase bei Nacht. Regen,
+Schnee, Nebel und Gewitter tauchen darin auf, sobald ein Kalendermodul wie *Calendaria* sie
+meldet. Ohne Kalendermodul zeigt die Leiste Foundrys eigene Zeit.
 
-Als Ruhe zählt, dass niemand außer den Monitoren selbst etwas tut. Mauszeiger,
-Szenenwechsel, Lineal, Würfe und Chat setzen die Uhr zurück, und beim ersten
-Lebenszeichen ist der Monitor sofort wieder da, wo er hingehört.
+### Zusammen mit anderen Modulen
 
-Das alles steht unter *Moduleinstellungen → Monitore einrichten*.
+Die In-Person Tools brauchen kein anderes Modul, sie arbeiten aber gut mit einigen zusammen.
 
-**Beim Lösen** wechselt der Monitor je nach Einstellung zur aktiven Szene oder
-auf ein gewähltes Ruhebild.
-
-### Szenendrehung
-
-Für hochkant gezeichnete Karten, die quer die Breite eines 16:9-Bildschirms
-ausnutzen sollen. Einzustellen unter *Szenen-Konfiguration → Verschiedenes →
-Drehung der Szene*: 0°, 90°, 180° oder 270°.
-
-Die Drehung gehört zur **Szene**, nicht zum Client — eine falschherum
-gezeichnete Karte ist für jeden falschherum. Mausklicks brauchen keine
-Korrektur, Foundry rechnet die vollständige Weltmatrix zurück, Drehung
-eingeschlossen.
-
-Das Token-Menü liegt als HTML außerhalb des Spielfelds und dreht nicht von
-selbst mit. Das Modul dreht seinen Rahmen, damit die Menüs auf ihren Tokens
-landen, und dreht die Beschriftung zurück, damit die Schrift gerade steht.
-
-Im selben Rahmen liegen die **Linealbeschriftungen** und die Sprechblasen. Die
-sind keine angehefteten Kästchen, sondern sitzen in bildschirmfüllenden
-Containern — sie werden deshalb einzeln gedreht statt über den Container. Dreht
-man den Container, fliegt sein Inhalt quer über die Karte.
-
-Ist **Lock View** installiert, werden dessen Einpassung und Ansichtsrahmen
-mitgedreht — siehe [Zusammen mit Lock View](#zusammen-mit-lock-view). Die
-Szenen-Konfiguration weist bei gesetzter Drehung an Ort und Stelle darauf hin.
-
-### Spieler holen
-
-Foundrys Bordmittel kennt nur „alle herholen" — das reißt die Monitore mit und
-holt Spieler aus einem Charakterbogen, in dem sie gerade lesen. Rechtsklick auf
-eine Szene → *„Spieler hierher holen"*, oder der Knopf in der Steuerung. Aus dem
-Kontextmenü zielt es auf die angeklickte Szene, man kann Leute also irgendwohin
-holen, ohne selbst dorthin zu wechseln.
-
-Alle Angemeldeten sind vorausgewählt; ausgenommen ist nur der
-**Szenen-Monitor**, weil Stehenbleiben seine Aufgabe ist. Hakt man ihn trotzdem
-an, kommt er mit — das gilt als bewusste Entscheidung und setzt sich über die
-Fixierung hinweg. Neben jedem Namen steht, wo derjenige sich gerade befindet.
-
-Ein fixierter Szenen-Monitor wird außerdem aus Foundrys eigenem „alle Spieler
-hierher ziehen" herausgehalten. Er bleibt stehen, und ein Hinweis sagt das.
-
-### Zusammen mit Lock View
-
-Lock View steuert, *worauf* die Monitore schauen; dieses Modul entscheidet, was
-sie herunterladen und wie herum sie stehen. Beide sind auf ein Nebeneinander
-ausgelegt, und das Modul korrigiert die eine Stelle, an der seine eigene Drehung
-Lock View sonst mit falschen Zahlen rechnen ließe.
-
-Bei 90° und 270° bildet die Bildschirmbreite auf die Welt**höhe** ab. Zwei Werte
-von Lock View hängen daran:
-
-| | Ohne die Korrektur |
-|---|---|
-| **Einpassung** | `horizontal` misst die Szenenbreite gegen die Fensterbreite. Gedreht füllt aber die Szenen*höhe* den Bildschirm der Breite nach. |
-| **Ansichtsrahmen** | Ein Monitor meldet seinen sichtbaren Ausschnitt mit vertauschten Seiten — der Spielleiter sieht einen Rahmen, der nicht stimmen kann. |
-
-Gemessen an einer 3360 × 4340-Karte in einem 2290 px breiten Fenster: Die
-Einpassung ergab Maßstab 0,6815 statt 0,5276 — die Karte lief 29 % über den Rand
-hinaus, Bug und Heck fielen weg. Korrigiert füllt sie die Breite exakt.
-`autoInside` und `autoOutside` werden genauso mitgezogen.
-
-**`physical` braucht keine Korrektur** und wird unverändert durchgereicht: Es
-liefert nichts als einen Maßstab, und die Drehung fasst den Maßstab nie an. Für
-`off` gilt dasselbe.
-
-Lock View selbst wird nicht verändert — die Korrektur sitzt auf unserer Seite,
-auf dem Client, der den Wert erzeugt. Alles steckt hinter einer Merkmalsprüfung:
-Ohne Lock View läuft davon nichts, das Modul bleibt eigenständig. Sollte eine
-künftige Lock-View-Fassung umbenennen, woran wir hängen, fällt die Korrektur
-still weg und der Monitor verhält sich wie zuvor; kaputt geht dabei nichts.
-
-> **Nach einer Aktualisierung dieses Moduls auch die Monitore neu laden.** Die
-> Rahmen-Korrektur läuft auf dem Client, der den Wert *sendet*, nicht auf dem,
-> der ihn zeichnet. Lädt man nur das Spielleiter-Fenster neu, bleiben die
-> Monitore auf dem alten Stand — der Rahmen steht weiter schief, ohne dass
-> ersichtlich wäre, warum.
-
-### Zusammen mit Sheet Only
-
-Sheet Only stellt einen Spieler vor nichts als sein Charakterblatt — genau das,
-was man am Tisch auf einem Tablet will. Es erreicht das, indem es die Oberfläche
-schlicht ausblendet: `#interface`, `#pause`, `#tooltip`, `#notifications`, und
-baut sich stattdessen einen eigenen Container. Alles, was sonst in Foundrys
-Oberfläche wohnt, ist für diesen Spieler weg — die Uhr eines Kalendermoduls
-eingeschlossen. Keine Einstellung holt sie zurück, weil es nichts mehr gibt,
-worin sie erscheinen könnte.
-
-Zwei Ergänzungen füllen die Lücke. Beide tun ohne Sheet Only überhaupt nichts.
-
-**Datum und Uhrzeit als Leiste.** Ein schmaler Streifen über dem Blatt: das
-Datum, die Uhr, und — wenn ein Kalendermodul sie liefert — das aktuelle Wetter
-mit Temperatur und die Jahreszeit. Die Werte werden **gelesen, nicht geliehen**:
-`game.time` erreicht jeden Client, ob er ein Spielfeld hat oder nicht, und das
-Wetter steht in einer Welteinstellung von Calendaria. Dessen eigenes HUD bleibt
-unangetastet, und das mit Absicht — das Element eines fremden Moduls umzuhängen
-hieße, sich bei jedem Zeitschritt mit seinem Neuzeichnen anzulegen.
-
-Lesen statt leihen heißt auch: Die Worte sind unsere. Calendarias mitgelieferter
-Harptos-Kalender nennt seine Wochentage „Onesday" bis „Tenday" als feste
-Zeichenketten, ohne Übersetzungsschlüssel dahinter — keine Sprachdatei käme da
-heran. Die Leiste formatiert selbst.
-
-Neu gezeichnet wird nur, wenn sich die **angezeigte Minute** ändert, nicht bei
-jedem Ereignis. Läuft die Uhr in Echtzeit mit einem Vielfachen, feuert
-`updateWorldTime` im Sekundentakt; die Leiste würde sich sonst sechzigmal für
-eine sichtbare Änderung neu aufbauen — ausgerechnet auf den Geräten, die am
-wenigsten übrig haben.
-
-Ob die Leiste erscheint, entscheidet jedes Gerät für sich. Ob Wetter und
-Jahreszeit mitlaufen, entscheidet die Spielleitung.
-
-**Das Akteursverzeichnis als Seitenpanel.** Wahlweise, und **standardmäßig aus**.
-Es blendet Sheet Onlys eigenen Auswahlknopf aus und setzt einen an seine Stelle,
-der Foundrys Akteursverzeichnis rechts andockt; das Blatt gibt dafür 300 Pixel
-her und holt sie zurück, sobald das Panel schließt. Es räumt in der Oberfläche
-eines fremden Moduls um — also wartet es, bis man es darum bittet.
-
-*Für die Kalenderseite mit Calendaria geprüft. Ganz ohne Kalendermodul zeigt die
-Leiste weiterhin Datum und Uhrzeit aus Foundrys eigenem Kalender.*
-
-### Blattansicht (Beta)
-
-Für die Tablets am Tisch. Der Spielleiter hakt auf der Seite **Blattansicht
-(Beta)** die Konten an; auf diesen Geräten verschwindet Foundrys Oberfläche,
-das Charakterblatt füllt den Schirm. Eine kleine **Menüleiste** hält bereit,
-was ein Spieler braucht: seine Charaktere, Chat, Notizen, den Weg zum
-Tauschtisch und die
-Knöpfe anderer Module, die sich über
-`game.modules.get("ninjos-inperson-tools").api.sheetView.registerButton()`
-anmelden (Ninjo's FANG und NDRS tun das). Eine zweite Gruppe hat Schriftgröße,
-Lautstärke, Leistengröße, Foundrys Einstellungen, Vollbild und Abmelden.
-
-Beide Leisten lassen sich nach langem Druck verschieben, je Leiste in der
-Größe einstellen und festhalten; Plätze und Größen merkt sich das Gerät je
-Lage (hochkant stehen die Leisten unten, quer oben). Der Spielleiter kann die
-Leisten eines Kontos auf die Startwerte zurücksetzen. Das Spielfeld ist auf
-diesen Geräten abgeschaltet (dieselbe Maschinerie wie die Kartensperre), der
-Chat öffnet sich bei eigenen Würfen, und im Kampf steht **„Du bist dran!"** auf
-dem Tablet, solange der eigene Charakter am Zug ist — mit **„Gleich bist du
-dran"** eine Stelle davor. Spielleiter sind nie betroffen.
-
-**Für Finger gebaut, nicht für die Maus.** Fährt die Bildschirmtastatur auf,
-wird die ganze Seite angehoben, damit das Feld, in das gerade getippt wird, über
-ihr stehen bleibt — Foundry verkleinert die Seite dabei nicht, und ein Blatt über
-den ganzen Schirm hat nichts mehr zu scrollen. Fenster lassen sich mit dem Finger
-ziehen (Foundry setzt an seinen Titelzeilen kein `touch-action`, der Browser brach
-das Ziehen nach wenigen Pixeln ab), kein Fenster öffnet größer als der Schirm, und
-die Bühne folgt dem Spieler: Wer einen anderen eigenen Charakter öffnet, hat ihn
-im Vollbild.
-
-Beta: am Monitor geprüft, am Tablet in Arbeit; nur für Spieler einschalten,
-neben denen man sitzt.
-
-### Zeit & Wetter
-
-Eine schmale Leiste mit Datum, Uhrzeit, dem Wetter samt Temperatur und der
-Jahreszeit, darüber eine **Kuppel** mit der Sonne am Tag und dem Mond in
-seiner echten Phase bei Nacht — die Dämmerung blendet dazwischen, und Regen,
-Schnee, Nebel, Wolken und Gewitter erscheinen in der Kuppel, wenn eine
-Wetterquelle sie meldet. Die Leiste steht in der Blattansicht wie in Sheet
-Only. Alles wird gelesen, nicht ausgeliehen: Datum und Sonnenaufgang aus dem
-Weltkalender, Wetter und Mondphase aus Calendaria, wenn es installiert ist;
-ohne Kalendermodul zeigt die Leiste weiterhin Datum und Uhrzeit und zeichnet
-die Kuppel aus Foundrys eigenem Kalender. Was die Leiste zeigt, entscheidet der
-Spielleiter auf der Seite **Zeit & Wetter**.
-
-### Tauschen
-
-**Im September 2026 nach [Ninjo's DnD Shops & Trade](https://github.com/Niclasp1501/Ninjos-Shops)
-umgezogen.** Der Tausch zwischen zwei Spielern und der Handel mit einem
-Händler sind dieselbe Sache aus zwei Richtungen; zwei Tauschfenster, die je
-nach installiertem Modul anders aussahen und sich anders bedienten, halfen
-niemandem.
-
-Der Weg dorthin bleibt hier: Der Knopf über der Spielerliste und der in der
-Leiste der Blattansicht öffnen beide den Tisch jenes Moduls. Ist es nicht
-installiert, sagt der Knopf, wo die Funktion steckt. Ob dieses Modul den Weg
-überhaupt anbietet, steht weiter auf der Seite **Tauschen**; ob die
-Spielleitung mittauscht und ob Tausche aufgeschrieben werden, sind
-Einstellungen des anderen Moduls.
+- **Lock View** bestimmt, was deine Monitore zeigen. Bei gedrehten Karten rechnet das Modul die
+  Einpassung und den Ansichtsrahmen von Lock View richtig um, damit eine Karte den Bildschirm
+  genau ausfüllt, statt an den Rändern abgeschnitten zu werden.
+- **Sheet Only** bekommt ebenfalls die Leiste mit Datum und Wetter, und auf Wunsch lässt sich
+  das Akteursverzeichnis als Seitenleiste daneben einblenden.
+- **Ninjo's DnD Shops & Trade** stellt den Tauschtisch, den die Blattansicht öffnet. Ohne das
+  Modul sagt der Knopf, wo es die Funktion gibt.
 
 ### Installation
 
-Über den Paket-Browser in Foundry, oder per Manifest-URL:
+Das Modul steht im offiziellen Foundry-Paketkatalog. Öffne in Foundry den Reiter
+**Add-on-Module**, klicke auf **Modul installieren** und suche nach *Ninjo's In-Person Tools*.
+Danach aktivierst du es in den Moduleinstellungen deiner Welt.
 
-```
-https://github.com/Niclasp1501/Ninjos-InPerson-Tools/releases/latest/download/module.json
-```
+Du kannst auch diese Manifest-Adresse verwenden:
+`https://github.com/Niclasp1501/Ninjos-InPerson-Tools/releases/latest/download/module.json`
 
-**libWrapper** ist empfohlen, aber nicht Pflicht — ohne fällt das Modul auf
-einen eigenen Patch zurück.
+Du brauchst Foundry VTT v13 oder v14, das Modul funktioniert mit jedem Spielsystem.
+**libWrapper** wird empfohlen, ist aber nicht nötig.
+
+### Für Neugierige: warum wirklich nichts heruntergeladen wird
+
+Die Kartensperre blendet die Karte nicht bloß aus. Die Anfrage an den Server wird gar nicht erst
+gestellt. Das funktioniert, weil in Foundry jedes Bild für das Spielfeld durch eine einzige Stelle
+im Code läuft, ganz gleich, ob es gezeichnet, vorgeladen oder nachgeladen wird. Genau dort setzt
+das Modul an und gibt für gesperrte Karten eine winzige schwarze Fläche zurück. Die Szene behält
+dabei ihre exakten Maße, weil Foundry die Größe aus den Szeneneinstellungen berechnet und nie aus
+dem Bild. Deshalb stehen Token, Wände und Lichter weiterhin genau an ihrem Platz.
+
+### Stand
+
+Die Blattansicht trägt noch die Kennzeichnung Beta, weil ich sie auf Tablets weiter teste.
+Schalte sie am besten zuerst für Spieler ein, neben denen du sitzt, dann siehst du sofort, wenn
+etwas hakt.
+
+Fehler meldest du am schnellsten über ein Issue auf GitHub.
 
 ---
 
-## Technical notes / Technische Notizen
+## Technical notes
 
-`PIXI.Assets.load` appears exactly **once** in the entire Foundry client
-(`canvas/loader.mjs:357`), inside `TextureLoader#loadTexture`. Every path —
-drawing, preloading, on-demand loading — funnels through it, so the wrapper sits
-there and turns back **before** that line: no request is aborted, none is ever
-made. Scene geometry is unaffected because `Scene#getDimensions()` derives
-everything from `width`, `height`, `grid` and `padding`, never from the image.
+`PIXI.Assets.load` appears exactly once in the entire Foundry client (`canvas/loader.mjs`),
+inside `TextureLoader#loadTexture`. Drawing, preloading and on-demand loading all funnel through
+it, so the wrapper sits there and returns a placeholder before that line: no request is aborted,
+none is ever made. Scene geometry is unaffected because `Scene#getDimensions()` derives everything
+from `width`, `height`, `grid` and `padding`, never from the image.
 
-The freeze for a pinned display wraps `Scene#_onActivate`, not `view()` — the
-latter is also how a display gets moved deliberately. Both directions have to be
-suppressed: activating B fires `_onActivate(true)` on B **and**
-`_onActivate(false)` on the previously active A, and the second one calls
-`unview()`.
+Pinning a display wraps `Scene#_onActivate` rather than `view()`, because `view()` is also how a
+display is moved on purpose. Both directions are suppressed: activating scene B fires
+`_onActivate(true)` on B and `_onActivate(false)` on the previously active scene A, and the second
+call runs `unview()`.
 
-Deliberate exceptions: spritesheets (`.json`) are never replaced, SVG files and
-`icons/` directories pass through (token status markers), and
-`ParticleEffect#lookupTexture` bypasses the wrapper via `PIXI.Texture.from` —
-that affects weather art under `ui/particles/`, 68 KB in total, cached and
-local.
+Deliberate exceptions: spritesheets (`.json`) are never replaced, SVG files and `icons/` pass
+through for token status markers, and `ParticleEffect#lookupTexture` bypasses the wrapper through
+`PIXI.Texture.from`. That only affects the weather art under `ui/particles/`, 68 KB in total,
+cached and served locally.
 
-See `AGENTS.md` for the full set of notes.
+Other modules can add buttons to the sheet view bar through
+`game.modules.get("ninjos-inperson-tools").api.sheetView.registerButton()`. The full notes are in
+`AGENTS.md`.
 
 ## License / Lizenz
 
