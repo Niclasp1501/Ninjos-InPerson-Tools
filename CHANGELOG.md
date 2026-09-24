@@ -4,6 +4,13 @@
 > the people who get offered an update in the Foundry catalogue, and most of
 > them do not read German. Older entries stay as they are.
 
+## Unreleased
+
+- **The welcome window mentions Patreon.** Below the link to Ninjo's Forge,
+  one line now says that the modules are free and stay free, and that you can
+  support the work on Patreon and get premium add-ons. Only GMs see the
+  window, and "Don't show again" still hides it for good.
+
 ## 14.2611.78 - 2026-09-20
 
 - **A new account shows up in the sheet view list right away.** The list was
