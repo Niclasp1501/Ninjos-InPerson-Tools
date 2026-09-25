@@ -15,10 +15,12 @@
  * Only the scene display is ever frozen. The battlemap display needs no special
  * handling at all; it behaves the way Foundry always did.
  *
- * Companion scenes tie the two together: a battlemap can name the scene its
+ * Companion scenes tie the two together: a battlemap can name the scenes its
  * partner display should show. When that battlemap is activated, the scene
- * display moves to the companion - even while pinned, because a pairing made by
- * hand is a more precise instruction than a general "stay put".
+ * display moves to the first of them - even while pinned, because a pairing
+ * made by hand is a more precise instruction than a general "stay put". The
+ * others are for switching by hand during play (begleitwahl.js): the floors of
+ * a tower, a square by day and by night, a house from inside and out.
  *
  * A default companion covers the battlemaps that name none. Without it an
  * unpinned display simply mirrors the battlemap, which is the one thing a
@@ -45,7 +47,19 @@
 import { MODULE_ID, SETTINGS } from "./const.js";
 import { isSceneDisplay } from "./state.js";
 
-/** Flag key on a Scene naming the companion scene for the scene display. */
+/**
+ * Flag key on a Scene naming its companion scenes for the scene display.
+ *
+ * Holds a comma-separated list of scene ids, first one first. It used to hold a
+ * single id, and a single id is a list of one - so every pairing made before
+ * lists existed stays valid without a migration.
+ *
+ * A string rather than an array because the scene configuration is a form, and
+ * a form cannot submit an array: several hidden inputs of one name do not turn
+ * into one, and numbered names turn into an object. Foundry *merges* an object
+ * into the stored flag instead of replacing it, so a companion removed in the
+ * form would quietly come back on save. A string is replaced whole.
+ */
 export const COMPANION_FLAG = "companionScene";
 
 /**
@@ -274,10 +288,46 @@ export async function showOnMonitor(scene, viewOptions = {}) {
 /*  Companion scenes                            */
 /* -------------------------------------------- */
 
-/** The scene paired with this battlemap, if any. @returns {Scene|null} */
+/**
+ * Scene ids from a stored flag value, cleaned up.
+ *
+ * Accepts the old single id, the comma-separated list and an array. Blanks and
+ * repeats are dropped, order is kept - the order *is* the meaning: the first
+ * entry is where the display goes when the battlemap is activated.
+ * @param {string|string[]|null|undefined} value
+ * @returns {string[]}
+ */
+export function companionIds(value) {
+  const raw = Array.isArray(value) ? value : String(value ?? "").split(",");
+  const seen = new Set();
+  const ids = [];
+  for (const entry of raw) {
+    const id = String(entry ?? "").trim();
+    if (!id || seen.has(id)) continue;
+    seen.add(id);
+    ids.push(id);
+  }
+  return ids;
+}
+
+/**
+ * Every companion of this battlemap that still exists, in order.
+ *
+ * A deleted scene drops out here rather than when it is deleted: nothing tidies
+ * the flags of other scenes then, and a display sent to a scene that is gone
+ * shows nothing at all.
+ * @returns {Scene[]}
+ */
+export function getCompanionScenes(scene) {
+  return companionIds(scene?.getFlag?.(MODULE_ID, COMPANION_FLAG))
+    .filter(id => id !== scene?.id)
+    .map(id => game.scenes?.get(id))
+    .filter(Boolean);
+}
+
+/** The companion the display goes to on activation - the first one. @returns {Scene|null} */
 export function getCompanionScene(scene) {
-  const id = scene?.getFlag?.(MODULE_ID, COMPANION_FLAG);
-  return id ? (game.scenes?.get(id) ?? null) : null;
+  return getCompanionScenes(scene)[0] ?? null;
 }
 
 /**
@@ -323,19 +373,26 @@ function resolveDisplayTarget(scene) {
   return getDefaultCompanionScene() ?? FOLLOW;
 }
 
-/** Pair a battlemap with the scene its partner display should show. GM only. */
-export async function setCompanionScene(scene, companionId) {
+/** Store the companions of a battlemap, in order; an empty list removes them. GM only. */
+export async function setCompanionScenes(scene, ids) {
   if (!game.user.isGM) throw new Error("Only a GM may pair scenes.");
-  if (companionId) await scene.setFlag(MODULE_ID, COMPANION_FLAG, companionId);
+  const list = companionIds(ids).filter(id => id !== scene.id);
+  if (list.length) await scene.setFlag(MODULE_ID, COMPANION_FLAG, list.join(","));
   else await scene.unsetFlag(MODULE_ID, COMPANION_FLAG);
 }
 
-/** Every battlemap that has a companion. @returns {{scene: Scene, companion: Scene}[]} */
+/** Add one companion at the end of the list, unless it is already there. GM only. */
+export async function addCompanionScene(scene, companionId) {
+  const current = companionIds(scene?.getFlag?.(MODULE_ID, COMPANION_FLAG));
+  await setCompanionScenes(scene, [...current, companionId]);
+}
+
+/** Every battlemap that has companions. @returns {{scene: Scene, companions: Scene[]}[]} */
 export function listCompanionPairs() {
   const pairs = [];
   for (const scene of game.scenes ?? []) {
-    const companion = getCompanionScene(scene);
-    if (companion) pairs.push({ scene, companion });
+    const companions = getCompanionScenes(scene);
+    if (companions.length) pairs.push({ scene, companions });
   }
   return pairs;
 }

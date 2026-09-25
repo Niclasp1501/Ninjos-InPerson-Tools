@@ -996,6 +996,163 @@
   display: none;
 }
 
+/* -------------------------------------------- */
+/*  Scene list: the companions of a battlemap    */
+/* -------------------------------------------- */
+
+/*
+ * Same parts as the single field above, stacked. Colours are inherited for the
+ * same reason as there: the list sits on Foundry's dark scene sheet and on our
+ * parchment displays page.
+ */
+.inperson-scenelist {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 4px;
+  border: 1px dashed transparent;
+  border-radius: 3px;
+}
+
+.inperson-scenelist.is-over {
+  border-color: var(--ninjo-akzent, #D4AF37);
+  background: rgba(212, 175, 55, 0.12);
+}
+
+.inperson-scenelist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.inperson-scenelist-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border-light-tertiary, #7a7971);
+  border-radius: 3px;
+}
+
+.inperson-scenelist-item img {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 34px;
+  object-fit: cover;
+  border: none;
+  border-radius: 2px;
+}
+
+.inperson-scenelist-item .inperson-scenefield-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inperson-scenelist-item .inperson-tag {
+  flex: 0 0 auto;
+}
+
+.inperson-scenelist-button {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+}
+
+.inperson-scenelist-empty {
+  padding: 6px 8px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* The way in: always visible, so it can be aimed at before anything hovers. */
+.inperson-scenelist-add {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  padding: 4px 8px;
+  border: 1px dashed var(--color-border-light-tertiary, #7a7971);
+  border-radius: 3px;
+}
+
+.inperson-scenelist-pick {
+  flex: 0 0 auto;
+}
+
+/* Our tab in the scene configuration: only a container, Foundry's fieldsets
+ * inside give it the look of the neighbouring tabs. */
+.inperson-szenetisch {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* -------------------------------------------- */
+/*  Switching companions during play             */
+/* -------------------------------------------- */
+
+.inperson-begleitwahl-karte {
+  margin: 0 0 6px;
+}
+
+.inperson-begleitwahl-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/*
+ * One button per scene, big enough for a finger: the gamemaster at the table
+ * does not always have a mouse. The one on screen is marked in gold and says so
+ * in words too, not by colour alone.
+ */
+.inperson-begleitwahl-szene {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  min-height: var(--ninjo-tippziel, 44px);
+  padding: 6px 8px;
+  text-align: left;
+  border: 1px solid var(--tm-border, #7a7971);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.inperson-begleitwahl-szene:hover,
+.inperson-begleitwahl-szene:focus-visible {
+  border-color: var(--ninjo-akzent, #D4AF37);
+}
+
+.inperson-begleitwahl-szene.is-current {
+  border-color: var(--ninjo-akzent, #D4AF37);
+  background: rgba(212, 175, 55, 0.14);
+}
+
+.inperson-begleitwahl-szene img {
+  flex: 0 0 auto;
+  width: 88px;
+  height: 52px;
+  object-fit: cover;
+  border: none;
+  border-radius: 3px;
+}
+
+.inperson-begleitwahl-szene .inperson-scenefield-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 /* The list you can type into --------------- */
 
 .inperson-pick {

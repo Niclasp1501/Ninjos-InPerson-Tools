@@ -11,6 +11,29 @@
   support the work on Patreon and get premium add-ons. Only GMs see the
   window, and "Don't show again" still hides it for good.
 
+## 14.2611.79 - 2026-09-25
+
+**A battlemap can have several companion scenes.** The floors of a tower, a
+square by day and by night, a house from inside and out. Until now a battlemap
+named exactly one scene for the scene display, and anything else meant finding
+it in the sidebar in the middle of a fight.
+
+- **The first one goes up by itself.** When the battlemap is activated, the
+  scene display switches to the first companion, as before. The order of the
+  list is the answer to "which one first"; there is no separate setting that
+  could disagree with it.
+- **The others are one tap away.** Shift+B, or the new button next to the pin
+  in the control panel, opens a small window with the companions of the active
+  map as pictures. A tap sends one to the scene display. It beats a pin, like
+  everything the gamemaster sends on purpose, and the pin moves along.
+- **A tab of its own.** The companions and the rotation moved out of "Misc"
+  into a new "At the table" tab in the scene configuration, added the way
+  Foundry intends and Lock View does too.
+- **Nothing to redo.** Every pairing made so far stays as it is; a single
+  companion is simply a list of one. The pairs on the display settings page now
+  show all companions of a map, and adding a pair for a map that already has
+  one adds a second.
+
 ## 14.2611.78 - 2026-09-20
 
 - **A new account shows up in the sheet view list right away.** The list was

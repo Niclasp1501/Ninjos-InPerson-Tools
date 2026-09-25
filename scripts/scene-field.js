@@ -31,7 +31,7 @@ const { DialogV2 } = foundry.applications.api;
 const NO_THUMB = "icons/svg/dice-target.svg";
 
 /** Thumbnail for a scene, as far as the document knows. */
-function thumbOf(scene) {
+export function thumbOf(scene) {
   return scene?.thumb || scene?.background?.src || NO_THUMB;
 }
 
@@ -44,7 +44,7 @@ function thumbOf(scene) {
  * where it shows: on the element itself. Guarded against looping, in case the
  * placeholder is missing too.
  */
-function withFallback(img) {
+export function withFallback(img) {
   img.addEventListener("error", () => {
     if (img.dataset.fellBack) return;
     img.dataset.fellBack = "1";
@@ -168,6 +168,174 @@ export function buildSceneField({ name, value = "", exclude = "", emptyLabel } =
   // the clear button only works while that button happens to be visible.
   wrapper.setScene = set;
 
+  return wrapper;
+}
+
+/**
+ * A field for an ordered list of scenes - the companions of a battlemap.
+ *
+ * Built from the same parts as the single field above: dragging a scene in from
+ * the sidebar, the list you can type into, a thumbnail for every entry. What is
+ * new is order. The first entry is the one the scene display jumps to when the
+ * battlemap is activated, so it is marked as such, and any other entry can be
+ * moved up. There is deliberately no separate "which one first" setting: a
+ * second statement of the same thing would sooner or later disagree with the
+ * list.
+ *
+ * Moving up by button rather than by dragging rows. The rows are few - two to
+ * four in practice - and the field already takes drops from the sidebar; two
+ * kinds of drag on one small area is one too many to tell apart.
+ *
+ * The value is the comma-separated list of ids in one hidden input, which is
+ * how the flag stores it (see COMPANION_FLAG in monitor.js).
+ *
+ * @param {object} options
+ * @param {string} options.name        Form field name
+ * @param {string} [options.value]     Comma-separated scene ids, first first
+ * @param {string} [options.exclude]   Scene id to leave out (a scene is no companion of itself)
+ * @param {string} [options.emptyLabel] What to say while the list is empty
+ * @returns {HTMLElement}
+ */
+export function buildSceneListField({ name, value = "", exclude = "", emptyLabel } = {}) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "inperson-scenelist";
+
+  const input = document.createElement("input");
+  input.type = "hidden";
+  input.name = name;
+  wrapper.appendChild(input);
+
+  const items = document.createElement("ol");
+  items.className = "inperson-scenelist-items";
+  wrapper.appendChild(items);
+
+  const add = document.createElement("div");
+  add.className = "inperson-scenelist-add";
+  add.innerHTML = `
+    <span class="inperson-scenefield-hint">${game.i18n.localize("INPERSON.SceneList.DropHint")}</span>
+    <button type="button" class="inperson-mini inperson-scenelist-pick">
+      <i class="fa-solid fa-plus" aria-hidden="true"></i> ${game.i18n.localize("INPERSON.SceneList.Add")}
+    </button>`;
+  wrapper.appendChild(add);
+
+  const empty = emptyLabel ?? game.i18n.localize("INPERSON.SceneField.Empty");
+  const read = () => input.value.split(",").map(id => id.trim()).filter(Boolean);
+
+  /** Repaint from the hidden input. Never re-renders the form. */
+  const paint = () => {
+    const ids = read().filter(id => game.scenes?.get(id));
+    items.replaceChildren();
+    wrapper.classList.toggle("is-empty", !ids.length);
+
+    if (!ids.length) {
+      const li = document.createElement("li");
+      li.className = "inperson-scenelist-empty";
+      li.textContent = empty;
+      items.appendChild(li);
+      return;
+    }
+
+    ids.forEach((id, index) => {
+      const scene = game.scenes.get(id);
+      const li = document.createElement("li");
+      li.className = "inperson-scenelist-item";
+      li.dataset.sceneId = id;
+
+      const img = withFallback(document.createElement("img"));
+      img.src = thumbOf(scene);
+      img.alt = "";
+
+      const label = document.createElement("span");
+      label.className = "inperson-scenefield-name";
+      label.textContent = scene.name;
+
+      li.append(img, label);
+
+      if (index === 0) {
+        const tag = document.createElement("em");
+        tag.className = "inperson-tag ok";
+        tag.textContent = game.i18n.localize("INPERSON.SceneList.First");
+        tag.dataset.tooltip = game.i18n.localize("INPERSON.SceneList.FirstTip");
+        li.appendChild(tag);
+      } else {
+        li.appendChild(knopf("fa-arrow-up", "INPERSON.SceneList.Up", () => {
+          const list = read();
+          const at = list.indexOf(id);
+          if (at > 0) [list[at - 1], list[at]] = [list[at], list[at - 1]];
+          set(list);
+        }));
+      }
+      li.appendChild(knopf("fa-xmark", "INPERSON.SceneList.Remove", () => set(read().filter(x => x !== id))));
+      items.appendChild(li);
+    });
+  };
+
+  /** A small icon button with a name for screen readers. */
+  function knopf(icon, key, onClick) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "inperson-mini inperson-scenelist-button";
+    const text = game.i18n.localize(key);
+    button.dataset.tooltip = text;
+    button.setAttribute("aria-label", text);
+    button.innerHTML = `<i class="fa-solid ${icon}" aria-hidden="true"></i>`;
+    button.addEventListener("click", onClick);
+    return button;
+  }
+
+  const set = ids => {
+    input.value = ids.filter(id => id && id !== exclude).join(",");
+    paint();
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  };
+
+  /** Append a scene, refusing the battlemap itself and repeats. */
+  const append = scene => {
+    if (!scene) return;
+    if (scene.id === exclude) {
+      return ui.notifications.warn("INPERSON.SceneField.NotItself", { localize: true });
+    }
+    const list = read();
+    if (list.includes(scene.id)) {
+      return ui.notifications.info(game.i18n.format("INPERSON.SceneList.Already", { scene: scene.name }));
+    }
+    set([...list, scene.id]);
+  };
+
+  // Drops land anywhere on the field, not just on the small area at the bottom:
+  // the list is the obvious target once it has rows.
+  wrapper.addEventListener("dragover", event => {
+    event.preventDefault();
+    wrapper.classList.add("is-over");
+  });
+  wrapper.addEventListener("dragleave", event => {
+    if (!wrapper.contains(event.relatedTarget)) wrapper.classList.remove("is-over");
+  });
+  wrapper.addEventListener("drop", async event => {
+    event.preventDefault();
+    wrapper.classList.remove("is-over");
+    let data;
+    try {
+      data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    } catch {
+      return;
+    }
+    if (data?.type !== "Scene") {
+      return ui.notifications.warn("INPERSON.SceneField.NotAScene", { localize: true });
+    }
+    append(await fromUuid(data.uuid));
+  });
+
+  add.querySelector(".inperson-scenelist-pick").addEventListener("click", async () => {
+    const picked = await pickScene({ exclude });
+    if (picked) append(game.scenes.get(picked));
+  });
+
+  // Clean on the way in: an id of a deleted scene would otherwise sit in the
+  // hidden input and be saved back unseen.
+  input.value = [...new Set(String(value ?? "").split(",").map(id => id.trim()))]
+    .filter(id => id && id !== exclude && game.scenes?.get(id)).join(",");
+  paint();
   return wrapper;
 }
 

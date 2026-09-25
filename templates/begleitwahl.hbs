@@ -1,0 +1,44 @@
+{{!--
+  Die Begleitszenen der aktiven Karte, als Bilder zum Antippen. Groß genug für
+  einen Finger, weil die Spielleitung am Tisch nicht immer eine Maus hat.
+--}}
+<div class="inperson-body">
+
+  {{#unless hatMonitor}}
+    <p class="inperson-hint">{{localize "INPERSON.Begleitwahl.NoDisplay"}}</p>
+  {{else}}
+
+    <p class="inperson-hint inperson-begleitwahl-karte">
+      <i class="fa-solid fa-map" aria-hidden="true"></i>
+      {{#if karte}}{{localize "INPERSON.Begleitwahl.Map" karte=karte}}{{else}}{{localize "INPERSON.Begleitwahl.NoMap"}}{{/if}}
+    </p>
+
+    {{#if monitorOffline}}
+      <p class="inperson-hint">{{localize "INPERSON.Begleitwahl.Offline"}}</p>
+    {{/if}}
+
+    {{#if szenen.length}}
+      {{#if ausStandard}}
+        <p class="inperson-hint">{{localize "INPERSON.Begleitwahl.FromDefault"}}</p>
+      {{/if}}
+      <div class="inperson-begleitwahl-liste">
+        {{#each szenen}}
+          <button type="button" class="inperson-begleitwahl-szene{{#if this.aktuell}} is-current{{/if}}"
+                  data-action="zeigen" data-scene-id="{{this.id}}"
+                  aria-pressed="{{#if this.aktuell}}true{{else}}false{{/if}}">
+            <img src="{{this.bild}}" alt="">
+            <span class="inperson-scenefield-name">{{this.name}}</span>
+            {{#if this.aktuell}}
+              <em class="inperson-tag ok">{{localize "INPERSON.Begleitwahl.Showing"}}</em>
+            {{else if this.zuerst}}
+              <em class="inperson-tag muted">{{localize "INPERSON.SceneList.First"}}</em>
+            {{/if}}
+          </button>
+        {{/each}}
+      </div>
+    {{else}}
+      <p class="inperson-hint">{{localize "INPERSON.Begleitwahl.None"}}</p>
+    {{/if}}
+
+  {{/unless}}
+</div>

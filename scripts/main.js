@@ -20,7 +20,8 @@ import { installLockViewInterop, onRotationChanged, describeInterop } from "./lo
 import { installScreensaver } from "./screensaver.js";
 import { openDisplaySettings } from "./displays-settings.js";
 import { openTableModeSettings } from "./tablemode-settings.js";
-import { buildSceneField } from "./scene-field.js";
+import { buildSceneListField } from "./scene-field.js";
+import { openBegleitwahl, installBegleitwahl } from "./begleitwahl.js";
 import {
   installActorPanel, removeActorPanel, applySidebarStyle, markPopout, isDirectoryPopoutApp
 } from "./actor-panel.js";
@@ -35,7 +36,7 @@ import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js
 import { fensterPassenEinrichten } from "./fensterpassen.js";
 import {
   installMonitorWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
-  getSceneDisplay, getPinnedScene, getCompanionScene, setCompanionScene,
+  getSceneDisplay, getPinnedScene,
   setDefaultCompanionScene, setScreensaverState,
   COMPANION_FLAG
 } from "./monitor.js";
@@ -778,11 +779,27 @@ function registerKeybindings() {
       return true;                  // consume the event
     }
   });
+
+  // Shift+B fuer die Begleitszenen, nach derselben Regel wie Shift+T. Es gibt
+  // genau ein offensichtliches Fenster dazu: die Begleitszenen der Karte, die
+  // gerade aktiv ist.
+  game.keybindings.register(MODULE_ID, "openBegleitwahl", {
+    name: "INPERSON.Keybind.Begleitwahl.Name",
+    hint: "INPERSON.Keybind.Begleitwahl.Hint",
+    editable: [{ key: "KeyB", modifiers: ["Shift"] }],
+    restricted: true,
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
+    onDown: () => {
+      openBegleitwahl();
+      return true;
+    }
+  });
 }
 
 Hooks.once("init", () => {
   registerSettings();
   registerKeybindings();
+  sceneTabEinrichten();
   willkommenEinrichten();
   // Must happen before the first canvas draw, otherwise the opening scene is
   // already on the wire before we get a say.
@@ -801,6 +818,7 @@ Hooks.once("ready", async () => {
   willkommenZeigen();
 
   game.socket.on(SOCKET.NAME, onSocket);
+  if (game.user.isGM) installBegleitwahl();
 
   game.modules.get(MODULE_ID).api = {
     openPanel,
@@ -1061,26 +1079,89 @@ function fillAccountChoices() {
   if (idleFolder) idleFolder.choices = folders;
 }
 
+/** Id of our own tab in the scene configuration. */
+const SZENE_TAB = "inpersonTisch";
+
 /**
- * Add a companion-scene picker to the scene configuration window.
+ * Give the scene configuration a tab of its own: everything about how a scene
+ * appears at the table - its companion scenes and its rotation.
  *
- * The field is named `flags.<module>.companionScene`, which is all Foundry needs
- * to store it on the scene when the form is submitted - no submit handler of our
- * own. Injected into the "misc" tab rather than as a tab of its own: one select
- * does not warrant its own tab, and adding to `PARTS` would mean reaching into
- * SceneConfig's own structure.
+ * An ApplicationV2 describes its tabs in two static lists, PARTS for the content
+ * and TABS for the bar, and builds whatever they contain. One entry in each is
+ * the intended way in; Lock View adds its tab exactly like this. SceneConfig's
+ * own _preparePartContext then hands our part its `tab` like any other
+ * (scene-config.mjs: `if (partId in context.tabs) context.tab = ...`), so no
+ * method needs wrapping.
+ *
+ * Until 14.2611.78 the fields were pushed into the finished "misc" tab after
+ * rendering instead. That leaned on the markup of a tab we do not own, and with
+ * a list of companions the block no longer sat well next to Foundry's own
+ * journal and playlist fields.
+ *
+ * Run at init for Foundry's class, and again at setup for a sheet class another
+ * module registered with PARTS of its own. Safe to run twice. A subclass that
+ * only inherits PARTS already sees the entry through its parent.
+ */
+function sceneTabEinrichten() {
+  const klassen = new Set([foundry.applications.sheets?.SceneConfig]);
+  for (const eintrag of Object.values(CONFIG.Scene?.sheetClasses?.base ?? {})) klassen.add(eintrag?.cls);
+
+  for (const cls of klassen) {
+    try {
+      reiterEinsetzen(cls);
+    } catch (fehler) {
+      // Nie den Start des Moduls daran scheitern lassen. Ohne Reiter landen die
+      // Felder in "Verschiedenes", siehe onRenderSceneConfig.
+      console.warn(`${MODULE_ID} | Reiter in der Szenen-Konfiguration nicht eingesetzt`, cls?.name, fehler);
+    }
+  }
+}
+
+/** One class: our part in front of the footer, our entry at the end of the bar. */
+function reiterEinsetzen(cls) {
+  const reiter = cls?.TABS?.sheet?.tabs;
+  if (!cls?.PARTS || !Array.isArray(reiter)) return;
+
+  if (!(SZENE_TAB in cls.PARTS)) {
+    const teil = { template: `modules/${MODULE_ID}/templates/scene-tisch.hbs`, scrollable: [""] };
+    // In front of the footer, or the tab would render below the Save button.
+    const teile = {};
+    for (const [id, part] of Object.entries(cls.PARTS)) {
+      if (id === "footer") teile[SZENE_TAB] = teil;
+      teile[id] = part;
+    }
+    teile[SZENE_TAB] ??= teil;
+    cls.PARTS = teile;
+  }
+  if (!reiter.some(t => t.id === SZENE_TAB)) {
+    reiter.push({ id: SZENE_TAB, icon: "fa-solid fa-display", label: "INPERSON.SceneConfig.Tab" });
+  }
+}
+
+/**
+ * Fill our tab of the scene configuration.
+ *
+ * The tab itself comes from PARTS (see sceneTabEinrichten); its content is built
+ * here rather than in the template, because the companion list carries drag
+ * handling and a picker, and a template string cannot hold listeners. The field
+ * names are `flags.<module>.companionScene` and `.rotation`, which is all
+ * Foundry needs to store them on the scene when the form is submitted.
+ *
+ * Should the tab be missing - a sheet from another module that builds its tabs
+ * its own way - the fields go into "misc" as they did before.
  */
 function onRenderSceneConfig(app, element) {
   if (!game.user.isGM) return;
   const html = element instanceof HTMLElement ? element : element?.[0];
-  // `.tab` is essential here. Two elements carry data-tab="misc": the button in
-  // the tab bar (<a data-action="tab" data-tab="misc">, templates/generic/
-  // tab-navigation.hbs:4) and the content pane (<div class="tab" data-tab="misc">,
-  // templates/scene/config/misc.hbs:1). The button comes first in the document,
-  // so a bare [data-tab="misc"] appends the fields into the tab bar, where they
-  // sit on top of everything.
-  const tab = html?.querySelector('.tab[data-tab="misc"]');
-  if (!tab || tab.querySelector(".inperson-companion")) return;
+  // `.tab` is essential in the fallback. Two elements carry data-tab="misc": the
+  // button in the tab bar (<a data-action="tab" data-tab="misc">, templates/
+  // generic/tab-navigation.hbs:4) and the content pane (<div class="tab"
+  // data-tab="misc">, templates/scene/config/misc.hbs:1). The button comes first
+  // in the document, so a bare [data-tab="misc"] appends the fields into the
+  // tab bar, where they sit on top of everything.
+  const ziel = html?.querySelector(".inperson-szenetisch")
+    ?? html?.querySelector('.tab[data-tab="misc"]');
+  if (!ziel || ziel.querySelector(".inperson-companion")) return;
 
   const scene = app.document;
   const current = scene?.getFlag?.(MODULE_ID, COMPANION_FLAG) ?? "";
@@ -1088,44 +1169,51 @@ function onRenderSceneConfig(app, element) {
   // Only says anything when Lock View is installed *and* this scene is turned
   // sideways - otherwise there is no interaction to explain.
   const interop = describeInterop(scene);
-  // Own fieldset with a legend, the way Foundry groups this tab itself
-  // ("Details", "Audio", "Transition"). A bare form-group appended at the end
-  // would sit outside every group and read as an afterthought.
-  const escape = s => foundry.utils.escapeHTML?.(s) ?? s;
-  const fieldset = document.createElement("fieldset");
-  fieldset.className = "inperson-companion";
-  fieldset.innerHTML = `
-    <legend>${game.i18n.localize("INPERSON.SceneConfig.Legend")}</legend>
-    <div class="form-group inperson-companion-group">
-      <label>${game.i18n.localize("INPERSON.SceneConfig.Companion")}</label>
+  const t = key => game.i18n.localize(key);
+
+  // Own fieldsets with a legend, the way Foundry groups its tabs ("Details",
+  // "Audio", "Transition").
+  const begleiter = document.createElement("fieldset");
+  begleiter.className = "inperson-companion";
+  begleiter.innerHTML = `
+    <legend>${t("INPERSON.SceneConfig.CompanionsLegend")}</legend>
+    <p class="hint">${t("INPERSON.SceneConfig.CompanionsHint")}</p>
+    <div class="form-group stacked inperson-companion-group">
       <div class="form-fields"></div>
-      <p class="hint">${game.i18n.localize("INPERSON.SceneConfig.CompanionHint")}</p>
-    </div>
+    </div>`;
+  begleiter.querySelector(".form-fields")?.appendChild(
+    buildSceneListField({
+      name: `flags.${MODULE_ID}.${COMPANION_FLAG}`,
+      value: current,
+      exclude: scene?.id,
+      emptyLabel: t("INPERSON.SceneConfig.CompanionNone")
+    })
+  );
+
+  const drehung = document.createElement("fieldset");
+  drehung.className = "inperson-companion";
+  drehung.innerHTML = `
+    <legend>${t("INPERSON.SceneConfig.RotationLegend")}</legend>
     <div class="form-group">
-      <label>${game.i18n.localize("INPERSON.SceneConfig.Rotation")}</label>
+      <label>${t("INPERSON.SceneConfig.Rotation")}</label>
       <div class="form-fields">
         <select name="flags.${MODULE_ID}.${ROTATION_FLAG}">
           ${ANGLES.map(a => `<option value="${a}"${a === currentRotation ? " selected" : ""}>${a}&deg;</option>`).join("")}
         </select>
       </div>
-      <p class="hint">${game.i18n.localize("INPERSON.SceneConfig.RotationHint")}</p>
+      <p class="hint">${t("INPERSON.SceneConfig.RotationHint")}</p>
       ${interop ? `<p class="notification info inperson-interop">${interop}</p>` : ""}
     </div>`;
-  // The scene field is built rather than written as markup: it carries drag
-  // handling and a picker, and a template string cannot hold listeners.
-  fieldset.querySelector(".inperson-companion-group .form-fields")?.appendChild(
-    buildSceneField({
-      name: `flags.${MODULE_ID}.${COMPANION_FLAG}`,
-      value: current,
-      exclude: scene?.id,
-      emptyLabel: game.i18n.localize("INPERSON.SceneConfig.CompanionNone")
-    })
-  );
 
-  tab.appendChild(fieldset);
+  ziel.append(begleiter, drehung);
 }
 
-Hooks.once("setup", () => fillAccountChoices());
+Hooks.once("setup", () => {
+  fillAccountChoices();
+  // Ein zweites Mal, jetzt mit allen registrierten Szenenblättern. Ein Modul,
+  // das ein eigenes Blatt mit eigenen PARTS mitbringt, ist erst hier bekannt.
+  sceneTabEinrichten();
+});
 Hooks.on("renderSceneConfig", onRenderSceneConfig);
 
 /**

@@ -1,0 +1,10 @@
+{{!--
+  Unser Reiter in der Szenen-Konfiguration. Nur die Hülle: Foundry reicht über
+  `tab` Kennung, Gruppe und ob er offen ist herein, genau wie bei seinen eigenen
+  Reitern. Den Inhalt füllt onRenderSceneConfig in main.js, weil die Liste der
+  Begleitszenen Ziehen und eine Auswahl mitbringt, und das kann eine Vorlage
+  nicht.
+--}}
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  <div class="inperson-szenetisch"></div>
+</div>

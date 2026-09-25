@@ -60,9 +60,12 @@ Right-click a scene to send it to the scene display, or hold Shift or Ctrl for t
 gold icon in the navigation bar always shows what is running there, and after a reload the display
 returns to its own scene.
 
-**Companion scenes** make it really comfortable. Decide once which scene the scene display should
-show with a particular battlemap, and from then on it switches along by itself whenever you
-activate that map. For every map without a companion of its own, you can set a default.
+**Companion scenes** make it really comfortable. Decide once which scenes the scene display should
+show with a particular battlemap, and from then on it switches to the first of them by itself
+whenever you activate that map. The others, say the upper floor of a tower or the same square at
+night, are one tap away: press Shift+B for a small window with the companions of the active map
+and send any of them to the display. You set them up in the scene configuration, on the "At the
+table" tab. For every map without a companion of its own, you can set a default.
 
 Both displays are automatically exempt from map blocking, by the way. A black TV is the last
 thing you want on game night.
@@ -214,10 +217,13 @@ oder Strg-Taste geht es noch schneller. Ein goldenes Symbol in der Navigationsle
 jederzeit, was gerade dort läuft, und nach einem Neuladen kehrt der Monitor zu seiner Szene
 zurück.
 
-Besonders bequem wird es mit **Begleitszenen**. Du legst einmal fest, welche Szene der
+Besonders bequem wird es mit **Begleitszenen**. Du legst einmal fest, welche Szenen der
 Szenen-Monitor zu einer bestimmten Battlemap zeigen soll, und ab dann wechselt er beim
-Aktivieren der Karte von selbst mit. Für alle Karten ohne eigene Begleitszene kannst du eine
-Standardszene bestimmen.
+Aktivieren der Karte von selbst auf die erste. Die übrigen, etwa das obere Stockwerk eines
+Turms oder derselbe Platz bei Nacht, sind einen Tipp entfernt: Shift+B öffnet ein kleines
+Fenster mit den Begleitszenen der aktiven Karte, und jede davon schickst du mit einem Tipp auf
+den Monitor. Eingerichtet werden sie in der Szenen-Konfiguration, im Reiter „Am Tisch“. Für
+alle Karten ohne eigene Begleitszene kannst du eine Standardszene bestimmen.
 
 Beide Monitore sind übrigens automatisch von der Kartensperre ausgenommen. Ein schwarzer
 Fernseher wäre schließlich das Letzte, was du an einem Spielabend brauchst.

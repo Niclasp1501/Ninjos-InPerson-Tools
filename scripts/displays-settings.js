@@ -18,7 +18,7 @@
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
-import { listCompanionPairs, setCompanionScene } from "./monitor.js";
+import { listCompanionPairs, setCompanionScenes, addCompanionScene } from "./monitor.js";
 import { buildSceneField } from "./scene-field.js";
 import { previewCover } from "./screensaver.js";
 
@@ -193,7 +193,7 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
       return;
     }
 
-    for (const { scene, companion } of pairs) {
+    for (const { scene, companions } of pairs) {
       const row = document.createElement("div");
       row.className = "inperson-pair-row";
 
@@ -204,9 +204,16 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
       const arrow = document.createElement("i");
       arrow.className = "fa-solid fa-arrow-right";
 
+      // All of them, in order. The first is the one the display jumps to; the
+      // others are for switching by hand, so the first is set apart.
       const to = document.createElement("span");
       to.className = "inperson-pair-to";
-      to.textContent = companion.name;
+      companions.forEach((companion, i) => {
+        if (i) to.append(", ");
+        const name = document.createElement(i ? "span" : "strong");
+        name.textContent = companion.name;
+        to.appendChild(name);
+      });
 
       const remove = document.createElement("button");
       remove.type = "button";
@@ -242,7 +249,9 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const battlemap = game.scenes.get(fromId);
     if (!battlemap) return;
-    await setCompanionScene(battlemap, toId);
+    // Appended, not replaced: a battlemap can have several companions now, and
+    // a second pairing for the same map is how the second one gets there.
+    await addCompanionScene(battlemap, toId);
 
     // Clear the two fields so the next pairing starts empty, then redraw the
     // list above them.
@@ -266,7 +275,7 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   static async #onUnpair(event, target) {
     const scene = game.scenes.get(target.dataset.sceneId);
-    if (scene) await setCompanionScene(scene, null);
+    if (scene) await setCompanionScenes(scene, []);
 
     this.#paintPairs();
   }
