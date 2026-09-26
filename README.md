@@ -72,7 +72,8 @@ its own lets the battlemap display follow every single character that changes le
 climbing a roof takes the whole television with him. Here the display shows the level of the
 character whose turn it is in combat, otherwise the level of the player character you last selected,
 and until you select one, the level where most of the party stands. The layers button among the token tools on the left, or Shift+O,
-opens the controls to switch to Foundry's own behaviour or to pick a level by hand. Roofs open over the player characters on the display just as they do at your
+opens the controls to switch to Foundry's own behaviour or to pick a level by hand for the moment;
+selecting a player character returns to automatic. Roofs open over the player characters on the display just as they do at your
 desk, and the same window tells you if the display is missing permission to see through someone's
 eyes.
 
@@ -240,7 +241,8 @@ Klettert einer aufs Dach, geht der ganze Fernseher mit. Hier zeigt der Monitor i
 Ebene der Figur, die am Zug ist, sonst die Ebene der Spielerfigur, die du zuletzt angeklickt hast,
 und solange du noch keine angeklickt hast, die, auf der die meisten Spielerfiguren stehen. Über den Ebenen-Knopf bei
 den Figuren-Werkzeugen links, oder mit Shift+O, schaltest du auf Foundrys eigenes Verhalten um
-oder gibst eine Ebene von Hand vor. Dächer öffnen sich über den
+oder gibst für den Moment eine Ebene von Hand vor;
+sobald du eine Spielerfigur anklickst, ist wieder Automatik. Dächer öffnen sich über den
 Spielerfiguren wie bei dir am Schreibtisch, und dasselbe Fenster sagt dir, wenn dem Monitor das
 Recht fehlt, durch die Augen einer Figur zu sehen.
 

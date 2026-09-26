@@ -18,6 +18,8 @@ square by day and by night, a house from inside and out. When the battlemap is
 activated, the scene display switches to the first one, as before. The others
 are one tap away: Shift+B, or the new button next to the pin in the control
 panel, opens a small window with the companions of the active map as pictures.
+Companions and rotation moved out of "Misc" into a new "At the table" tab of
+the scene configuration.
 
 **The battlemap display shows the right level.** On maps with several levels,
 Foundry made the display follow every single character that changed level, so
@@ -28,18 +30,20 @@ button next to the battlemap display in the control panel.
 - **Three modes.** Automatic shows the level of the player character whose
   turn it is in combat, otherwise the level of the player character you last
   selected, and until you select one, the level where most of them stand.
-  Foundry default behaves as before. Manual shows the level you tap, until the
-  next map.
+  Foundry default behaves as before. Manual shows the level you tap, but only
+  for the moment: selecting a player character, another map or a restart
+  brings back Automatic.
 - **Roofs open on the display too.** Foundry only opens a roof over tokens the
   viewer can click on, and nobody clicks on the display, so its roofs stayed
   shut. They now open over every player character, as they do at your desk.
+- **No loading bar on the displays.** "Hide the loading bar" now covers both
+  displays too, not only devices in table mode. Each level change redraws the
+  map, and the bar kept coming up on the television.
 - **Never a black screen.** The display only sees through the eyes of
   characters it may observe. It never stays on a level where it would see
   nothing, not even one chosen by hand, as long as it can see somewhere else.
   The controls list the player characters it may not observe, with a button
   that grants the permission.
-- **A tab of its own.** Companions and rotation moved out of "Misc" into a new
-  "At the table" tab in the scene configuration.
 - **Nothing to redo.** Every pairing made so far stays as it is; a single
   companion is simply a list of one.
 

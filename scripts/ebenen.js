@@ -27,8 +27,9 @@
  *
  *   autonom   der Monitor entscheidet selbst, nach den Regeln in ebeneWaehlen()
  *   foundry   wie Foundry es ohne dieses Modul täte
- *   manuell   die Spielleitung gibt eine Ebene vor; gilt für diese Karte, beim
- *             Aktivieren einer anderen geht es zurück auf autonom
+ *   manuell   die Spielleitung gibt eine Ebene vor, vorübergehend: zurück auf
+ *             autonom geht es beim Anklicken einer Spielerfigur, beim
+ *             Aktivieren einer anderen Karte und beim Start der Welt
  *
  * ## Wie es eingreift
  *
@@ -478,10 +479,22 @@ export function ebenenEinrichten() {
 
   /* Spielleitung */
 
-  Hooks.on("controlToken", (token, gewaehlt) => {
-    if (!gewaehlt || !game.user.isGM || modus() !== "autonom") return;
+  /*
+   * Autonom ist der Normalfall, Manuell nur ein Moment. Am 27.09.2026 stand
+   * der Monitor auf Manuell, weil im Fenster eine Ebene angetippt worden war;
+   * die Spielleitung hielt ihn für automatisch, klickte Amara an, und nichts
+   * geschah. Deshalb führen drei Wege zurück: das Anklicken einer Spielerfigur
+   * (wer eine Figur anwählt, will ihr folgen), eine andere Karte und der Start
+   * der Welt. Foundry-Standard bleibt dagegen stehen; das ist eine bewusste
+   * Entscheidung für den ganzen Abend, keine Momentaufnahme.
+   */
+  if (binZustaendig() && modus() === "manuell") modusSetzen("autonom");
+
+  Hooks.on("controlToken", async (token, gewaehlt) => {
+    if (!gewaehlt || !game.user.isGM || modus() === "foundry") return;
     const doc = token?.document;
     if (!doc?.parent || !istSpielerfigur(doc)) return;
+    if (modus() === "manuell") await modusSetzen("autonom");
     const monitor = getBattlemapDisplay();
     if (!monitor?.active) return;
     game.socket.emit(SOCKET.NAME, { type: SOCKET.LEVEL_FOCUS, sceneId: doc.parent.id, tokenId: doc.id });

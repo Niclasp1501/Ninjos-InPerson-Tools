@@ -209,8 +209,11 @@ Umschalt-Fenster (Shift+B) könnte dann auch Ebenen anbieten. Das ist ein späte
 ## Entscheidungen
 
 1. **Voreinstellung**: Autonom (26.09.2026). Das heutige Verhalten ist genau das, was stört.
-2. **Manuell gilt bis zur nächsten Karte** (26.09.2026). Eine vergessene Vorgabe, die in die
-   nächste Sitzung mitwandert, wäre der nächste unerklärliche Fehler.
+2. **Manuell ist nur ein Moment** (26.09.2026, verschärft 27.09.2026). Zurück auf Autonom
+   geht es beim Anklicken einer Spielerfigur, beim Aktivieren einer anderen Karte und beim
+   Start der Welt. Anlass: Der Monitor stand auf Manuell, weil eine Ebene angetippt worden
+   war, die Spielleitung hielt ihn für automatisch und wunderte sich, dass ihr Klick auf
+   Amara nichts bewirkte. Autonom ist der Standard und der Zustand, zu dem alles zurückfindet.
 3. ~~Gleichstand~~ **entschieden 26.09.2026**: Der Monitor geht dorthin, wo zuletzt eine
    Spielerfigur bewegt oder angeklickt wurde; im Kampf dorthin, wo eine Spielerfigur am Zug
    ist. Ergänzt um die Ausnahme für Züge von Gegnern (siehe Regel 1).

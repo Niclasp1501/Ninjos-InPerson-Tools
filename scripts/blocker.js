@@ -16,7 +16,7 @@
  */
 
 import { MODULE_ID, SETTINGS, ALWAYS_ALLOW, ALWAYS_ALLOW_AUDIO } from "./const.js";
-import { isActive } from "./state.js";
+import { isActive, isMonitorUser } from "./state.js";
 
 /* -------------------------------------------- */
 /*  Placeholder textures                        */
@@ -250,13 +250,29 @@ async function onLoadTexture(wrapped, src, ...rest) {
  * reports processing, not bandwidth, which makes it actively misleading here.
  * `displayProgress: false` is a documented option of that method, so this only
  * changes what is shown, never what is loaded.
+ *
+ * The two displays count too, although table mode never applies to them. Until
+ * 2026-09-27 the bar was hidden only where table mode was active, and the
+ * displays are exempt from it so that they never lose a map - which quietly
+ * exempted them from this as well. It hardly showed while a display only
+ * loaded a map on activation. Since the battlemap display switches levels on
+ * its own, every switch redraws the canvas, and the bar came up on the
+ * television again and again.
  * @this {TextureLoader}
  */
 async function onLoadBatch(wrapped, sources, options = {}) {
-  if (!isActive() || !game.settings.get(MODULE_ID, SETTINGS.HIDE_PROGRESS)) {
-    return wrapped(sources, options);
-  }
+  if (!game.settings.get(MODULE_ID, SETTINGS.HIDE_PROGRESS)) return wrapped(sources, options);
+  if (!isActive() && !istMonitor()) return wrapped(sources, options);
   return wrapped(sources, { ...options, displayProgress: false });
+}
+
+/** Is this client one of the two displays? Safe before `game.user` exists. */
+function istMonitor() {
+  try {
+    return !!game.user && isMonitorUser(game.user);
+  } catch {
+    return false;
+  }
 }
 
 /** @this {foundry.audio.Sound} */
