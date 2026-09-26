@@ -137,6 +137,7 @@
   "INPERSON.Ebenen.Mode.manuell": "Manual",
   "INPERSON.Ebenen.Mode.manuellHint": "The level you tap below. Holds for this map; the next one goes back to Automatic.",
   "INPERSON.Ebenen.FixedElsewhere": "The chosen level belongs to another map. Here the display picks as in Automatic.",
+  "INPERSON.Ebenen.FixedNoSight": "No token the display may see through stands on the chosen level. Rather than show a black picture, it follows the party until someone is there again.",
   "INPERSON.Ebenen.NoScene": "No scene is active right now",
   "INPERSON.Ebenen.SingleLevel": "The active map has a single level. There is nothing to choose here.",
   "INPERSON.Ebenen.PickTip": "Show this level on the display",

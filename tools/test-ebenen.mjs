@@ -117,6 +117,28 @@ pruefe("manuell für eine andere Karte: wie autonom (ohne Spieler keine Meinung)
 einstellungen.monitorLevelFixed = { sceneId: "turm", levelId: "geloescht" };
 pruefe("Vorgabe einer Ebene, die es nicht mehr gibt: wie autonom", E.zielEbene(turm, "dach"), null);
 
+// Manuell, aber der Monitor sähe dort nichts: wie autonom. Der Fall vom
+// 27.09.2026, bei dem der Fernseher mitten im Spiel schwarz wurde.
+game.users = [{ id: "u-bm", isGM: false }];
+game.users.get = id => game.users.find(u => u.id === id);
+const sieht = (level, beobachtet = true, sicht = true) => ({
+  id: `t-${level}`, _source: { level }, hidden: false, sight: { enabled: sicht },
+  actor: { id: `a-${level}`, testUserPermission: () => beobachtet }
+});
+const schiff = szene("schiff", ["unten", "oben"], [sieht("oben"), sieht("oben")]);
+schiff.tokenVision = true;
+einstellungen.monitorLevelFixed = { sceneId: "schiff", levelId: "unten" };
+pruefe("manuell auf einer Ebene ohne Sicht: dorthin, wo er sieht", E.zielEbene(schiff, "unten"), "oben");
+einstellungen.monitorLevelMode = "autonom";
+pruefe("autonom ohne Spielerfigur, aber auf schwarzer Ebene: dorthin, wo er sieht", E.zielEbene(schiff, "unten"), "oben");
+einstellungen.monitorLevelMode = "manuell";
+pruefe("siehtAuf: oben ja, unten nein", [E.siehtAuf(schiff, "oben"), E.siehtAuf(schiff, "unten")], [true, false]);
+schiff.tokenVision = false;
+pruefe("ohne Token-Sicht gilt die Vorgabe", E.zielEbene(schiff, "oben"), "unten");
+einstellungen.monitorLevelFixed = { sceneId: "schiff", levelId: "oben" };
+schiff.tokenVision = true;
+pruefe("manuell auf einer Ebene mit Sicht: festhalten", E.zielEbene(schiff, "unten"), "oben");
+
 einstellungen.monitorLevelMode = "Unsinn";
 pruefe("unbekannte Art gilt als autonom", E.modus(), "autonom");
 

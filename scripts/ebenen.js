@@ -215,18 +215,62 @@ export function zielEbene(scene, aktuell = null) {
 
   if (art === "manuell") {
     const { sceneId, levelId } = vorgabe();
-    if (sceneId === scene.id && scene.levels.has(levelId)) return levelId;
-    // Eine Vorgabe für eine andere Karte gilt hier nicht; dann wie autonom.
+    // Eine Vorgabe für eine andere Karte gilt hier nicht, und eine Ebene, auf
+    // der der Monitor nichts sieht, auch nicht: Dann wie autonom.
+    if (sceneId === scene.id && scene.levels.has(levelId) && siehtAuf(scene, levelId)) return levelId;
   }
 
-  return ebeneWaehlen({
+  const reihenfolge = scene.levels.sorted?.map(l => l.id) ?? [];
+  const wahl = ebeneWaehlen({
     figuren: scene.tokens.map(t => figurAlsLage(t)),
     aktuell,
     amZug: amZugAuf(scene),
     zuletzt: zuletzt.get(scene.id) ?? null,
     anfang: scene.initialLevel?.id ?? null,
-    reihenfolge: scene.levels.sorted?.map(l => l.id) ?? []
+    reihenfolge
   });
+
+  // Die letzte Sicherung, für jede Wahl: Nie auf einer Ebene bleiben oder auf
+  // eine gehen, auf der der Monitor nichts sieht, solange es eine andere gibt,
+  // auf der er etwas sieht. Ein schwarzer Fernseher ist immer die schlechteste
+  // Antwort, auch wenn die Regeln sie für richtig halten, etwa weil dem
+  // Monitor das Beobachterrecht an einer Figur fehlt.
+  const ergebnis = wahl ?? aktuell;
+  if (ergebnis && !siehtAuf(scene, ergebnis)) return besteSicht(scene, reihenfolge) ?? wahl;
+  return wahl;
+}
+
+/** Die Ebene, auf der der Monitor durch die meisten Figuren sieht, oder null. */
+function besteSicht(scene, reihenfolge) {
+  const monitor = getBattlemapDisplay();
+  if (!monitor) return null;
+  const zaehlung = new Map();
+  for (const t of scene.tokens) {
+    if (t.hidden || !t.sight?.enabled || !t.actor?.testUserPermission(monitor, "OBSERVER")) continue;
+    const ebene = ebeneVon(t);
+    if (ebene) zaehlung.set(ebene, (zaehlung.get(ebene) ?? 0) + 1);
+  }
+  if (!zaehlung.size) return null;
+  const hoechste = Math.max(...zaehlung.values());
+  const beste = [...zaehlung].filter(([, n]) => n === hoechste).map(([e]) => e);
+  return reihenfolge.find(e => beste.includes(e)) ?? beste[0];
+}
+
+/**
+ * Sieht der Battlemap-Monitor auf dieser Ebene überhaupt etwas?
+ *
+ * Mit Token-Sicht nur durch Figuren, die dort stehen, sehen können und die er
+ * beobachten darf. Am 27.09.2026 stand der Monitor auf „Manuell, Main Deck",
+ * die Gruppe ging die Treppe hoch, unten blieb nur eine Figur ohne Sicht, die
+ * er nicht beobachten darf, und der Fernseher war mitten im Spiel schwarz.
+ * Eine Vorgabe, die zu einem schwarzen Bild führt, ist nie gemeint.
+ */
+export function siehtAuf(scene, levelId) {
+  if (!scene?.tokenVision) return true;
+  const monitor = getBattlemapDisplay();
+  if (!monitor) return true;
+  return scene.tokens.some(t => ebeneVon(t) === levelId && !t.hidden && t.sight?.enabled
+    && t.actor?.testUserPermission(monitor, "OBSERVER"));
 }
 
 /* ── Auf dem Monitor ────────────────────────────────────────────── */

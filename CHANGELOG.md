@@ -32,10 +32,11 @@ button next to the battlemap display in the control panel.
 - **Roofs open on the display too.** Foundry only opens a roof over tokens the
   viewer can click on, and nobody clicks on the display, so its roofs stayed
   shut. They now open over every player character, as they do at your desk.
-- **A warning before the screen goes black.** The display only sees through
-  the eyes of characters it may observe. The controls list the player
-  characters it may not, with a button that grants the permission, and mark
-  levels on which it would see nothing.
+- **Never a black screen.** The display only sees through the eyes of
+  characters it may observe. It never stays on a level where it would see
+  nothing, not even one chosen by hand, as long as it can see somewhere else.
+  The controls list the player characters it may not observe, with a button
+  that grants the permission.
 - **A tab of its own.** Companions and rotation moved out of "Misc" into a new
   "At the table" tab in the scene configuration.
 - **Nothing to redo.** Every pairing made so far stays as it is; a single

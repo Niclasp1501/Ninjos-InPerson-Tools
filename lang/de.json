@@ -137,6 +137,7 @@
   "INPERSON.Ebenen.Mode.manuell": "Manuell",
   "INPERSON.Ebenen.Mode.manuellHint": "Die Ebene, die du unten antippst. Gilt für diese Karte; bei der nächsten geht es zurück auf Autonom.",
   "INPERSON.Ebenen.FixedElsewhere": "Die Vorgabe gilt einer anderen Karte. Hier wählt der Monitor wie bei Autonom.",
+  "INPERSON.Ebenen.FixedNoSight": "Auf der vorgegebenen Ebene steht keine Figur, durch deren Augen der Monitor sehen darf. Statt ein schwarzes Bild zu zeigen, folgt er der Gruppe, bis wieder jemand dort ist.",
   "INPERSON.Ebenen.NoScene": "Gerade ist keine Szene aktiv",
   "INPERSON.Ebenen.SingleLevel": "Die aktive Karte hat nur eine Ebene. Hier gibt es nichts zu wählen.",
   "INPERSON.Ebenen.PickTip": "Diese Ebene auf dem Monitor zeigen",

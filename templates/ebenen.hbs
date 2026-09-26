@@ -26,6 +26,12 @@
     {{#if vorgabeAnderswo}}
       <p class="inperson-hint">{{localize "INPERSON.Ebenen.FixedElsewhere"}}</p>
     {{/if}}
+    {{#if vorgabeOhneSicht}}
+      <p class="inperson-hint">
+        <i class="fa-solid fa-eye-slash" aria-hidden="true"></i>
+        {{localize "INPERSON.Ebenen.FixedNoSight"}}
+      </p>
+    {{/if}}
 
     <h3 class="inperson-sv-sub">
       <i class="fa-solid fa-layer-group" aria-hidden="true"></i>

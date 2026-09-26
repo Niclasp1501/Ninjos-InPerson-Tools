@@ -28,7 +28,7 @@ import { MODULE_ID, SETTINGS } from "./const.js";
 import { isMonitorUser } from "./state.js";
 import { getBattlemapDisplay } from "./monitor.js";
 import {
-  MODI, modus, vorgabe, dachOffen, ebeneVon, istSpielerfigur, ebeneVorgeben, modusSetzen
+  MODI, modus, vorgabe, dachOffen, ebeneVon, istSpielerfigur, ebeneVorgeben, modusSetzen, siehtAuf
 } from "./ebenen.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -96,6 +96,10 @@ class EbenenSteuerung extends HandlebarsApplicationMixin(ApplicationV2) {
       modi,
       ebenen,
       vorgabeAnderswo: art === "manuell" && !!sceneId && sceneId !== scene?.id,
+      // Die Vorgabe gilt, aber der Monitor sähe dort nichts; er folgt deshalb
+      // gerade der Gruppe. Das muss dastehen, sonst wirkt Manuell kaputt.
+      vorgabeOhneSicht: art === "manuell" && !!scene && sceneId === scene.id && mehrere
+        && scene.levels.has(levelId) && !siehtAuf(scene, levelId),
       dachOffen: dachOffen(),
       fehlend: monitor ? ohneBeobachterrecht(monitor).map(a => a.name) : []
     };
