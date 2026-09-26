@@ -36,9 +36,10 @@ button next to the battlemap display in the control panel.
 - **Roofs open on the display too.** Foundry only opens a roof over tokens the
   viewer can click on, and nobody clicks on the display, so its roofs stayed
   shut. They now open over every player character, as they do at your desk.
-- **No loading bar on the displays.** "Hide the loading bar" now covers both
-  displays too, not only devices in table mode. Each level change redraws the
-  map, and the bar kept coming up on the television.
+- **A cleaner television.** "Hide the loading bar" now covers both displays
+  too, not only devices in table mode; each level change redraws the map and
+  the bar kept coming up. On rotated maps a token's name, bars and status
+  icons now stay upright instead of turning sideways with the map.
 - **Never a black screen.** The display only sees through the eyes of
   characters it may observe. It never stays on a level where it would see
   nothing, not even one chosen by hand, as long as it can see somewhere else.

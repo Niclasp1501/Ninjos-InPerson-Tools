@@ -33,6 +33,12 @@
  * The fix uses the standalone CSS `rotate` property rather than `transform`,
  * precisely because `align()` overwrites `transform` on every pan and would wipe
  * a rotation written there. `rotate` survives untouched.
+ *
+ * The labels Foundry draws *on the canvas* are a third case: a token's name,
+ * its resource bars, status icons, elevation and level marker are PIXI children
+ * of the token, so they turn with the stage like the map does. Reported from
+ * the table on 2026-09-27: "Bertram Mehlstaub" ran down the side of his token.
+ * See uprightTokenLabels below.
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
@@ -115,6 +121,69 @@ function applyHudRotation(degrees) {
   if (hud.style.getPropertyValue("--tm-hud-counter") !== value) {
     hud.style.setProperty("--tm-hud-counter", value);
   }
+}
+
+/**
+ * Foundry's own labels on a token, in the order Foundry adds them
+ * (placeables/token.mjs `_draw`). Border, target markers and the turn marker
+ * stay out: they are square or round around the token and look the same at any
+ * quarter turn, and turning them would gain nothing.
+ */
+const UPRIGHT_PARTS = ["bars", "tooltip", "levelIndicator", "effects", "nameplate"];
+
+/** Property on a Token holding the frame the labels hang in. */
+const UPRIGHT_FRAME = "inpersonUprightFrame";
+
+/**
+ * Keep a token's name, bars and icons readable on a rotated scene.
+ *
+ * The parts are moved into one container that turns back against the stage,
+ * about the centre of the token. Foundry keeps placing each part itself - the
+ * nameplate below the token, the bars along its bottom edge, the icons in the
+ * top left corner - in the token's own coordinates, and the container carries
+ * that whole layout round to where "below" and "top left" are on the screen.
+ *
+ * Moving the parts rather than turning each one: Foundry reads positions back
+ * from its own parts (the level marker is placed from `tooltip.y`), so changing
+ * those positions would feed our rotation into its arithmetic. Inside the frame
+ * every part keeps the coordinates Foundry gave it, and nothing it reads back
+ * is ever different from what it wrote.
+ *
+ * Only Foundry's own parts, never children other modules added: a module that
+ * finds its overlay by looking through `token.children` would no longer find it
+ * and draw a new one on every refresh.
+ *
+ * Runs on every token refresh, which also covers a full redraw: that destroys
+ * the frame with the other children, and the next refresh builds a new one.
+ * @param {Token} token
+ */
+export function uprightTokenLabels(token) {
+  if (!token || token.destroyed || !token.document) return;
+  const onViewed = token.document.parent?.id === canvas?.scene?.id;
+  const degrees = onViewed ? getRotation() : 0;
+
+  let frame = token[UPRIGHT_FRAME];
+  if (frame?.destroyed) frame = null;
+  if (!degrees && !frame) return;          // an unrotated scene needs nothing
+
+  if (!frame) {
+    frame = token[UPRIGHT_FRAME] = token.addChild(new PIXI.Container());
+    frame.eventMode = "none";
+  }
+  for (const name of UPRIGHT_PARTS) {
+    const part = token[name];
+    if (part && !part.destroyed && part.parent !== frame) frame.addChild(part);
+  }
+
+  const { width, height } = token.document.getSize();
+  frame.pivot.set(width / 2, height / 2);
+  frame.position.set(width / 2, height / 2);
+  frame.rotation = -degrees * Math.PI / 180;
+}
+
+/** All tokens of the viewed scene, after its rotation changed. */
+export function uprightAllTokens() {
+  for (const token of canvas?.tokens?.placeables ?? []) uprightTokenLabels(token);
 }
 
 /**

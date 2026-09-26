@@ -13,7 +13,9 @@ import {
 import { collectSceneSources, sumKnown, formatBytes } from "./measure.js";
 import { openPanel, refreshPanel, playerReports } from "./panel.js";
 import { syncNoCanvas } from "./nocanvas.js";
-import { applyRotation, getRotation, ROTATION_FLAG, ANGLES } from "./rotation.js";
+import {
+  applyRotation, getRotation, ROTATION_FLAG, ANGLES, uprightTokenLabels, uprightAllTokens
+} from "./rotation.js";
 import { openPullDialog } from "./pull.js";
 import { migrateFromOldId } from "./migrate.js";
 import { installLockViewInterop, onRotationChanged, describeInterop } from "./lockview.js";
@@ -957,8 +959,13 @@ Hooks.on("updateScene", (scene, changed) => {
   const rotationChange = changed?.flags?.[MODULE_ID];
   if (rotationChange && (ROTATION_FLAG in rotationChange || `-=${ROTATION_FLAG}` in rotationChange)) {
     onRotationChanged(scene);
+    uprightAllTokens();
   }
 });
+
+// Name, bars and icons of a token turn with the map; see uprightTokenLabels.
+// Every refresh, because Foundry rebuilds and repositions them on its own.
+Hooks.on("refreshToken", token => uprightTokenLabels(token));
 
 for (const hook of ["createToken", "updateToken", "deleteToken"]) {
   Hooks.on(hook, () => refreshTokenSources());
