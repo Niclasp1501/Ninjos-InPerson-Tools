@@ -25,7 +25,9 @@ import { openBegleitwahl, installBegleitwahl } from "./begleitwahl.js";
 import {
   ebenenHuellenEinrichten, ebenenEinrichten, ebenenFokus, ebenenEinstellungGeaendert
 } from "./ebenen.js";
-import { openEbenenSteuerung, refreshEbenenSteuerung, installEbenenSteuerung } from "./ebenen-fenster.js";
+import {
+  openEbenenSteuerung, refreshEbenenSteuerung, installEbenenSteuerung, ebenenKnopfEinrichten
+} from "./ebenen-fenster.js";
 import {
   installActorPanel, removeActorPanel, applySidebarStyle, markPopout, isDirectoryPopoutApp
 } from "./actor-panel.js";
@@ -814,12 +816,24 @@ function registerKeybindings() {
     }
   });
 
-  // Shift+E fuer die Ebenen des Battlemap-Monitors. Auch hier gibt es genau
-  // ein Fenster dazu. Das blanke E belegt Foundry selbst, Shift+E nicht.
+  // Shift+O fuer die Ebenen des Battlemap-Monitors. Auch hier gibt es genau
+  // ein Fenster dazu.
+  //
+  // Nicht Shift+E, obwohl E fuer "Ebene" naheliegt: Foundry 14 belegt E und Q
+  // fuer "Figur eine Ebene hoch/runter" und reserviert dabei Shift
+  // (client-keybindings.mjs, `reservedModifiers: [SHIFT]`). Die Aktion passt
+  // also auch auf Shift+E, und ihr Handler meldet den Tastendruck immer als
+  // erledigt, sobald eine Karte geladen ist. Unser Kuerzel kam nie an
+  // (26.09.2026). Dasselbe gilt fuer W, A, S, D, F und T.
+  //
+  // O und Y sind die einzigen Buchstaben, die am 26.09.2026 weder Foundry noch
+  // eines der installierten Module belegt; L, K, J, H und M nimmt Monk's
+  // Little Details mit Shift fuer seinen Ebenenwechsel. Sichtbar ist das
+  // Fenster ausserdem ueber einen Knopf in der Werkzeugleiste links.
   game.keybindings.register(MODULE_ID, "openEbenen", {
     name: "INPERSON.Keybind.Ebenen.Name",
     hint: "INPERSON.Keybind.Ebenen.Hint",
-    editable: [{ key: "KeyE", modifiers: ["Shift"] }],
+    editable: [{ key: "KeyO", modifiers: ["Shift"] }],
     restricted: true,
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
     onDown: () => {
@@ -856,6 +870,9 @@ Hooks.once("init", () => {
   // Vor dem ersten Zeichnen, damit schon die Startansicht des Monitors die
   // richtige Ebene hat: Foundry ruft beim Start selbst scene.view() auf.
   ebenenHuellenEinrichten();
+  // Foundry baut die Werkzeugleiste einmal auf und fragt dabei den Hook ab;
+  // wer erst bei "ready" kommt, fehlt bis zum naechsten Neuaufbau.
+  ebenenKnopfEinrichten();
 });
 
 Hooks.once("ready", async () => {

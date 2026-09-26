@@ -21,9 +21,9 @@ panel, opens a small window with the companions of the active map as pictures.
 
 **The battlemap display shows the right level.** On maps with several levels,
 Foundry made the display follow every single character that changed level, so
-one scout climbing a roof took the whole television with him. Shift+E, or the
-new button next to the battlemap display in the control panel, opens its
-controls.
+one scout climbing a roof took the whole television with him. A new layers button
+among the token tools on the left opens its controls; so do Shift+O and a
+button next to the battlemap display in the control panel.
 
 - **Three modes.** Automatic shows the level of the player character whose
   turn it is in combat, otherwise the level where most player characters

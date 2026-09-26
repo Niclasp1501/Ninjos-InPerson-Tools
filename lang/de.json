@@ -128,7 +128,7 @@
   "INPERSON.Keybind.Ebenen.Name": "Ebene des Battlemap-Monitors",
   "INPERSON.Keybind.Ebenen.Hint": "Öffnet die Steuerung, welche Ebene der Battlemap-Monitor zeigt. Nur für Spielleiter.",
   "INPERSON.Ebenen.Title": "Ebene des Battlemap-Monitors",
-  "INPERSON.Ebenen.OpenTip": "Ebene des Monitors steuern (Shift+E)",
+  "INPERSON.Ebenen.OpenTip": "Ebene des Battlemap-Monitors steuern (Shift+O)",
   "INPERSON.Ebenen.ModeLabel": "Wie der Monitor seine Ebene wählt",
   "INPERSON.Ebenen.Mode.autonom": "Autonom",
   "INPERSON.Ebenen.Mode.autonomHint": "Im Kampf, wo eine Spielerfigur am Zug ist. Sonst, wo die meisten Spielerfiguren stehen. Bei Gleichstand, wo zuletzt eine bewegt oder angeklickt wurde.",

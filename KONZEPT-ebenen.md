@@ -103,8 +103,8 @@ folgen" oben ist Autonom.
 
 ### Wie die Spielleitung eingreift
 
-- **Das Steuerungsfenster** (Shift+E, oder der Ebenen-Knopf in der Zeile des
-  Battlemap-Monitors im Bedienfeld). Oben die drei Arten als große Knöpfe mit je einem Satz
+- **Das Steuerungsfenster**: der Ebenen-Knopf bei den Figuren-Werkzeugen der linken Leiste,
+  Shift+O, oder der Ebenen-Knopf in der Zeile des Battlemap-Monitors im Bedienfeld. Oben die drei Arten als große Knöpfe mit je einem Satz
   Erklärung. Darunter die Ebenen der aktiven Karte, das Dach zuerst, jede mit der Zahl der
   Spielerfiguren darauf; die angezeigte ist markiert. Ein Tipp auf eine Ebene gibt sie vor und
   schaltet auf Manuell. Der Knopf „Manuell" allein hält die Ebene fest, die gerade läuft.
@@ -112,7 +112,12 @@ folgen" oben ist Autonom.
   zeigen". Das ist Foundrys eigenes Menü, erweitert über den Hook `getSceneContextOptions`;
   Ebenen stehen dort schon als eigene Einträge.
 
-Shift+E, weil es jetzt genau ein Fenster dazu gibt (Regel 8). Das blanke E belegt Foundry.
+Ein Kürzel, weil es jetzt genau ein Fenster dazu gibt (Regel 8). **Nicht Shift+E**: Foundry 14
+belegt E und Q für „Figur eine Ebene hoch/runter" und reserviert dabei Shift, sein Handler
+meldet den Druck immer als erledigt. Das erste Kürzel kam deshalb nie an (26.09.2026). O ist
+neben Y der einzige Buchstabe, den weder Foundry noch ein installiertes Modul belegt. Dazu der
+sichtbare Knopf in der Werkzeugleiste, weil man ein Fenster, das nur über eine Taste erreichbar
+ist, mitten im Spiel nicht findet.
 
 ### Technischer Weg
 
@@ -208,7 +213,8 @@ Umschalt-Fenster (Shift+B) könnte dann auch Ebenen anbieten. Das ist ein späte
 - `scripts/ebenen-fenster.js` und `templates/ebenen.hbs`: das Steuerungsfenster mit Arten,
   Ebenen, Dach-Schalter und Prüfung der Beobachterrechte
 - drei Welteinstellungen ohne Eintrag in der Einstellungsliste: Art, Vorgabe, Dach
-- Shift+E und ein Knopf in der Zeile des Battlemap-Monitors im Bedienfeld
+- ein Knopf bei den Figuren-Werkzeugen links, Shift+O, ein Knopf in der Zeile des
+  Battlemap-Monitors im Bedienfeld
 - `tools/test-ebenen.mjs`, 20 Fälle: Kampf mit Spieler- und Gegnerzug, Mehrheit,
   Gleichstand mit letzter Bewegung, versteckte Figuren, Figuren ohne Spieler, Foundry-Standard,
   Vorgabe für diese und für eine andere Karte, Szenen mit einer Ebene
@@ -225,6 +231,6 @@ angemeldeten Rechner als Battlemap-Monitor.
 3. Zwei oben, zwei unten, dann eine Figur oben anklicken: Der Monitor geht aufs Dach.
 4. Kampf beginnen. Spielerzug auf dem Dach: Dach. Gegnerzug im Keller: Der Monitor bleibt.
 5. Dächer: Steht eine Figur unter einem Dach, ist es auf dem Monitor über ihr offen?
-6. Shift+E, Manuell, eine Ebene antippen: Der Monitor wechselt und bleibt. Andere Karte
+6. Ebenen-Knopf links (oder Shift+O), Manuell, eine Ebene antippen: Der Monitor wechselt und bleibt. Andere Karte
    aktivieren: Das Fenster steht wieder auf Autonom.
 7. Nyra: Steht sie im Fenster unter den fehlenden Rechten, und verschwindet sie nach dem Knopf?

@@ -14,9 +14,14 @@
  * schwarz, egal wie klug er seine Ebene wählt. Am 26.09.2026 fehlte es für
  * Nyra Nordwind, eine neue Figur, und niemand hatte es bemerkt.
  *
- * Geöffnet über Shift+E, über den Knopf am Battlemap-Monitor im Bedienfeld und
- * über den Rechtsklick auf eine Ebene in der Navigationsleiste (der gibt die
- * Ebene direkt vor, ohne Fenster).
+ * Geöffnet über den Knopf in der Werkzeugleiste links (bei den Figuren), über
+ * Shift+O, über den Knopf am Battlemap-Monitor im Bedienfeld von In-Person
+ * Tools und über den Rechtsklick auf eine Ebene in der Navigationsleiste (der
+ * gibt die Ebene direkt vor, ohne Fenster).
+ *
+ * Der Knopf in der Werkzeugleiste kam dazu, nachdem das Kürzel beim ersten
+ * Versuch nicht ankam: Ein Fenster, das man nur findet, wenn man seine Taste
+ * kennt, ist für die Spielleitung mitten im Spiel nicht da.
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
@@ -167,6 +172,30 @@ export function refreshEbenenSteuerung() {
   if (!fenster?.rendered) return;
   clearTimeout(geplant);
   geplant = setTimeout(() => { if (fenster?.rendered) fenster.render(); }, 150);
+}
+
+/**
+ * Ein Knopf bei den Figuren-Werkzeugen der linken Leiste. Bei `init`.
+ *
+ * Immer da, sobald ein Battlemap-Monitor eingerichtet ist, nicht nur auf
+ * Karten mit Ebenen: Foundry baut die Leiste nicht bei jedem Kartenwechsel neu
+ * auf, ein Knopf, der von der Karte abhinge, stünde oft falsch da. Auf einer
+ * Karte mit einer Ebene sagt das Fenster das selbst.
+ */
+export function ebenenKnopfEinrichten() {
+  Hooks.on("getSceneControlButtons", controls => {
+    const werkzeuge = controls?.tokens?.tools;
+    if (!werkzeuge || !game.user?.isGM) return;
+    werkzeuge.inpersonEbenen = {
+      name: "inpersonEbenen",
+      order: Object.keys(werkzeuge).length + 1,
+      title: "INPERSON.Ebenen.OpenTip",
+      icon: "fa-solid fa-layer-group",
+      visible: !!getBattlemapDisplay(),
+      button: true,
+      onChange: () => openEbenenSteuerung()
+    };
+  });
 }
 
 /**

@@ -128,7 +128,7 @@
   "INPERSON.Keybind.Ebenen.Name": "Level of the battlemap display",
   "INPERSON.Keybind.Ebenen.Hint": "Opens the controls for which level the battlemap display shows. Gamemasters only.",
   "INPERSON.Ebenen.Title": "Level of the battlemap display",
-  "INPERSON.Ebenen.OpenTip": "Control the display's level (Shift+E)",
+  "INPERSON.Ebenen.OpenTip": "Control the battlemap display's level (Shift+O)",
   "INPERSON.Ebenen.ModeLabel": "How the display picks its level",
   "INPERSON.Ebenen.Mode.autonom": "Automatic",
   "INPERSON.Ebenen.Mode.autonomHint": "In combat, where a player character has the turn. Otherwise, where most player characters stand. On a tie, where one was last moved or selected.",
