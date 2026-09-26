@@ -56,11 +56,24 @@ Foundry.
 
 ### Drei Arten, wie der Monitor seine Ebene wählt
 
-**Der Gruppe folgen** (Vorschlag für die Voreinstellung). Der Monitor zeigt die Ebene, auf der
-die meisten Spielerfiguren stehen. Er wechselt erst, wenn eine andere Ebene **mehr** Figuren
-hat als die angezeigte, nicht schon bei Gleichstand, und erst, wenn die Bewegung zu Ende ist.
-Klettert einer von vier aufs Dach, bleibt der Monitor unten. Folgen ihm zwei weitere, geht er
-mit hoch.
+**Der Gruppe folgen** (Voreinstellung). Der Monitor entscheidet in dieser Reihenfolge, die
+erste Regel, die greift, gilt:
+
+1. **Im Kampf: wer dran ist.** Läuft auf dieser Szene ein Kampf und ist eine Spielerfigur am
+   Zug, zeigt der Monitor deren Ebene. Ist ein Gegner am Zug, bleibt er, wo er ist: Steht der
+   Gegner auf einer Ebene ohne Spielerfigur, sähe der Monitor dort nichts, weil er nur durch
+   die Augen der Spielerfiguren sieht, und der Fernseher wäre für einen ganzen Zug schwarz.
+2. **Sonst die Mehrheit.** Die Ebene, auf der die meisten Spielerfiguren stehen. Klettert einer
+   von vier aufs Dach, bleibt der Monitor unten; folgen ihm zwei weitere, geht er mit.
+3. **Bei Gleichstand: wo zuletzt etwas passiert ist.** Die Ebene der Spielerfigur, die zuletzt
+   bewegt oder von der Spielleitung angeklickt wurde. Zwei oben, zwei unten, und die
+   Spielleitung wählt eine Figur auf dem Dach an: Der Monitor geht aufs Dach.
+4. **Weiß er nichts davon**, bleibt er, wo er ist.
+
+Gewechselt wird erst, wenn eine Bewegung zu Ende ist, nie mittendrin. Die Mehrheit allein
+würde bei Gleichstand stehen bleiben, auch wenn das Geschehen längst oben ist; die letzte
+Bewegung allein wäre genau das heutige Verhalten, bei dem ein einzelner Späher den ganzen
+Fernseher mitnimmt. Erst zusammen ergeben sie, was man am Tisch erwartet.
 
 Als Spielerfigur zählt, was einem Spieler gehört (`actor.hasPlayerOwner`), auf dieser Szene
 steht und nicht versteckt ist. Monitorkonten zählen nicht mit. Ob der Monitor die Figur
@@ -111,8 +124,19 @@ war nach dem Neuladen weg.
 
 **„Gruppe" rechnet der Monitor selbst**, aus den Figuren der Szene, die jeder Rechner ohnehin
 kennt. Neu gerechnet wird, wenn eine Figur die Ebene wechselt, dazukommt oder verschwindet,
-jeweils nach dem Ende der Bewegung. Läuft gerade ein Ladevorgang, wartet er, statt den
-Wunsch an Foundrys Warnung zu verlieren.
+jeweils nach dem Ende der Bewegung, und im Kampf beim Zugwechsel (`updateCombat`). Läuft
+gerade ein Ladevorgang, wartet er, statt den Wunsch an Foundrys Warnung zu verlieren.
+
+Zwei der Signale kennt der Monitor von selbst, eines nicht:
+
+- **Bewegungen** sieht jeder Rechner (`updateToken`), der Monitor merkt sich die zuletzt
+  bewegte Spielerfigur.
+- **Wer dran ist**, steht im Kampf, den ebenfalls jeder Rechner hat.
+- **Das Anklicken** geschieht nur am Rechner der Spielleitung (`controlToken`). Der schickt es
+  über den Socket des Moduls an den Monitor, nur für Spielerfiguren und nur, wenn sie auf
+  einer anderen Ebene stehen als der angezeigten. Am Tisch mit Tablets in der Blattansicht
+  bewegt ohnehin fast nur die Spielleitung Figuren; das Anklicken deckt den Fall ab, dass sie
+  eine Figur auswählt, ohne sie zu bewegen.
 
 ### Die Sicht ist der eigentliche Stolperstein
 
@@ -147,9 +171,9 @@ Umschalt-Fenster (Shift+B) könnte dann auch Ebenen anbieten. Das ist ein späte
 2. **Wie lange gilt „Fest"?** Bis zur nächsten Karte, oder bis jemand „Automatisch" drückt?
    Empfehlung: bis zur nächsten Karte. Eine vergessene Vorgabe, die in die nächste Sitzung
    mitwandert, wäre der nächste unerklärliche Fehler.
-3. **Gleichstand**, zwei oben, zwei unten: bleibt der Monitor, wo er ist? Empfehlung: ja. Jede
-   andere Regel lässt ihn bei jedem Schritt hin- und herspringen, und jeder Sprung ist ein
-   Neuzeichnen.
+3. ~~Gleichstand~~ **entschieden 26.09.2026**: Der Monitor geht dorthin, wo zuletzt eine
+   Spielerfigur bewegt oder angeklickt wurde; im Kampf dorthin, wo eine Spielerfigur am Zug
+   ist. Ergänzt um die Ausnahme für Züge von Gegnern (siehe Regel 1).
 
 ## Aufwand
 
@@ -159,8 +183,10 @@ Etwa so groß wie die Begleitszenen:
 - Einstellung für die Art, gemerkte Vorgabe je Szene
 - Knöpfe im Bedienfeld, Eintrag im Navigationsmenü
 - Prüfung der Beobachterrechte mit Knopf in den Monitor-Einstellungen
-- Test der Gruppenrechnung: Mehrheit, Gleichstand, versteckte Figuren, Monitorkonten,
-  Szenen ohne Ebenen
+- Anklicken vom Rechner der Spielleitung über den Socket an den Monitor
+- Test der Gruppenrechnung: Kampf mit Spieler- und Gegnerzug, Mehrheit, Gleichstand mit
+  letzter Bewegung und letztem Anklicken, versteckte Figuren, Monitorkonten, Szenen ohne
+  Ebenen
 
 Geprüft werden kann es nur mit laufendem Monitor, also an einem Abend oder mit einem zweiten
 angemeldeten Rechner als Battlemap-Monitor.
