@@ -27,6 +27,19 @@ export const SETTINGS = {
   MONITOR_PINNED: "monitorPinned",
   /** Scene the pinned scene display shows. Survives reloads (world). */
   MONITOR_SCENE: "monitorScene",
+  /**
+   * How the battlemap display picks its level on scenes with several (world):
+   * "autonom" follows the party by the rules in ebenen.js, "foundry" leaves it
+   * to Foundry, "manuell" shows the level the gamemaster chose.
+   */
+  MONITOR_LEVEL_MODE: "monitorLevelMode",
+  /** The level the gamemaster chose, as `{sceneId, levelId}` (world). */
+  MONITOR_LEVEL_FIXED: "monitorLevelFixed",
+  /**
+   * Open roofs over player characters on the battlemap display (world).
+   * Foundry opens them only over tokens a player owns, and the display owns none.
+   */
+  MONITOR_ROOF_OPEN: "monitorRoofOpen",
   /** What a pinned display does when released: "follow" or "idle" (world). */
   MONITOR_RELEASE: "monitorRelease",
   /** Scene shown as the idle screen when a display is released (world). */
@@ -197,6 +210,11 @@ export const SOCKET = {
   SHOW_ANSWER: "showAnswer",
   SHOW_CLOSE: "showClose",
   SCREENSAVER: "screensaver",
+  /**
+   * The gamemaster selected a player character. Only their own machine sees
+   * that, and the battlemap display uses it to break a tie between levels.
+   */
+  LEVEL_FOCUS: "levelFocus",
   /**
    * Everything belonging to a trade - request, offer, accept, cancel, and the
    * gamemaster's answer with the whole session.

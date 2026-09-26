@@ -1,6 +1,8 @@
 # Konzept: Ebenen auf dem Battlemap-Monitor
 
-Stand 26.09.2026. Noch nicht gebaut; unten stehen drei Entscheidungen, die vorher fallen müssen.
+Stand 26.09.2026. **Gebaut in 14.2611.79** (`scripts/ebenen.js`, `scripts/ebenen-fenster.js`,
+`tools/test-ebenen.mjs`); am Tisch geprüft wird es am 27.09.2026. Die Entscheidungen stehen
+unten, alle getroffen.
 
 ## Worum es geht
 
@@ -10,8 +12,9 @@ Battlemap-Monitor dagegen ist ein Spielerkonto, das niemand bedient, und zeigt d
 die Foundry für ihn aussucht. Das ist oft nicht die, auf der die Gruppe steht.
 
 Gewünscht ist: Der Monitor zeigt die Ebene, auf der die Figuren der Spieler sind, unabhängig
-davon, welche Figur die Spielleitung gerade am Schreibtisch ausgewählt hat. Und die
-Spielleitung kann ihm eine Ebene von Hand vorgeben.
+davon, welche Figur die Spielleitung gerade am Schreibtisch ausgewählt hat. Die Spielleitung
+kann ihm eine Ebene von Hand vorgeben und zwischen den Arten in einem Steuerungsfenster
+wechseln. Und Dächer sollen sich auf dem Monitor öffnen wie am Schreibtisch.
 
 ## Was Foundry heute tut
 
@@ -41,6 +44,15 @@ beobachtete Figur auf der Zielebene bleibt das Bild schwarz.
 
 **Lock View kennt keine Ebenen.** Es fixiert Ausschnitt und Zoom, die Ebene überlässt es
 Foundry.
+
+**Dächer öffnen sich beim Monitor nie.** Über welchen Figuren eine Dachfläche durchsichtig
+wird, entscheidet `TokenLayer#_getOccludableTokens` (`canvas/layers/tokens.mjs:555`). Die
+Spielleitung hat die Arten „angewählt", „sichtbar" und „hervorgehoben", ein Spieler „besitzt"
+und „sichtbar". Sobald ein Spieler durch Figuren sieht, nimmt Foundry alle sichtbaren, aber nur
+solche, die gerade anklickbar sind (`t.interactive`). Anklickbar ist eine Figur nur, wenn die
+Figurenebene aktiv und ein Werkzeug gewählt ist (`Token#isInteractable`). Am Monitor bedient
+niemand die Oberfläche, die Liste ist leer, das Dach bleibt zu. Am Schreibtisch geht es über
+der angewählten Figur auf.
 
 ### Befund in faerun3
 
@@ -80,23 +92,27 @@ steht und nicht versteckt ist. Monitorkonten zählen nicht mit. Ob der Monitor d
 beobachten darf, ist dafür egal: Sonst würde eine vergessene Berechtigung, wie heute bei Nyra,
 still die Wahl verfälschen.
 
-**Fest.** Die Spielleitung gibt eine Ebene vor, und der Monitor bleibt dort, egal wer wohin
+**Manuell.** Die Spielleitung gibt eine Ebene vor, und der Monitor bleibt dort, egal wer wohin
 geht. Gedacht für den Moment, in dem sie allen etwas auf dem Dach zeigen will, bevor jemand
 dort ist. Gilt bis zur nächsten Karte, danach folgt der Monitor wieder der Gruppe.
 
-**Wie Foundry.** Das heutige Verhalten, für alle, die es so wollen.
+**Foundry-Standard.** Das heutige Verhalten, für alle, die es so wollen.
+
+Im Fenster heißen die drei **Autonom**, **Foundry-Standard** und **Manuell**. „Der Gruppe
+folgen" oben ist Autonom.
 
 ### Wie die Spielleitung eingreift
 
-- **Im Bedienfeld**, in der Zeile des Battlemap-Monitors: ein Knopf je Ebene der aktiven
-  Karte und ein Knopf „Automatisch". Die angezeigte Ebene ist markiert. Die Knöpfe erscheinen
-  nur, wenn die Karte mehrere Ebenen hat.
+- **Das Steuerungsfenster** (Shift+E, oder der Ebenen-Knopf in der Zeile des
+  Battlemap-Monitors im Bedienfeld). Oben die drei Arten als große Knöpfe mit je einem Satz
+  Erklärung. Darunter die Ebenen der aktiven Karte, das Dach zuerst, jede mit der Zahl der
+  Spielerfiguren darauf; die angezeigte ist markiert. Ein Tipp auf eine Ebene gibt sie vor und
+  schaltet auf Manuell. Der Knopf „Manuell" allein hält die Ebene fest, die gerade läuft.
 - **Rechtsklick auf eine Ebene in Foundrys Navigationsleiste**: „Auf dem Battlemap-Monitor
   zeigen". Das ist Foundrys eigenes Menü, erweitert über den Hook `getSceneContextOptions`;
   Ebenen stehen dort schon als eigene Einträge.
 
-Kein eigenes Tastenkürzel: Es gäbe kein offensichtliches Fenster dazu (Regel 8), und die
-beiden Wege oben sind schneller als eine Tastenkombination, die man sich merken muss.
+Shift+E, weil es jetzt genau ein Fenster dazu gibt (Regel 8). Das blanke E belegt Foundry.
 
 ### Technischer Weg
 
@@ -144,12 +160,22 @@ Mit Token-Sicht sieht der Monitor nur, was die Figuren sehen, die er beobachtet.
 Gruppe auf eine Ebene, auf der er keine davon beobachtet, bleibt der Fernseher schwarz. Das
 passiert genau dann, wenn Berechtigungen fehlen, und das tun sie heute (Nyra).
 
-Deshalb gehört zum Bau eine **Prüfung in den Monitor-Einstellungen**: „Diese Spielerfiguren
-beobachtet der Battlemap-Monitor nicht: Nyra Nordwind, …", mit einem Knopf „Beobachterrecht
-geben". Das hilft auch ohne Ebenen sofort.
+Deshalb steht im Steuerungsfenster eine **Prüfung**: „Der Monitor darf diese Spielerfiguren
+nicht beobachten: Nyra Nordwind, …", mit einem Knopf „Beobachterrecht geben". Geprüft werden
+alle Spielerfiguren der Welt, nicht nur die der aktiven Karte; die nächste Karte hat dieselbe
+Gruppe. Das hilft auch ohne Ebenen sofort.
 
-Gibt die Spielleitung „Fest" eine Ebene vor, auf der der Monitor nichts beobachtet, sagt das
-Bedienfeld es dazu, statt einen schwarzen Fernseher zu erzeugen, ohne dass jemand weiß warum.
+Ebenen, auf denen der Monitor durch keine Figur sehen darf, tragen im Fenster den Vermerk
+„keine Sicht", bevor man sie antippt und einen schwarzen Fernseher bekommt.
+
+### Dächer
+
+Eine zweite Hülle um `TokenLayer#_getOccludableTokens`, ebenfalls nur auf dem Monitor. Sie
+bildet Foundrys Regel für Beobachter nach, ohne die Bedingung der Anklickbarkeit: alle
+sichtbaren, nicht geheimen Figuren auf der angezeigten Ebene, dazu die Spielerfiguren, auch
+wenn der Monitor sie gerade nicht sieht. Versteckte nie, ein Loch im Dach an einer leeren
+Stelle verriete sie. Abschaltbar im Steuerungsfenster („Dächer über Spielerfiguren öffnen"),
+für den Moment, in dem ein Gebäude von außen geschlossen wirken soll.
 
 ### Der Szenen-Monitor
 
@@ -164,29 +190,41 @@ Umschalt-Fenster (Shift+B) könnte dann auch Ebenen anbieten. Das ist ein späte
   nebeneinander ginge nur mit zwei Monitoren.
 - **Die Tablets.** In der Blattansicht gibt es keine Leinwand, dort ist nichts zu wählen.
 
-## Offene Entscheidungen
+## Entscheidungen
 
-1. **Voreinstellung**: „Der Gruppe folgen" oder „Wie Foundry"? Empfehlung: Gruppe folgen. Das
-   heutige Verhalten ist genau das, was stört.
-2. **Wie lange gilt „Fest"?** Bis zur nächsten Karte, oder bis jemand „Automatisch" drückt?
-   Empfehlung: bis zur nächsten Karte. Eine vergessene Vorgabe, die in die nächste Sitzung
-   mitwandert, wäre der nächste unerklärliche Fehler.
+1. **Voreinstellung**: Autonom (26.09.2026). Das heutige Verhalten ist genau das, was stört.
+2. **Manuell gilt bis zur nächsten Karte** (26.09.2026). Eine vergessene Vorgabe, die in die
+   nächste Sitzung mitwandert, wäre der nächste unerklärliche Fehler.
 3. ~~Gleichstand~~ **entschieden 26.09.2026**: Der Monitor geht dorthin, wo zuletzt eine
    Spielerfigur bewegt oder angeklickt wurde; im Kampf dorthin, wo eine Spielerfigur am Zug
    ist. Ergänzt um die Ausnahme für Züge von Gegnern (siehe Regel 1).
 
-## Aufwand
+## Was gebaut wurde
 
-Etwa so groß wie die Begleitszenen:
-
-- Hülle um `Scene#view` auf dem Monitor, mit Gruppenrechnung und Trägheit
-- Einstellung für die Art, gemerkte Vorgabe je Szene
-- Knöpfe im Bedienfeld, Eintrag im Navigationsmenü
-- Prüfung der Beobachterrechte mit Knopf in den Monitor-Einstellungen
-- Anklicken vom Rechner der Spielleitung über den Socket an den Monitor
-- Test der Gruppenrechnung: Kampf mit Spieler- und Gegnerzug, Mehrheit, Gleichstand mit
-  letzter Bewegung und letztem Anklicken, versteckte Figuren, Monitorkonten, Szenen ohne
-  Ebenen
+- `scripts/ebenen.js`: die Regeln (`ebeneWaehlen`, ohne Foundry prüfbar), die Hüllen um
+  `Scene#view` und `TokenLayer#_getOccludableTokens`, die Beobachter auf dem Monitor, das
+  Anklicken vom Rechner der Spielleitung über den Socket, das Zurücksetzen von Manuell bei
+  einer neuen Karte, der Eintrag im Rechtsklickmenü der Navigationsleiste
+- `scripts/ebenen-fenster.js` und `templates/ebenen.hbs`: das Steuerungsfenster mit Arten,
+  Ebenen, Dach-Schalter und Prüfung der Beobachterrechte
+- drei Welteinstellungen ohne Eintrag in der Einstellungsliste: Art, Vorgabe, Dach
+- Shift+E und ein Knopf in der Zeile des Battlemap-Monitors im Bedienfeld
+- `tools/test-ebenen.mjs`, 20 Fälle: Kampf mit Spieler- und Gegnerzug, Mehrheit,
+  Gleichstand mit letzter Bewegung, versteckte Figuren, Figuren ohne Spieler, Foundry-Standard,
+  Vorgabe für diese und für eine andere Karte, Szenen mit einer Ebene
 
 Geprüft werden kann es nur mit laufendem Monitor, also an einem Abend oder mit einem zweiten
 angemeldeten Rechner als Battlemap-Monitor.
+
+### Was am Tisch zu prüfen ist
+
+1. Eine Karte mit Ebenen aktivieren (etwa „24. Warehouse - Large"). Startet der Monitor auf
+   der Ebene, auf der die Gruppe steht?
+2. Eine Figur allein aufs Dach ziehen: Der Monitor bleibt unten. Zwei weitere hinterher: Er
+   geht mit, ohne Zwischenstopp.
+3. Zwei oben, zwei unten, dann eine Figur oben anklicken: Der Monitor geht aufs Dach.
+4. Kampf beginnen. Spielerzug auf dem Dach: Dach. Gegnerzug im Keller: Der Monitor bleibt.
+5. Dächer: Steht eine Figur unter einem Dach, ist es auf dem Monitor über ihr offen?
+6. Shift+E, Manuell, eine Ebene antippen: Der Monitor wechselt und bleibt. Andere Karte
+   aktivieren: Das Fenster steht wieder auf Autonom.
+7. Nyra: Steht sie im Fenster unter den fehlenden Rechten, und verschwindet sie nach dem Knopf?

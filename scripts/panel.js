@@ -3,6 +3,7 @@
  */
 
 import { openBegleitwahl } from "./begleitwahl.js";
+import { openEbenenSteuerung } from "./ebenen-fenster.js";
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
 import { isSceneBackground } from "./blocker.js";
 import { openPullDialog } from "./pull.js";
@@ -35,7 +36,8 @@ export class InPersonPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       refreshAll: InPersonPanel.#onRefreshAll,
       togglePin: InPersonPanel.#onTogglePin,
       pullPlayers: InPersonPanel.#onPullPlayers,
-      begleitwahl: () => openBegleitwahl()
+      begleitwahl: () => openBegleitwahl(),
+      ebenen: () => openEbenenSteuerung()
     }
   };
 

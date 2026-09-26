@@ -1,0 +1,79 @@
+{{!--
+  Die Ebene des Battlemap-Monitors. Oben die Art, darunter die Ebenen der
+  aktiven Karte als Knöpfe, unten was den Fernseher schwarz machen würde.
+--}}
+<div class="inperson-body">
+
+  {{#unless hatMonitor}}
+    <p class="inperson-hint">{{localize "INPERSON.Ebenen.NoDisplay"}}</p>
+  {{else}}
+
+    {{#if monitorOffline}}
+      <p class="inperson-hint">{{localize "INPERSON.Ebenen.Offline" monitor=monitorName}}</p>
+    {{/if}}
+
+    <div class="inperson-ebenen-modi" role="group" aria-label="{{localize 'INPERSON.Ebenen.ModeLabel'}}">
+      {{#each modi}}
+        <button type="button" class="inperson-ebenen-modus{{#if this.aktiv}} is-current{{/if}}"
+                data-action="art" data-art="{{this.id}}"
+                aria-pressed="{{#if this.aktiv}}true{{else}}false{{/if}}">
+          <span class="inperson-pick-name">{{localize this.name}}</span>
+          <span class="inperson-ebenen-erklaerung">{{localize this.hint}}</span>
+        </button>
+      {{/each}}
+    </div>
+
+    {{#if vorgabeAnderswo}}
+      <p class="inperson-hint">{{localize "INPERSON.Ebenen.FixedElsewhere"}}</p>
+    {{/if}}
+
+    <h3 class="inperson-sv-sub">
+      <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+      {{#if szene}}{{szene}}{{else}}{{localize "INPERSON.Ebenen.NoScene"}}{{/if}}
+    </h3>
+
+    {{#if mehrere}}
+      <div class="inperson-ebenen-liste">
+        {{#each ebenen}}
+          <button type="button" class="inperson-ebenen-ebene{{#if this.zeigt}} is-current{{/if}}{{#if this.vorgegeben}} is-fixed{{/if}}"
+                  data-action="ebene" data-level-id="{{this.id}}"
+                  data-tooltip="{{localize 'INPERSON.Ebenen.PickTip'}}">
+            <span class="inperson-pick-name">{{this.name}}</span>
+            <span class="inperson-tag muted">{{localize "INPERSON.Ebenen.Figures" anzahl=this.figuren}}</span>
+            {{#if this.zeigt}}<em class="inperson-tag ok">{{localize "INPERSON.Ebenen.Showing"}}</em>{{/if}}
+            {{#if this.vorgegeben}}<em class="inperson-tag">{{localize "INPERSON.Ebenen.Fixed"}}</em>{{/if}}
+            {{#if this.ohneSicht}}
+              <em class="inperson-tag warn" data-tooltip="{{localize 'INPERSON.Ebenen.NoSightTip'}}">
+                <i class="fa-solid fa-eye-slash" aria-hidden="true"></i> {{localize "INPERSON.Ebenen.NoSight"}}
+              </em>
+            {{/if}}
+          </button>
+        {{/each}}
+      </div>
+    {{else}}
+      <p class="inperson-hint">{{localize "INPERSON.Ebenen.SingleLevel"}}</p>
+    {{/if}}
+
+    <label class="inperson-pick-row {{#if dachOffen}}on{{/if}}">
+      <input type="checkbox" data-action="dach" {{checked dachOffen}}>
+      <span class="inperson-pick-name">
+        {{localize "INPERSON.Ebenen.Roof"}}
+        <em>{{localize "INPERSON.Ebenen.RoofHint"}}</em>
+      </span>
+    </label>
+
+    {{#if fehlend.length}}
+      <div class="inperson-ebenen-rechte">
+        <p class="inperson-hint">
+          <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+          {{localize "INPERSON.Ebenen.Missing" monitor=monitorName}}
+          <strong>{{#each fehlend}}{{#if @index}}, {{/if}}{{this}}{{/each}}</strong>
+        </p>
+        <button type="button" class="inperson-mini" data-action="rechte">
+          <i class="fa-solid fa-eye" aria-hidden="true"></i> {{localize "INPERSON.Ebenen.GiveRights"}}
+        </button>
+      </div>
+    {{/if}}
+
+  {{/unless}}
+</div>

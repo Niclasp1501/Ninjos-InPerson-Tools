@@ -11,28 +11,35 @@
   support the work on Patreon and get premium add-ons. Only GMs see the
   window, and "Don't show again" still hides it for good.
 
-## 14.2611.79 - 2026-09-25
+## 14.2611.79 - 2026-09-26
 
 **A battlemap can have several companion scenes.** The floors of a tower, a
-square by day and by night, a house from inside and out. Until now a battlemap
-named exactly one scene for the scene display, and anything else meant finding
-it in the sidebar in the middle of a fight.
+square by day and by night, a house from inside and out. When the battlemap is
+activated, the scene display switches to the first one, as before. The others
+are one tap away: Shift+B, or the new button next to the pin in the control
+panel, opens a small window with the companions of the active map as pictures.
 
-- **The first one goes up by itself.** When the battlemap is activated, the
-  scene display switches to the first companion, as before. The order of the
-  list is the answer to "which one first"; there is no separate setting that
-  could disagree with it.
-- **The others are one tap away.** Shift+B, or the new button next to the pin
-  in the control panel, opens a small window with the companions of the active
-  map as pictures. A tap sends one to the scene display. It beats a pin, like
-  everything the gamemaster sends on purpose, and the pin moves along.
-- **A tab of its own.** The companions and the rotation moved out of "Misc"
-  into a new "At the table" tab in the scene configuration, added the way
-  Foundry intends and Lock View does too.
+**The battlemap display shows the right level.** On maps with several levels,
+Foundry made the display follow every single character that changed level, so
+one scout climbing a roof took the whole television with him. Shift+E, or the
+new button next to the battlemap display in the control panel, opens its
+controls.
+
+- **Three modes.** Automatic shows the level of the player character whose
+  turn it is in combat, otherwise the level where most player characters
+  stand, and on a tie the one last moved or selected. Foundry default behaves
+  as before. Manual shows the level you tap, until the next map.
+- **Roofs open on the display too.** Foundry only opens a roof over tokens the
+  viewer can click on, and nobody clicks on the display, so its roofs stayed
+  shut. They now open over every player character, as they do at your desk.
+- **A warning before the screen goes black.** The display only sees through
+  the eyes of characters it may observe. The controls list the player
+  characters it may not, with a button that grants the permission, and mark
+  levels on which it would see nothing.
+- **A tab of its own.** Companions and rotation moved out of "Misc" into a new
+  "At the table" tab in the scene configuration.
 - **Nothing to redo.** Every pairing made so far stays as it is; a single
-  companion is simply a list of one. The pairs on the display settings page now
-  show all companions of a map, and adding a pair for a map that already has
-  one adds a second.
+  companion is simply a list of one.
 
 ## 14.2611.78 - 2026-09-20
 

@@ -23,6 +23,10 @@ import { openTableModeSettings } from "./tablemode-settings.js";
 import { buildSceneListField } from "./scene-field.js";
 import { openBegleitwahl, installBegleitwahl } from "./begleitwahl.js";
 import {
+  ebenenHuellenEinrichten, ebenenEinrichten, ebenenFokus, ebenenEinstellungGeaendert
+} from "./ebenen.js";
+import { openEbenenSteuerung, refreshEbenenSteuerung, installEbenenSteuerung } from "./ebenen-fenster.js";
+import {
   installActorPanel, removeActorPanel, applySidebarStyle, markPopout, isDirectoryPopoutApp
 } from "./actor-panel.js";
 import { installClock, syncClock, refreshClock, bewegungAnwenden } from "./clock.js";
@@ -322,6 +326,32 @@ function registerSettings() {
     type: String,
     default: "",
     onChange: () => { applyPinnedScene(); refreshPanel(); markMonitorScenes(); }
+  });
+
+  // Die Ebene des Battlemap-Monitors, siehe ebenen.js. Alle drei nur im
+  // Steuerungsfenster, nicht in der Einstellungsliste: Man stellt sie mitten
+  // im Spiel um, nicht einmal beim Einrichten.
+  const ebenenGeaendert = () => { ebenenEinstellungGeaendert(); refreshEbenenSteuerung(); };
+  S(SETTINGS.MONITOR_LEVEL_MODE, {
+    scope: "world",
+    config: false,
+    type: String,
+    default: "autonom",
+    onChange: ebenenGeaendert
+  });
+  S(SETTINGS.MONITOR_LEVEL_FIXED, {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {},
+    onChange: ebenenGeaendert
+  });
+  S(SETTINGS.MONITOR_ROOF_OPEN, {
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: true,
+    onChange: ebenenGeaendert
   });
 
   S(SETTINGS.MONITOR_RELEASE, {
@@ -744,6 +774,10 @@ function onSocket(payload) {
     zeigenSocket(payload);
     return;
   }
+  if (payload?.type === SOCKET.LEVEL_FOCUS) {
+    ebenenFokus(payload);
+    return;
+  }
   if (payload?.type === SOCKET.SCREENSAVER) {
     if (!game.user.isGM) return;
     setScreensaverState(payload.userId, !!payload.active);
@@ -780,6 +814,20 @@ function registerKeybindings() {
     }
   });
 
+  // Shift+E fuer die Ebenen des Battlemap-Monitors. Auch hier gibt es genau
+  // ein Fenster dazu. Das blanke E belegt Foundry selbst, Shift+E nicht.
+  game.keybindings.register(MODULE_ID, "openEbenen", {
+    name: "INPERSON.Keybind.Ebenen.Name",
+    hint: "INPERSON.Keybind.Ebenen.Hint",
+    editable: [{ key: "KeyE", modifiers: ["Shift"] }],
+    restricted: true,
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
+    onDown: () => {
+      openEbenenSteuerung();
+      return true;
+    }
+  });
+
   // Shift+B fuer die Begleitszenen, nach derselben Regel wie Shift+T. Es gibt
   // genau ein offensichtliches Fenster dazu: die Begleitszenen der Karte, die
   // gerade aktiv ist.
@@ -805,6 +853,9 @@ Hooks.once("init", () => {
   // already on the wire before we get a say.
   installWrappers();
   installMonitorWrapper();
+  // Vor dem ersten Zeichnen, damit schon die Startansicht des Monitors die
+  // richtige Ebene hat: Foundry ruft beim Start selbst scene.view() auf.
+  ebenenHuellenEinrichten();
 });
 
 Hooks.once("ready", async () => {
@@ -818,7 +869,11 @@ Hooks.once("ready", async () => {
   willkommenZeigen();
 
   game.socket.on(SOCKET.NAME, onSocket);
-  if (game.user.isGM) installBegleitwahl();
+  if (game.user.isGM) {
+    installBegleitwahl();
+    installEbenenSteuerung();
+  }
+  ebenenEinrichten();
 
   game.modules.get(MODULE_ID).api = {
     openPanel,

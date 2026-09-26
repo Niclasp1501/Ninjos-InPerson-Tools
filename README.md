@@ -67,6 +67,15 @@ night, are one tap away: press Shift+B for a small window with the companions of
 and send any of them to the display. You set them up in the scene configuration, on the "At the
 table" tab. For every map without a companion of its own, you can set a default.
 
+**Maps with several levels** (a ground floor, a roof, a cellar) are handled for you too. Foundry on
+its own lets the battlemap display follow every single character that changes level, so one scout
+climbing a roof takes the whole television with him. Here the display shows the level of the
+character whose turn it is in combat, otherwise the level where most of the party stands, and on a
+tie the one you last moved or selected. Press Shift+E to switch to Foundry's own behaviour or to
+pick a level by hand. Roofs open over the player characters on the display just as they do at your
+desk, and the same window tells you if the display is missing permission to see through someone's
+eyes.
+
 Both displays are automatically exempt from map blocking, by the way. A black TV is the last
 thing you want on game night.
 
@@ -224,6 +233,15 @@ Turms oder derselbe Platz bei Nacht, sind einen Tipp entfernt: Shift+B öffnet e
 Fenster mit den Begleitszenen der aktiven Karte, und jede davon schickst du mit einem Tipp auf
 den Monitor. Eingerichtet werden sie in der Szenen-Konfiguration, im Reiter „Am Tisch“. Für
 alle Karten ohne eigene Begleitszene kannst du eine Standardszene bestimmen.
+
+**Karten mit mehreren Ebenen** (Erdgeschoss, Dach, Keller) nimmt dir das Modul ebenfalls ab.
+Foundry lässt den Battlemap-Monitor sonst jeder einzelnen Figur folgen, die die Ebene wechselt:
+Klettert einer aufs Dach, geht der ganze Fernseher mit. Hier zeigt der Monitor im Kampf die
+Ebene der Figur, die am Zug ist, sonst die, auf der die meisten Spielerfiguren stehen, und bei
+Gleichstand die, auf der du zuletzt eine bewegt oder angeklickt hast. Mit Shift+E schaltest du
+auf Foundrys eigenes Verhalten um oder gibst eine Ebene von Hand vor. Dächer öffnen sich über den
+Spielerfiguren wie bei dir am Schreibtisch, und dasselbe Fenster sagt dir, wenn dem Monitor das
+Recht fehlt, durch die Augen einer Figur zu sehen.
 
 Beide Monitore sind übrigens automatisch von der Kartensperre ausgenommen. Ein schwarzer
 Fernseher wäre schließlich das Letzte, was du an einem Spielabend brauchst.

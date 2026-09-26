@@ -1153,6 +1153,92 @@
   min-width: 0;
 }
 
+/* -------------------------------------------- */
+/*  Level of the battlemap display               */
+/* -------------------------------------------- */
+
+/* Three modes as three large buttons, each with its sentence: which one is on
+ * has to be readable from across the table, not guessed from a colour. */
+.inperson-ebenen-modi {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.inperson-ebenen-modus,
+.inperson-ebenen-ebene {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  min-height: var(--ninjo-tippziel, 44px);
+  padding: 6px 10px;
+  text-align: left;
+  border: 1px solid var(--tm-border, #7a7971);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.inperson-ebenen-modus {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.inperson-ebenen-modus:hover,
+.inperson-ebenen-modus:focus-visible,
+.inperson-ebenen-ebene:hover,
+.inperson-ebenen-ebene:focus-visible {
+  border-color: var(--ninjo-akzent, #D4AF37);
+}
+
+.inperson-ebenen-modus.is-current,
+.inperson-ebenen-ebene.is-current {
+  border-color: var(--ninjo-akzent, #D4AF37);
+  background: rgba(212, 175, 55, 0.14);
+}
+
+.inperson-ebenen-ebene.is-fixed {
+  border-width: 2px;
+}
+
+.inperson-ebenen-erklaerung {
+  font-size: 11px;
+  line-height: 1.35;
+  opacity: 0.8;
+}
+
+.inperson-ebenen-liste {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 50vh;
+  margin-bottom: 8px;
+  overflow-y: auto;
+}
+
+.inperson-ebenen-ebene .inperson-pick-name {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inperson-ebenen-rechte {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+
+/* A warning in words and icon, not colour alone. Orange rather than the red
+ * of the ordinary tag, so the two do not read as the same thing. */
+.inperson-tag.warn {
+  background: #a6521b;
+  color: #fff;
+}
+
 /* The list you can type into --------------- */
 
 .inperson-pick {
