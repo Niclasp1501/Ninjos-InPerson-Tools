@@ -26,9 +26,10 @@ among the token tools on the left opens its controls; so do Shift+O and a
 button next to the battlemap display in the control panel.
 
 - **Three modes.** Automatic shows the level of the player character whose
-  turn it is in combat, otherwise the level where most player characters
-  stand, and on a tie the one last moved or selected. Foundry default behaves
-  as before. Manual shows the level you tap, until the next map.
+  turn it is in combat, otherwise the level of the player character you last
+  selected, and until you select one, the level where most of them stand.
+  Foundry default behaves as before. Manual shows the level you tap, until the
+  next map.
 - **Roofs open on the display too.** Foundry only opens a roof over tokens the
   viewer can click on, and nobody clicks on the display, so its roofs stayed
   shut. They now open over every player character, as they do at your desk.

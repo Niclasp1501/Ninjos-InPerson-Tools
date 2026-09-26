@@ -131,7 +131,7 @@
   "INPERSON.Ebenen.OpenTip": "Control the battlemap display's level (Shift+O)",
   "INPERSON.Ebenen.ModeLabel": "How the display picks its level",
   "INPERSON.Ebenen.Mode.autonom": "Automatic",
-  "INPERSON.Ebenen.Mode.autonomHint": "In combat, where a player character has the turn. Otherwise, where most player characters stand. On a tie, where one was last moved or selected.",
+  "INPERSON.Ebenen.Mode.autonomHint": "In combat, where a player character has the turn. Otherwise the level of the player character you last selected. Until you select one on this map, where most of them stand.",
   "INPERSON.Ebenen.Mode.foundry": "Foundry default",
   "INPERSON.Ebenen.Mode.foundryHint": "As without this module: the display follows every observed token that changes level.",
   "INPERSON.Ebenen.Mode.manuell": "Manual",

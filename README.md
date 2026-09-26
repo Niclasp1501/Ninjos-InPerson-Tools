@@ -70,8 +70,8 @@ table" tab. For every map without a companion of its own, you can set a default.
 **Maps with several levels** (a ground floor, a roof, a cellar) are handled for you too. Foundry on
 its own lets the battlemap display follow every single character that changes level, so one scout
 climbing a roof takes the whole television with him. Here the display shows the level of the
-character whose turn it is in combat, otherwise the level where most of the party stands, and on a
-tie the one you last moved or selected. The layers button among the token tools on the left, or Shift+O,
+character whose turn it is in combat, otherwise the level of the player character you last selected,
+and until you select one, the level where most of the party stands. The layers button among the token tools on the left, or Shift+O,
 opens the controls to switch to Foundry's own behaviour or to pick a level by hand. Roofs open over the player characters on the display just as they do at your
 desk, and the same window tells you if the display is missing permission to see through someone's
 eyes.
@@ -237,8 +237,8 @@ alle Karten ohne eigene Begleitszene kannst du eine Standardszene bestimmen.
 **Karten mit mehreren Ebenen** (Erdgeschoss, Dach, Keller) nimmt dir das Modul ebenfalls ab.
 Foundry lässt den Battlemap-Monitor sonst jeder einzelnen Figur folgen, die die Ebene wechselt:
 Klettert einer aufs Dach, geht der ganze Fernseher mit. Hier zeigt der Monitor im Kampf die
-Ebene der Figur, die am Zug ist, sonst die, auf der die meisten Spielerfiguren stehen, und bei
-Gleichstand die, auf der du zuletzt eine bewegt oder angeklickt hast. Über den Ebenen-Knopf bei
+Ebene der Figur, die am Zug ist, sonst die Ebene der Spielerfigur, die du zuletzt angeklickt hast,
+und solange du noch keine angeklickt hast, die, auf der die meisten Spielerfiguren stehen. Über den Ebenen-Knopf bei
 den Figuren-Werkzeugen links, oder mit Shift+O, schaltest du auf Foundrys eigenes Verhalten um
 oder gibst eine Ebene von Hand vor. Dächer öffnen sich über den
 Spielerfiguren wie bei dir am Schreibtisch, und dasselbe Fenster sagt dir, wenn dem Monitor das

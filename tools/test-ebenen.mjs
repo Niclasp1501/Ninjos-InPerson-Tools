@@ -61,7 +61,7 @@ pruefe("ohne Spielerfigur keine Meinung",
 /* ── 2. Gleichstand ─────────────────────────────────────────────── */
 
 const zweiZwei = [f("a", "erd"), f("b", "erd"), f("c", "dach"), f("d", "dach")];
-pruefe("Gleichstand: zuletzt bewegt oder angeklickt gewinnt, auch gegen die angezeigte",
+pruefe("Gleichstand: zuletzt bewegt gewinnt, auch gegen die angezeigte",
   E.ebeneWaehlen({ figuren: zweiZwei, aktuell: "erd", zuletzt: "c", reihenfolge }), "dach");
 pruefe("Gleichstand ohne letzte Bewegung: bleiben",
   E.ebeneWaehlen({ figuren: zweiZwei, aktuell: "dach", reihenfolge }), "dach");
@@ -71,6 +71,25 @@ pruefe("Gleichstand vor dem ersten Zeichnen: Anfangsebene",
   E.ebeneWaehlen({ figuren: zweiZwei, aktuell: null, anfang: "dach", reihenfolge }), "dach");
 pruefe("Gleichstand, nichts bekannt: unterste",
   E.ebeneWaehlen({ figuren: zweiZwei, aktuell: "keller", reihenfolge }), "erd");
+
+/* ── 2b. Angeklickt ─────────────────────────────────────────────── */
+
+// Der Fall vom 27.09.2026: Amara unten angewählt, zwei andere oben.
+const amara = [f("eric", "dach"), f("fippo", "dach"), f("amara", "erd"), f("thorgil", "erd", false)];
+pruefe("Anklicken schlägt die Mehrheit",
+  E.ebeneWaehlen({ figuren: amara, aktuell: "dach", angeklickt: "amara", reihenfolge }), "erd");
+pruefe("ohne Anklicken die Mehrheit",
+  E.ebeneWaehlen({ figuren: amara, aktuell: "erd", reihenfolge }), "dach");
+pruefe("eine Bewegung allein schlägt die Mehrheit nicht",
+  E.ebeneWaehlen({ figuren: amara, aktuell: "dach", zuletzt: "amara", reihenfolge }), "dach");
+pruefe("angeklickte Figur wandert hoch: der Monitor geht mit",
+  E.ebeneWaehlen({ figuren: [f("a", "erd"), f("b", "erd"), f("c", "dach")], aktuell: "erd", angeklickt: "c", reihenfolge }), "dach");
+pruefe("angeklickter Gegner zählt nicht",
+  E.ebeneWaehlen({ figuren: amara, aktuell: "dach", angeklickt: "thorgil", reihenfolge }), "dach");
+pruefe("angeklickte, inzwischen versteckte Figur zählt nicht",
+  E.ebeneWaehlen({ figuren: [f("a", "dach"), f("b", "erd", true, true)], aktuell: "dach", angeklickt: "b", reihenfolge }), "dach");
+pruefe("im Kampf zählt, wer dran ist, nicht wer angeklickt ist",
+  E.ebeneWaehlen({ figuren: amara, aktuell: "erd", angeklickt: "amara", amZug: f("eric", "dach"), reihenfolge }), "dach");
 
 /* ── 3. Kampf ───────────────────────────────────────────────────── */
 

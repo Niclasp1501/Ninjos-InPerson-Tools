@@ -75,12 +75,23 @@ erste Regel, die greift, gilt:
    Zug, zeigt der Monitor deren Ebene. Ist ein Gegner am Zug, bleibt er, wo er ist: Steht der
    Gegner auf einer Ebene ohne Spielerfigur, sähe der Monitor dort nichts, weil er nur durch
    die Augen der Spielerfiguren sieht, und der Fernseher wäre für einen ganzen Zug schwarz.
-2. **Sonst die Mehrheit.** Die Ebene, auf der die meisten Spielerfiguren stehen. Klettert einer
-   von vier aufs Dach, bleibt der Monitor unten; folgen ihm zwei weitere, geht er mit.
-3. **Bei Gleichstand: wo zuletzt etwas passiert ist.** Die Ebene der Spielerfigur, die zuletzt
-   bewegt oder von der Spielleitung angeklickt wurde. Zwei oben, zwei unten, und die
-   Spielleitung wählt eine Figur auf dem Dach an: Der Monitor geht aufs Dach.
-4. **Weiß er nichts davon**, bleibt er, wo er ist.
+2. **Sonst die angeklickte Figur.** Die Ebene der Spielerfigur, die die Spielleitung zuletzt
+   angeklickt hat. Wandert sie auf eine andere Ebene, geht der Monitor mit.
+3. **Hat sie noch keine angeklickt, die Mehrheit.** Die Ebene, auf der die meisten
+   Spielerfiguren stehen. Klettert einer von vier aufs Dach, bleibt der Monitor unten; folgen
+   ihm zwei weitere, geht er mit.
+4. **Bei Gleichstand: die zuletzt bewegte Figur**, dann die angezeigte Ebene.
+5. **Weiß er nichts davon**, bleibt er, wo er ist.
+
+**Geändert am 27.09.2026:** In der ersten Fassung zählte das Anklicken nur bei Gleichstand.
+Am Tisch wählte die Spielleitung Amara auf dem Main Deck an, Eric und Fippo standen oben, und
+der Fernseher blieb oben. Wer eine Figur gezielt anwählt, will ihre Ebene sehen. Bewegungen
+bleiben schwach, sonst nähme ein Späher wie bei Foundry den ganzen Fernseher mit.
+
+**Nie ein schwarzes Bild** (ebenfalls 27.09.2026): Was die Regeln auch wählen, und auch eine
+von Hand vorgegebene Ebene, der Monitor bleibt nie auf einer Ebene, auf der er nichts sieht,
+solange er auf einer anderen etwas sieht. Anlass: Er stand auf „Manuell, Main Deck", die
+Gruppe ging die Treppe hoch, und mit eingeschalteter Token-Sicht war der Fernseher schwarz.
 
 Gewechselt wird erst, wenn eine Bewegung zu Ende ist, nie mittendrin. Die Mehrheit allein
 würde bei Gleichstand stehen bleiben, auch wenn das Geschehen längst oben ist; die letzte

@@ -65,17 +65,20 @@ export const MODI = ["autonom", "foundry", "manuell"];
  *      ein Gegner am Zug, bleibt der Monitor, wo er ist: Er sieht nur durch die
  *      Augen der Spielerfiguren, und auf einer Ebene, auf der nur der Gegner
  *      steht, wäre der Fernseher für den ganzen Zug schwarz.
- *   2. Sonst die Mehrheit der Spielerfiguren. Klettert einer von vier hoch,
- *      bleibt der Monitor unten.
- *   3. Bei Gleichstand, wo zuletzt etwas passiert ist: die Ebene der
- *      Spielerfigur, die zuletzt bewegt oder angeklickt wurde. Dann die
- *      angezeigte, dann die Anfangsebene der Szene, dann die unterste.
- *   4. Ohne Spielerfigur auf der Karte keine Meinung.
+ *   2. Sonst die Spielerfigur, die die Spielleitung zuletzt angeklickt hat.
+ *      Wandert sie später auf eine andere Ebene, geht der Monitor mit.
+ *   3. Hat sie auf dieser Karte noch keine angeklickt, die Mehrheit der
+ *      Spielerfiguren. Klettert einer von vier hoch, bleibt der Monitor unten.
+ *   4. Bei Gleichstand die Ebene der Spielerfigur, die zuletzt bewegt wurde.
+ *      Dann die angezeigte, dann die Anfangsebene der Szene, dann die unterste.
+ *   5. Ohne Spielerfigur auf der Karte keine Meinung.
  *
- * Mehrheit allein bliebe bei Gleichstand stehen, auch wenn das Geschehen
- * längst oben ist. Die letzte Bewegung allein wäre genau Foundrys Verhalten,
- * bei dem ein einzelner Späher den ganzen Fernseher mitnimmt. Erst zusammen
- * ergeben sie, was man am Tisch erwartet.
+ * **Das Anklicken schlägt die Mehrheit.** In der ersten Fassung (26.09.2026)
+ * zählte es nur bei Gleichstand. Am Tisch hieß das: Die Spielleitung wählt
+ * Amara an, zwei andere stehen oben, und der Fernseher bleibt oben. Wer eine
+ * Figur gezielt anwählt, will ihre Ebene sehen. Bewegungen dagegen bleiben
+ * schwach, denn sonst nähme ein einzelner Späher wie bei Foundry den ganzen
+ * Fernseher mit, ohne dass jemand das wollte.
  *
  * Reine Funktion ohne Foundry, damit tools/test-ebenen.mjs sie prüfen kann.
  *
@@ -83,13 +86,14 @@ export const MODI = ["autonom", "foundry", "manuell"];
  * @param {{id: string, ebene: string|null, spieler: boolean, versteckt: boolean}[]} lage.figuren
  * @param {string|null} [lage.aktuell]     angezeigte Ebene, null vor dem ersten Zeichnen
  * @param {{id: string, ebene: string|null, spieler: boolean, versteckt: boolean}|null} [lage.amZug]
- * @param {string|null} [lage.zuletzt]     Figur, die zuletzt bewegt oder angeklickt wurde
+ * @param {string|null} [lage.angeklickt]  Figur, die die Spielleitung zuletzt angeklickt hat
+ * @param {string|null} [lage.zuletzt]     Figur, die zuletzt bewegt wurde
  * @param {string|null} [lage.anfang]      Anfangsebene der Szene
  * @param {string[]} [lage.reihenfolge]    alle Ebenen, unterste zuerst
  * @returns {string|null} Ebenen-Id, oder null für „keine Meinung"
  */
-export function ebeneWaehlen({ figuren = [], aktuell = null, amZug = null, zuletzt = null,
-  anfang = null, reihenfolge = [] } = {}) {
+export function ebeneWaehlen({ figuren = [], aktuell = null, amZug = null, angeklickt = null,
+  zuletzt = null, anfang = null, reihenfolge = [] } = {}) {
 
   // 1. Kampf
   if (amZug) {
@@ -97,7 +101,11 @@ export function ebeneWaehlen({ figuren = [], aktuell = null, amZug = null, zulet
     if (aktuell) return aktuell;
   }
 
-  // 2. Mehrheit
+  // 2. Angeklickt
+  const gewaehlt = figuren.find(f => f.id === angeklickt && f.spieler && !f.versteckt && f.ebene);
+  if (gewaehlt) return gewaehlt.ebene;
+
+  // 3. Mehrheit
   const zaehlung = new Map();
   for (const figur of figuren) {
     if (!figur.spieler || figur.versteckt || !figur.ebene) continue;
@@ -108,7 +116,7 @@ export function ebeneWaehlen({ figuren = [], aktuell = null, amZug = null, zulet
   const gleichauf = [...zaehlung].filter(([, anzahl]) => anzahl === hoechste).map(([ebene]) => ebene);
   if (gleichauf.length === 1) return gleichauf[0];
 
-  // 3. Gleichstand
+  // 4. Gleichstand
   const letzte = figuren.find(f => f.id === zuletzt && f.spieler && !f.versteckt);
   if (letzte && gleichauf.includes(letzte.ebene)) return letzte.ebene;
   if (aktuell && gleichauf.includes(aktuell)) return aktuell;
@@ -170,8 +178,11 @@ function amZugAuf(scene) {
   return null;
 }
 
-/** Zuletzt bewegte oder angeklickte Spielerfigur, je Szene. Nur auf dem Monitor gefüllt. */
+/** Zuletzt bewegte Spielerfigur, je Szene. Nur auf dem Monitor gefüllt. */
 const zuletzt = new Map();
+
+/** Zuletzt von der Spielleitung angeklickte Spielerfigur, je Szene. Nur auf dem Monitor. */
+const angeklickt = new Map();
 
 /* ── Die Einstellungen ──────────────────────────────────────────── */
 
@@ -225,6 +236,7 @@ export function zielEbene(scene, aktuell = null) {
     figuren: scene.tokens.map(t => figurAlsLage(t)),
     aktuell,
     amZug: amZugAuf(scene),
+    angeklickt: angeklickt.get(scene.id) ?? null,
     zuletzt: zuletzt.get(scene.id) ?? null,
     anfang: scene.initialLevel?.id ?? null,
     reihenfolge
@@ -361,7 +373,7 @@ function jetztAnwenden() {
 /** Die Spielleitung hat eine Spielerfigur angeklickt (über den Socket). */
 export function ebenenFokus({ sceneId, tokenId } = {}) {
   if (!istMonitor() || !sceneId || !tokenId) return;
-  zuletzt.set(sceneId, tokenId);
+  angeklickt.set(sceneId, tokenId);
   if (sceneId === canvas?.scene?.id) ebeneAnwenden(150);
 }
 

@@ -131,7 +131,7 @@
   "INPERSON.Ebenen.OpenTip": "Ebene des Battlemap-Monitors steuern (Shift+O)",
   "INPERSON.Ebenen.ModeLabel": "Wie der Monitor seine Ebene wählt",
   "INPERSON.Ebenen.Mode.autonom": "Autonom",
-  "INPERSON.Ebenen.Mode.autonomHint": "Im Kampf, wo eine Spielerfigur am Zug ist. Sonst, wo die meisten Spielerfiguren stehen. Bei Gleichstand, wo zuletzt eine bewegt oder angeklickt wurde.",
+  "INPERSON.Ebenen.Mode.autonomHint": "Im Kampf, wo eine Spielerfigur am Zug ist. Sonst die Ebene der Spielerfigur, die du zuletzt angeklickt hast. Hast du auf dieser Karte noch keine angeklickt, wo die meisten stehen.",
   "INPERSON.Ebenen.Mode.foundry": "Foundry-Standard",
   "INPERSON.Ebenen.Mode.foundryHint": "Wie ohne dieses Modul: Der Monitor folgt jeder beobachteten Figur, die die Ebene wechselt.",
   "INPERSON.Ebenen.Mode.manuell": "Manuell",
