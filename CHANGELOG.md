@@ -16,9 +16,10 @@
 **A battlemap can have several companion scenes.** The floors of a tower, a
 square by day and by night, a house from inside and out. When the battlemap is
 activated, the scene display switches to the first one, as before. The others
-are one tap away in a small window with the companions of the active map as
-pictures. It opens by itself when such a map is activated, and from a new
-button among the token tools on the left, Shift+B or the control panel.
+are one click away in a small docked bar at the edge of the screen: faint at
+rest, it lights up on hover and shows the companions of the active map as
+pictures. It only appears on maps with at least two companions and can be
+dragged anywhere.
 Companions and rotation moved out of "Misc" into a new "At the table" tab of
 the scene configuration.
 

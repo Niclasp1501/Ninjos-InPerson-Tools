@@ -1239,6 +1239,94 @@
   color: #fff;
 }
 
+/* -------------------------------------------- */
+/*  Companion bar: a small docked palette        */
+/* -------------------------------------------- */
+
+/*
+ * At rest one faint icon at the edge of the gamemaster's screen, in the manner
+ * of the pinned palettes other modules put there. Hovering lights it up and
+ * unfolds the companions of the active map as small pictures. Dark on purpose,
+ * like those palettes, so it sits on the map rather than on a window.
+ */
+.inperson-begleitleiste {
+  position: fixed;
+  top: 10px;
+  left: 90px;
+  z-index: 70;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  background: rgba(20, 16, 12, 0.85);
+  color: #f0e6d2;
+  opacity: 0.35;
+  transition: opacity 0.15s ease;
+}
+
+.inperson-begleitleiste:hover,
+.inperson-begleitleiste:focus-within,
+.inperson-begleitleiste.wird-gezogen {
+  opacity: 1;
+}
+
+.inperson-begleitleiste-griff {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.inperson-begleitleiste.wird-gezogen .inperson-begleitleiste-griff {
+  cursor: grabbing;
+}
+
+/* Folded away until hovered: at rest only the icon takes space. */
+.inperson-begleitleiste-reihe {
+  display: none;
+  gap: 4px;
+}
+
+.inperson-begleitleiste:hover .inperson-begleitleiste-reihe,
+.inperson-begleitleiste:focus-within .inperson-begleitleiste-reihe {
+  display: flex;
+}
+
+.inperson-begleitleiste-szene {
+  flex: 0 0 auto;
+  width: 64px;
+  height: 44px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  background: #000;
+  cursor: pointer;
+}
+
+.inperson-begleitleiste-szene img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: none;
+}
+
+.inperson-begleitleiste-szene:hover,
+.inperson-begleitleiste-szene:focus-visible {
+  border-color: rgba(212, 175, 55, 0.6);
+}
+
+.inperson-begleitleiste-szene.is-current {
+  border-color: var(--ninjo-akzent, #D4AF37);
+}
+
 /* The list you can type into --------------- */
 
 .inperson-pick {

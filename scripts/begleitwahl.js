@@ -19,18 +19,15 @@
  * mit: Der Monitor bleibt danach auf der neuen Szene stehen, bis wieder etwas
  * anderes kommt.
  *
- * **Es geht von selbst auf, sobald es etwas zu wählen gibt**: wenn eine Karte
- * mit mindestens zwei Begleitszenen aktiv wird, und beim Start, wenn eine
- * solche Karte schon aktiv ist. Die erste Fassung ging nie von selbst auf, aus
- * Sorge, im entscheidenden Moment über der Karte zu liegen. Am Tisch hieß das
- * am 29.09.2026: Die Spielleitung aktivierte eine Karte mit mehreren
- * Begleitszenen und fand kein Fenster, weil sie Shift+B nicht kannte. Ein
- * Werkzeug, das man nicht findet, ist nicht da. Es liegt am Schreibtisch der
- * Spielleitung, nicht auf dem Fernseher, und ist klein.
+ * **Umgeschaltet wird im Spiel über die Begleitleiste** (begleitleiste.js),
+ * eine kleine angedockte Leiste. Dieses Fenster ist der Überblick dahinter und
+ * geht nicht von selbst auf. Am 29.09.2026 tat es das einen Abend lang, und es
+ * war der Spielleitung zu groß.
  *
- * Außerdem geöffnet über den Knopf bei den Figuren-Werkzeugen links, über
- * Shift+B und über den Knopf am Szenen-Monitor im Bedienfeld. Einmal offen,
- * folgt es der aktiven Karte von selbst.
+ * Geöffnet über den Knopf bei den Figuren-Werkzeugen links und über den Knopf
+ * am Szenen-Monitor im Bedienfeld. Ein Tastenkürzel ist registriert, aber ohne
+ * Taste: Shift+B hatte die Spielleitung längst für etwas anderes belegt. Einmal
+ * offen, folgt es der aktiven Karte von selbst.
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
@@ -125,11 +122,6 @@ class Begleitwahl extends HandlebarsApplicationMixin(ApplicationV2) {
 
 let fenster = null;
 
-/** Gibt es auf dieser Karte etwas umzuschalten? */
-function mehrereBegleiter(szene) {
-  return !!szene && getCompanionScenes(szene).length >= 2 && !!getSceneDisplay();
-}
-
 /**
  * Ein Knopf bei den Figuren-Werkzeugen der linken Leiste. Bei `init`, weil
  * Foundry die Leiste einmal aufbaut und den Hook nur dabei abfragt.
@@ -169,11 +161,9 @@ export function openBegleitwahl() {
 export function installBegleitwahl() {
   const neu = () => { if (fenster?.rendered) fenster.render(); };
   Hooks.on("updateScene", (szene, changes) => {
-    if (changes.active === true && mehrereBegleiter(szene)) openBegleitwahl();
     if ("active" in changes || changes.flags?.[MODULE_ID] !== undefined || "name" in changes || "thumb" in changes) neu();
   });
-  // Schon beim Start eine solche Karte aktiv: gleich zeigen.
-  if (mehrereBegleiter(game.scenes?.active)) openBegleitwahl();
+
   Hooks.on("createScene", neu);
   Hooks.on("deleteScene", neu);
   Hooks.on("updateSetting", setting => {

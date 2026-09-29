@@ -198,7 +198,7 @@ für den Moment, in dem ein Gebäude von außen geschlossen wirken soll.
 Derselbe Mechanismus passt auf den Szenen-Monitor. Dort spielt er heute kaum eine Rolle, weil
 Begleitszenen selten Figuren tragen. Eine Verbindung gibt es aber: Die Stockwerke eines Turms
 können künftig Ebenen einer einzigen Szene sein statt mehrerer Begleitszenen, und das
-Umschalt-Fenster (Shift+B) könnte dann auch Ebenen anbieten. Das ist ein späterer Schritt.
+die Begleitleiste könnte dann auch Ebenen anbieten. Das ist ein späterer Schritt.
 
 ### Bewusst nicht
 

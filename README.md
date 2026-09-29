@@ -63,8 +63,8 @@ returns to its own scene.
 **Companion scenes** make it really comfortable. Decide once which scenes the scene display should
 show with a particular battlemap, and from then on it switches to the first of them by itself
 whenever you activate that map. The others, say the upper floor of a tower or the same square at
-night, are one tap away: press Shift+B for a small window with the companions of the active map
-and send any of them to the display. You set them up in the scene configuration, on the "At the
+night, are one click away: a small bar docked at the edge of your screen lights up when you hover
+over it and shows the companions of the active map, and a click sends one to the display. You set them up in the scene configuration, on the "At the
 table" tab. For every map without a companion of its own, you can set a default.
 
 **Maps with several levels** (a ground floor, a roof, a cellar) are handled for you too. Foundry on
@@ -230,9 +230,9 @@ zurück.
 Besonders bequem wird es mit **Begleitszenen**. Du legst einmal fest, welche Szenen der
 Szenen-Monitor zu einer bestimmten Battlemap zeigen soll, und ab dann wechselt er beim
 Aktivieren der Karte von selbst auf die erste. Die übrigen, etwa das obere Stockwerk eines
-Turms oder derselbe Platz bei Nacht, sind einen Tipp entfernt: Shift+B öffnet ein kleines
-Fenster mit den Begleitszenen der aktiven Karte, und jede davon schickst du mit einem Tipp auf
-den Monitor. Eingerichtet werden sie in der Szenen-Konfiguration, im Reiter „Am Tisch“. Für
+Turms oder derselbe Platz bei Nacht, sind einen Klick entfernt: Eine kleine Leiste am Rand
+deines Bildschirms wird hell, wenn du mit der Maus darüberfährst, und zeigt die Begleitszenen
+der aktiven Karte; ein Klick schickt eine davon auf den Monitor. Eingerichtet werden sie in der Szenen-Konfiguration, im Reiter „Am Tisch“. Für
 alle Karten ohne eigene Begleitszene kannst du eine Standardszene bestimmen.
 
 **Karten mit mehreren Ebenen** (Erdgeschoss, Dach, Keller) nimmt dir das Modul ebenfalls ab.

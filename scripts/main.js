@@ -24,6 +24,7 @@ import { openDisplaySettings } from "./displays-settings.js";
 import { openTableModeSettings } from "./tablemode-settings.js";
 import { buildSceneListField } from "./scene-field.js";
 import { openBegleitwahl, installBegleitwahl, begleitwahlKnopfEinrichten } from "./begleitwahl.js";
+import { installBegleitleiste } from "./begleitleiste.js";
 import {
   ebenenHuellenEinrichten, ebenenEinrichten, ebenenFokus, ebenenEinstellungGeaendert
 } from "./ebenen.js";
@@ -844,13 +845,14 @@ function registerKeybindings() {
     }
   });
 
-  // Shift+B fuer die Begleitszenen, nach derselben Regel wie Shift+T. Es gibt
-  // genau ein offensichtliches Fenster dazu: die Begleitszenen der Karte, die
-  // gerade aktiv ist.
+  // Der Ueberblick ueber die Begleitszenen. Umgeschaltet wird im Spiel ueber
+  // die Begleitleiste (begleitleiste.js); das Kuerzel bleibt fuer wer es will.
   game.keybindings.register(MODULE_ID, "openBegleitwahl", {
     name: "INPERSON.Keybind.Begleitwahl.Name",
     hint: "INPERSON.Keybind.Begleitwahl.Hint",
-    editable: [{ key: "KeyB", modifiers: ["Shift"] }],
+    // Ohne Voreinstellung: Shift+B war bei der Spielleitung schon vergeben
+    // (29.09.2026). Wer ein Kürzel will, legt es in Foundrys Tastenkürzeln fest.
+    editable: [],
     restricted: true,
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
     onDown: () => {
@@ -891,6 +893,7 @@ Hooks.once("ready", async () => {
   game.socket.on(SOCKET.NAME, onSocket);
   if (game.user.isGM) {
     installBegleitwahl();
+    installBegleitleiste();
     installEbenenSteuerung();
   }
   ebenenEinrichten();
