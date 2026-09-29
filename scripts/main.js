@@ -23,7 +23,7 @@ import { installScreensaver } from "./screensaver.js";
 import { openDisplaySettings } from "./displays-settings.js";
 import { openTableModeSettings } from "./tablemode-settings.js";
 import { buildSceneListField } from "./scene-field.js";
-import { openBegleitwahl, installBegleitwahl } from "./begleitwahl.js";
+import { openBegleitwahl, installBegleitwahl, begleitwahlKnopfEinrichten } from "./begleitwahl.js";
 import {
   ebenenHuellenEinrichten, ebenenEinrichten, ebenenFokus, ebenenEinstellungGeaendert
 } from "./ebenen.js";
@@ -875,6 +875,7 @@ Hooks.once("init", () => {
   // Foundry baut die Werkzeugleiste einmal auf und fragt dabei den Hook ab;
   // wer erst bei "ready" kommt, fehlt bis zum naechsten Neuaufbau.
   ebenenKnopfEinrichten();
+  begleitwahlKnopfEinrichten();
 });
 
 Hooks.once("ready", async () => {

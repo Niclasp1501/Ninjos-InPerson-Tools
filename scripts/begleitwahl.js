@@ -19,10 +19,18 @@
  * mit: Der Monitor bleibt danach auf der neuen Szene stehen, bis wieder etwas
  * anderes kommt.
  *
- * **Es geht nicht von selbst auf.** Ein Fenster, das beim Aktivieren einer
- * Karte aufspringt, liegt im entscheidenden Moment über der Karte. Geöffnet
- * wird es über Shift+B oder den Knopf am Szenen-Monitor im Bedienfeld; einmal
- * offen, folgt es der aktiven Karte von selbst.
+ * **Es geht von selbst auf, sobald es etwas zu wählen gibt**: wenn eine Karte
+ * mit mindestens zwei Begleitszenen aktiv wird, und beim Start, wenn eine
+ * solche Karte schon aktiv ist. Die erste Fassung ging nie von selbst auf, aus
+ * Sorge, im entscheidenden Moment über der Karte zu liegen. Am Tisch hieß das
+ * am 29.09.2026: Die Spielleitung aktivierte eine Karte mit mehreren
+ * Begleitszenen und fand kein Fenster, weil sie Shift+B nicht kannte. Ein
+ * Werkzeug, das man nicht findet, ist nicht da. Es liegt am Schreibtisch der
+ * Spielleitung, nicht auf dem Fernseher, und ist klein.
+ *
+ * Außerdem geöffnet über den Knopf bei den Figuren-Werkzeugen links, über
+ * Shift+B und über den Knopf am Szenen-Monitor im Bedienfeld. Einmal offen,
+ * folgt es der aktiven Karte von selbst.
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
@@ -117,6 +125,31 @@ class Begleitwahl extends HandlebarsApplicationMixin(ApplicationV2) {
 
 let fenster = null;
 
+/** Gibt es auf dieser Karte etwas umzuschalten? */
+function mehrereBegleiter(szene) {
+  return !!szene && getCompanionScenes(szene).length >= 2 && !!getSceneDisplay();
+}
+
+/**
+ * Ein Knopf bei den Figuren-Werkzeugen der linken Leiste. Bei `init`, weil
+ * Foundry die Leiste einmal aufbaut und den Hook nur dabei abfragt.
+ */
+export function begleitwahlKnopfEinrichten() {
+  Hooks.on("getSceneControlButtons", controls => {
+    const werkzeuge = controls?.tokens?.tools;
+    if (!werkzeuge || !game.user?.isGM) return;
+    werkzeuge.inpersonBegleitwahl = {
+      name: "inpersonBegleitwahl",
+      order: Object.keys(werkzeuge).length + 1,
+      title: "INPERSON.Begleitwahl.OpenTip",
+      icon: "fa-solid fa-images",
+      visible: !!getSceneDisplay(),
+      button: true,
+      onChange: () => openBegleitwahl()
+    };
+  });
+}
+
 /** Das Fenster öffnen, oder nach vorn holen, wenn es schon offen ist. */
 export function openBegleitwahl() {
   if (!game.user.isGM) return;
@@ -136,8 +169,11 @@ export function openBegleitwahl() {
 export function installBegleitwahl() {
   const neu = () => { if (fenster?.rendered) fenster.render(); };
   Hooks.on("updateScene", (szene, changes) => {
+    if (changes.active === true && mehrereBegleiter(szene)) openBegleitwahl();
     if ("active" in changes || changes.flags?.[MODULE_ID] !== undefined || "name" in changes || "thumb" in changes) neu();
   });
+  // Schon beim Start eine solche Karte aktiv: gleich zeigen.
+  if (mehrereBegleiter(game.scenes?.active)) openBegleitwahl();
   Hooks.on("createScene", neu);
   Hooks.on("deleteScene", neu);
   Hooks.on("updateSetting", setting => {
