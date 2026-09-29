@@ -541,7 +541,16 @@ export async function applyPinnedScene() {
   // sit on the battlemap until the next activation happened along.
   const active = game.scenes?.active;
   if (!active) return;
-  const target = resolveDisplayTarget(active);
+
+  // A companion the gamemaster picked by hand wins over the first one. Picking
+  // stores the scene, and storing lands here; answering with the first
+  // companion sent the display back for a moment before the actual pull
+  // arrived - "it always goes back to the first picture once", reported from
+  // the table on 2026-09-29. The same choice also survives a reload now.
+  const chosen = getPinnedScene();
+  const target = chosen && getCompanionScenes(active).some(s => s.id === chosen.id)
+    ? chosen
+    : resolveDisplayTarget(active);
   if (typeof target === "symbol" || canvas?.scene?.id === target.id) return;
   await target.view();
 }
