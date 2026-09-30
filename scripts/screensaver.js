@@ -23,14 +23,25 @@
  * up the cover lifts, the scene is there to be looked at, and once the room has
  * been quiet for the waiting time again it returns.
  *
- * What counts as quiet: nothing heard from anybody who is not a display account,
- * leaving out plain mouse movement (see onUserActivity). `userActivity` carries
- * scene changes, rulers, pings and targets; the hooks carry tokens, chat and
- * combat.
+ * **The clock runs on the picture, not on the room.** What burns into an OLED
+ * is whatever stands in the same pixels, the edges of a map, a frame, a title,
+ * and the panel does not care whether somebody at the table moved the mouse
+ * meanwhile. So the waiting time runs from the moment the display got its
+ * current picture, and it is reset only when the display really gets a new
+ * one: the gamemaster sends another scene, a map is activated and its
+ * companion comes up. The screensaver's own switches do not count, or it would
+ * keep resetting itself.
+ *
+ * Until 2026-09-30 it waited for quiet in the room instead: no activity from
+ * anyone but the displays. Foundry reports every mouse move over the canvas as
+ * activity, so at a desk where the gamemaster was working the screensaver
+ * never came on, and even without that it only ever protected the panel in
+ * breaks. Ninjo: "an OLED screensaver has to change the picture after the set
+ * time, so that edges and the like do not burn in".
  */
 
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
-import { isSceneDisplay, isMonitorUser } from "./state.js";
+import { isSceneDisplay } from "./state.js";
 import { applyPinnedScene } from "./monitor.js";
 
 /** How often the state is reconsidered. A clock in minutes needs no finer tick. */
@@ -44,8 +55,18 @@ const TICK_MS = 10_000;
 const DRIFT_MS = 25_000;
 
 let _timer = null;
-let _lastActivity = Date.now();
+/** When the display got the picture it shows now, not counting our own switches. */
+let _pictureSince = Date.now();
 let _announced = null;
+
+/**
+ * Set just before the screensaver moves the display itself, so the canvasReady
+ * that follows is not mistaken for a new picture from the gamemaster. Cleared
+ * by that canvasReady, or after a while if the move turned out not to change
+ * the scene at all.
+ */
+let _ownMoveUntil = 0;
+const OWN_MOVE_MS = 15_000;
 
 /** Scene mode: when the last swap happened, and how far through the folder. */
 let _rotatedAt = 0;
@@ -86,37 +107,33 @@ function screensaverScene() {
 }
 
 /* -------------------------------------------- */
-/*  Activity                                     */
+/*  The picture                                  */
 /* -------------------------------------------- */
 
-function noteActivity() {
-  _lastActivity = Date.now();
+/** Mark the next scene change as the screensaver's own. */
+function ownMove() {
+  _ownMoveUntil = Date.now() + OWN_MOVE_MS;
 }
 
 /**
- * Activity from anyone who is not a display.
- *
- * Reading the sender rather than trusting the message matters: the displays
- * broadcast too - every scene the screensaver switches to sends one - and
- * counting our own chatter would mean it keeps waking itself up.
- *
- * **A moving mouse is not activity.** Foundry broadcasts on every mouse move
- * over the canvas, with the cursor position or with nothing at all
- * (`ControlsLayer#_onMouseMove`). Counted as activity, the screensaver never
- * came on while the gamemaster sat at the desk working in Foundry - reported
- * on 2026-09-30. The cursor changes nothing on the television. What does count
- * is everything else the same message carries: a scene change, a ruler, a
- * ping, targets. Moved tokens, chat and combat arrive through the hooks in
- * installScreensaver.
- * @param {string} userId
- * @param {object} [activity]
+ * The display drew a scene. From the gamemaster, it is a new picture and the
+ * clock starts over, with whatever the screensaver was doing dropped where it
+ * stands: sending the display back to "its" scene now would undo what the
+ * gamemaster just sent. From the screensaver itself, nothing changes.
  */
-function onUserActivity(userId, activity) {
-  const user = game.users?.get(userId);
-  if (!user || isMonitorUser(user)) return;
-  const inhalt = Object.keys(activity ?? {}).filter(k => k !== "cursor");
-  if (!inhalt.length) return;
-  noteActivity();
+function onCanvasReady() {
+  if (Date.now() < _ownMoveUntil) {
+    _ownMoveUntil = 0;
+    return;
+  }
+  _pictureSince = Date.now();
+  setCovered(false);
+  announce(false);
+  _index = 0;
+  _rotatedAt = 0;
+  _uncoveredSince = 0;
+  _showingSince = 0;
+  _returnedAt = 0;
 }
 
 /* -------------------------------------------- */
@@ -225,6 +242,7 @@ async function wakeUp() {
   _uncoveredSince = 0;
   _showingSince = 0;
   _returnedAt = 0;
+  ownMove();
   await applyPinnedScene();
 }
 
@@ -249,6 +267,7 @@ async function alternateScene(now, scene) {
     _showingSince = 0;
     _returnedAt = now;
     console.debug(`${MODULE_ID} | Screensaver hands back to the display's own scene.`);
+    ownMove();
     await applyPinnedScene();
     return;
   }
@@ -258,6 +277,7 @@ async function alternateScene(now, scene) {
   _showingSince = now;
   if (canvas?.scene?.id !== scene.id) {
     console.debug(`${MODULE_ID} | Screensaver shows "${scene.name}".`);
+    ownMove();
     await scene.view();
   }
 }
@@ -275,6 +295,7 @@ async function rotateScenes(now) {
   _rotatedAt = now;
   if (canvas?.scene?.id !== next.id) {
     console.debug(`${MODULE_ID} | Screensaver shows "${next.name}".`);
+    ownMove();
     await next.view();
   }
 }
@@ -283,7 +304,7 @@ async function rotateScenes(now) {
  * The cover, coming and going: up for its time, down for the waiting time, up
  * again for as long as the room stays quiet.
  * @param {number} now
- * @param {number} quietSince Timestamp at which quiet was first established
+ * @param {number} quietSince When the waiting time for the current picture ran out
  */
 function updateCover(now, quietSince) {
   if (isCovered()) {
@@ -296,11 +317,13 @@ function updateCover(now, quietSince) {
     return;
   }
 
-  // Down. The wait runs from the last uncovering, or from the moment quiet
-  // began if the cover has not been up yet this time round.
+  // Down. The first time round the waiting time is already over - that is why
+  // we are here at all. Measuring it once more from `quietSince` put the first
+  // cover at twice the set time. After that, the wait runs from the last
+  // uncovering.
+  if (!_uncoveredSince) return setCovered(true);
   const wait = Math.max(1, minutes(SETTINGS.IDLE_AFTER)) * 60_000;
-  const since = _uncoveredSince || quietSince;
-  if (now - since >= wait) setCovered(true);
+  if (now - _uncoveredSince >= wait) setCovered(true);
 }
 
 async function tick() {
@@ -309,8 +332,8 @@ async function tick() {
 
   const idleAfter = Math.max(1, minutes(SETTINGS.IDLE_AFTER));
   const now = Date.now();
-  const quietSince = _lastActivity + idleAfter * 60_000;
-  if (now < quietSince) return await wakeUp();
+  const quietSince = _pictureSince + idleAfter * 60_000;
+  if (now < quietSince) return;
 
   announce(true);
 
@@ -372,12 +395,8 @@ export function previewCover(seconds = 8, logo) {
 export function installScreensaver() {
   if (!isSceneDisplay(game.user)) return;
 
-  game.socket.on("userActivity", onUserActivity);
-  for (const hook of ["updateScene", "createChatMessage", "updateToken", "updateCombat"]) {
-    Hooks.on(hook, () => noteActivity());
-  }
-
-  _lastActivity = Date.now();
+  Hooks.on("canvasReady", onCanvasReady);
+  _pictureSince = Date.now();
   _timer = setInterval(() => tick().catch(error => {
     console.error(`${MODULE_ID} | Screensaver tick failed.`, error);
   }), TICK_MS);

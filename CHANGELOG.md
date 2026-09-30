@@ -39,9 +39,11 @@ button next to the battlemap display in the control panel.
 - **Roofs open on the display too.** Foundry only opens a roof over tokens the
   viewer can click on, and nobody clicks on the display, so its roofs stayed
   shut. They now open over every player character, as they do at your desk.
-- **A screensaver that takes turns.** Besides a folder, the scene display's
-  screensaver now takes a single scene, which alternates with the real one
-  the way the black cover does.
+- **A screensaver that works like one.** It now changes the picture after
+  the set time of showing the same one, whatever happens at the table; before,
+  it waited for quiet, and every mouse move counted as activity. Besides a
+  folder it also takes a single scene, which alternates with the real one the
+  way the black cover does.
 - **A cleaner television.** "Hide the loading bar" now covers both displays
   too, not only devices in table mode; each level change redraws the map and
   the bar kept coming up. On rotated maps a token's name, bars and status
