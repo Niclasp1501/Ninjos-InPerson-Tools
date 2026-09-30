@@ -126,6 +126,8 @@
   "INPERSON.Begleitwahl.None": "This map has no companion scenes. Add them in its scene configuration, on the \"At the table\" tab.",
   "INPERSON.Begleitwahl.Showing": "Showing",
   "INPERSON.Begleitleiste.Move": "Companion scenes: drag to move",
+  "INPERSON.Begleitleiste.ScreensaverStart": "Start the screensaver on the scene display now",
+  "INPERSON.Begleitleiste.ScreensaverStop": "End the screensaver, the scene comes back",
   "INPERSON.Begleitleiste.Label": "Switch companion scenes",
   "INPERSON.Keybind.Ebenen.Name": "Level of the battlemap display",
   "INPERSON.Keybind.Ebenen.Hint": "Opens the controls for which level the battlemap display shows. Gamemasters only.",

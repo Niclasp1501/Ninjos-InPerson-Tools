@@ -287,8 +287,8 @@ function setCovered(on) {
  * home, and the pin target would be gone after the first break.
  * @param {boolean} active
  */
-function announce(active) {
-  if (_announced === active) return;
+function announce(active, force = false) {
+  if (_announced === active && !force) return;
   _announced = active;
   game.socket.emit(SOCKET.NAME, { type: SOCKET.SCREENSAVER, userId: game.user.id, active });
 }
@@ -447,6 +447,56 @@ export function previewCover(seconds = 8, logo) {
   const timer = setTimeout(stop, seconds * 1000);
   document.addEventListener("pointerdown", stop, true);
   document.addEventListener("keydown", stop, true);
+}
+
+/* -------------------------------------------- */
+/*  By hand                                      */
+/* -------------------------------------------- */
+
+/**
+ * The gamemaster starts or ends the screensaver from the companion bar.
+ *
+ * Starting pretends the picture has stood long enough and runs the clock at
+ * once, so the same path decides what comes: cover, single scene or folder.
+ * Ending counts as a new picture: the clock starts over, the cover drops, and
+ * a screensaver scene hands back to the display's own. A starting request is
+ * ignored while the screensaver is switched off in the settings; the clock
+ * would end it again on its next tick.
+ * @param {{action: string, userId: string}} payload
+ */
+export async function screensaverControl({ action, userId } = {}) {
+  if (!isSceneDisplay(game.user)) return;
+  if (!game.users?.get(userId)?.isGM) return;
+
+  if (action === "query") return announce(!!_announced, true);
+
+  if (action === "start") {
+    if (!setting(SETTINGS.IDLE_ENABLED)) return;
+    // Also clear the pause between two rounds, or a start pressed in that
+    // pause would sit out the rest of it first.
+    _pictureSince = 0;
+    _uncoveredSince = 0;
+    _returnedAt = 0;
+    _rotatedAt = 0;
+    return tick();
+  }
+
+  if (action === "stop") {
+    const onOwnScene = !_showingSince && !_rotatedAt;
+    _pictureSince = Date.now();
+    setCovered(false);
+    announce(false);
+    _index = 0;
+    _rotatedAt = 0;
+    _uncoveredSince = 0;
+    _showingSince = 0;
+    _returnedAt = 0;
+    if (!onOwnScene) {
+      ownMove();
+      await applyPinnedScene();
+    }
+    restoreVision();
+  }
 }
 
 /* -------------------------------------------- */

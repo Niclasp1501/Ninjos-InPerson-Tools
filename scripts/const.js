@@ -217,6 +217,11 @@ export const SOCKET = {
   SHOW_CLOSE: "showClose",
   SCREENSAVER: "screensaver",
   /**
+   * The gamemaster starting or ending the screensaver on the scene display by
+   * hand, or asking where it stands. Carries `action`: "start", "stop", "query".
+   */
+  SCREENSAVER_CONTROL: "screensaverControl",
+  /**
    * The gamemaster selected a player character. Only their own machine sees
    * that, and the battlemap display uses it to break a tie between levels.
    */

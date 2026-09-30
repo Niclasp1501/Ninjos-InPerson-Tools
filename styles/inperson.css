@@ -1336,6 +1336,31 @@
   border-color: var(--ninjo-akzent, #D4AF37);
 }
 
+/* Start or end the screensaver: after the scenes, set apart by a gap. */
+.inperson-begleitleiste-schoner {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  margin-left: 6px;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  background: #000;
+  color: #f0e6d2;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.inperson-begleitleiste-schoner:hover,
+.inperson-begleitleiste-schoner:focus-visible {
+  border-color: rgba(212, 175, 55, 0.6);
+}
+
+.inperson-begleitleiste-schoner.is-current {
+  border-color: var(--ninjo-akzent, #D4AF37);
+  color: var(--ninjo-akzent, #D4AF37);
+}
+
 /* The single screensaver scene on the display settings page: the scene
  * field takes the full width of its row, like the pairing fields. */
 .inperson-idle-scene {

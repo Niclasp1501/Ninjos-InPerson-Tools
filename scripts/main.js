@@ -19,7 +19,7 @@ import {
 import { openPullDialog } from "./pull.js";
 import { migrateFromOldId } from "./migrate.js";
 import { installLockViewInterop, onRotationChanged, describeInterop } from "./lockview.js";
-import { installScreensaver } from "./screensaver.js";
+import { installScreensaver, screensaverControl } from "./screensaver.js";
 import { openDisplaySettings } from "./displays-settings.js";
 import { openTableModeSettings } from "./tablemode-settings.js";
 import { buildSceneListField } from "./scene-field.js";
@@ -783,6 +783,10 @@ function onSocket(payload) {
     || payload?.type === SOCKET.SHOW_ANSWER
     || payload?.type === SOCKET.SHOW_CLOSE) {
     zeigenSocket(payload);
+    return;
+  }
+  if (payload?.type === SOCKET.SCREENSAVER_CONTROL) {
+    screensaverControl(payload);
     return;
   }
   if (payload?.type === SOCKET.LEVEL_FOCUS) {

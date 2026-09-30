@@ -161,6 +161,13 @@ const _screensaving = new Set();
 export function setScreensaverState(userId, active) {
   if (active) _screensaving.add(userId);
   else _screensaving.delete(userId);
+  // The companion bar shows a start or stop button depending on this.
+  Hooks.callAll("inpersonScreensaverState", userId, active);
+}
+
+/** Is this display entertaining itself right now, as far as the GM knows? */
+export function isScreensaving(userId) {
+  return _screensaving.has(userId);
 }
 
 async function onUserActivity(userId, activity = {}) {

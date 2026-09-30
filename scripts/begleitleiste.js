@@ -13,9 +13,15 @@
  * wegräumen. Das Fenster bleibt für den Überblick, über den Knopf links in der
  * Werkzeugleiste.
  *
- * **Nur da, wenn es etwas zu wählen gibt**: auf einer aktiven Karte mit
- * mindestens zwei Begleitszenen und mit eingerichtetem Szenen-Monitor. Sonst
- * verschwindet sie ganz, statt leer herumzustehen.
+ * **Nur da, wenn es etwas zu tun gibt**: mit eingerichtetem Szenen-Monitor und
+ * entweder mindestens zwei Begleitszenen auf der aktiven Karte oder einem
+ * eingeschalteten Bildschirmschoner. Sonst verschwindet sie ganz, statt leer
+ * herumzustehen.
+ *
+ * **Der Bildschirmschoner lässt sich hier starten und beenden** (30.09.2026):
+ * ein Knopf hinter den Szenen, Mond zum Starten, Sonne zum Beenden. Gemeint
+ * ist die Stelle, an der die Spielleitung ohnehin steuert, was der Fernseher
+ * zeigt, statt einer Einstellungsseite mitten im Spiel.
  *
  * **Verschiebbar am Griff**, der Platz wird je Gerät gemerkt. Beim Laden und
  * bei jeder Größenänderung des Fensters wird er ins Bild geklemmt; eine Leiste,
@@ -23,9 +29,9 @@
  * niemand wieder.
  */
 
-import { MODULE_ID, SETTINGS } from "./const.js";
+import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
 import {
-  getCompanionScenes, getSceneDisplay, getPinnedScene, showOnMonitor
+  getCompanionScenes, getSceneDisplay, getPinnedScene, showOnMonitor, isScreensaving
 } from "./monitor.js";
 import { thumbOf, withFallback } from "./scene-field.js";
 
@@ -44,6 +50,20 @@ function szenen() {
   if (!karte || !getSceneDisplay()) return [];
   const liste = getCompanionScenes(karte);
   return liste.length >= 2 ? liste : [];
+}
+
+/** Ist der Bildschirmschoner eingeschaltet und ein Szenen-Monitor da? */
+function schonerMoeglich() {
+  try {
+    return !!getSceneDisplay() && !!game.settings.get(MODULE_ID, SETTINGS.IDLE_ENABLED);
+  } catch {
+    return false;
+  }
+}
+
+/** Den Schoner auf dem Szenen-Monitor starten, beenden oder abfragen. */
+function schonerSteuern(action) {
+  game.socket.emit(SOCKET.NAME, { type: SOCKET.SCREENSAVER_CONTROL, action, userId: game.user.id });
 }
 
 /** Welche Szene der Monitor gerade zeigt. */
@@ -87,8 +107,9 @@ export function begleitleisteAuffrischen() {
 function zeichnen() {
   if (!game.user?.isGM) return;
   const liste = szenen();
+  const schoner = schonerMoeglich();
   let leiste = document.getElementById(LEISTE_ID);
-  if (!liste.length) {
+  if (!liste.length && !schoner) {
     leiste?.remove();
     return;
   }
@@ -96,7 +117,7 @@ function zeichnen() {
 
   const jetzt = aktuelleId();
   const reihe = leiste.querySelector(".inperson-begleitleiste-reihe");
-  reihe.replaceChildren(...liste.map(szene => {
+  const knoepfe = liste.map(szene => {
     const knopf = document.createElement("button");
     knopf.type = "button";
     knopf.className = "inperson-begleitleiste-szene";
@@ -115,7 +136,31 @@ function zeichnen() {
       setTimeout(() => { gewaehlt = null; begleitleisteAuffrischen(); }, NACHLAUF_MS);
     });
     return knopf;
-  }));
+  });
+
+  if (schoner) knoepfe.push(schonerKnopf());
+  reihe.replaceChildren(...knoepfe);
+}
+
+/**
+ * Starten oder beenden, je nachdem, was der Monitor zuletzt gemeldet hat.
+ *
+ * „Läuft" heißt: Der Schoner hat übernommen, auch in der Pause zwischen zwei
+ * Blenden. Beenden setzt dann die Uhr ganz zurück.
+ */
+function schonerKnopf() {
+  const laeuft = isScreensaving(getSceneDisplay()?.id);
+  const text = game.i18n.localize(laeuft ? "INPERSON.Begleitleiste.ScreensaverStop" : "INPERSON.Begleitleiste.ScreensaverStart");
+  const knopf = document.createElement("button");
+  knopf.type = "button";
+  knopf.className = "inperson-begleitleiste-schoner";
+  knopf.classList.toggle("is-current", laeuft);
+  knopf.setAttribute("aria-pressed", String(laeuft));
+  knopf.setAttribute("aria-label", text);
+  knopf.dataset.tooltip = text;
+  knopf.innerHTML = `<i class="fa-solid ${laeuft ? "fa-sun" : "fa-moon"}" aria-hidden="true"></i>`;
+  knopf.addEventListener("click", () => schonerSteuern(laeuft ? "stop" : "start"));
+  return knopf;
 }
 
 /* ── Platz ──────────────────────────────────────────────────────── */
@@ -184,10 +229,14 @@ export function installBegleitleiste() {
   for (const hook of ["createScene", "deleteScene", "canvasReady"]) Hooks.on(hook, begleitleisteAuffrischen);
   Hooks.on("updateSetting", setting => {
     const key = setting.key;
-    if (key === `${MODULE_ID}.${SETTINGS.MONITOR_SCENE}` || key === `${MODULE_ID}.${SETTINGS.MONITOR_SC}`) {
+    if (key === `${MODULE_ID}.${SETTINGS.MONITOR_SCENE}` || key === `${MODULE_ID}.${SETTINGS.MONITOR_SC}`
+      || key === `${MODULE_ID}.${SETTINGS.IDLE_ENABLED}`) {
       begleitleisteAuffrischen();
     }
   });
+  Hooks.on("inpersonScreensaverState", begleitleisteAuffrischen);
+  // Nach einem Neuladen weiß dieser Rechner nicht, ob der Schoner gerade läuft.
+  schonerSteuern("query");
   // Welche Szene der Monitor zeigt, meldet er ohne Hook über userActivity.
   game.socket.on("userActivity", (userId, daten) => {
     if (userId === getSceneDisplay()?.id && daten && "sceneId" in daten) begleitleisteAuffrischen();

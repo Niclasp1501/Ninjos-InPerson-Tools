@@ -126,6 +126,8 @@
   "INPERSON.Begleitwahl.None": "Diese Karte hat keine Begleitszenen. Du legst sie in der Szenen-Konfiguration an, im Reiter „Am Tisch“.",
   "INPERSON.Begleitwahl.Showing": "Läuft",
   "INPERSON.Begleitleiste.Move": "Begleitszenen: zum Verschieben ziehen",
+  "INPERSON.Begleitleiste.ScreensaverStart": "Bildschirmschoner auf dem Szenen-Monitor jetzt starten",
+  "INPERSON.Begleitleiste.ScreensaverStop": "Bildschirmschoner beenden, die Szene kommt zurück",
   "INPERSON.Begleitleiste.Label": "Begleitszenen umschalten",
   "INPERSON.Keybind.Ebenen.Name": "Ebene des Battlemap-Monitors",
   "INPERSON.Keybind.Ebenen.Hint": "Öffnet die Steuerung, welche Ebene der Battlemap-Monitor zeigt. Nur für Spielleiter.",

@@ -43,7 +43,8 @@ button next to the battlemap display in the control panel.
   the set time of showing the same one, whatever happens at the table; before,
   it waited for quiet, and every mouse move counted as activity. Besides a
   folder it also takes a single scene, which alternates with the real one the
-  way the black cover does.
+  way the black cover does, and the companion bar has a button to start or
+  end it right away.
 - **A cleaner television.** "Hide the loading bar" now covers both displays
   too, not only devices in table mode; each level change redraws the map and
   the bar kept coming up. On rotated maps a token's name, bars and status
