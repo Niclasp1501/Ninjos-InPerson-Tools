@@ -23,9 +23,10 @@
  * up the cover lifts, the scene is there to be looked at, and once the room has
  * been quiet for the waiting time again it returns.
  *
- * What counts as quiet: nothing heard from anybody who is not a display account.
- * `userActivity` carries that for free - Foundry broadcasts it for cursors,
- * scene changes, rulers and targets alike.
+ * What counts as quiet: nothing heard from anybody who is not a display account,
+ * leaving out plain mouse movement (see onUserActivity). `userActivity` carries
+ * scene changes, rulers, pings and targets; the hooks carry tokens, chat and
+ * combat.
  */
 
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
@@ -98,11 +99,23 @@ function noteActivity() {
  * Reading the sender rather than trusting the message matters: the displays
  * broadcast too - every scene the screensaver switches to sends one - and
  * counting our own chatter would mean it keeps waking itself up.
+ *
+ * **A moving mouse is not activity.** Foundry broadcasts on every mouse move
+ * over the canvas, with the cursor position or with nothing at all
+ * (`ControlsLayer#_onMouseMove`). Counted as activity, the screensaver never
+ * came on while the gamemaster sat at the desk working in Foundry - reported
+ * on 2026-09-30. The cursor changes nothing on the television. What does count
+ * is everything else the same message carries: a scene change, a ruler, a
+ * ping, targets. Moved tokens, chat and combat arrive through the hooks in
+ * installScreensaver.
  * @param {string} userId
+ * @param {object} [activity]
  */
-function onUserActivity(userId) {
+function onUserActivity(userId, activity) {
   const user = game.users?.get(userId);
   if (!user || isMonitorUser(user)) return;
+  const inhalt = Object.keys(activity ?? {}).filter(k => k !== "cursor");
+  if (!inhalt.length) return;
   noteActivity();
 }
 
