@@ -706,15 +706,15 @@
 }
 
 /*
- * The drifting mark.
+ * The breathing mark.
  *
- * It glides. An earlier version jumped, on the reasoning that a glide would
- * light every pixel along the path - which is true and turns out to be the
- * argument *for* it: burn-in comes from sustained load on the same pixel, so
- * spreading a faint mark along a path is gentler than parking it somewhere for
- * half a minute. It is also simply calmer to sit next to.
+ * It fades in somewhere, stays, fades out and comes up elsewhere (breathe() in
+ * screensaver.js). Only opacity is animated: the graphics card handles that on
+ * its own, where the earlier glide over `left` and `top` made the browser lay
+ * the page out on every frame and looked jerky on the television. The place is
+ * changed only while the mark is invisible.
  *
- * The duration is set from JavaScript, because the same mark drifts slowly
+ * The duration is set from JavaScript, because the same mark breathes slowly
  * during a break and quickly in the preview, where nobody wants to wait.
  */
 .inperson-screensaver-mark {
@@ -723,10 +723,15 @@
   height: 10px;
   border-radius: 50%;
   background: #D4AF37;      /* the module's gold, at a fraction of full output */
-  opacity: 0.35;
+  opacity: 0;
   box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
-  transition-property: left, top;
+  transition-property: opacity;
   transition-timing-function: ease-in-out;
+  will-change: opacity;
+}
+
+.inperson-screensaver-mark.is-shown {
+  opacity: 0.35;
 }
 
 /*
@@ -748,6 +753,10 @@
   background: none;
   border-radius: 0;
   box-shadow: none;
+  opacity: 0;
+}
+
+.inperson-screensaver-mark.has-logo.is-shown {
   opacity: 1;
 }
 

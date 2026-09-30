@@ -48,11 +48,18 @@ import { applyPinnedScene } from "./monitor.js";
 const TICK_MS = 10_000;
 
 /**
- * How long the mark takes to glide from one place to the next while the cover
- * is up. It is also how often a new destination is picked, so the movement never
- * stops - it only changes direction.
+ * One breath of the mark: it fades in somewhere, stays a moment, fades out, and
+ * after a short dark pause comes up somewhere else.
+ *
+ * It used to glide across the screen, which looked jerky on the television: a
+ * glide moves `left` and `top`, and the browser lays the page out again on every
+ * frame. A breath only changes opacity, which the graphics card handles on its
+ * own, and for the panel it is kinder still - no pixel carries the mark for
+ * more than a few seconds, and in between everything is off. Asked for at the
+ * table on 2026-09-30: "slowly breathe in, stay briefly, darken, and appear the
+ * same way somewhere else".
  */
-const DRIFT_MS = 25_000;
+const BREATH = { fadeIn: 4000, hold: 6000, fadeOut: 4000, dark: 2000 };
 
 let _timer = null;
 /** When the display got the picture it shows now, not counting our own switches. */
@@ -82,7 +89,7 @@ let _returnedAt = 0;
 /** Cover mode: when the cover went up (0 = down), and when it last came down. */
 let _coveredSince = 0;
 let _uncoveredSince = 0;
-let _driftedAt = 0;
+let _breathTimer = null;
 
 /* -------------------------------------------- */
 /*  Configuration                                */
@@ -208,19 +215,42 @@ function buildMark(el, logoOverride) {
 }
 
 /**
- * Send the mark somewhere else, gliding.
+ * Let the mark breathe until stopped: new place while it is invisible, then in,
+ * hold, out, dark, and again.
  *
- * Kept well inside the edges so it never ends up half off-screen at any screen
- * shape. The first placement is instant - a glide there would have the mark
- * slide in from the corner every time the cover goes up.
- * @param {number} ms How long the glide takes. 0 places it at once.
+ * The place is changed with the transition switched off and only while the mark
+ * is fully faded out, so it never visibly jumps. The two animation frames before
+ * fading in let the browser take the new place first; without them it would
+ * fade in where it faded out.
+ * @param {HTMLElement} mark
+ * @param {typeof BREATH} [breath] Shorter for the preview, where nobody wants to wait
  */
-function driftMark(ms = DRIFT_MS) {
-  const mark = overlay().querySelector(".inperson-screensaver-mark");
-  if (!mark) return;
-  mark.style.transitionDuration = `${ms}ms`;
-  mark.style.left = `${10 + Math.random() * 80}%`;
-  mark.style.top = `${10 + Math.random() * 80}%`;
+function breathe(mark, breath = BREATH) {
+  stopBreathing();
+  const cycle = () => {
+    if (!mark.isConnected) return;
+    mark.style.transitionDuration = "0ms";
+    mark.classList.remove("is-shown");
+    // Kept well inside the edges, so it never ends up half off-screen at any
+    // screen shape.
+    mark.style.left = `${10 + Math.random() * 70}%`;
+    mark.style.top = `${10 + Math.random() * 70}%`;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      mark.style.transitionDuration = `${breath.fadeIn}ms`;
+      mark.classList.add("is-shown");
+    }));
+    _breathTimer = setTimeout(() => {
+      mark.style.transitionDuration = `${breath.fadeOut}ms`;
+      mark.classList.remove("is-shown");
+      _breathTimer = setTimeout(cycle, breath.fadeOut + breath.dark);
+    }, breath.fadeIn + breath.hold);
+  };
+  cycle();
+}
+
+function stopBreathing() {
+  clearTimeout(_breathTimer);
+  _breathTimer = null;
 }
 
 function isCovered() {
@@ -233,11 +263,10 @@ function setCovered(on) {
   const now = Date.now();
 
   if (on) {
-    buildMark(el);
-    driftMark(0);          // placed, not glided in
-    _driftedAt = now;
+    breathe(buildMark(el));
     _coveredSince = now;
   } else {
+    stopBreathing();
     _coveredSince = 0;
     _uncoveredSince = now;
   }
@@ -350,10 +379,6 @@ function updateCover(now, quietSince) {
   if (isCovered()) {
     const forMs = Math.max(1, minutes(SETTINGS.IDLE_BLANK_FOR)) * 60_000;
     if (now - _coveredSince >= forMs) return setCovered(false);
-    if (now - _driftedAt >= DRIFT_MS) {
-      driftMark();
-      _driftedAt = now;
-    }
     return;
   }
 
@@ -406,17 +431,14 @@ async function tick() {
  */
 export function previewCover(seconds = 8, logo) {
   const el = overlay();
-  buildMark(el, logo);
-  driftMark(0);
+  const mark = buildMark(el, logo);
   el.classList.add("inperson-screensaver-on", "inperson-screensaver-preview");
 
-  // Shorter legs than in real use: eight seconds is not long enough to show a
-  // twenty-five-second glide, and the point here is to see that it moves.
-  const PREVIEW_LEG = 3000;
-  setTimeout(() => driftMark(PREVIEW_LEG), 50);
-  const drift = setInterval(() => driftMark(PREVIEW_LEG), PREVIEW_LEG);
+  // Quicker breaths than in real use: eight seconds would not even hold one
+  // full breath, and the point here is to see the whole movement.
+  breathe(mark, { fadeIn: 1500, hold: 1500, fadeOut: 1500, dark: 500 });
   const stop = () => {
-    clearInterval(drift);
+    if (!isCovered()) stopBreathing();
     clearTimeout(timer);
     el.classList.remove("inperson-screensaver-on", "inperson-screensaver-preview");
     document.removeEventListener("pointerdown", stop, true);
