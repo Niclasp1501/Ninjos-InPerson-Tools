@@ -170,6 +170,23 @@ Offen bleiben genau zwei Dinge, und beide hängen am Tisch, nicht am Code:
    aus „(Beta)“ — siehe die Bedingungen oben.
 2. **Nach dem Sheet-Only-Abschied**: Anbindung entfernen, „Beta“ streichen.
 
+Dazu ein Wunsch für ein kommendes Update (30.09.2026):
+
+3. **Monitore aus der Ferne neu laden.** Ein Knopf im Bedienfeld, der beide
+   Monitore über den Socket neu laden lässt. Anlass: Die Monitor-Rechner
+   hängen am Fernseher, man kommt mitten im Spiel schlecht heran, und jede
+   neue Fassung braucht dort ein F5. Greift erst, nachdem die Monitore die
+   Fassung mit dem Knopf einmal von Hand geladen haben.
+
+   Nach dem Neuladen soll der Monitor außerdem **in die Szene klicken**,
+   sonst fehlt der Fokus und Videos starten nicht von selbst. Vorher prüfen:
+   Ein vom Skript ausgelöster Klick zählt für den Browser nicht als
+   Nutzergeste und hebt die Sperre für automatisch startende Videos mit Ton
+   nicht auf. Tragfähig sind vermutlich nur ein Startschalter des Browsers
+   auf den Monitor-Rechnern (Chrome: `--autoplay-policy=no-user-gesture-required`,
+   dazu Kioskmodus) oder stumm startende Videos. Das gehört vor dem Bau
+   gemessen, nicht angenommen.
+
 Alles andere ist entweder gebaut oder ausdrücklich verworfen (Abschnitt 2).
 
 Quellen: [Sheet Only](https://foundryvtt.com/packages/sheet-only),
