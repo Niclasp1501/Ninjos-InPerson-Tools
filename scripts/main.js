@@ -428,6 +428,12 @@ function registerSettings() {
     choices: {},          // filled in `setup`, once the folders exist
     default: ""
   });
+  S(SETTINGS.IDLE_SCENE, {
+    scope: "world",
+    config: false,   // lives on the scene-display page
+    type: String,
+    default: ""
+  });
 
   S(SETTINGS.IDLE_ROTATE_EVERY, {
     name: "INPERSON.Settings.IdleRotate.Name",

@@ -35,6 +35,7 @@ const FIELDS = [
   SETTINGS.IDLE_AFTER,
   SETTINGS.IDLE_MODE,
   SETTINGS.IDLE_FOLDER,
+  SETTINGS.IDLE_SCENE,
   SETTINGS.IDLE_ROTATE_EVERY,
   SETTINGS.IDLE_BLANK_FOR,
   SETTINGS.IDLE_LOGO
@@ -321,6 +322,14 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
     el.querySelector('input[name="idleLogo"]')?.addEventListener("input", () => this.#syncLogo());
     sync();
 
+    // A single screensaver scene. Built rather than written as markup, like
+    // every scene field: it carries drag handling and a picker.
+    el.querySelector(".inperson-idle-scene")?.replaceChildren(buildSceneField({
+      name: "idleScene",
+      value: game.settings.get(MODULE_ID, SETTINGS.IDLE_SCENE) ?? "",
+      emptyLabel: game.i18n.localize("INPERSON.Settings.IdleScene.None")
+    }));
+
     // The pair editor: two scene fields and the list above them. The field
     // names start with __ so the save handler ignores them - a pairing does not
     // belong to this form, it belongs to the battlemap.
@@ -349,6 +358,7 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_AFTER, Math.max(1, number(data.idleAfter)));
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_MODE, data.idleMode === "scene" ? "scene" : "cover");
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_FOLDER, data.idleFolder ?? "");
+    await game.settings.set(MODULE_ID, SETTINGS.IDLE_SCENE, data.idleScene ?? "");
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_ROTATE_EVERY, Math.max(1, number(data.idleRotateEvery)));
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_BLANK_FOR, Math.max(1, number(data.idleBlankFor)));
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_LOGO, data.idleLogo ?? "");

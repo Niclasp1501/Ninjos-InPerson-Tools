@@ -175,11 +175,18 @@
         </div>
 
         <div class="form-group">
+          <label>{{localize "INPERSON.Settings.IdleScene.Name"}}</label>
+          <div class="form-fields inperson-idle-scene"></div>
+          <p class="hint">{{localize "INPERSON.Settings.IdleScene.Hint"}}</p>
+        </div>
+
+        <div class="form-group">
           <label>{{localize "INPERSON.Settings.IdleRotate.Name"}}</label>
           <div class="form-fields">
             <input type="number" name="idleRotateEvery" value="{{rotateEvery}}" min="1" max="60" step="1">
             <span class="units">{{localize "INPERSON.Displays.Minutes"}}</span>
           </div>
+          <p class="hint">{{localize "INPERSON.Settings.IdleRotate.Hint"}}</p>
         </div>
       </div>
     </div>

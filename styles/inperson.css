@@ -1327,6 +1327,13 @@
   border-color: var(--ninjo-akzent, #D4AF37);
 }
 
+/* The single screensaver scene on the display settings page: the scene
+ * field takes the full width of its row, like the pairing fields. */
+.inperson-idle-scene {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 /* The list you can type into --------------- */
 
 .inperson-pick {

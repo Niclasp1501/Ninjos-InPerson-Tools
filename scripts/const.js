@@ -62,6 +62,12 @@ export const SETTINGS = {
   IDLE_AFTER: "idleAfter",
   /** Scene folder the screensaver cycles through. One scene in it = just that one (world). */
   IDLE_FOLDER: "idleFolder",
+  /**
+   * A single screensaver scene instead of a folder (world). Takes precedence
+   * over the folder, and comes and goes like the cover: shown for the rotation
+   * minutes, then the real scene again until the waiting time runs out anew.
+   */
+  IDLE_SCENE: "idleScene",
   /** Minutes between two scenes of that folder (world). */
   IDLE_ROTATE_EVERY: "idleRotateEvery",
   /**

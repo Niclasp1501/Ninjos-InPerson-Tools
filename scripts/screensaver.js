@@ -7,7 +7,8 @@
  *
  * Two ways of going about it, and they are alternatives rather than stages:
  *
- *   scene   the display moves through a folder of other scenes
+ *   scene   the display moves through a folder of other scenes, or comes and
+ *           goes between one chosen scene and its own
  *   cover   a black sheet lays itself over the scene that is showing, with one
  *           mark drifting across, and the scene stays where it is underneath
  *
@@ -49,6 +50,13 @@ let _announced = null;
 let _rotatedAt = 0;
 let _index = 0;
 
+/**
+ * Single-scene mode: when the screensaver scene came up (0 = not showing), and
+ * when the display last went back to its own scene.
+ */
+let _showingSince = 0;
+let _returnedAt = 0;
+
 /** Cover mode: when the cover went up (0 = down), and when it last came down. */
 let _coveredSince = 0;
 let _uncoveredSince = 0;
@@ -68,6 +76,12 @@ function screensaverScenes() {
   return game.scenes
     .filter(s => s.folder?.id === folderId)
     .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.name.localeCompare(b.name));
+}
+
+/** The single screensaver scene, when one is chosen and still exists. */
+function screensaverScene() {
+  const id = setting(SETTINGS.IDLE_SCENE);
+  return id ? (game.scenes?.get(id) ?? null) : null;
 }
 
 /* -------------------------------------------- */
@@ -196,7 +210,43 @@ async function wakeUp() {
   _index = 0;
   _rotatedAt = 0;
   _uncoveredSince = 0;
+  _showingSince = 0;
+  _returnedAt = 0;
   await applyPinnedScene();
+}
+
+/**
+ * Single-scene mode, coming and going like the cover.
+ *
+ * A folder with one scene in it stays on that scene for as long as it is quiet,
+ * which is right for a picture with movement in it. Asked for on 2026-09-30 was
+ * the other thing: one chosen scene that takes turns with the real one, the way
+ * the black cover does. Shown for the rotation minutes, then back to the scene
+ * the display belongs on, and after the waiting time again.
+ *
+ * The first switch happens as soon as quiet is established, the same as the
+ * folder mode's first scene; after that the waiting time runs from the return.
+ * @param {number} now
+ * @param {Scene} scene
+ */
+async function alternateScene(now, scene) {
+  if (_showingSince) {
+    const forMs = Math.max(1, minutes(SETTINGS.IDLE_ROTATE_EVERY)) * 60_000;
+    if (now - _showingSince < forMs) return;
+    _showingSince = 0;
+    _returnedAt = now;
+    console.debug(`${MODULE_ID} | Screensaver hands back to the display's own scene.`);
+    await applyPinnedScene();
+    return;
+  }
+
+  const wait = Math.max(1, minutes(SETTINGS.IDLE_AFTER)) * 60_000;
+  if (_returnedAt && now - _returnedAt < wait) return;
+  _showingSince = now;
+  if (canvas?.scene?.id !== scene.id) {
+    console.debug(`${MODULE_ID} | Screensaver shows "${scene.name}".`);
+    await scene.view();
+  }
 }
 
 /** Scene mode: step to the next scene of the folder when its time is up. */
@@ -256,7 +306,9 @@ async function tick() {
   // somewhere it was not sent.
   if (game.settings.get(MODULE_ID, SETTINGS.IDLE_MODE) === "scene") {
     setCovered(false);
-    await rotateScenes(now);
+    const single = screensaverScene();
+    if (single) await alternateScene(now, single);
+    else await rotateScenes(now);
     return;
   }
   updateCover(now, quietSince);
