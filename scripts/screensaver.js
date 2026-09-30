@@ -110,6 +110,33 @@ function screensaverScene() {
 /*  The picture                                  */
 /* -------------------------------------------- */
 
+/**
+ * Screensaver scenes are pictures, not maps: seen without token vision.
+ *
+ * The display is a player account with no token of its own on a screensaver
+ * scene. Where the scene has token vision on - true of most scenes from map
+ * packs - Foundry shows that account nothing but black. On 2026-09-30 the
+ * chosen scene came up and the television went dark.
+ *
+ * Switched off in this client's copy of the scene only (`updateSource`, never
+ * saved), and put back as soon as the screensaver lets go of it: the same
+ * scene may be played on later, and then its vision has to hold again.
+ */
+const _visionRestore = new Map();
+
+function asPicture(scene) {
+  if (!scene?.tokenVision || _visionRestore.has(scene.id)) return;
+  _visionRestore.set(scene.id, true);
+  scene.updateSource({ tokenVision: false });
+}
+
+function restoreVision() {
+  for (const id of _visionRestore.keys()) {
+    game.scenes?.get(id)?.updateSource({ tokenVision: true });
+  }
+  _visionRestore.clear();
+}
+
 /** Mark the next scene change as the screensaver's own. */
 function ownMove() {
   _ownMoveUntil = Date.now() + OWN_MOVE_MS;
@@ -127,6 +154,7 @@ function onCanvasReady() {
     return;
   }
   _pictureSince = Date.now();
+  restoreVision();
   setCovered(false);
   announce(false);
   _index = 0;
@@ -244,6 +272,7 @@ async function wakeUp() {
   _returnedAt = 0;
   ownMove();
   await applyPinnedScene();
+  restoreVision();
 }
 
 /**
@@ -269,6 +298,7 @@ async function alternateScene(now, scene) {
     console.debug(`${MODULE_ID} | Screensaver hands back to the display's own scene.`);
     ownMove();
     await applyPinnedScene();
+    restoreVision();
     return;
   }
 
@@ -277,6 +307,7 @@ async function alternateScene(now, scene) {
   _showingSince = now;
   if (canvas?.scene?.id !== scene.id) {
     console.debug(`${MODULE_ID} | Screensaver shows "${scene.name}".`);
+    asPicture(scene);
     ownMove();
     await scene.view();
   }
@@ -295,6 +326,7 @@ async function rotateScenes(now) {
   _rotatedAt = now;
   if (canvas?.scene?.id !== next.id) {
     console.debug(`${MODULE_ID} | Screensaver shows "${next.name}".`);
+    asPicture(next);
     ownMove();
     await next.view();
   }
