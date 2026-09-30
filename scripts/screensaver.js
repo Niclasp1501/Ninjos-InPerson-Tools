@@ -174,6 +174,14 @@ function overlay() {
   if (el) return el;
   el = document.createElement("div");
   el.id = "inperson-screensaver";
+  // Monk's Common Display hides every direct child of <body> that is not on
+  // its list (`body.hide-ui > *:not(#logo):not(#interface)...`, with
+  // !important) on exactly the accounts that are displays. The cover was
+  // switched on correctly and never seen - found on 2026-09-30. No stylesheet
+  // rule can win against that selector, whose thirty-odd :not(#id) each count
+  // as an id; a declaration on the element itself can. Showing and hiding
+  // still happens through opacity and visibility in the stylesheet.
+  el.style.setProperty("display", "block", "important");
   document.body.appendChild(el);
   return el;
 }
