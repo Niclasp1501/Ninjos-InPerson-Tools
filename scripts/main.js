@@ -6,7 +6,7 @@
  */
 
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
-import { isActive, invalidate } from "./state.js";
+import { isActive, invalidate, isSceneDisplay } from "./state.js";
 import {
   installWrappers, refreshTokenSources, clearPlaceholders, getStats, resetStats
 } from "./blocker.js";
@@ -58,6 +58,21 @@ import {
 function onRelevantSettingChanged() {
   applyStateChange();
   refreshPanel();
+  markSceneDisplayBody();
+}
+
+/**
+ * Mark the scene display's page, so the stylesheet can hide what does not
+ * belong on the television: the pause overlay for now.
+ *
+ * The scene display shows companions, pictures and intro videos. A paused game
+ * concerns the people at the table, who see it on the gamemaster's screen and
+ * the battlemap display; on the scene display it only sat in the middle of the
+ * picture. Asked for on 2026-10-01, after a world restart left the game paused
+ * over the heroes' intro.
+ */
+function markSceneDisplayBody() {
+  document.body?.classList.toggle("inperson-scenedisplay", isSceneDisplay(game.user));
 }
 
 function registerSettings() {
@@ -901,6 +916,7 @@ Hooks.once("ready", async () => {
   willkommenZeigen();
 
   game.socket.on(SOCKET.NAME, onSocket);
+  markSceneDisplayBody();
   if (game.user.isGM) {
     installBegleitwahl();
     installBegleitleiste();

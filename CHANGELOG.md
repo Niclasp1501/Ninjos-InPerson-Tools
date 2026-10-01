@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+- **No pause overlay on the scene display.** The scene display shows
+  pictures and videos; when the game is paused, the overlay now stays on the
+  gamemaster's screen and the battlemap display instead of sitting in the
+  middle of the picture.
 - **The welcome window mentions Patreon.** Below the link to Ninjo's Forge,
   one line now says that the modules are free and stay free, and that you can
   support the work on Patreon and get premium add-ons. Only GMs see the

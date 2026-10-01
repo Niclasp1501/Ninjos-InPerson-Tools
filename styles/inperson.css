@@ -2491,6 +2491,13 @@ body.inperson-sheetview #pause {
   display: none !important;
 }
 
+/* The scene display shows pictures, not the state of the game: a paused game
+   is for the table, and on the television it sat over the picture. See
+   markSceneDisplayBody() in main.js. */
+body.inperson-scenedisplay #pause {
+  display: none !important;
+}
+
 /* `#tooltip` bleibt: Es ist Foundrys Erklärkasten für alles, auch für unsere
    Zeitleiste - Wetter und Mondphase hängen daran. Mit ausgeblendet, zeigte
    ein Finger auf der Leiste nichts mehr. */
