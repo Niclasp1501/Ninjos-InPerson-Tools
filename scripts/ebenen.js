@@ -296,6 +296,45 @@ function istMonitor() {
   }
 }
 
+/** Der Wechsel, den ein Monitor nach dem laufenden Laden noch machen soll. */
+let _nachDemLaden = null;
+
+/**
+ * Auf einem Monitor wartet ein Wechsel, bis das laufende Laden fertig ist.
+ *
+ * Foundry lehnt `view()` ab, solange eine Szene lädt, und sagt das mit einer
+ * Meldung mitten im Bild: „You cannot switch Scenes until resources finish
+ * loading". Auf einem Monitor kommen zwei Anweisungen oft dicht hintereinander:
+ * Schickt die Spielleitung eine Begleitszene, landet sie über die gemerkte
+ * Szene und über den Zug auf dem Monitor, und der Bildschirmschoner oder die
+ * Ebenenwahl kann dazwischen kommen. Am 02.10.2026 stand die Meldung auf dem
+ * Fernseher, obwohl der Wechsel geklappt hatte.
+ *
+ * Statt abzulehnen merkt sich der Monitor den letzten Wunsch und erfüllt ihn
+ * nach `canvasReady`. Ist er dann schon auf dieser Szene und Ebene, zeichnet
+ * Foundry nichts neu.
+ * @returns {boolean} true, wenn der Aufruf verschoben wurde
+ */
+function spaeterWechseln(szene, options) {
+  if (!canvas?.loading) return false;
+  let monitor = false;
+  try {
+    monitor = isMonitorUser(game.user);
+  } catch { /* Einstellungen noch nicht da */ }
+  if (!monitor) return false;
+  const schonGemerkt = !!_nachDemLaden;
+  _nachDemLaden = { szene, options };
+  if (!schonGemerkt) {
+    Hooks.once("canvasReady", () => {
+      const wunsch = _nachDemLaden;
+      _nachDemLaden = null;
+      if (wunsch?.szene && game.scenes.has(wunsch.szene.id)) wunsch.szene.view(wunsch.options);
+    });
+  }
+  console.debug(`${MODULE_ID} | Monitor lädt noch, "${szene.name}" kommt danach.`);
+  return true;
+}
+
 /**
  * Die Hülle um `Scene#view`.
  *
@@ -304,6 +343,7 @@ function istMonitor() {
  * @this {Scene}
  */
 function onView(wrapped, options = {}) {
+  if (spaeterWechseln(this, options)) return Promise.resolve(this);
   if (!istMonitor() || options?.[DELIBERATE]) return wrapped(options);
 
   const aktuell = canvas?.scene?.id === this.id ? (canvas.level?.id ?? null) : null;
