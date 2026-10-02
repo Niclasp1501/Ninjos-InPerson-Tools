@@ -14,6 +14,11 @@
   display close together, Foundry refused the second one with "You cannot
   switch Scenes until resources finish loading" in the middle of the picture.
   The displays now wait for the first scene and then take the last request.
+- **Compendiums open in the sheet view.** Foundry gives a compendium window
+  the same class as a popped-out sidebar tab, and the sheet view kept every
+  such window hidden unless it had opened it itself. Opening a compendium from
+  a journal, such as "Open Player's Handbook", did nothing visible on a
+  tablet. It now opens as a normal window.
 - **The welcome window mentions Patreon.** Below the link to Ninjo's Forge,
   one line now says that the modules are free and stay free, and that you can
   support the work on Patreon and get premium add-ons. Only GMs see the

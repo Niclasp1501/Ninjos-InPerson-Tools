@@ -964,7 +964,7 @@ function flaecheUmschalten(name) {
   // stand der Rahmen sonst für ein, zwei Bilder sichtbar da. Gemessen: die
   // erste Probe 0 ms nach dem Klick zeigte ihn noch.
   const bleibt = offeneFlaeche === name ? null : name;
-  for (const node of document.querySelectorAll(".sidebar-popout")) {
+  for (const node of document.querySelectorAll(FLAECHEN_FENSTER)) {
     if (!(bleibt && KLASSEN[bleibt] && node.classList.contains(KLASSEN[bleibt]))) {
       node.classList.remove("inperson-offen");
     }
@@ -1029,7 +1029,7 @@ function abgleichen() {
   clearTimeout(abgleichTimer);
   abgleichTimer = setTimeout(() => {
     const soll = offeneFlaeche ? KLASSEN[offeneFlaeche] : null;
-    for (const node of document.querySelectorAll(".sidebar-popout")) {
+    for (const node of document.querySelectorAll(FLAECHEN_FENSTER)) {
       if (soll && node.classList.contains(soll)) continue;
       const app = foundry.applications.instances?.get(node.id)
         ?? [...geoeffnet.values()].find(a => a?.element === node);
@@ -1038,6 +1038,16 @@ function abgleichen() {
     }
   }, 900);
 }
+
+/**
+ * Die Fenster, die zu unseren Flächen gehören können.
+ *
+ * Foundry gibt auch dem Kompendium die Klasse `sidebar-popout`, obwohl es kein
+ * Reiter der Seitenleiste ist. Ohne die Ausnahme schlössen wir ein Kompendium,
+ * das ein Spieler aus einer Notiz heraus geöffnet hat, beim nächsten Tipp auf
+ * die Leiste mit, und das CSS hielt es von vornherein unsichtbar (02.10.2026).
+ */
+const FLAECHEN_FENSTER = ".sidebar-popout:not(.compendium-directory)";
 
 /** Woran man das Fenster einer Fläche im Dokument erkennt. */
 const KLASSEN = {
@@ -1056,7 +1066,7 @@ const KLASSEN = {
 async function allesSchliessenAusser(behalten) {
   // Zuerst, synchron: alles Unerwünschte aus dem Bild nehmen. Das eigentliche
   // Schließen dauert, und in dieser Zeit stand der Rahmen sonst sichtbar da.
-  for (const node of document.querySelectorAll(".sidebar-popout")) {
+  for (const node of document.querySelectorAll(FLAECHEN_FENSTER)) {
     const soll = behalten && KLASSEN[behalten] && node.classList.contains(KLASSEN[behalten]);
     if (!soll) node.classList.remove("inperson-offen");
   }
@@ -1180,7 +1190,9 @@ async function beenden() {
   laufend = false;
   await flaecheSchliessen();
   geoeffnet.clear();
-  removeShells(".sidebar-popout", { onlyGhost: false });
+  // Ein Kompendium bleibt: Es ist ein gewöhnliches Fenster, das nur Foundrys
+  // Klasse für Seitenleisten-Fenster trägt (siehe CSS).
+  removeShells(FLAECHEN_FENSTER, { onlyGhost: false });
   document.body.classList.remove(BODY_CLASS);
   window.removeEventListener("resize", beimDrehen);
   zugBeenden();
@@ -1256,7 +1268,7 @@ export function installSheetView() {
   document.addEventListener("click", event => {
     if (!laufend) return;
     const kreuz = event.target?.closest?.(".sidebar-popout .header-control[data-action=close]");
-    const el = kreuz?.closest(".sidebar-popout");
+    const el = kreuz?.closest(FLAECHEN_FENSTER);
     if (!el) return;
     el.style.setProperty("display", "none", "important");
     const app = foundry.applications.instances?.get(el.id)

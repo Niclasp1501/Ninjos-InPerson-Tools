@@ -1502,7 +1502,7 @@
  * Outside Sheet Only nothing changes: Foundry's own placement is fine there,
  * and this selector cannot match.
  */
-body:has(.sheet-only-container) .sidebar-popout {
+body:has(.sheet-only-container) .sidebar-popout:not(.compendium-directory) {
   position: fixed !important;
   right: 0 !important;
   top: 0 !important;
@@ -3010,12 +3010,19 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
    Reiters, den es hier nicht zu sehen gibt. */
 /* Ein Seitenleisten-Fenster ist nur zu sehen, wenn WIR es geöffnet haben.
    Der Rahmen, den Foundry beim Schließen stehen lässt, hat die Klasse nicht
-   mehr und bleibt unsichtbar - kein Aufblitzen, keine Geister. */
-body.inperson-sheetview .sidebar-popout:not(.inperson-offen) {
+   mehr und bleibt unsichtbar - kein Aufblitzen, keine Geister.
+
+   Ausgenommen ist das Kompendium. Foundry gibt seinem Fenster ebenfalls die
+   Klasse `sidebar-popout`, obwohl es kein Reiter der Seitenleiste ist, und so
+   blieb jedes Kompendium in der Bogenansicht unsichtbar. Am 02.10.2026 tippte
+   ein Spieler im Notizfenster auf „Spielerhandbuch öffnen", und nichts
+   geschah: Das Fenster war offen, nur nicht zu sehen. Ein Kompendium ist ein
+   gewöhnliches Fenster und wird auch so behandelt, ohne Anheften am Rand. */
+body.inperson-sheetview .sidebar-popout:not(.inperson-offen):not(.compendium-directory) {
   display: none !important;
 }
 
-body.inperson-sheetview .sidebar-popout {
+body.inperson-sheetview .sidebar-popout:not(.compendium-directory) {
   position: fixed !important;
   right: 0 !important;
   top: 0 !important;
