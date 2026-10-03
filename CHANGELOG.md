@@ -6,6 +6,12 @@
 
 ## Unreleased
 
+- **Companions that take turns.** A battlemap can now decide the scene
+  display's screensaver for itself: as set for the displays, none at all, or
+  its companions taking turns after a time of its own. Each companion is
+  marked to take part or to be left out, so a full intro stays a companion
+  you send by hand while the pictures change by themselves. In the companion
+  bar, the screensaver button then shows the next companion at once.
 - **No pause overlay on the scene display.** The scene display shows
   pictures and videos; when the game is paused, the overlay now stays on the
   gamemaster's screen and the battlemap display instead of sitting in the
