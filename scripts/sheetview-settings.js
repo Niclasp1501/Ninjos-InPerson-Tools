@@ -15,6 +15,7 @@
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
+import { still } from "./stille.js";
 import { characterOf } from "./figuren.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -131,7 +132,7 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
     const stempel = foundry.utils.deepClone(game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_RESET) ?? {});
     stempel[userId] = Date.now();
     await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_RESET, stempel);
-    ui.notifications.info(game.i18n.format("INPERSON.SheetView.ResetDone", { name: user.name }));
+    still(game.i18n.format("INPERSON.SheetView.ResetDone", { name: user.name }));
   }
 
   static async #onSubmit(event, form, formData) {

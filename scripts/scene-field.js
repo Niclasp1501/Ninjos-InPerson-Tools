@@ -336,7 +336,7 @@ export function buildSceneListField({ name, value = "", exclude = "", emptyLabel
     }
     const list = read();
     if (list.includes(scene.id)) {
-      return ui.notifications.info(game.i18n.format("INPERSON.SceneList.Already", { scene: scene.name }));
+      return ui.notifications.warn(game.i18n.format("INPERSON.SceneList.Already", { scene: scene.name }));
     }
     set([...list, scene.id]);
   };

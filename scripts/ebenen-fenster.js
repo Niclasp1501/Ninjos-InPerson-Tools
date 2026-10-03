@@ -25,6 +25,7 @@
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
+import { still } from "./stille.js";
 import { isMonitorUser } from "./state.js";
 import { getBattlemapDisplay } from "./monitor.js";
 import {
@@ -140,7 +141,7 @@ class EbenenSteuerung extends HandlebarsApplicationMixin(ApplicationV2) {
     for (const actor of fehlend) {
       await actor.update({ [`ownership.${monitor.id}`]: stufe });
     }
-    ui.notifications.info(game.i18n.format("INPERSON.Ebenen.RightsGiven", {
+    still(game.i18n.format("INPERSON.Ebenen.RightsGiven", {
       anzahl: fehlend.length, monitor: monitor.name
     }));
     this.render();

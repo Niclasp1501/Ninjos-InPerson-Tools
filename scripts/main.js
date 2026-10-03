@@ -6,6 +6,7 @@
  */
 
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
+import { still, stilleMeldungenEinrichten } from "./stille.js";
 import { isActive, invalidate, isSceneDisplay, isMonitorUser } from "./state.js";
 import {
   installWrappers, refreshTokenSources, clearPlaceholders, getStats, resetStats
@@ -912,6 +913,7 @@ Hooks.once("init", () => {
   // Must happen before the first canvas draw, otherwise the opening scene is
   // already on the wire before we get a say.
   installWrappers();
+  stilleMeldungenEinrichten();
   installMonitorWrapper();
   installCombatWrapper();
   // Vor dem ersten Zeichnen, damit schon die Startansicht des Monitors die
@@ -1095,11 +1097,11 @@ function onSceneContextOptions(app, options) {
     condition: gm, visible: gm,
     callback: withScene(async scene => {
       await setDefaultCompanionScene(scene.id);
-      ui.notifications.info(game.i18n.format("INPERSON.Notify.DefaultCompanionSet", { scene: scene.name }));
+      still(game.i18n.format("INPERSON.Notify.DefaultCompanionSet", { scene: scene.name }));
     }),
     onClick: withScene(async scene => {
       await setDefaultCompanionScene(scene.id);
-      ui.notifications.info(game.i18n.format("INPERSON.Notify.DefaultCompanionSet", { scene: scene.name }));
+      still(game.i18n.format("INPERSON.Notify.DefaultCompanionSet", { scene: scene.name }));
     })
   });
 
@@ -1109,12 +1111,12 @@ function onSceneContextOptions(app, options) {
     condition: gm, visible: gm,
     callback: withScene(async scene => {
       await game.settings.set(MODULE_ID, SETTINGS.MONITOR_IDLE_SCENE, scene.id);
-      ui.notifications.info(game.i18n.format("INPERSON.Notify.IdleSceneSet", { scene: scene.name }));
+      still(game.i18n.format("INPERSON.Notify.IdleSceneSet", { scene: scene.name }));
       refreshPanel();
     }),
     onClick: withScene(async scene => {
       await game.settings.set(MODULE_ID, SETTINGS.MONITOR_IDLE_SCENE, scene.id);
-      ui.notifications.info(game.i18n.format("INPERSON.Notify.IdleSceneSet", { scene: scene.name }));
+      still(game.i18n.format("INPERSON.Notify.IdleSceneSet", { scene: scene.name }));
       refreshPanel();
     })
   });

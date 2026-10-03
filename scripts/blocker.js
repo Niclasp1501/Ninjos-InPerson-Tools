@@ -261,6 +261,15 @@ async function onLoadTexture(wrapped, src, ...rest) {
  * @this {TextureLoader}
  */
 async function onLoadBatch(wrapped, sources, options = {}) {
+  // Vorladen verrät nichts. Lädt die Spielleitung eine Szene vor, zeigt
+  // Foundry auf jedem Rechner einen Ladebalken mit ihrem Namen, sobald sie in
+  // der Navigation sichtbar ist. Am 03.10.2026 stand so auf den Schirmen der
+  // Spieler, welche Szene als Nächstes kommt. Ein Vorladen erkennt man daran,
+  // dass gerade keine Szene gezeichnet wird; beim echten Wechsel bleibt der
+  // Balken, wo die Einstellung ihn lässt.
+  if (!game.user?.isGM && options?.message === "SCENE.Loading" && !canvas?.loading) {
+    return wrapped(sources, { ...options, displayProgress: false });
+  }
   if (!game.settings.get(MODULE_ID, SETTINGS.HIDE_PROGRESS)) return wrapped(sources, options);
   if (!isActive() && !istMonitor()) return wrapped(sources, options);
   return wrapped(sources, { ...options, displayProgress: false });

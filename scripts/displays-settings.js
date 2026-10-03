@@ -18,6 +18,7 @@
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
+import { still } from "./stille.js";
 import { listCompanionPairs, setCompanionScenes, addCompanionScene } from "./monitor.js";
 import { buildSceneField } from "./scene-field.js";
 import { previewCover } from "./screensaver.js";
@@ -262,7 +263,7 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
       el.querySelector(`${sel} .inperson-scenefield`)?.setScene?.("");
     }
     this.#paintPairs();
-    ui.notifications.info(game.i18n.format("INPERSON.Displays.PairMade", {
+    still(game.i18n.format("INPERSON.Displays.PairMade", {
       scene: battlemap.name,
       companion: game.scenes.get(toId)?.name ?? "?"
     }));
@@ -366,7 +367,7 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_BLANK_FOR, Math.max(1, number(data.idleBlankFor)));
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_LOGO, data.idleLogo ?? "");
 
-    ui.notifications.info("INPERSON.Displays.Saved", { localize: true });
+    still("INPERSON.Displays.Saved", { localize: true });
   }
 }
 

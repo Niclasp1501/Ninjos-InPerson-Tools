@@ -17,6 +17,7 @@
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
+import { still } from "./stille.js";
 import { isActive } from "./state.js";
 import { sheetViewWanted } from "./sheetview.js";
 
@@ -38,7 +39,7 @@ async function offerReload() {
 async function release() {
   await game.settings.set("core", "noCanvas", false);
   await game.settings.set(MODULE_ID, SETTINGS.NO_CANVAS_OWNED, false);
-  ui.notifications.info("INPERSON.Notify.CanvasRestored", { localize: true });
+  still("INPERSON.Notify.CanvasRestored", { localize: true });
   await offerReload();
 }
 
@@ -63,7 +64,7 @@ export async function syncNoCanvas() {
   if (wanted && !current) {
     await game.settings.set("core", "noCanvas", true);
     await game.settings.set(MODULE_ID, SETTINGS.NO_CANVAS_OWNED, true);
-    ui.notifications.info("INPERSON.Notify.CanvasDisabled", { localize: true });
+    still("INPERSON.Notify.CanvasDisabled", { localize: true });
     await offerReload();
     return;
   }

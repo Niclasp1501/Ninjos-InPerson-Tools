@@ -17,6 +17,7 @@
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
+import { still } from "./stille.js";
 import { isMonitorUser, isSceneDisplay } from "./state.js";
 import { DELIBERATE } from "./monitor.js";
 
@@ -117,7 +118,7 @@ export class PullPlayersDialog extends HandlebarsApplicationMixin(ApplicationV2)
     // display included. The pin guards against blanket pulls, not against an
     // explicit choice.
     this.#scene.pullUsers(users, { [DELIBERATE]: true });
-    ui.notifications.info(game.i18n.format("INPERSON.Pull.Done", {
+    still(game.i18n.format("INPERSON.Pull.Done", {
       count: users.length,
       scene: this.#scene.name
     }));

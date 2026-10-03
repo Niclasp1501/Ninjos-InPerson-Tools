@@ -3,6 +3,7 @@
  */
 
 import { openBegleitwahl } from "./begleitwahl.js";
+import { still } from "./stille.js";
 import { openEbenenSteuerung } from "./ebenen-fenster.js";
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
 import { isSceneBackground } from "./blocker.js";
@@ -186,7 +187,7 @@ export class InPersonPanel extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static #onRefreshAll() {
     game.socket.emit(SOCKET.NAME, { type: SOCKET.REFRESH });
-    ui.notifications.info("INPERSON.Notify.RefreshSent", { localize: true });
+    still("INPERSON.Notify.RefreshSent", { localize: true });
   }
 }
 

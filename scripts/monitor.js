@@ -45,6 +45,7 @@
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
+import { still } from "./stille.js";
 import { isSceneDisplay } from "./state.js";
 
 /**
@@ -233,7 +234,7 @@ export async function setPinned(pinned, scene) {
       target.pullUsers([display], { [DELIBERATE]: true });
     }
 
-    ui.notifications.info(game.i18n.format("INPERSON.Notify.PinOnScene", {
+    still(game.i18n.format("INPERSON.Notify.PinOnScene", {
       who: display.name,
       scene: target.name
     }));
@@ -241,7 +242,7 @@ export async function setPinned(pinned, scene) {
   }
 
   await sendReleasedDisplay(display);
-  ui.notifications.info("INPERSON.Notify.PinOff", { localize: true });
+  still("INPERSON.Notify.PinOff", { localize: true });
 }
 
 /** Move a just-released display where the settings say it belongs. */
@@ -285,7 +286,7 @@ export async function showOnMonitor(scene, viewOptions = {}) {
   // not stand in the way of it.
   if (display.active) scene.pullUsers([display], { ...viewOptions, [DELIBERATE]: true });
 
-  ui.notifications.info(game.i18n.format("INPERSON.Notify.SentToMonitor", {
+  still(game.i18n.format("INPERSON.Notify.SentToMonitor", {
     scene: scene.name,
     who: display.name
   }));
@@ -486,7 +487,7 @@ function onPullUsers(wrapped, users, options = {}) {
 
   const kept = users.filter(u => u.id !== display.id);
   console.debug(`${MODULE_ID} | Scene display pinned - left out of a blanket pull to "${this.name}".`);
-  ui.notifications.info(game.i18n.format("INPERSON.Notify.DisplayKeptBack", {
+  still(game.i18n.format("INPERSON.Notify.DisplayKeptBack", {
     who: display.name
   }));
   if (!kept.length) return;

@@ -21,6 +21,7 @@
  */
 
 import { MODULE_ID, SETTINGS } from "./const.js";
+import { still } from "./stille.js";
 import { openPanel } from "./panel.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -107,7 +108,7 @@ export class TableModeSettings extends HandlebarsApplicationMixin(ApplicationV2)
     await game.settings.set(MODULE_ID, SETTINGS.AUTO_NO_CANVAS, !!data.autoNoCanvas);
     await game.settings.set(MODULE_ID, SETTINGS.ALLOW_LIST, data.allowList ?? "");
 
-    ui.notifications.info("INPERSON.TableMode.Saved", { localize: true });
+    still("INPERSON.TableMode.Saved", { localize: true });
   }
 }
 

@@ -20,6 +20,7 @@
 
 import { MODULE_ID, SETTINGS } from "./const.js";
 
+import { still } from "./stille.js";
 /** The id this module used to have. */
 const OLD_ID = "ninjos-table-mode";
 
@@ -86,7 +87,7 @@ export async function migrateFromOldId() {
 
   if (settingsCopied || scenesCopied) {
     console.log(`${MODULE_ID} | Migrated ${settingsCopied} settings and ${scenesCopied} scenes from ${OLD_ID}.`);
-    ui.notifications.info(game.i18n.format("INPERSON.Notify.Migrated", {
+    still(game.i18n.format("INPERSON.Notify.Migrated", {
       settings: settingsCopied,
       scenes: scenesCopied
     }));
