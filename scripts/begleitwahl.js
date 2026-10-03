@@ -71,7 +71,10 @@ class Begleitwahl extends HandlebarsApplicationMixin(ApplicationV2) {
 
     let szenen = karte ? getCompanionScenes(karte) : [];
     let ausStandard = false;
-    if (!szenen.length) {
+    // Eine Szene ohne Raster ist selbst das Bild, die Standard-Begleitszene
+    // gilt nur für Battlemaps (siehe resolveDisplayTarget in monitor.js).
+    const bild = karte?.grid?.type === CONST.GRID_TYPES.GRIDLESS;
+    if (!szenen.length && !bild) {
       const standard = getDefaultCompanionScene();
       if (standard && standard.id !== karte?.id) {
         szenen = [standard];

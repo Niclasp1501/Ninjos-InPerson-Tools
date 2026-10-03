@@ -404,8 +404,15 @@ const FOLLOW = Symbol("follow");
  *
  *   1. a companion named on this very battlemap - the GM paired these two
  *   2. pinned - the GM said "hold still" and nothing more specific overrides it
- *   3. the default companion - a standing answer for battlemaps without one
+ *   3. the default companion - a standing answer for battlemaps without one,
+ *      and only for battlemaps: a scene without a grid is a picture itself
  *   4. otherwise follow, exactly as Foundry would
+ *
+ * Why a grid tells them apart: a battlemap is played on, so it has one; a
+ * picture for the display has none, because a grid over a painting is wrong
+ * on the television. Until 2026-10-03 the default companion also answered
+ * for those pictures, and activating "SC Salzmarsch Hafen" put the heroes'
+ * intro on the display instead of the harbour.
  *
  * Note that 1 beats 2: an explicit pairing is a more precise instruction than a
  * general "stay put", which is why a companion jump happens even while pinned.
@@ -416,6 +423,7 @@ function resolveDisplayTarget(scene) {
   const companion = getCompanionScene(scene);
   if (companion) return companion;
   if (isPinned()) return STAY;
+  if (scene?.grid?.type === CONST.GRID_TYPES.GRIDLESS) return FOLLOW;
   return getDefaultCompanionScene() ?? FOLLOW;
 }
 

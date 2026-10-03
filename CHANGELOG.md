@@ -12,6 +12,9 @@
   marked to take part or to be left out, so a full intro stays a companion
   you send by hand while the pictures change by themselves. In the companion
   bar, the screensaver button then shows the next companion at once.
+- **Pictures stay pictures.** The default companion now only stands in for
+  battlemaps. Activating a scene without a grid, a picture meant for the
+  display itself, shows that scene instead of the default companion.
 - **No pause overlay on the scene display.** The scene display shows
   pictures and videos; when the game is paused, the overlay now stays on the
   gamemaster's screen and the battlemap display instead of sitting in the
