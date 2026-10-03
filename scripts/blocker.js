@@ -16,7 +16,7 @@
  */
 
 import { MODULE_ID, SETTINGS, ALWAYS_ALLOW, ALWAYS_ALLOW_AUDIO } from "./const.js";
-import { isActive, isMonitorUser } from "./state.js";
+import { isActive } from "./state.js";
 
 /* -------------------------------------------- */
 /*  Placeholder textures                        */
@@ -271,17 +271,12 @@ async function onLoadBatch(wrapped, sources, options = {}) {
     return wrapped(sources, { ...options, displayProgress: false });
   }
   if (!game.settings.get(MODULE_ID, SETTINGS.HIDE_PROGRESS)) return wrapped(sources, options);
-  if (!isActive() && !istMonitor()) return wrapped(sources, options);
+  // Bei allen außer der Spielleitung, nicht nur im Tischmodus und auf den
+  // Monitoren. Der Balken nennt die Szene, und wer ohne Tischmodus am Tisch
+  // saß, las beim Wechsel ihren Namen, bevor die Spielleitung sie vorstellen
+  // konnte (03.10.2026).
+  if (game.user?.isGM) return wrapped(sources, options);
   return wrapped(sources, { ...options, displayProgress: false });
-}
-
-/** Is this client one of the two displays? Safe before `game.user` exists. */
-function istMonitor() {
-  try {
-    return !!game.user && isMonitorUser(game.user);
-  } catch {
-    return false;
-  }
 }
 
 /** @this {foundry.audio.Sound} */

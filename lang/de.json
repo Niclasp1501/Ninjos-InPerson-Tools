@@ -223,7 +223,7 @@
   "INPERSON.Settings.KeepTokens.Name": "Token-Bilder weiter laden",
   "INPERSON.Settings.KeepTokens.Hint": "Empfohlen. Token-Grafiken sind klein, und die Spieler müssen ihre Figuren auseinanderhalten können. Ausschalten lässt auch Tokens schwarz.",
   "INPERSON.Settings.HideProgress.Name": "Ladebalken ausblenden",
-  "INPERSON.Settings.HideProgress.Hint": "Auf Geräten im Tischmodus und auf den beiden Monitoren. Foundry zeigt seinen Szenen-Ladebalken auch dann, wenn alle Dateien aus dem Browser-Cache kommen oder blockiert wurden, und auf dem Fernseher bei jedem Ebenenwechsel. Blendet nur die Anzeige aus, am Laden selbst ändert sich nichts.",
+  "INPERSON.Settings.HideProgress.Hint": "Bei allen Spielern und auf den beiden Monitoren, nur die Spielleitung sieht ihn noch. Der Balken nennt die Szene, die gerade lädt, und verrät damit, was als Nächstes kommt. Außerdem zeigt Foundry ihn auch dann, wenn alle Dateien aus dem Browser-Cache kommen oder blockiert wurden, und auf dem Fernseher bei jedem Ebenenwechsel. Blendet nur die Anzeige aus, am Laden selbst ändert sich nichts.",
   "INPERSON.Settings.ShowPill.Name": "Dieses Gerät: Statusanzeige",
   "INPERSON.Settings.ShowPill.Hint": "Kleine Anzeige am unteren Rand des Spieler-Bildschirms, solange der Tischmodus dort läuft. Sie erklärt, dass die schwarze Karte Absicht ist.",
   "INPERSON.Settings.ForeignWindows.Name": "Auch fremde Fenster ins Bild rücken",

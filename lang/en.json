@@ -223,7 +223,7 @@
   "INPERSON.Settings.KeepTokens.Name": "Keep loading token artwork",
   "INPERSON.Settings.KeepTokens.Hint": "Recommended. Token images are small and players need to tell their figures apart. Turning this off leaves tokens black as well.",
   "INPERSON.Settings.HideProgress.Name": "Hide the loading bar",
-  "INPERSON.Settings.HideProgress.Hint": "On devices in table mode and on both displays. Foundry shows its scene loading bar even when every file comes from the browser cache or was blocked, and on the television at every level change. This only hides the display, nothing about loading changes.",
+  "INPERSON.Settings.HideProgress.Hint": "For every player and on both displays; only the gamemaster still sees it. The bar names the scene that is loading and so gives away what comes next. Foundry also shows it when every file comes from the browser cache or was blocked, and on the television at every level change. This only hides the display, nothing about loading changes.",
   "INPERSON.Settings.ShowPill.Name": "This device: status badge",
   "INPERSON.Settings.ShowPill.Hint": "Small badge along the bottom edge of a player's screen while table mode runs there. It explains that the black map is deliberate.",
   "INPERSON.Settings.ForeignWindows.Name": "Keep other windows on screen too",

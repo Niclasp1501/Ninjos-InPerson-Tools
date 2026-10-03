@@ -16,7 +16,8 @@
   "sent to the display" or "settings saved" no longer pop up; they go to the
   console. Two of Foundry's own messages gave away what comes next and are
   gone for players: the loading bar with the scene's name when the gamemaster
-  preloads a scene, and "the scene is now viewed but not displayed" on
+  preloads a scene or changes it (now hidden for every player, not only
+  in table mode), and "the scene is now viewed but not displayed" on
   tablets with the canvas switched off.
 - **The combat reaches the scene display.** Foundry shows a combat only on
   the scene it belongs to, so while the scene display showed a companion,
