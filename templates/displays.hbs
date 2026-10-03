@@ -46,6 +46,14 @@
     </div>
 
     <div class="form-group">
+      <label>{{localize "INPERSON.Settings.MonitorScCombat.Name"}}</label>
+      <div class="form-fields">
+        <input type="checkbox" name="scCombat" {{#if scCombat}}checked{{/if}}>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.MonitorScCombat.Hint"}}</p>
+    </div>
+
+    <div class="form-group">
       <label>{{localize "INPERSON.Settings.MonitorRelease.Name"}}</label>
       <div class="form-fields">
         <select name="monitorRelease">

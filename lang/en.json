@@ -89,6 +89,8 @@
   "INPERSON.Settings.MonitorBM.Hint": "The account on the map screen. It follows every scene activation as usual and is only exempt from table mode, so it actually shows the map.",
   "INPERSON.Settings.MonitorSC.Name": "Scene display",
   "INPERSON.Settings.MonitorSC.Hint": "The account that can be pinned. While pinned it stays on its scene no matter what you activate - except when the activated battlemap names a companion scene, in which case it moves there.",
+  "INPERSON.Settings.MonitorScCombat.Name": "The map's combat on the scene display",
+  "INPERSON.Settings.MonitorScCombat.Hint": "Foundry shows a combat only on the scene it belongs to. While the scene display shows a companion or a picture, there is no combat for it, and combat bars such as Combat Tracker Dock's carousel stay away. Switched on, the active map's combat counts there too.",
   "INPERSON.Context.ShowOnSceneDisplay": "Show on scene display",
   "INPERSON.Notify.NoSceneDisplay": "No scene display chosen. Pick an account under \"Scene display\" in the module settings.",
   "INPERSON.Notify.PinOnScene": "{who} is pinned to \"{scene}\".",

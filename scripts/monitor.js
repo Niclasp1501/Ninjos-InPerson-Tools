@@ -563,6 +563,87 @@ export function installMonitorWrapper() {
   }
 }
 
+/* -------------------------------------------- */
+/*  The battlemap's combat on the scene display  */
+/* -------------------------------------------- */
+
+/**
+ * Does this combat belong on the scene display, although it shows another scene?
+ *
+ * Foundry shows a combat only on the scene it is linked to: CombatEncounters
+ * lists `c.scene === game.scenes.current`, and Combat#isActive asks
+ * `scene.isView`. The combat lives on the battlemap, the scene display shows a
+ * companion or a picture, so for Foundry there is no combat there, and modules
+ * that draw from it, such as Combat Tracker Dock's carousel, stay away.
+ * Reported at the table on 2026-10-03.
+ *
+ * True only on the scene display, with the switch on, for a combat linked to
+ * the active scene. Everyone else keeps Foundry's rule unchanged.
+ * @param {Combat} combat
+ */
+function belongsToDisplay(combat) {
+  if (!combat?.scene) return false;
+  try {
+    if (!isSceneDisplay(game.user)) return false;
+    if (!game.settings.get(MODULE_ID, SETTINGS.MONITOR_SC_COMBAT)) return false;
+  } catch {
+    return false;
+  }
+  const map = game.scenes?.active;
+  return !!map && combat.scene.id === map.id && game.scenes.current?.id !== map.id;
+}
+
+/** CombatEncounters#combats: the combats of the viewed scene, plus the map's. */
+function onCombats(wrapped) {
+  const list = wrapped();
+  const extra = this.filter(c => belongsToDisplay(c) && !list.includes(c));
+  return extra.length ? [...list, ...extra] : list;
+}
+
+/** Combat#isActive: the map's combat counts as running here too. */
+function onIsActive(wrapped) {
+  if (belongsToDisplay(this)) return !!this.active;
+  return wrapped();
+}
+
+/**
+ * Wrap both getters. At `init`, on every client; whether they change anything
+ * is decided per call, because who the scene display is becomes known later
+ * and can change during the evening.
+ */
+export function installCombatWrapper() {
+  const targets = [
+    ["foundry.documents.collections.CombatEncounters.prototype.combats",
+      () => foundry.documents?.collections?.CombatEncounters?.prototype, "combats", onCombats],
+    ["foundry.documents.Combat.prototype.isActive",
+      () => foundry.documents?.Combat?.prototype, "isActive", onIsActive]
+  ];
+  const lw = globalThis.libWrapper;
+  for (const [path, proto, name, wrapper] of targets) {
+    try {
+      if (lw?.register) {
+        lw.register(MODULE_ID, path, wrapper, "WRAPPER");
+        continue;
+      }
+      const p = proto();
+      const descriptor = p && Object.getOwnPropertyDescriptor(p, name);
+      if (!descriptor?.get) {
+        console.error(`${MODULE_ID} | ${path} not found, the scene display keeps Foundry's combat rule.`);
+        continue;
+      }
+      const original = descriptor.get;
+      Object.defineProperty(p, name, {
+        ...descriptor,
+        get() {
+          return wrapper.call(this, original.bind(this));
+        }
+      });
+    } catch (err) {
+      console.error(`${MODULE_ID} | Could not wrap ${path}`, err);
+    }
+  }
+}
+
 /** Remove the fallback patches. Dev teardown only. */
 export function removeMonitorWrapper() {
   _restore?.();

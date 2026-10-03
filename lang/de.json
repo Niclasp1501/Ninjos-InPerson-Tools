@@ -89,6 +89,8 @@
   "INPERSON.Settings.MonitorBM.Hint": "Das Konto am Kartenbildschirm. Es folgt jedem Szenenwechsel wie gewohnt und wird nur vom Tischmodus ausgenommen, damit es die Karte auch wirklich zeigt.",
   "INPERSON.Settings.MonitorSC.Name": "Szenen-Monitor",
   "INPERSON.Settings.MonitorSC.Hint": "Das Konto, das sich fixieren lässt. Fixiert bleibt es auf seiner Szene stehen, egal welche Szene du aktivierst - Ausnahme: Die aktivierte Battlemap hat eine Begleitszene hinterlegt, dann wechselt es dorthin.",
+  "INPERSON.Settings.MonitorScCombat.Name": "Kampf der Karte auf dem Szenen-Monitor",
+  "INPERSON.Settings.MonitorScCombat.Hint": "Foundry zeigt einen Kampf nur auf der Szene, zu der er gehört. Zeigt der Szenen-Monitor eine Begleitszene oder ein Bild, gibt es für ihn deshalb keinen Kampf, und Kampfleisten wie das Karussell von Combat Tracker Dock bleiben weg. Eingeschaltet gilt der Kampf der aktiven Karte auch dort.",
   "INPERSON.Context.ShowOnSceneDisplay": "Auf Szenen-Monitor anzeigen",
   "INPERSON.Notify.NoSceneDisplay": "Kein Szenen-Monitor gewählt. In den Moduleinstellungen unter \"Szenen-Monitor\" ein Konto auswählen.",
   "INPERSON.Notify.PinOnScene": "{who} ist auf „{scene}\" fixiert.",

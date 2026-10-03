@@ -50,6 +50,12 @@ export const SETTINGS = {
    * battlemap, which is the one thing a second screen need not do.
    */
   DEFAULT_COMPANION: "defaultCompanionScene",
+  /**
+   * Does the scene display count the active battlemap's combat as its own
+   * while it shows another scene (world)? Foundry shows a combat only on the
+   * scene it belongs to, so combat bars stayed off the scene display.
+   */
+  MONITOR_SC_COMBAT: "monitorScCombat",
   /** Is the screensaver wanted at all? Everything else hangs off this (world). */
   IDLE_ENABLED: "idleEnabled",
   /**

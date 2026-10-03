@@ -44,7 +44,7 @@ import { openSheetViewSettings } from "./sheetview-settings.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
 import { fensterPassenEinrichten } from "./fensterpassen.js";
 import {
-  installMonitorWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
+  installMonitorWrapper, installCombatWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
   getSceneDisplay, getPinnedScene,
   setDefaultCompanionScene, setScreensaverState,
   COMPANION_FLAG, MAP_SCREENSAVER_FLAG, MAP_SKIP_FLAG, MAP_MINUTES_FLAG
@@ -373,6 +373,16 @@ function registerSettings() {
     default: {},
     onChange: ebenenGeaendert
   });
+  S(SETTINGS.MONITOR_SC_COMBAT, {
+    scope: "world",
+    config: false,   // lives on the scene-display page
+    type: Boolean,
+    default: true,
+    // Foundry picks the shown combat when the tracker renders; without a new
+    // render the switch would only take effect at the next scene change.
+    onChange: () => ui.combat?.render({ combat: null })
+  });
+
   S(SETTINGS.MONITOR_ROOF_OPEN, {
     scope: "world",
     config: false,
@@ -903,6 +913,7 @@ Hooks.once("init", () => {
   // already on the wire before we get a say.
   installWrappers();
   installMonitorWrapper();
+  installCombatWrapper();
   // Vor dem ersten Zeichnen, damit schon die Startansicht des Monitors die
   // richtige Ebene hat: Foundry ruft beim Start selbst scene.view() auf.
   ebenenHuellenEinrichten();

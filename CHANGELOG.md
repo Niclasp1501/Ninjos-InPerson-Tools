@@ -12,6 +12,11 @@
   marked to take part or to be left out, so a full intro stays a companion
   you send by hand while the pictures change by themselves. In the companion
   bar, the screensaver button then shows the next companion at once.
+- **The combat reaches the scene display.** Foundry shows a combat only on
+  the scene it belongs to, so while the scene display showed a companion,
+  combat bars such as Combat Tracker Dock's carousel stayed away. A new
+  switch on the scene display page, on by default, lets the active map's
+  combat count there too.
 - **Pictures stay pictures.** The default companion now only stands in for
   battlemaps. Activating a scene without a grid, a picture meant for the
   display itself, shows that scene instead of the default companion.
