@@ -42,7 +42,7 @@
 
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
 import { isSceneDisplay } from "./state.js";
-import { applyPinnedScene } from "./monitor.js";
+import { applyPinnedScene, getMapScreensaver } from "./monitor.js";
 
 /** How often the state is reconsidered. A clock in minutes needs no finer tick. */
 const TICK_MS = 10_000;
@@ -111,6 +111,69 @@ function screensaverScenes() {
 function screensaverScene() {
   const id = setting(SETTINGS.IDLE_SCENE);
   return id ? (game.scenes?.get(id) ?? null) : null;
+}
+
+/**
+ * The active map's own rule, while the display shows that map or one of its
+ * companions. Anywhere else the display settings apply as before: a scene the
+ * gamemaster sent from elsewhere is not the map's business.
+ * @returns {ReturnType<typeof getMapScreensaver>|null}
+ */
+function mapRule() {
+  const map = game.scenes?.active;
+  if (!map) return null;
+  const rule = getMapScreensaver(map);
+  if (!rule.mode) return null;
+  const here = canvas?.scene?.id;
+  if (here !== map.id && !rule.companions.some(c => c.id === here)) return null;
+  return rule;
+}
+
+/**
+ * The next marked companion after the one showing, in list order.
+ *
+ * Counting from where the display is, not from where the turns last were: the
+ * gamemaster may have sent a companion in between, also one that is left out,
+ * and the turns carry on from there (decided on 2026-10-03).
+ * @returns {Scene|null}
+ */
+function nextCompanion({ companions, rotating }) {
+  if (!rotating.length) return null;
+  const marked = new Set(rotating.map(c => c.id));
+  const hereId = canvas?.scene?.id;
+  const here = companions.findIndex(c => c.id === hereId);
+  const start = here < 0 ? 0 : here + 1;
+  for (let k = 0; k < companions.length; k++) {
+    const candidate = companions[(start + k) % companions.length];
+    if (marked.has(candidate.id) && candidate.id !== hereId) return candidate;
+  }
+  return null;
+}
+
+/**
+ * The map decides. Whatever the general screensaver was doing ends, then the
+ * marked companions take turns after the map's time with the same picture.
+ *
+ * Not announced as a screensaver: a companion that comes up this way is where
+ * the display belongs now, and the gamemaster's side should note it as such,
+ * so the companion bar shows it as current and a reload returns to it.
+ */
+async function mapTick(rule) {
+  if (isCovered() || _announced) {
+    setCovered(false);
+    announce(false);
+    restoreVision();
+  }
+  if (rule.mode !== "companions") return;
+
+  const now = Date.now();
+  const wait = Math.max(1, rule.minutes || minutes(SETTINGS.IDLE_AFTER)) * 60_000;
+  if (now < _pictureSince + wait) return;
+  _pictureSince = now;
+  const next = nextCompanion(rule);
+  if (!next) return;
+  console.debug(`${MODULE_ID} | The map's companions take turns: "${next.name}".`);
+  await next.view();
 }
 
 /* -------------------------------------------- */
@@ -393,6 +456,10 @@ function updateCover(now, quietSince) {
 
 async function tick() {
   if (!isSceneDisplay(game.user)) return;
+  // The map's own rule first, and regardless of the general switch: set on a
+  // single map, it is meant for that map.
+  const rule = mapRule();
+  if (rule) return await mapTick(rule);
   if (!game.settings.get(MODULE_ID, SETTINGS.IDLE_ENABLED)) return await wakeUp();
 
   const idleAfter = Math.max(1, minutes(SETTINGS.IDLE_AFTER));
@@ -471,7 +538,7 @@ export async function screensaverControl({ action, userId } = {}) {
   if (action === "query") return announce(!!_announced, true);
 
   if (action === "start") {
-    if (!setting(SETTINGS.IDLE_ENABLED)) return;
+    if (!setting(SETTINGS.IDLE_ENABLED) && mapRule()?.mode !== "companions") return;
     // Also clear the pause between two rounds, or a start pressed in that
     // pause would sit out the rest of it first.
     _pictureSince = 0;

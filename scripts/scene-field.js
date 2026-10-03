@@ -194,9 +194,13 @@ export function buildSceneField({ name, value = "", exclude = "", emptyLabel } =
  * @param {string} [options.value]     Comma-separated scene ids, first first
  * @param {string} [options.exclude]   Scene id to leave out (a scene is no companion of itself)
  * @param {string} [options.emptyLabel] What to say while the list is empty
+ * @param {{name: string, value?: string}} [options.skip] A second hidden field
+ *   with the ids left out of the map's screensaver turns, and a switch on every
+ *   row for it. The switches show only while the list carries the class
+ *   `zeigt-wechsel`; the screensaver field sets it.
  * @returns {HTMLElement}
  */
-export function buildSceneListField({ name, value = "", exclude = "", emptyLabel } = {}) {
+export function buildSceneListField({ name, value = "", exclude = "", emptyLabel, skip = null } = {}) {
   const wrapper = document.createElement("div");
   wrapper.className = "inperson-scenelist";
 
@@ -204,6 +208,15 @@ export function buildSceneListField({ name, value = "", exclude = "", emptyLabel
   input.type = "hidden";
   input.name = name;
   wrapper.appendChild(input);
+
+  let skipInput = null;
+  if (skip) {
+    skipInput = document.createElement("input");
+    skipInput.type = "hidden";
+    skipInput.name = skip.name;
+    wrapper.appendChild(skipInput);
+  }
+  const skipped = () => new Set((skipInput?.value ?? "").split(",").map(id => id.trim()).filter(Boolean));
 
   const items = document.createElement("ol");
   items.className = "inperson-scenelist-items";
@@ -265,10 +278,33 @@ export function buildSceneListField({ name, value = "", exclude = "", emptyLabel
           set(list);
         }));
       }
+      if (skipInput) li.appendChild(wechselKnopf(id));
       li.appendChild(knopf("fa-xmark", "INPERSON.SceneList.Remove", () => set(read().filter(x => x !== id))));
       items.appendChild(li);
     });
   };
+
+  /** Takes part in the map's screensaver turns, or is left out. */
+  function wechselKnopf(id) {
+    const dabei = !skipped().has(id);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "inperson-mini inperson-scenelist-wechsel";
+    button.classList.toggle("is-on", dabei);
+    button.setAttribute("aria-pressed", String(dabei));
+    button.dataset.tooltip = game.i18n.localize(dabei ? "INPERSON.SceneList.RotatesTip" : "INPERSON.SceneList.SkippedTip");
+    button.innerHTML = `<i class="fa-solid ${dabei ? "fa-arrows-rotate" : "fa-eye-slash"}" aria-hidden="true"></i> ${
+      game.i18n.localize(dabei ? "INPERSON.SceneList.Rotates" : "INPERSON.SceneList.Skipped")}`;
+    button.addEventListener("click", () => {
+      const aus = skipped();
+      if (aus.has(id)) aus.delete(id);
+      else aus.add(id);
+      skipInput.value = [...aus].filter(x => read().includes(x)).join(",");
+      paint();
+      skipInput.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    return button;
+  }
 
   /** A small icon button with a name for screen readers. */
   function knopf(icon, key, onClick) {
@@ -285,6 +321,9 @@ export function buildSceneListField({ name, value = "", exclude = "", emptyLabel
 
   const set = ids => {
     input.value = ids.filter(id => id && id !== exclude).join(",");
+    // A removed companion takes its mark with it, or it would come back
+    // left out when added again months later.
+    if (skipInput) skipInput.value = [...skipped()].filter(id => read().includes(id)).join(",");
     paint();
     input.dispatchEvent(new Event("change", { bubbles: true }));
   };
@@ -335,6 +374,10 @@ export function buildSceneListField({ name, value = "", exclude = "", emptyLabel
   // hidden input and be saved back unseen.
   input.value = [...new Set(String(value ?? "").split(",").map(id => id.trim()))]
     .filter(id => id && id !== exclude && game.scenes?.get(id)).join(",");
+  if (skipInput) {
+    skipInput.value = String(skip.value ?? "").split(",").map(id => id.trim())
+      .filter(id => id && read().includes(id)).join(",");
+  }
   paint();
   return wrapper;
 }

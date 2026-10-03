@@ -66,6 +66,9 @@ whenever you activate that map. The others, say the upper floor of a tower or th
 night, are one click away: a small bar docked at the edge of your screen lights up when you hover
 over it and shows the companions of the active map, and a click sends one to the display. You set them up in the scene configuration, on the "At the
 table" tab. For every map without a companion of its own, you can set a default.
+The same tab lets the companions of a map take turns on the display after a time you choose,
+with any of them left out: the full intro stays a companion you send by hand, while the
+pictures change by themselves.
 
 **Maps with several levels** (a ground floor, a roof, a cellar) are handled for you too. Foundry on
 its own lets the battlemap display follow every single character that changes level, so one scout
@@ -234,6 +237,9 @@ Turms oder derselbe Platz bei Nacht, sind einen Klick entfernt: Eine kleine Leis
 deines Bildschirms wird hell, wenn du mit der Maus darüberfährst, und zeigt die Begleitszenen
 der aktiven Karte; ein Klick schickt eine davon auf den Monitor. Eingerichtet werden sie in der Szenen-Konfiguration, im Reiter „Am Tisch“. Für
 alle Karten ohne eigene Begleitszene kannst du eine Standardszene bestimmen.
+Im selben Reiter lässt du die Begleitszenen einer Karte nach einer Zeit deiner Wahl auf dem
+Monitor durchwechseln und nimmst einzelne davon aus: Das volle Intro bleibt eine Begleitszene,
+die du von Hand schickst, während die Bilder von selbst wechseln.
 
 **Karten mit mehreren Ebenen** (Erdgeschoss, Dach, Keller) nimmt dir das Modul ebenfalls ab.
 Foundry lässt den Battlemap-Monitor sonst jeder einzelnen Figur folgen, die die Ebene wechselt:

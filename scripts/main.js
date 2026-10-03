@@ -47,7 +47,7 @@ import {
   installMonitorWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
   getSceneDisplay, getPinnedScene,
   setDefaultCompanionScene, setScreensaverState,
-  COMPANION_FLAG
+  COMPANION_FLAG, MAP_SCREENSAVER_FLAG, MAP_SKIP_FLAG, MAP_MINUTES_FLAG
 } from "./monitor.js";
 
 /* -------------------------------------------- */
@@ -1297,14 +1297,56 @@ function onRenderSceneConfig(app, element) {
     <div class="form-group stacked inperson-companion-group">
       <div class="form-fields"></div>
     </div>`;
-  begleiter.querySelector(".form-fields")?.appendChild(
-    buildSceneListField({
-      name: `flags.${MODULE_ID}.${COMPANION_FLAG}`,
-      value: current,
-      exclude: scene?.id,
-      emptyLabel: t("INPERSON.SceneConfig.CompanionNone")
-    })
-  );
+  const liste = buildSceneListField({
+    name: `flags.${MODULE_ID}.${COMPANION_FLAG}`,
+    value: current,
+    exclude: scene?.id,
+    emptyLabel: t("INPERSON.SceneConfig.CompanionNone"),
+    skip: {
+      name: `flags.${MODULE_ID}.${MAP_SKIP_FLAG}`,
+      value: scene?.getFlag?.(MODULE_ID, MAP_SKIP_FLAG) ?? ""
+    }
+  });
+  begleiter.querySelector(".form-fields")?.appendChild(liste);
+
+  // The map's own screensaver. Next to the list on purpose: which companions
+  // take turns is marked on the rows above, and the switches only show while
+  // this says "take turns".
+  const schonerArt = scene?.getFlag?.(MODULE_ID, MAP_SCREENSAVER_FLAG) ?? "";
+  const schonerMinuten = scene?.getFlag?.(MODULE_ID, MAP_MINUTES_FLAG) ?? "";
+  const allgemein = Math.max(1, Number(game.settings.get(MODULE_ID, SETTINGS.IDLE_AFTER)) || 1);
+  const schoner = document.createElement("fieldset");
+  schoner.className = "inperson-companion";
+  schoner.innerHTML = `
+    <legend>${t("INPERSON.SceneConfig.ScreensaverLegend")}</legend>
+    <div class="form-group">
+      <label>${t("INPERSON.SceneConfig.ScreensaverMode")}</label>
+      <div class="form-fields">
+        <select name="flags.${MODULE_ID}.${MAP_SCREENSAVER_FLAG}">
+          ${[["", "INPERSON.SceneConfig.ScreensaverModeDefault"],
+            ["companions", "INPERSON.SceneConfig.ScreensaverModeCompanions"],
+            ["off", "INPERSON.SceneConfig.ScreensaverModeOff"]]
+            .map(([v, k]) => `<option value="${v}"${v === schonerArt ? " selected" : ""}>${t(k)}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+    <div class="form-group inperson-kartenschoner-zeit">
+      <label>${t("INPERSON.SceneConfig.ScreensaverMinutes")}</label>
+      <div class="form-fields">
+        <input type="number" min="1" step="1" name="flags.${MODULE_ID}.${MAP_MINUTES_FLAG}"
+          value="${Number(schonerMinuten) > 0 ? Number(schonerMinuten) : ""}" placeholder="${allgemein}">
+      </div>
+      <p class="hint">${game.i18n.format("INPERSON.SceneConfig.ScreensaverMinutesHint", { minuten: allgemein })}</p>
+    </div>
+    <p class="hint">${t("INPERSON.SceneConfig.ScreensaverHint")}</p>`;
+  const artFeld = schoner.querySelector("select");
+  const zeigen = () => {
+    const wechseln = artFeld.value === "companions";
+    liste.classList.toggle("zeigt-wechsel", wechseln);
+    schoner.querySelector(".inperson-kartenschoner-zeit").hidden = !wechseln;
+  };
+  artFeld.addEventListener("change", zeigen);
+  zeigen();
 
   const drehung = document.createElement("fieldset");
   drehung.className = "inperson-companion";
@@ -1321,7 +1363,7 @@ function onRenderSceneConfig(app, element) {
       ${interop ? `<p class="notification info inperson-interop">${interop}</p>` : ""}
     </div>`;
 
-  ziel.append(begleiter, drehung);
+  ziel.append(begleiter, schoner, drehung);
 }
 
 Hooks.once("setup", () => {

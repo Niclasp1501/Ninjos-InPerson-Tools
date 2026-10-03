@@ -31,7 +31,7 @@
 
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
 import {
-  getCompanionScenes, getSceneDisplay, getPinnedScene, showOnMonitor, isScreensaving
+  getCompanionScenes, getSceneDisplay, getPinnedScene, showOnMonitor, isScreensaving, getMapScreensaver
 } from "./monitor.js";
 import { thumbOf, withFallback } from "./scene-field.js";
 
@@ -52,10 +52,15 @@ function szenen() {
   return liste.length >= 2 ? liste : [];
 }
 
-/** Ist der Bildschirmschoner eingeschaltet und ein Szenen-Monitor da? */
+/** Wechseln die Begleitszenen der aktiven Karte von selbst durch? */
+function karteWechselt() {
+  return getMapScreensaver(game.scenes?.active).mode === "companions";
+}
+
+/** Ist der Bildschirmschoner eingeschaltet, oder wechselt die Karte selbst, und ein Szenen-Monitor da? */
 function schonerMoeglich() {
   try {
-    return !!getSceneDisplay() && !!game.settings.get(MODULE_ID, SETTINGS.IDLE_ENABLED);
+    return !!getSceneDisplay() && (!!game.settings.get(MODULE_ID, SETTINGS.IDLE_ENABLED) || karteWechselt());
   } catch {
     return false;
   }
@@ -149,6 +154,10 @@ function zeichnen() {
  * Blenden. Beenden setzt dann die Uhr ganz zurück.
  */
 function schonerKnopf() {
+  // Wechselt die Karte ihre Begleitszenen selbst durch, heißt Starten: die
+  // nächste jetzt. Ein Beenden gibt es dort nicht, das Durchwechseln ist dann
+  // der gewöhnliche Zustand der Karte.
+  if (karteWechselt()) return weiterKnopf();
   const laeuft = isScreensaving(getSceneDisplay()?.id);
   const text = game.i18n.localize(laeuft ? "INPERSON.Begleitleiste.ScreensaverStop" : "INPERSON.Begleitleiste.ScreensaverStart");
   const knopf = document.createElement("button");
@@ -160,6 +169,19 @@ function schonerKnopf() {
   knopf.dataset.tooltip = text;
   knopf.innerHTML = `<i class="fa-solid ${laeuft ? "fa-sun" : "fa-moon"}" aria-hidden="true"></i>`;
   knopf.addEventListener("click", () => schonerSteuern(laeuft ? "stop" : "start"));
+  return knopf;
+}
+
+/** Die nächste angehakte Begleitszene sofort, statt nach der Zeit. */
+function weiterKnopf() {
+  const text = game.i18n.localize("INPERSON.Begleitleiste.RotateNow");
+  const knopf = document.createElement("button");
+  knopf.type = "button";
+  knopf.className = "inperson-begleitleiste-schoner";
+  knopf.setAttribute("aria-label", text);
+  knopf.dataset.tooltip = text;
+  knopf.innerHTML = `<i class="fa-solid fa-forward" aria-hidden="true"></i>`;
+  knopf.addEventListener("click", () => schonerSteuern("start"));
   return knopf;
 }
 

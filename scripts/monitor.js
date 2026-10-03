@@ -332,6 +332,45 @@ export function getCompanionScenes(scene) {
     .filter(Boolean);
 }
 
+/**
+ * The scene display's screensaver, decided per battlemap.
+ *
+ * Asked for on 2026-10-03 for the landing page: its companions are the
+ * heroes' intro in two versions and a few pictures. The pictures should take
+ * turns on the television, the full intro must not come up on its own, and
+ * yet it has to stay a companion so the gamemaster can send it at the right
+ * moment. A folder or a single screensaver scene cannot say that; a mark on
+ * each companion can.
+ *
+ *   ""            what the display settings say
+ *   "companions"  take turns between the marked companions, after the map's
+ *                 own minutes (or the display settings' waiting time)
+ *   "off"         no screensaver while this map is showing
+ *
+ * Stored as which companions are left out rather than which take part, so a
+ * companion added later joins the turns without a second step.
+ */
+export const MAP_SCREENSAVER_FLAG = "mapScreensaver";
+export const MAP_SKIP_FLAG = "mapScreensaverSkip";
+export const MAP_MINUTES_FLAG = "mapScreensaverMinutes";
+
+/**
+ * @param {Scene} scene The battlemap
+ * @returns {{mode: ""|"companions"|"off", minutes: number, companions: Scene[], rotating: Scene[]}}
+ */
+export function getMapScreensaver(scene) {
+  const raw = scene?.getFlag?.(MODULE_ID, MAP_SCREENSAVER_FLAG) ?? "";
+  const mode = raw === "companions" || raw === "off" ? raw : "";
+  const skip = new Set(companionIds(scene?.getFlag?.(MODULE_ID, MAP_SKIP_FLAG)));
+  const companions = getCompanionScenes(scene);
+  return {
+    mode,
+    minutes: Math.max(0, Number(scene?.getFlag?.(MODULE_ID, MAP_MINUTES_FLAG)) || 0),
+    companions,
+    rotating: companions.filter(c => !skip.has(c.id))
+  };
+}
+
 /** The companion the display goes to on activation - the first one. @returns {Scene|null} */
 export function getCompanionScene(scene) {
   return getCompanionScenes(scene)[0] ?? null;

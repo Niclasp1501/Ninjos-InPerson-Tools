@@ -1073,6 +1073,35 @@
   padding: 0;
 }
 
+/* Takes part in the map's screensaver turns, or is left out. Only while the
+   map says "take turns"; otherwise the switch would ask a question nobody
+   asked. */
+.inperson-scenelist-wechsel {
+  display: none;
+  flex: 0 0 auto;
+  height: 28px;
+  padding: 0 8px;
+  white-space: nowrap;
+  opacity: 0.65;
+}
+
+.inperson-scenelist.zeigt-wechsel .inperson-scenelist-wechsel {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Foundry's `.form-group { display: flex }` beats the browser's own rule for
+   `hidden`, so the minutes row needs saying it twice. */
+.inperson-kartenschoner-zeit[hidden] {
+  display: none;
+}
+
+.inperson-scenelist-wechsel.is-on {
+  border-color: var(--ninjo-akzent, #D4AF37);
+  opacity: 1;
+}
+
 .inperson-scenelist-empty {
   padding: 6px 8px;
   font-size: 12px;
