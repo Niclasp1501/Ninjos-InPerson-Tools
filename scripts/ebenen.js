@@ -310,9 +310,17 @@ let _nachDemLaden = null;
  * Ebenenwahl kann dazwischen kommen. Am 02.10.2026 stand die Meldung auf dem
  * Fernseher, obwohl der Wechsel geklappt hatte.
  *
- * Statt abzulehnen merkt sich der Monitor den letzten Wunsch und erfüllt ihn
- * nach `canvasReady`. Ist er dann schon auf dieser Szene und Ebene, zeichnet
- * Foundry nichts neu.
+ * Statt abzulehnen merkt sich der Monitor den letzten Wunsch und erfüllt ihn,
+ * sobald das Laden fertig ist. Ist er dann schon auf dieser Szene und Ebene,
+ * zeichnet Foundry nichts neu.
+ *
+ * **Gewartet wird auf `canvas.loading`, nicht auf `canvasReady`.** Foundry ruft
+ * `canvasReady` auf, bevor es `loading` zurücksetzt (Canvas#draw: erst
+ * `Hooks.call("canvasReady")`, dann die Region-Ereignisse, dann
+ * `this.loading = false`). Wer im Hook wechselt, läuft in genau die Sperre, um
+ * die es hier geht. So stand es in der ersten Fassung vom 02.10.2026, und der
+ * Wunsch ging dabei verloren. Bricht das Laden ab, ohne dass `canvasReady`
+ * kommt, hält das Nachsehen trotzdem nicht für immer an.
  * @returns {boolean} true, wenn der Aufruf verschoben wurde
  */
 function spaeterWechseln(szene, options) {
@@ -325,11 +333,14 @@ function spaeterWechseln(szene, options) {
   const schonGemerkt = !!_nachDemLaden;
   _nachDemLaden = { szene, options };
   if (!schonGemerkt) {
-    Hooks.once("canvasReady", () => {
+    const bis = Date.now() + 60_000;
+    const nachsehen = () => {
+      if (canvas?.loading && Date.now() < bis) return setTimeout(nachsehen, 100);
       const wunsch = _nachDemLaden;
       _nachDemLaden = null;
       if (wunsch?.szene && game.scenes.has(wunsch.szene.id)) wunsch.szene.view(wunsch.options);
-    });
+    };
+    setTimeout(nachsehen, 100);
   }
   console.debug(`${MODULE_ID} | Monitor lädt noch, "${szene.name}" kommt danach.`);
   return true;

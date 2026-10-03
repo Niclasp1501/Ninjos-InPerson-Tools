@@ -10,10 +10,12 @@
   pictures and videos; when the game is paused, the overlay now stays on the
   gamemaster's screen and the battlemap display instead of sitting in the
   middle of the picture.
-- **No loading warning on the displays.** When two scene changes reached a
-  display close together, Foundry refused the second one with "You cannot
-  switch Scenes until resources finish loading" in the middle of the picture.
-  The displays now wait for the first scene and then take the last request.
+- **No pop-ups on the displays.** When two scene changes reached a display
+  close together, Foundry refused the second one with "You cannot switch
+  Scenes until resources finish loading" in the middle of the picture. The
+  displays now wait for the first scene and then take the last request, and
+  they no longer show notifications at all: nobody at the television can act
+  on one.
 - **Compendiums open in the sheet view.** Foundry gives a compendium window
   the same class as a popped-out sidebar tab, and the sheet view kept every
   such window hidden unless it had opened it itself. Opening a compendium from

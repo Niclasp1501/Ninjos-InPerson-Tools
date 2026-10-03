@@ -6,7 +6,7 @@
  */
 
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
-import { isActive, invalidate, isSceneDisplay } from "./state.js";
+import { isActive, invalidate, isSceneDisplay, isMonitorUser } from "./state.js";
 import {
   installWrappers, refreshTokenSources, clearPlaceholders, getStats, resetStats
 } from "./blocker.js";
@@ -70,9 +70,16 @@ function onRelevantSettingChanged() {
  * the battlemap display; on the scene display it only sat in the middle of the
  * picture. Asked for on 2026-10-01, after a world restart left the game paused
  * over the heroes' intro.
+ *
+ * Both displays also get a second class that hides Foundry's notifications. A
+ * toast on a television is read by nobody who could act on it, and Foundry
+ * shows some of its own there: "You cannot switch Scenes until resources
+ * finish loading" stood on the scene display twice, on 2026-10-02 and 10-03,
+ * although the switch worked both times.
  */
 function markSceneDisplayBody() {
   document.body?.classList.toggle("inperson-scenedisplay", isSceneDisplay(game.user));
+  document.body?.classList.toggle("inperson-anzeige", isMonitorUser(game.user));
 }
 
 function registerSettings() {

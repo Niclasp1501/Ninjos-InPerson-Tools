@@ -2498,6 +2498,12 @@ body.inperson-scenedisplay #pause {
   display: none !important;
 }
 
+/* Both displays: no notifications. Nobody at the television can act on one,
+   and Foundry's own warnings landed in the middle of the picture. */
+body.inperson-anzeige #notifications {
+  display: none !important;
+}
+
 /* `#tooltip` bleibt: Es ist Foundrys Erklärkasten für alles, auch für unsere
    Zeitleiste - Wetter und Mondphase hängen daran. Mit ausgeblendet, zeigte
    ein Finger auf der Leiste nichts mehr. */
