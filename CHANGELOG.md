@@ -12,6 +12,10 @@
   marked to take part or to be left out, so a full intro stays a companion
   you send by hand while the pictures change by themselves. In the companion
   bar, the screensaver button then shows the next companion at once.
+- **One failing step no longer blanks a tablet.** The sheet view hides
+  Foundry's interface first and shows the character sheet last. If a step in
+  between failed, for instance on an older browser, the player was left with
+  an empty screen. Every step now runs on its own, and the sheet always comes.
 - **Notifications only when something is wrong.** Confirmations such as
   "sent to the display" or "settings saved" no longer pop up; they go to the
   console. Two of Foundry's own messages gave away what comes next and are

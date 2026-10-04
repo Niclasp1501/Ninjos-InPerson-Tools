@@ -925,24 +925,49 @@ Hooks.once("init", () => {
   begleitwahlKnopfEinrichten();
 });
 
+/**
+ * Ein Schritt beim Start. Scheitert er, laufen die übrigen trotzdem.
+ *
+ * Bis zum 04.10.2026 standen alle Schritte bei `ready` einfach hintereinander.
+ * Warf einer davon, etwa weil ein älterer Browser etwas nicht kennt, kam keiner
+ * der folgenden mehr dran, und die Bogenansicht steht fast ganz am Ende. Auf
+ * Nadylos' iPad mit iPadOS 17 ging sie nach der Anmeldung nicht auf. Ob es
+ * daran lag, ist nicht belegt; dass ein einzelner Fehler die Bühne eines
+ * Spielers nicht mehr mitnimmt, gilt in jedem Fall.
+ * @param {string} name Steht in der Konsole, wenn es schiefgeht
+ * @param {Function} fn
+ */
+function schritt(name, fn) {
+  const melden = fehler => console.error(`${MODULE_ID} | Start: ${name} gescheitert`, fehler);
+  try {
+    const ergebnis = fn();
+    // Auch ein abgelehntes Versprechen hält den Start nicht auf, ob es nun
+    // abgewartet wird oder nicht.
+    if (ergebnis && typeof ergebnis.catch === "function") return ergebnis.catch(melden);
+    return ergebnis;
+  } catch (fehler) {
+    melden(fehler);
+  }
+}
+
 Hooks.once("ready", async () => {
-  fensterPassenEinrichten();
-  installZeigen();
+  schritt("fensterPassenEinrichten", fensterPassenEinrichten);
+  schritt("installZeigen", installZeigen);
   // First thing: carry over what the previous module id had stored.
-  await migrateFromOldId();
+  await schritt("migrateFromOldId", migrateFromOldId);
 
   // Ganz am Anfang der Sitzung, aber nach der Migration: sonst stuende das
   // Fenster vor einer Welt, die ihre Einstellungen noch gar nicht hat.
-  willkommenZeigen();
+  schritt("willkommenZeigen", willkommenZeigen);
 
   game.socket.on(SOCKET.NAME, onSocket);
-  markSceneDisplayBody();
+  schritt("markSceneDisplayBody", markSceneDisplayBody);
   if (game.user.isGM) {
-    installBegleitwahl();
-    installBegleitleiste();
-    installEbenenSteuerung();
+    schritt("installBegleitwahl", installBegleitwahl);
+    schritt("installBegleitleiste", installBegleitleiste);
+    schritt("installEbenenSteuerung", installEbenenSteuerung);
   }
-  ebenenEinrichten();
+  schritt("ebenenEinrichten", ebenenEinrichten);
 
   game.modules.get(MODULE_ID).api = {
     openPanel,
@@ -961,23 +986,23 @@ Hooks.once("ready", async () => {
   // eigener Hook, damit niemand auf "ready"-Reihenfolgen raten muss.
   Hooks.callAll("ninjosInPersonTools.ready", game.modules.get(MODULE_ID).api);
 
-  refreshTokenSources();
-  updatePill();
-  reportToGM();
-  syncNoCanvas();
-  applyPinnedScene();
+  schritt("refreshTokenSources", refreshTokenSources);
+  schritt("updatePill", updatePill);
+  schritt("reportToGM", reportToGM);
+  schritt("syncNoCanvas", syncNoCanvas);
+  schritt("applyPinnedScene", applyPinnedScene);
   // One place that notices the display moving, whatever moved it. Replaces the
   // earlier per-route bookkeeping, which could only ever cover the routes we
   // had thought of.
-  installActivityListener();
-  installScreensaver();
-  installActorPanel();
-  installClock();
-  installTradeButton();
-  installSheetView();
+  schritt("installActivityListener", installActivityListener);
+  schritt("installScreensaver", installScreensaver);
+  schritt("installActorPanel", installActorPanel);
+  schritt("installClock", installClock);
+  schritt("installTradeButton", installTradeButton);
+  schritt("installSheetView", installSheetView);
   // Lock View may not have built its global yet when our `ready` runs; the
   // canvasReady attempt below is the second chance. Both are no-ops without it.
-  installLockViewInterop();
+  schritt("installLockViewInterop", installLockViewInterop);
 
   if (isActive()) {
     console.log(`${MODULE_ID} | Table Mode active - scene backgrounds are blocked for this client.`);

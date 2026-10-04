@@ -1158,20 +1158,37 @@ export function federAnwenden() {
 
 /* ── An und aus ──────────────────────────────────────────────────── */
 
+/**
+ * Ein Schritt beim Starten der Ansicht. Scheitert er, kommen die übrigen
+ * trotzdem dran, vor allem der letzte: das Blatt.
+ *
+ * Die Klasse am `body` blendet Foundrys Oberfläche aus, bevor die Leisten
+ * gebaut sind. Warf bis zum 04.10.2026 einer der Schritte dazwischen, etwa die
+ * Uhr auf einem älteren Browser, kam `blattZeigen()` nie dran, und der Spieler
+ * sah eine leere Fläche ohne Oberfläche, aus der er nicht herauskam.
+ */
+function sicher(name, fn) {
+  try {
+    return fn();
+  } catch (fehler) {
+    console.error(`${MODULE_ID} | Blattansicht: ${name} gescheitert`, fehler);
+  }
+}
+
 async function starten() {
   if (laufend) return;
   laufend = true;
   document.body.classList.add(BODY_CLASS);
-  resetPruefen();
-  zoomAnwenden();
-  leisteBauen();
-  uhrBauen();
-  lageAnwenden();
-  sperreAnwenden();
-  zugStarten();
-  tastaturStarten();
-  federAnwenden();
-  letzteLage = lage();
+  sicher("resetPruefen", resetPruefen);
+  sicher("zoomAnwenden", zoomAnwenden);
+  sicher("leisteBauen", leisteBauen);
+  sicher("uhrBauen", uhrBauen);
+  sicher("lageAnwenden", lageAnwenden);
+  sicher("sperreAnwenden", sperreAnwenden);
+  sicher("zugStarten", zugStarten);
+  sicher("tastaturStarten", tastaturStarten);
+  sicher("federAnwenden", federAnwenden);
+  letzteLage = sicher("lage", lage);
   // Das Tablet wird gedreht: Plätze und Größe der neuen Lage holen.
   window.addEventListener("resize", beimDrehen);
   await blattZeigen();
@@ -1234,7 +1251,7 @@ function chatBeiBenutzung(message) {
 }
 
 export function installSheetView() {
-  installZug();
+  sicher("installZug", installZug);
   syncSheetView();
 
   Hooks.on("createChatMessage", message => chatBeiBenutzung(message));
