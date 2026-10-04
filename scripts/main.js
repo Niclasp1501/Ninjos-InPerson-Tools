@@ -18,7 +18,7 @@ import {
 } from "./blocker.js";
 import { collectSceneSources, sumKnown, formatBytes } from "./measure.js";
 import { openPanel, refreshPanel, playerReports } from "./panel.js";
-import { syncNoCanvas } from "./nocanvas.js";
+import { syncNoCanvas, noCanvasBeforeFirstDraw } from "./nocanvas.js";
 import {
   applyRotation, getRotation, ROTATION_FLAG, ANGLES, uprightTokenLabels, uprightAllTokens
 } from "./rotation.js";
@@ -1410,6 +1410,9 @@ function onRenderSceneConfig(app, element) {
 }
 
 Hooks.once("setup", () => {
+  // Vor allem anderen hier: Foundry zeichnet die erste Szene gleich nach
+  // diesem Hook (siehe nocanvas.js).
+  schritt("noCanvasBeforeFirstDraw", noCanvasBeforeFirstDraw);
   fillAccountChoices();
   // Ein zweites Mal, jetzt mit allen registrierten Szenenblättern. Ein Modul,
   // das ein eigenes Blatt mit eigenen PARTS mitbringt, ist erst hier bekannt.

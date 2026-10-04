@@ -12,6 +12,11 @@
   marked to take part or to be left out, so a full intro stays a companion
   you send by hand while the pictures change by themselves. In the companion
   bar, the screensaver button then shows the next companion at once.
+- **Tablets skip the first draw.** A tablet that is meant to run without a
+  canvas, for the sheet view or table mode, now switches it off before
+  Foundry draws the first scene, not afterwards with a reload. On an old iPad
+  the first draw of a scene with a video background never finished, and the
+  tablet never got as far as the sheet.
 - **Device reports.** A player's device sends the errors of its first ten
   minutes, its browser and screen size, and the state of the sheet view as a
   flag on the player's own user, where the gamemaster can read it later. A tablet has no console anyone can read, and "it does not

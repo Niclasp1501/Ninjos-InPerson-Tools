@@ -44,6 +44,31 @@ async function release() {
 }
 
 /**
+ * Switch the canvas off before Foundry draws it for the first time.
+ *
+ * Called at `setup`, which Foundry runs before `initializeCanvas` (game.mjs,
+ * setupGame). Until 2026-10-04 the decision fell only at `ready`, after the
+ * first draw, followed by an offer to reload. On an old iPad that first draw
+ * never finished: the active scene had a video background, iOS does not load
+ * a video before the screen is touched, and Foundry waited for it without an
+ * error. `ready` never came, so neither did this module, the reload offer or
+ * the sheet view, and the player looked at an empty screen.
+ *
+ * `game.settings.set` writes a client setting to localStorage synchronously
+ * before its first await, so the canvas initialisation that follows already
+ * reads the new value. No reload is needed: nothing was drawn yet.
+ */
+export function noCanvasBeforeFirstDraw() {
+  if (game.user?.isGM) return;
+  const tisch = game.settings.get(MODULE_ID, SETTINGS.AUTO_NO_CANVAS) && isActive();
+  const blatt = game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_NO_CANVAS) && sheetViewWanted();
+  if (!(tisch || blatt) || game.settings.get("core", "noCanvas")) return;
+  game.settings.set("core", "noCanvas", true);
+  game.settings.set(MODULE_ID, SETTINGS.NO_CANVAS_OWNED, true);
+  console.log(`${MODULE_ID} | Canvas switched off before the first draw.`);
+}
+
+/**
  * Bring `core.noCanvas` in line with this client's table mode state.
  *
  * Ownership is tracked deliberately: Sheet-Only manages the same core setting for
