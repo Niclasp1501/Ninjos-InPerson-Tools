@@ -13,10 +13,10 @@
  * Spielleitung. Deren Rechner legt den letzten Bericht je Spieler in einer
  * versteckten Welteinstellung ab, wo er sich auch nachträglich lesen lässt.
  *
- * **Eine eigene Datei, die vor main.js geladen wird.** Kann ein Browser
- * main.js oder eine ihrer Abhängigkeiten nicht einmal lesen, läuft von uns
- * sonst gar nichts, auch kein Bericht darüber. Diese Datei braucht nur
- * const.js und keine neueren Sprachmittel.
+ * **Der erste Import in main.js**, damit er schon mitschreibt, während die
+ * übrigen Dateien ausgewertet werden. Diese Datei braucht nur const.js und
+ * keine neueren Sprachmittel. Was er nicht abdeckt: Kann ein Browser eine
+ * unserer Dateien nicht einmal lesen, lädt keine davon, auch diese nicht.
  *
  * Gesammelt wird nur, was ohnehin in der Konsole stünde, dazu Browserkennung
  * und Bildschirmgröße. Keine Eingaben, keine Inhalte.

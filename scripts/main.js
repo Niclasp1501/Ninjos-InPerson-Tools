@@ -5,6 +5,11 @@
  * every download path, and why the default scope stops at scene backgrounds.
  */
 
+// Zuerst: Der Gerätebericht soll schon mitschreiben, wenn die übrigen
+// Dateien ausgewertet werden. Als erster Import läuft er vor allen anderen.
+// Nicht als eigener Eintrag in module.json, weil Foundry diese Liste nur beim
+// Start der Welt liest.
+import "./geraetebericht.js";
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
 import { still, stilleMeldungenEinrichten } from "./stille.js";
 import { isActive, invalidate, isSceneDisplay, isMonitorUser } from "./state.js";
