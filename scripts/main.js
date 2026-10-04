@@ -176,6 +176,20 @@ function registerSettings() {
     default: true,
     onChange: blattAbgleichen
   });
+  // Beide aus, solange niemand sie braucht: Sie sind für die Fehlersuche und
+  // für alte Geräte da, nicht für den gewöhnlichen Tisch.
+  S(SETTINGS.OLD_IPAD, {
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: false
+  });
+  S(SETTINGS.DEVICE_REPORT, {
+    scope: "world",
+    config: false,
+    type: Boolean,
+    default: false
+  });
   S(SETTINGS.SHEETVIEW_EDIT_PEN, {
     scope: "world",
     config: false,

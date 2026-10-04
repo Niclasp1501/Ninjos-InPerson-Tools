@@ -59,6 +59,8 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
     return {
       enabled: game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW),
       noCanvas: game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_NO_CANVAS),
+      oldIpad: game.settings.get(MODULE_ID, SETTINGS.OLD_IPAD),
+      deviceReport: game.settings.get(MODULE_ID, SETTINGS.DEVICE_REPORT),
       editPen: game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_EDIT_PEN),
       showAllow: game.settings.get(MODULE_ID, SETTINGS.SHOW_ALLOW),
       showTv: game.settings.get(MODULE_ID, SETTINGS.SHOW_TV),
@@ -143,6 +145,8 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
     }
     await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_CHAT_ON_USE, !!data.chatOnUse);
     await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_NO_CANVAS, !!data.noCanvas);
+    await game.settings.set(MODULE_ID, SETTINGS.OLD_IPAD, !!data.oldIpad);
+    await game.settings.set(MODULE_ID, SETTINGS.DEVICE_REPORT, !!data.deviceReport);
     await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_EDIT_PEN, !!data.editPen);
     await game.settings.set(MODULE_ID, SETTINGS.SHOW_ALLOW, !!data.showAllow);
     await game.settings.set(MODULE_ID, SETTINGS.SHOW_TV, !!data.showTv);

@@ -63,6 +63,22 @@
     </label>
   </div>
 
+  <h3 class="inperson-sv-sub"><i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i> {{localize "INPERSON.SheetView.OldTablets"}}</h3>
+
+  <div class="inperson-sv-verhalten">
+    <label class="inperson-pick-row {{#if oldIpad}}on{{/if}}">
+      <input type="checkbox" name="oldIpad" {{checked oldIpad}}>
+      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.OldIpad"}}</span>
+      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.OldIpadHint'}}" aria-hidden="true"></i>
+    </label>
+
+    <label class="inperson-pick-row {{#if deviceReport}}on{{/if}}">
+      <input type="checkbox" name="deviceReport" {{checked deviceReport}}>
+      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.DeviceReport"}}</span>
+      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.DeviceReportHint'}}" aria-hidden="true"></i>
+    </label>
+  </div>
+
   <h3 class="inperson-sv-sub"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{localize "INPERSON.SheetView.Showing"}}</h3>
 
   <div class="inperson-sv-verhalten">

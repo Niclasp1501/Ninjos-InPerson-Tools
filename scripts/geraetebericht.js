@@ -22,11 +22,14 @@
  * keine neueren Sprachmittel. Was er nicht abdeckt: Kann ein Browser eine
  * unserer Dateien nicht einmal lesen, lädt keine davon, auch diese nicht.
  *
+ * **Von Haus aus aus.** Die Spielleitung schaltet es in den Einstellungen der
+ * Bogenansicht unter „Ältere Tablets" ein, wenn sie einen Fehler sucht.
+ *
  * Gesammelt wird nur, was ohnehin in der Konsole stünde, dazu Browserkennung
  * und Bildschirmgröße. Keine Eingaben, keine Inhalte.
  */
 
-import { MODULE_ID } from "./const.js";
+import { MODULE_ID, SETTINGS } from "./const.js";
 
 const FLAG = "geraetebericht";
 const HOECHSTENS = 30;
@@ -107,8 +110,17 @@ function zustand() {
   };
 }
 
+/** Nur wenn die Spielleitung es eingeschaltet hat; gesammelt wird trotzdem, das kostet nichts. */
+function erlaubt() {
+  try {
+    return !!game.settings.get(MODULE_ID, SETTINGS.DEVICE_REPORT);
+  } catch {
+    return false;
+  }
+}
+
 function senden() {
-  if (!_bereit || game.user.isGM) return;
+  if (!_bereit || game.user.isGM || !erlaubt()) return;
   game.user.setFlag(MODULE_ID, FLAG, {
     zeit: Date.now(),
     zustand: zustand(),

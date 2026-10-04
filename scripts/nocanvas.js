@@ -60,6 +60,8 @@ async function release() {
  */
 export function noCanvasBeforeFirstDraw() {
   if (game.user?.isGM) return;
+  // Only where the gamemaster asked for it: "support for older iPads".
+  if (!game.settings.get(MODULE_ID, SETTINGS.OLD_IPAD)) return;
   const tisch = game.settings.get(MODULE_ID, SETTINGS.AUTO_NO_CANVAS) && isActive();
   const blatt = game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_NO_CANVAS) && sheetViewWanted();
   if (!(tisch || blatt) || game.settings.get("core", "noCanvas")) return;

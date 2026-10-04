@@ -12,15 +12,16 @@
   marked to take part or to be left out, so a full intro stays a companion
   you send by hand while the pictures change by themselves. In the companion
   bar, the screensaver button then shows the next companion at once.
-- **Tablets skip the first draw.** A tablet that is meant to run without a
-  canvas, for the sheet view or table mode, now switches it off before
-  Foundry draws the first scene, not afterwards with a reload. On an old iPad
-  the first draw of a scene with a video background never finished, and the
-  tablet never got as far as the sheet.
-- **Device reports.** A player's device sends the errors of its first ten
-  minutes, its browser and screen size, and the state of the sheet view as a
-  flag on the player's own user, where the gamemaster can read it later. A tablet has no console anyone can read, and "it does not
-  work" was all there was to go on. Nothing the player types or reads is sent.
+- **Support for older iPads.** A new switch in the sheet view settings, off
+  by default, turns the canvas off on tablets with the sheet view or table
+  mode before Foundry draws the first scene, instead of afterwards with a
+  reload. On an iPad with iPadOS 17 the first draw of a scene with a video
+  background never finished, and the tablet never got as far as the sheet.
+- **Device reports.** A second switch, also off by default, lets each
+  player's device store the errors of its first ten minutes, its browser and
+  screen size, and the state of the sheet view on the player's own user. A
+  tablet has no console anyone can read, and "it does not work" was all there
+  was to go on. Nothing the player types or reads is collected.
 - **One failing step no longer blanks a tablet.** The sheet view hides
   Foundry's interface first and shows the character sheet last. If a step in
   between failed, for instance on an older browser, the player was left with

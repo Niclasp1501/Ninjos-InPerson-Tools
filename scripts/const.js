@@ -179,6 +179,14 @@ export const SETTINGS = {
   SHEETVIEW_USERS: "sheetViewUsers",
   /** Spielfeld auf diesen Geräten abschalten — dieselbe Maschinerie wie im Tischmodus (world). */
   SHEETVIEW_NO_CANVAS: "sheetViewNoCanvas",
+  /**
+   * Switch the canvas off at `setup`, before the first draw, on devices that run
+   * without one (world). Needed on iPads with iPadOS 17, where the first draw
+   * of a scene with a video background never finished. Off by default.
+   */
+  OLD_IPAD: "oldIpadSupport",
+  /** Players' devices write their first errors to their own user (world). Off by default. */
+  DEVICE_REPORT: "deviceReport",
   /** Chat aufklappen, sobald der Spieler selbst etwas würfelt oder benutzt (world). */
   SHEETVIEW_CHAT_ON_USE: "sheetViewChatOnUse",
   SHEETVIEW_EDIT_PEN: "sheetViewEditPen",
