@@ -12,6 +12,11 @@
   marked to take part or to be left out, so a full intro stays a companion
   you send by hand while the pictures change by themselves. In the companion
   bar, the screensaver button then shows the next companion at once.
+- **Device reports.** A player's device sends the errors of its first ten
+  minutes, its browser and screen size, and the state of the sheet view to
+  the gamemaster, whose client keeps the latest report per player in a hidden
+  world setting. A tablet has no console anyone can read, and "it does not
+  work" was all there was to go on. Nothing the player types or reads is sent.
 - **One failing step no longer blanks a tablet.** The sheet view hides
   Foundry's interface first and shows the character sheet last. If a step in
   between failed, for instance on an older browser, the player was left with
