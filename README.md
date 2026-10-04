@@ -131,6 +131,24 @@ little sky dome: the sun by day, and the moon in its real phase by night. Rain, 
 thunderstorms appear in it as soon as a calendar module such as *Calendaria* reports them.
 Without a calendar module the bar shows Foundry's own time.
 
+### Older iPads
+
+Foundry 14 asks for Safari 18.4. Every browser on an iPad uses Safari's engine, Chrome
+included, so an iPad that stops at iPadOS 17 does not even get to the login page. This module
+cannot change that: Foundry has to be running before any module starts. What it takes:
+
+1. **The server fills in what the browser lacks.** The missing functions are added before
+   Foundry loads, and only where a browser does not have them yet. Up to now these are
+   `Map.getOrInsert`, the iterator helpers and a few others that Foundry 14 and dnd5e 6 use.
+   This is a change to the server, not part of this module.
+2. **"Support for older iPads"** in the sheet view settings, under "Older tablets". It switches
+   the canvas off before Foundry draws the first scene. Without it, an old iPad hangs on a scene
+   with a video background, because iOS does not load a video before the screen is touched.
+3. If something still does not work, **"Error report from players' devices"** next to it lets each
+   device store its first errors on its own user, so they can be read without a console.
+
+Both switches are off by default.
+
 ### Working with other modules
 
 In-Person Tools need no other module, but they work well with a few.
@@ -305,6 +323,26 @@ bekommt die Seite dagegen sofort. Du kannst jedes Zeigen mit einem Klick für al
 eine kleine Himmelskuppel mit Sonne am Tag und dem Mond in seiner echten Phase bei Nacht. Regen,
 Schnee, Nebel und Gewitter tauchen darin auf, sobald ein Kalendermodul wie *Calendaria* sie
 meldet. Ohne Kalendermodul zeigt die Leiste Foundrys eigene Zeit.
+
+### Ältere iPads
+
+Foundry 14 verlangt Safari 18.4. Jeder Browser auf dem iPad nutzt Safaris Technik, auch Chrome,
+und ein iPad, das bei iPadOS 17 stehen bleibt, kommt deshalb nicht einmal bis zur Anmeldung.
+Daran kann dieses Modul nichts ändern, denn Foundry muss laufen, bevor ein Modul startet. Nötig
+ist Folgendes:
+
+1. **Der Server ergänzt, was dem Browser fehlt.** Die fehlenden Funktionen werden vor Foundry
+   nachgerüstet, und nur dort, wo ein Browser sie noch nicht hat. Bisher sind das
+   `Map.getOrInsert`, die Iterator-Helfer und einige weitere, die Foundry 14 und dnd5e 6
+   benutzen. Das ist eine Änderung am Server und nicht Teil dieses Moduls.
+2. **„Unterstützung für ältere iPads"** in den Einstellungen der Blattansicht, unter „Ältere
+   Tablets". Sie schaltet das Spielfeld ab, bevor Foundry die erste Szene zeichnet. Ohne sie
+   bleibt ein altes iPad bei einer Szene mit Videohintergrund hängen, weil iOS ein Video erst
+   lädt, wenn jemand den Bildschirm berührt.
+3. Klappt danach noch etwas nicht, legt **„Fehlerbericht der Spielergeräte"** daneben die ersten
+   Fehler jedes Geräts an dessen eigenem Benutzerkonto ab. So lassen sie sich ohne Konsole lesen.
+
+Beide Schalter sind von Haus aus aus.
 
 ### Zusammen mit anderen Modulen
 

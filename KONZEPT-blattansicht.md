@@ -283,3 +283,38 @@ Was daran zu entscheiden ist, bevor eine Zeile Modulcode entsteht:
    Papier lässt sich das nicht entscheiden.
 3. **Wann schalten wir Sheet Only ab?** Vorschlag: erst nach einem
    vollständigen Spielabend mit eingeschalteter Beta, an dem nichts fehlte.
+
+## 8. Ältere iPads (iPadOS 17): was dafür nötig ist
+
+Erarbeitet am 04.10.2026 an Nadylos' iPad Pro 2. Generation, iPadOS 17.7, mit Chrome. Jeder
+Browser auf dem iPad nutzt Safaris Technik, die Version des Browsers sagt also nichts.
+
+**Was zusammenkommen muss, in dieser Reihenfolge:**
+
+1. **Nachrüstung auf dem Server.** Foundry 14 verlangt Safari 18.4 und startet sonst gar nicht.
+   Die Server-Patches setzen `ninjo-nachruestung.js` an den Anfang von `foundry.mjs` und senken
+   die Safari-Grenze auf 17.0. Beschrieben im README unter
+   `Foundry-Betrieb/Foundry VTT Workspace/Ninjo´s Foundry Server-Patches/` (Punkt 4). Nach jedem
+   Foundry-Update muss der Patch wieder eingespielt werden.
+2. **Fehlende Funktionen nachtragen.** Neue Fassungen von Foundry, dnd5e oder Modulen bringen
+   neue Funktionen mit. Am 04.10.2026 war es `Map.getOrInsert` aus dnd5e 6.0.5: Foundry wurde
+   nie fertig, ohne sichtbaren Fehler für den Spieler.
+3. **„Unterstützung für ältere iPads" einschalten** (Blattansicht, „Ältere Tablets"), in jeder
+   Welt mit einem solchen Gerät. Das Spielfeld geht dann bei `setup` aus, vor dem ersten
+   Zeichnen (`noCanvasBeforeFirstDraw` in `nocanvas.js`). Ohne den Schalter wartete Foundry
+   auf das Video der Landingpage, das iOS ohne Berührung nicht lädt, und `ready` kam nie.
+   Ein Gerät, auf dem das Spielfeld einmal aus war, merkt sich das im Browserspeicher; nach
+   dem Löschen des Speichers braucht es den Schalter wieder.
+
+**Wenn es wieder hängt:**
+
+- **„Fehlerbericht der Spielergeräte"** einschalten. Läuft unser Modul, legt das Gerät
+  `flags.ninjos-inperson-tools.geraetebericht` am eigenen Konto ab.
+- Läuft es nicht, hilft der Fehlersammler der Nachrüstung weiter. Er schreibt
+  `flags.ninjos-inperson-tools.nachruestungsbericht`, auch mit `ready: false`, und zeigt nach
+  90 Sekunden ohne `ready` einen Kasten mit allen Fehlern auf dem Schirm, zum Abfotografieren.
+- Lesen ohne Spielleitungs-Rechner: die Benutzerdatenbank der Welt auf dem Server kopieren
+  (`worlds/<welt>/data/users`, `LOCK` löschen) und mit `classic-level` aus Foundrys
+  `node_modules` durchgehen. Nie die laufende Datenbank selbst öffnen.
+- Leere Fehlerliste und trotzdem `ready: false` heißt: Foundry wartet auf etwas, statt zu
+  scheitern. Erster Verdacht ist dann das Zeichnen der aktiven Szene.
