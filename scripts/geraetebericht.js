@@ -9,9 +9,13 @@
  * von außen nicht zu sehen.
  *
  * Jedes Spielergerät sammelt deshalb die ersten Fehler seiner Sitzung und
- * schickt sie zusammen mit Browser und Zustand der Bogenansicht an die
- * Spielleitung. Deren Rechner legt den letzten Bericht je Spieler in einer
- * versteckten Welteinstellung ab, wo er sich auch nachträglich lesen lässt.
+ * legt sie zusammen mit Browser und Zustand der Bogenansicht als Markierung
+ * am eigenen Benutzerkonto ab (`flags.ninjos-inperson-tools.geraetebericht`).
+ * Das darf jeder Spieler bei sich selbst, es braucht keinen Rechner der
+ * Spielleitung, der gerade mitläuft und den neuesten Stand hat, und es liegt
+ * danach in der Datenbank der Welt. Die erste Fassung schickte den Bericht
+ * über den Rechner der Spielleitung; der war nicht neu geladen, und der
+ * Bericht ging verloren.
  *
  * **Der erste Import in main.js**, damit er schon mitschreibt, während die
  * übrigen Dateien ausgewertet werden. Diese Datei braucht nur const.js und
@@ -22,10 +26,9 @@
  * und Bildschirmgröße. Keine Eingaben, keine Inhalte.
  */
 
-import { MODULE_ID, SOCKET } from "./const.js";
+import { MODULE_ID } from "./const.js";
 
-const SETTING = "geraeteberichte";
-const TYP = "geraetebericht";
+const FLAG = "geraetebericht";
 const HOECHSTENS = 30;
 const TEXT_LAENGE = 600;
 /** So lange nach dem Laden werden neue Fehler noch nachgemeldet. */
@@ -106,13 +109,11 @@ function zustand() {
 
 function senden() {
   if (!_bereit || game.user.isGM) return;
-  game.socket.emit(SOCKET.NAME, {
-    type: TYP,
-    userId: game.user.id,
+  game.user.setFlag(MODULE_ID, FLAG, {
     zeit: Date.now(),
     zustand: zustand(),
     fehler: _fehler
-  });
+  }).catch(fehler => _consoleError(`${MODULE_ID} | Gerätebericht nicht abgelegt`, fehler));
 }
 
 function planen() {
@@ -121,35 +122,10 @@ function planen() {
   _geplant = setTimeout(senden, 3000);
 }
 
-/* ── Empfangen, bei der Spielleitung ────────────────────────────── */
-
-async function ablegen(bericht) {
-  if (!game.user.isGM || game.users.activeGM?.id !== game.user.id) return;
-  const absender = game.users.get(bericht?.userId);
-  if (!absender || absender.isGM) return;
-  const alle = { ...(game.settings.get(MODULE_ID, SETTING) ?? {}) };
-  alle[absender.id] = { name: absender.name, empfangen: Date.now(), ...bericht };
-  // Nur die jüngsten Geräte behalten; ein Bericht ist ein Werkzeug, kein Archiv.
-  const reihe = Object.entries(alle).sort((a, b) => (b[1].empfangen ?? 0) - (a[1].empfangen ?? 0)).slice(0, 15);
-  await game.settings.set(MODULE_ID, SETTING, Object.fromEntries(reihe));
-}
-
 /* ── Einrichten ─────────────────────────────────────────────────── */
-
-Hooks.once("init", () => {
-  game.settings.register(MODULE_ID, SETTING, {
-    scope: "world",
-    config: false,
-    type: Object,
-    default: {}
-  });
-});
 
 Hooks.once("ready", () => {
   _bereit = true;
-  game.socket.on(SOCKET.NAME, payload => {
-    if (payload?.type === TYP) ablegen(payload).catch(fehler => _consoleError(`${MODULE_ID} | Gerätebericht nicht abgelegt`, fehler));
-  });
   if (game.user.isGM) return;
   // Einmal kurz nach dem Start, wenn die Bogenansicht hochgefahren sein müsste,
   // und einmal später, falls sie erst nachgezogen hat.
