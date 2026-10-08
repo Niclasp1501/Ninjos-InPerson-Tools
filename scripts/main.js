@@ -19,18 +19,19 @@ import {
 import { collectSceneSources, sumKnown, formatBytes } from "./measure.js";
 import { openPanel, refreshPanel, playerReports } from "./panel.js";
 import { syncNoCanvas, noCanvasBeforeFirstDraw } from "./nocanvas.js";
+import { erweiterungApi, reiterTeile, SCHNITTSTELLE } from "./erweiterung.js";
 import {
   applyRotation, getRotation, ROTATION_FLAG, ANGLES, uprightTokenLabels, uprightAllTokens
 } from "./rotation.js";
 import { openPullDialog } from "./pull.js";
 import { migrateFromOldId } from "./migrate.js";
 import { installLockViewInterop, onRotationChanged, describeInterop } from "./lockview.js";
-import { installScreensaver, screensaverControl } from "./screensaver.js";
+import { installScreensaver, screensaverControl, newPicture } from "./screensaver.js";
 import { openDisplaySettings } from "./displays-settings.js";
 import { openTableModeSettings } from "./tablemode-settings.js";
 import { buildSceneListField } from "./scene-field.js";
 import { openBegleitwahl, installBegleitwahl, begleitwahlKnopfEinrichten } from "./begleitwahl.js";
-import { installBegleitleiste } from "./begleitleiste.js";
+import { installBegleitleiste, begleitleisteAuffrischen, aktuelleId } from "./begleitleiste.js";
 import {
   ebenenHuellenEinrichten, ebenenEinrichten, ebenenFokus, ebenenEinstellungGeaendert
 } from "./ebenen.js";
@@ -999,7 +1000,15 @@ Hooks.once("ready", async () => {
     // Die Leiste der Blattansicht nimmt Knöpfe anderer Module an - siehe
     // sheetview.js. FANG und NDRS melden sich hier an, statt in unserem DOM
     // nach einem Element zu suchen.
-    sheetView: sheetViewApi
+    sheetView: sheetViewApi,
+    // Andockstellen für Zusatzmodule wie In-Person Tools Premium (erweiterung.js).
+    interface: SCHNITTSTELLE,
+    extension: erweiterungApi({
+      refreshCompanionBar: begleitleisteAuffrischen,
+      sceneDisplay: getSceneDisplay,
+      displayedSceneId: aktuelleId,
+      newPicture
+    })
   };
   // Wer vor uns fertig war, hat die Schnittstelle noch nicht gesehen. Ein
   // eigener Hook, damit niemand auf "ready"-Reihenfolgen raten muss.
@@ -1420,7 +1429,8 @@ function onRenderSceneConfig(app, element) {
       ${interop ? `<p class="notification info inperson-interop">${interop}</p>` : ""}
     </div>`;
 
-  ziel.append(begleiter, schoner, drehung);
+  // Abschnitte von Zusatzmodulen (erweiterung.js), vor der Drehung.
+  ziel.append(begleiter, schoner, ...reiterTeile(scene), drehung);
 }
 
 Hooks.once("setup", () => {

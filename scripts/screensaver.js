@@ -207,6 +207,14 @@ function restoreVision() {
   _visionRestore.clear();
 }
 
+/**
+ * Something new is on the display that the screensaver cannot see as a scene
+ * change, such as an intro started by an add-on: the waiting time starts over.
+ */
+export function newPicture() {
+  _pictureSince = Date.now();
+}
+
 /** Mark the next scene change as the screensaver's own. */
 function ownMove() {
   _ownMoveUntil = Date.now() + OWN_MOVE_MS;

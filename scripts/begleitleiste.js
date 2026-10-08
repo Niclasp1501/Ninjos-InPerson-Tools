@@ -34,6 +34,7 @@ import {
   getCompanionScenes, getSceneDisplay, getPinnedScene, showOnMonitor, isScreensaving, getMapScreensaver
 } from "./monitor.js";
 import { thumbOf, withFallback } from "./scene-field.js";
+import { leistenKnoepfe } from "./erweiterung.js";
 
 const LEISTE_ID = "inperson-begleitleiste";
 const PLATZ_KEY = `${MODULE_ID}.begleitleiste.platz`;
@@ -72,7 +73,7 @@ function schonerSteuern(action) {
 }
 
 /** Welche Szene der Monitor gerade zeigt. */
-function aktuelleId() {
+export function aktuelleId() {
   const display = getSceneDisplay();
   return gewaehlt ?? (display?.active ? display.viewedScene : null) ?? getPinnedScene()?.id ?? null;
 }
@@ -113,8 +114,9 @@ function zeichnen() {
   if (!game.user?.isGM) return;
   const liste = szenen();
   const schoner = schonerMoeglich();
+  const fremde = getSceneDisplay() ? leistenKnoepfe() : [];
   let leiste = document.getElementById(LEISTE_ID);
-  if (!liste.length && !schoner) {
+  if (!liste.length && !schoner && !fremde.length) {
     leiste?.remove();
     return;
   }
@@ -143,6 +145,8 @@ function zeichnen() {
     return knopf;
   });
 
+  // Knöpfe von Zusatzmodulen (erweiterung.js) nach den Szenen, vor dem Schoner.
+  knoepfe.push(...fremde);
   if (schoner) knoepfe.push(schonerKnopf());
   reihe.replaceChildren(...knoepfe);
 }
