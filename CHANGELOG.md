@@ -6,6 +6,9 @@
 
 ## Unreleased
 
+- **Room for add-ons.** Other modules can now put a button into the
+  companion bar and a section into the scene's "At the table" tab, through
+  `api.extension` (interface 1).
 - **Companions that take turns.** A battlemap can now decide the scene
   display's screensaver for itself: as set for the displays, none at all, or
   its companions taking turns after a time of its own. Each companion is
