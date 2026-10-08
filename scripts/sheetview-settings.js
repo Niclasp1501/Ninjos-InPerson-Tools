@@ -6,7 +6,7 @@
  * das ist richtig: Ob jemand nur sein Blatt sieht, hängt am Gerät in seiner
  * Hand, nicht an seiner Rolle. Das Muster ist dasselbe wie beim Tischmodus.
  *
- * Spielleiter stehen nicht in der Liste. Sie brauchen die Oberfläche, die
+ * Spielleiter stehen nicht in der Liste, die beiden Monitor-Konten auch nicht. Sie brauchen die Oberfläche, die
  * hier verschwindet; ein Spielleiter ohne Szenenliste kann den Abend nicht
  * führen.
  *
@@ -17,6 +17,7 @@
 import { MODULE_ID, SETTINGS } from "./const.js";
 import { still } from "./stille.js";
 import { characterOf } from "./figuren.js";
+import { isMonitorUser } from "./state.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -25,7 +26,7 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
     id: "ninjos-inperson-tools-sheetview",
     tag: "form",
     window: { title: "INPERSON.SheetView.Title", icon: "fa-solid fa-tablet-screen-button", resizable: true },
-    position: { width: 560, height: "auto" },
+    position: { width: 760, height: "auto" },
     classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-displays"],
     form: { handler: SheetViewSettings.#onSubmit, closeOnSubmit: true },
     actions: { reset: SheetViewSettings.#onReset }
@@ -42,8 +43,10 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
   /** @override */
   async _prepareContext() {
     const chosen = game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_USERS) ?? {};
+    // Die beiden Monitor-Konten sind keine Tablets: Sie zeigen Szenen, kein
+    // Blatt, und standen in der Liste nur, weil sie Spielerkonten sind.
     const users = game.users
-      .filter(u => !u.isGM)
+      .filter(u => !u.isGM && !isMonitorUser(u))
       .sort((a, b) => a.name.localeCompare(b.name))
       .map(u => {
         const actor = characterOf(u);

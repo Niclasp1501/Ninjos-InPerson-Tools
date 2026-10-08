@@ -1,6 +1,8 @@
 {{!--
-  Ein Schalter, die Liste, drei Zeilen Verhalten. Die Erklärungen stecken in
-  Tooltips (i) - sichtbar war das eine Textwand, in der die Konten untergingen.
+  Ein Schalter, die Liste, Verhalten und Zeigen nebeneinander, die Schalter
+  für ältere Tablets ganz unten: Sie braucht kaum jemand, und wer sie braucht,
+  sucht sie. Die Erklärungen stecken in Tooltips (i); sichtbar war das eine
+  Textwand, in der die Konten untergingen.
 --}}
 <section class="inperson-body inperson-sv-settings">
 
@@ -41,31 +43,58 @@
     <p class="inperson-hint">{{localize "INPERSON.SheetView.NoUsers"}}</p>
   {{/if}}
 
-  <h3 class="inperson-sv-sub"><i class="fa-solid fa-sliders" aria-hidden="true"></i> {{localize "INPERSON.SheetView.Behaviour"}}</h3>
+  <div class="inperson-sv-spalten">
+    <div>
+    <h3 class="inperson-sv-sub"><i class="fa-solid fa-sliders" aria-hidden="true"></i> {{localize "INPERSON.SheetView.Behaviour"}}</h3>
 
-  <div class="inperson-sv-verhalten">
-    <label class="inperson-pick-row {{#if noCanvas}}on{{/if}}">
-      <input type="checkbox" name="noCanvas" {{checked noCanvas}}>
-      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.NoCanvas"}}</span>
-      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.NoCanvasHint'}}" aria-hidden="true"></i>
-    </label>
+    <div class="inperson-sv-verhalten">
+      <label class="inperson-pick-row {{#if noCanvas}}on{{/if}}">
+        <input type="checkbox" name="noCanvas" {{checked noCanvas}}>
+        <span class="inperson-pick-name">{{localize "INPERSON.SheetView.NoCanvas"}}</span>
+        <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.NoCanvasHint'}}" aria-hidden="true"></i>
+      </label>
 
-    <label class="inperson-pick-row {{#if editPen}}on{{/if}}">
-      <input type="checkbox" name="editPen" {{checked editPen}}>
-      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.EditPen"}}</span>
-      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.EditPenHint'}}" aria-hidden="true"></i>
-    </label>
+      <label class="inperson-pick-row {{#if editPen}}on{{/if}}">
+        <input type="checkbox" name="editPen" {{checked editPen}}>
+        <span class="inperson-pick-name">{{localize "INPERSON.SheetView.EditPen"}}</span>
+        <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.EditPenHint'}}" aria-hidden="true"></i>
+      </label>
 
-    <label class="inperson-pick-row {{#if chatOnUse}}on{{/if}}">
-      <input type="checkbox" name="chatOnUse" {{checked chatOnUse}}>
-      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ChatOnUse"}}</span>
-      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.ChatOnUseHint'}}" aria-hidden="true"></i>
-    </label>
+      <label class="inperson-pick-row {{#if chatOnUse}}on{{/if}}">
+        <input type="checkbox" name="chatOnUse" {{checked chatOnUse}}>
+        <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ChatOnUse"}}</span>
+        <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.ChatOnUseHint'}}" aria-hidden="true"></i>
+      </label>
+    </div>
+    </div>
+    <div>
+    <h3 class="inperson-sv-sub"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{localize "INPERSON.SheetView.Showing"}}</h3>
+
+    <div class="inperson-sv-verhalten">
+      <label class="inperson-pick-row {{#if showAllow}}on{{/if}}">
+        <input type="checkbox" name="showAllow" {{checked showAllow}}>
+        <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ShowAllow"}}</span>
+        <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.ShowAllowHint'}}" aria-hidden="true"></i>
+      </label>
+
+      <label class="inperson-pick-row {{#if showTv}}on{{/if}}">
+        <input type="checkbox" name="showTv" {{checked showTv}}>
+        <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ShowTv"}}</span>
+        <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.ShowTvHint'}}" aria-hidden="true"></i>
+      </label>
+
+      <label class="inperson-pick-row {{#if showGmCopy}}on{{/if}}">
+        <input type="checkbox" name="showGmCopy" {{checked showGmCopy}}>
+        <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ShowGmCopy"}}</span>
+        <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.ShowGmCopyHint'}}" aria-hidden="true"></i>
+      </label>
+    </div>
+    </div>
   </div>
 
   <h3 class="inperson-sv-sub"><i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i> {{localize "INPERSON.SheetView.OldTablets"}}</h3>
 
-  <div class="inperson-sv-verhalten">
+  <div class="inperson-sv-spalten">
     <label class="inperson-pick-row {{#if oldIpad}}on{{/if}}">
       <input type="checkbox" name="oldIpad" {{checked oldIpad}}>
       <span class="inperson-pick-name">{{localize "INPERSON.SheetView.OldIpad"}}</span>
@@ -76,28 +105,6 @@
       <input type="checkbox" name="deviceReport" {{checked deviceReport}}>
       <span class="inperson-pick-name">{{localize "INPERSON.SheetView.DeviceReport"}}</span>
       <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.DeviceReportHint'}}" aria-hidden="true"></i>
-    </label>
-  </div>
-
-  <h3 class="inperson-sv-sub"><i class="fa-solid fa-eye" aria-hidden="true"></i> {{localize "INPERSON.SheetView.Showing"}}</h3>
-
-  <div class="inperson-sv-verhalten">
-    <label class="inperson-pick-row {{#if showAllow}}on{{/if}}">
-      <input type="checkbox" name="showAllow" {{checked showAllow}}>
-      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ShowAllow"}}</span>
-      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.ShowAllowHint'}}" aria-hidden="true"></i>
-    </label>
-
-    <label class="inperson-pick-row {{#if showTv}}on{{/if}}">
-      <input type="checkbox" name="showTv" {{checked showTv}}>
-      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ShowTv"}}</span>
-      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.ShowTvHint'}}" aria-hidden="true"></i>
-    </label>
-
-    <label class="inperson-pick-row {{#if showGmCopy}}on{{/if}}">
-      <input type="checkbox" name="showGmCopy" {{checked showGmCopy}}>
-      <span class="inperson-pick-name">{{localize "INPERSON.SheetView.ShowGmCopy"}}</span>
-      <i class="fa-solid fa-circle-info inperson-sv-info" data-tooltip="{{localize 'INPERSON.SheetView.ShowGmCopyHint'}}" aria-hidden="true"></i>
     </label>
   </div>
 
