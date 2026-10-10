@@ -846,6 +846,10 @@
 }
 
 .inperson-displays fieldset {
+  /* Ein fieldset ist von Haus aus mindestens so breit wie sein Inhalt
+     (min-inline-size: min-content) und lief so über die Seite hinaus: ein
+     waagerechter Rollbalken unter dem Abschnitt eines Zusatzmoduls. */
+  min-width: 0;
   margin: 0 0 12px;
   padding: 10px 12px;
   border: 1px solid var(--tm-border);
