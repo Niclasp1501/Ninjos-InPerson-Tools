@@ -22,6 +22,7 @@ import { still } from "./stille.js";
 import { listCompanionPairs, setCompanionScenes, addCompanionScene } from "./monitor.js";
 import { buildSceneField } from "./scene-field.js";
 import { previewCover } from "./screensaver.js";
+import { einstellungsTeile } from "./erweiterung.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -307,6 +308,11 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
     super._onRender?.(context, options);
     const el = this.element;
 
+    // Abschnitte von Zusatzmodulen ans Ende, vor die feste Fußleiste.
+    this.fremdeTeile = einstellungsTeile("displays");
+    const scroller = el.querySelector(".inperson-scroll");
+    for (const { element } of this.fremdeTeile) scroller?.appendChild(element);
+
     const show = (selector, on) => el.querySelector(selector)?.toggleAttribute("hidden", !on);
     const sync = () => {
       const on = el.querySelector('input[name="idleEnabled"]')?.checked;
@@ -366,6 +372,13 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_ROTATE_EVERY, Math.max(1, number(data.idleRotateEvery)));
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_BLANK_FOR, Math.max(1, number(data.idleBlankFor)));
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_LOGO, data.idleLogo ?? "");
+    for (const teil of this.fremdeTeile ?? []) {
+      try {
+        await teil.speichern?.(data);
+      } catch (fehler) {
+        console.error(`${MODULE_ID} | Zusatzmodul: Einstellungen ließen sich nicht speichern`, fehler);
+      }
+    }
 
     still("INPERSON.Displays.Saved", { localize: true });
   }

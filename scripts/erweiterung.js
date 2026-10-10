@@ -19,10 +19,12 @@
 import { MODULE_ID } from "./const.js";
 
 /** Die Fassung der Schnittstelle. */
-export const SCHNITTSTELLE = 2;
+export const SCHNITTSTELLE = 3;
 
 const _leistenKnoepfe = [];
 const _reiterTeile = [];
+/** Abschnitte auf Einstellungsseiten, je Seite: `{ bauen(), speichern(daten) }`. */
+const _einstellungsTeile = { displays: [] };
 
 /**
  * Was Zusatzmodule in die Begleitleiste stellen wollen, frisch gebaut.
@@ -40,6 +42,24 @@ export function leistenKnoepfe() {
  */
 export function reiterTeile(scene) {
   return bauen(_reiterTeile, [scene]);
+}
+
+/**
+ * Abschnitte von Zusatzmodulen für eine Einstellungsseite, frisch gebaut.
+ * @param {string} seite z. B. "displays"
+ * @returns {{element: HTMLElement, speichern: Function}[]}
+ */
+export function einstellungsTeile(seite) {
+  const ergebnis = [];
+  for (const teil of _einstellungsTeile[seite] ?? []) {
+    try {
+      const element = teil.bauen();
+      if (element instanceof HTMLElement) ergebnis.push({ element, speichern: teil.speichern });
+    } catch (fehler) {
+      console.error(`${MODULE_ID} | Zusatzmodul: Einstellungsabschnitt ließ sich nicht bauen`, fehler);
+    }
+  }
+  return ergebnis;
 }
 
 function bauen(liste, args) {
@@ -108,6 +128,24 @@ export function erweiterungApi({
      */
     holdScreensaver,
     /** Seit Schnittstelle 2. Ist dieser Rechner der Szenen-Monitor? */
-    isSceneDisplay
+    isSceneDisplay,
+    /**
+     * Seit Schnittstelle 3. Ein Abschnitt auf einer Einstellungsseite dieses
+     * Moduls, damit die Einstellungen eines Zusatzmoduls dort stehen, wo man
+     * sie sucht, und nicht als eigener Eintrag in Foundrys Modulliste. Seite
+     * bisher: "displays" (Szenen-Monitore einrichten).
+     *
+     * `bauen()` gibt ein Element mit Formularfeldern zurück, gern ein
+     * `<fieldset>` mit `<legend>`. `speichern(daten)` bekommt beim Speichern
+     * der Seite deren Formulardaten (`formData.object`) und schreibt die
+     * eigenen Einstellungen; vorher wird nichts geschrieben. Feldnamen ohne
+     * Punkt, mit eigenem Präfix.
+     * @param {string} seite
+     * @param {{bauen: () => HTMLElement, speichern: (daten: object) => Promise<void>}} teil
+     */
+    addSettingsSection(seite, teil) {
+      if (typeof teil?.bauen !== "function") return;
+      (_einstellungsTeile[seite] ??= []).push(teil);
+    }
   };
 }
