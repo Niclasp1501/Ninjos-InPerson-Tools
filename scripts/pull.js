@@ -33,7 +33,7 @@ export class PullPlayersDialog extends HandlebarsApplicationMixin(ApplicationV2)
       resizable: true
     },
     position: { width: 420, height: "auto" },
-    classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-pull"],
+    classes: ["ninjos-inperson-tools", "inperson-panel", "themed", "theme-light", "inperson-pull"],
     actions: {
       pull: PullPlayersDialog.#onPull,
       all: PullPlayersDialog.#onAll,

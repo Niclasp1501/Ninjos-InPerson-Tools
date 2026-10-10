@@ -416,7 +416,7 @@ export async function pickScene({ exclude = "", current = "" } = {}) {
     const dialog = new DialogV2({
       window: { title: "INPERSON.SceneField.Choose", icon: "fa-solid fa-map" },
       position: { width: 460, height: 520 },
-      classes: ["ninjos-inperson-tools", "inperson-panel"],
+      classes: ["ninjos-inperson-tools", "inperson-panel", "themed", "theme-light"],
       content,
       buttons: [{
         action: "none",

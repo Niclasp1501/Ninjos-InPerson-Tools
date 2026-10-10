@@ -47,7 +47,7 @@ class EbenenSteuerung extends HandlebarsApplicationMixin(ApplicationV2) {
     tag: "div",
     window: { title: "INPERSON.Ebenen.Title", icon: "fa-solid fa-layer-group", resizable: true },
     position: { width: 420, height: "auto" },
-    classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-ebenen"],
+    classes: ["ninjos-inperson-tools", "inperson-panel", "themed", "theme-light", "inperson-ebenen"],
     actions: {
       art: EbenenSteuerung.#onArt,
       ebene: EbenenSteuerung.#onEbene,

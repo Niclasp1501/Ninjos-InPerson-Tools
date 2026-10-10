@@ -54,7 +54,7 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
       resizable: true
     },
     position: { width: 620, height: "auto" },
-    classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-displays"],
+    classes: ["ninjos-inperson-tools", "inperson-panel", "themed", "theme-light", "inperson-displays"],
     form: {
       handler: DisplaySettings.#onSubmit,
       closeOnSubmit: true

@@ -32,7 +32,7 @@ export class TradeSettings extends HandlebarsApplicationMixin(ApplicationV2) {
       resizable: true
     },
     position: { width: 580, height: "auto" },
-    classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-displays"],
+    classes: ["ninjos-inperson-tools", "inperson-panel", "themed", "theme-light", "inperson-displays"],
     form: { handler: TradeSettings.#onSubmit, closeOnSubmit: true }
   };
 

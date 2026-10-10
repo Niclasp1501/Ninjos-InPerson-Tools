@@ -323,7 +323,7 @@ export class ZeigenAngebot extends HandlebarsApplicationMixin(ApplicationV2) {
     id: "ninjos-inperson-tools-angebot",
     window: { title: "INPERSON.Show.OfferTitle", icon: "fa-solid fa-hand-holding" },
     position: { width: 380, height: "auto" },
-    classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-angebot"],
+    classes: ["ninjos-inperson-tools", "inperson-panel", "themed", "theme-light", "inperson-angebot"],
     actions: { ja: ZeigenAngebot.#onJa, nein: ZeigenAngebot.#onNein }
   };
 
@@ -398,7 +398,7 @@ export class ZeigenAuswahl extends HandlebarsApplicationMixin(ApplicationV2) {
     tag: "form",
     window: { title: "INPERSON.Show.Title", icon: "fa-solid fa-eye" },
     position: { width: 420, height: "auto" },
-    classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-zeigen"],
+    classes: ["ninjos-inperson-tools", "inperson-panel", "themed", "theme-light", "inperson-zeigen"],
     actions: {
       senden: ZeigenAuswahl.#onSenden,
       alle: ZeigenAuswahl.#onAlle,

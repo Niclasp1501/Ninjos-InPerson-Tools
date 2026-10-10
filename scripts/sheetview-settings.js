@@ -27,7 +27,7 @@ export class SheetViewSettings extends HandlebarsApplicationMixin(ApplicationV2)
     tag: "form",
     window: { title: "INPERSON.SheetView.Title", icon: "fa-solid fa-tablet-screen-button", resizable: true },
     position: { width: 760, height: "auto" },
-    classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-displays"],
+    classes: ["ninjos-inperson-tools", "inperson-panel", "themed", "theme-light", "inperson-displays"],
     form: { handler: SheetViewSettings.#onSubmit, closeOnSubmit: true },
     actions: { reset: SheetViewSettings.#onReset }
   };

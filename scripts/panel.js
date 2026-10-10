@@ -29,7 +29,7 @@ export class InPersonPanel extends HandlebarsApplicationMixin(ApplicationV2) {
       resizable: true
     },
     position: { width: 520, height: "auto" },
-    classes: ["ninjos-inperson-tools", "inperson-panel"],
+    classes: ["ninjos-inperson-tools", "inperson-panel", "themed", "theme-light"],
     actions: {
       toggleMaster: InPersonPanel.#onToggleMaster,
       setUser: InPersonPanel.#onSetUser,

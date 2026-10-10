@@ -70,6 +70,11 @@
 /*  Panel                                       */
 /* -------------------------------------------- */
 
+/* Unsere Fenster sind Pergament, also hell. Jedes trägt deshalb in seinen
+   classes "themed" und "theme-light": Damit gelten darin Foundrys helle
+   Farben für Felder und Knöpfe, auch wenn die Welt auf dunkles Farbschema
+   steht. Ohne das standen dunkle Auswahlfelder auf hellem Grund (10.10.2026,
+   "Szenen-Monitore einrichten" in Geheimnisse der Abgründe). */
 .inperson-panel {
   font-family: var(--tm-font);
   color: var(--tm-text);

@@ -47,7 +47,7 @@ class Begleitwahl extends HandlebarsApplicationMixin(ApplicationV2) {
     tag: "div",
     window: { title: "INPERSON.Begleitwahl.Title", icon: "fa-solid fa-images", resizable: true },
     position: { width: 380, height: "auto" },
-    classes: ["ninjos-inperson-tools", "inperson-panel", "inperson-begleitwahl"],
+    classes: ["ninjos-inperson-tools", "inperson-panel", "themed", "theme-light", "inperson-begleitwahl"],
     actions: { zeigen: Begleitwahl.#onZeigen }
   };
 
