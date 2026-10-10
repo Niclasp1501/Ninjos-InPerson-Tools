@@ -19,7 +19,7 @@
 import { MODULE_ID } from "./const.js";
 
 /** Die Fassung der Schnittstelle. */
-export const SCHNITTSTELLE = 1;
+export const SCHNITTSTELLE = 2;
 
 const _leistenKnoepfe = [];
 const _reiterTeile = [];
@@ -64,7 +64,9 @@ function bauen(liste, args) {
  * @param {() => string|null} teile.displayedSceneId
  * @param {() => void} teile.newPicture
  */
-export function erweiterungApi({ refreshCompanionBar, sceneDisplay, displayedSceneId, newPicture }) {
+export function erweiterungApi({
+  refreshCompanionBar, sceneDisplay, displayedSceneId, newPicture, holdScreensaver, isSceneDisplay
+}) {
   return {
     interface: SCHNITTSTELLE,
     /**
@@ -96,6 +98,16 @@ export function erweiterungApi({ refreshCompanionBar, sceneDisplay, displayedSce
      * Auf diesem Rechner beginnt ein neues Bild: Der Bildschirmschoner fängt
      * seine Wartezeit von vorn an. Wirkt nur auf dem Szenen-Monitor.
      */
-    newPicture
+    newPicture,
+    /**
+     * Seit Schnittstelle 2. Den Bildschirmschoner auf diesem Rechner anhalten,
+     * solange `an` gilt, etwa während eine Bühne auf dem Szenen-Monitor steht.
+     * Mehrere Gründe nebeneinander, je mit eigenem Schlüssel.
+     * @param {string} schluessel
+     * @param {boolean} an
+     */
+    holdScreensaver,
+    /** Seit Schnittstelle 2. Ist dieser Rechner der Szenen-Monitor? */
+    isSceneDisplay
   };
 }

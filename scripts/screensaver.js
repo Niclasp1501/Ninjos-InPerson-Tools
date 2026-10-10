@@ -215,6 +215,20 @@ export function newPicture() {
   _pictureSince = Date.now();
 }
 
+/**
+ * Reasons to hold the screensaver back entirely, by key: a stage an add-on
+ * shows on the display, for example. While any is held, no cover, no scene
+ * of its own and no turns between companions; the clock starts over when
+ * the last one lets go.
+ */
+const _holds = new Set();
+
+export function holdScreensaver(key, on) {
+  if (!key) return;
+  if (on) _holds.add(key);
+  else if (_holds.delete(key) && !_holds.size) _pictureSince = Date.now();
+}
+
 /** Mark the next scene change as the screensaver's own. */
 function ownMove() {
   _ownMoveUntil = Date.now() + OWN_MOVE_MS;
@@ -464,6 +478,10 @@ function updateCover(now, quietSince) {
 
 async function tick() {
   if (!isSceneDisplay(game.user)) return;
+  if (_holds.size) {
+    if (isCovered()) setCovered(false);
+    return;
+  }
   // The map's own rule first, and regardless of the general switch: set on a
   // single map, it is meant for that map.
   const rule = mapRule();

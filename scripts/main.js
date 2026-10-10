@@ -26,7 +26,7 @@ import {
 import { openPullDialog } from "./pull.js";
 import { migrateFromOldId } from "./migrate.js";
 import { installLockViewInterop, onRotationChanged, describeInterop } from "./lockview.js";
-import { installScreensaver, screensaverControl, newPicture } from "./screensaver.js";
+import { installScreensaver, screensaverControl, newPicture, holdScreensaver } from "./screensaver.js";
 import { openDisplaySettings } from "./displays-settings.js";
 import { openTableModeSettings } from "./tablemode-settings.js";
 import { buildSceneListField } from "./scene-field.js";
@@ -1007,7 +1007,9 @@ Hooks.once("ready", async () => {
       refreshCompanionBar: begleitleisteAuffrischen,
       sceneDisplay: getSceneDisplay,
       displayedSceneId: aktuelleId,
-      newPicture
+      newPicture,
+      holdScreensaver,
+      isSceneDisplay: () => isSceneDisplay(game.user)
     })
   };
   // Wer vor uns fertig war, hat die Schnittstelle noch nicht gesehen. Ein
