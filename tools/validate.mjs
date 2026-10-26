@@ -9,7 +9,7 @@
  *   - JS syntax             a broken file only shows as a white screen at runtime
  *   - JSON validity         a stray comma kills the whole module
  *   - i18n keys             a missing key renders as "INPERSON.Panel.Foo"
- *   - locale parity         German and English must carry the same keys
+ *   - locale parity         every language carries the keys and placeholders of English
  *   - CSS classes           a renamed class silently loses its styling
  *   - manifest paths        every referenced file has to exist
  *
@@ -120,14 +120,22 @@ for (const [code, table] of Object.entries(locales)) {
   if (unused.length) warn(`${code}: ${unused.length} keys are never used: ${unused.slice(0, 5).join(", ")}`);
 }
 
-const codes = Object.keys(locales);
-if (codes.length === 2) {
-  const [a, b] = codes;
-  const onlyA = Object.keys(locales[a]).filter(k => !(k in locales[b]));
-  const onlyB = Object.keys(locales[b]).filter(k => !(k in locales[a]));
-  if (onlyA.length || onlyB.length) {
-    fail(`locale mismatch: ${onlyA.length} only in ${a}, ${onlyB.length} only in ${b}`);
-  } else ok(`${a} and ${b} carry the same keys`);
+// Since 14.2611.80 the module has the same ten languages as FANG. Every one is
+// held against English: the same keys, and the same {placeholders} in each text,
+// or a player reads a raw key or an empty gap.
+const placeholders = text => [...String(text).matchAll(/\{[a-zA-Z]+\}/g)].map(m => m[0]).sort().join();
+if (locales.en) {
+  for (const [code, table] of Object.entries(locales)) {
+    if (code === "en") continue;
+    const onlyEn = Object.keys(locales.en).filter(k => !(k in table));
+    const onlyHere = Object.keys(table).filter(k => !(k in locales.en));
+    if (onlyEn.length || onlyHere.length) {
+      fail(`locale mismatch: ${onlyEn.length} only in en, ${onlyHere.length} only in ${code}`);
+    } else ok(`en and ${code} carry the same keys`);
+
+    const lost = Object.keys(locales.en).filter(k => k in table && placeholders(locales.en[k]) !== placeholders(table[k]));
+    if (lost.length) fail(`${code}: placeholders differ from en in ${lost.length} texts: ${lost.slice(0, 5).join(", ")}`);
+  }
 }
 
 /* ── 3b. Handlebars in Attributen ────────────────────────────────── */

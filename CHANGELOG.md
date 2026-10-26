@@ -9,6 +9,8 @@
 14.2611.79 was never released. Its changes, the companion scenes and the
 level shown on the battlemap display, come with this version.
 
+- **Ten languages.** French, Spanish, Brazilian Portuguese, Italian, Polish,
+  Russian, Czech and Dutch join English and German, the same ten as FANG.
 - **Room for add-ons.** Through `api.extension` (interface 3), other
   modules can put a button into the companion bar, a section into the
   scene's "At the table" tab and one into the scene display page, and hold
