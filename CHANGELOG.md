@@ -4,7 +4,10 @@
 > the people who get offered an update in the Foundry catalogue, and most of
 > them do not read German. Older entries stay as they are.
 
-## Unreleased
+## 14.2611.80 - 2026-10-27
+
+14.2611.79 was never released. Its changes, the companion scenes and the
+level shown on the battlemap display, come with this version.
 
 - **Room for add-ons.** Through `api.extension` (interface 3), other
   modules can put a button into the companion bar, a section into the
@@ -64,8 +67,6 @@
   one line now says that the modules are free and stay free, and that you can
   support the work on Patreon and get premium add-ons. Only GMs see the
   window, and "Don't show again" still hides it for good.
-
-## 14.2611.79 - 2026-09-26
 
 **A battlemap can have several companion scenes.** The floors of a tower, a
 square by day and by night, a house from inside and out. When the battlemap is
