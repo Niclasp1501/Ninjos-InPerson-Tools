@@ -30,7 +30,7 @@
 
 import { MODULE_ID, SETTINGS } from "./const.js";
 import { mountInSheetOnly, unmountFromSheetOnly } from "./sheet-only.js";
-import { himmelsbogen } from "./sky.js";
+import { himmelsbogen, bewegungVerankern } from "./sky.js";
 import { calendariaKuppelMoeglich, kuppelEinhaengen, kuppelLoslassen } from "./sky-calendaria.js";
 
 const MOUNT_ID = "clock";
@@ -321,6 +321,8 @@ function fillStrip(element, now) {
   element.innerHTML = parts.join("");
   // Everything switched off is not an empty box in the corner of the screen.
   element.toggleAttribute("hidden", parts.length === 0);
+  // Ein neues SVG finge alle Bewegungen von vorn an; so laufen sie weiter.
+  bewegungVerankern(element);
 
   // Calendarias Kuppel ist ein lebendes Element mit eigener Zeichenfläche;
   // sie wird umgehängt, nicht geschrieben. Klappt das nicht - fremdes HUD
@@ -333,6 +335,7 @@ function fillStrip(element, now) {
       if (ok || !platz.isConnected) return;
       platz.classList.remove("inperson-clock-sky-fremd");
       platz.innerHTML = bogen?.svg ?? "";
+      bewegungVerankern(platz);
     });
   } else {
     kuppelLoslassen();
@@ -426,6 +429,9 @@ export function bewegungAnwenden() {
   const wurzel = document.documentElement;
   wurzel.classList.toggle("inperson-bewegung-immer", wahl === "immer");
   wurzel.classList.toggle("inperson-bewegung-nie", wahl === "nie");
+  // Kommt die Bewegung zurück, beginnt sie neu; am selben Ursprung wie beim
+  // Neuzeichnen, sonst spränge sie beim nächsten Minutenwechsel.
+  bewegungVerankern(wurzel);
 }
 
 export function installClock() {

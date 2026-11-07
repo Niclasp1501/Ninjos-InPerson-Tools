@@ -4,6 +4,14 @@
 > the people who get offered an update in the Foundry catalogue, and most of
 > them do not read German. Older entries stay as they are.
 
+## Unreleased
+
+- **Clouds no longer jump.** The sky dome of the time bar redraws every
+  minute and whenever the weather changes, and every redraw started all its
+  movements again, so the clouds snapped back to where they began. On top of
+  that, each cloud bank jumped back at the end of every pass. Redrawn domes
+  now carry on where the old one stood, and clouds drift back and forth.
+
 ## 14.2611.80 - 2026-10-27
 
 14.2611.79 was never released. Its changes, the companion scenes and the

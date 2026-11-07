@@ -3206,8 +3206,10 @@ body.inperson-sheetview .sidebar-popout:not(.compendium-directory) {
   transform-origin: center;
 }
 
+/* Hin und zurück, sanft gewendet. Bis 14.2611.80 lief jede Bank nur nach
+   rechts und stand nach ihrer Dauer schlagartig 48 Pixel weiter links. */
 .inperson-sky-wolke {
-  animation: inperson-sky-ziehen 40s linear infinite;
+  animation: inperson-sky-ziehen 40s ease-in-out infinite alternate;
 }
 
 .inperson-sky-nebel rect {

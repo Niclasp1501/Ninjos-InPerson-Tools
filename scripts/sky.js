@@ -435,11 +435,46 @@ export function himmelsbogen(wetter = null) {
   return { svg, hinweis: hinweisText(aufgang, untergang, monde, geschaetzt) };
 }
 
+/**
+ * Alle Bewegungen der Kuppel an dieselbe Uhr hängen.
+ *
+ * Die Leiste schreibt ihr SVG bei jedem Minutenwechsel und bei jedem
+ * Wetterwechsel neu. Ein neues Element beginnt seine CSS-Animationen von
+ * vorn, also bei seiner festen Verzögerung: Jede Wolke stand nach dem
+ * Neuzeichnen wieder an ihrer Anfangsstelle, egal wo sie gerade war, und
+ * sprang dorthin. Feste Zahlen aus reihe() halten nur die Orte still, nicht
+ * den Stand der Bewegung.
+ *
+ * Deshalb beginnt jede Animation der Kuppel zum selben Zeitpunkt, dem
+ * Ursprung der Dokumentuhr. Ihr Stand ergibt sich damit aus der Uhr und
+ * ihrer Verzögerung, und eine neu gezeichnete Kuppel steht genau dort, wo
+ * die alte stand. Die Verzögerungen behalten ihren Sinn: Sie verteilen die
+ * Teilchen gegeneinander.
+ *
+ * Eine Leiste, die noch nicht im Dokument hängt, hat noch keine Animationen.
+ * Dann wird im nächsten Bild nachgefasst, vor dem ersten Zeichnen.
+ */
+export function bewegungVerankern(wurzel, versuche = 10) {
+  if (!wurzel || typeof wurzel.querySelectorAll !== "function") return;
+  if (!wurzel.isConnected) {
+    if (versuche > 0) requestAnimationFrame(() => bewegungVerankern(wurzel, versuche - 1));
+    return;
+  }
+  const kuppeln = wurzel.matches?.("svg.inperson-sky") ? [wurzel] : wurzel.querySelectorAll("svg.inperson-sky");
+  for (const kuppel of kuppeln) {
+    if (typeof kuppel.getAnimations !== "function") return;
+    for (const animation of kuppel.getAnimations({ subtree: true })) {
+      if (animation.startTime !== 0) animation.startTime = 0;
+    }
+  }
+}
+
 /* ── Wetter ─────────────────────────────────────────────────────── */
 
 /**
  * Feste Zufallszahlen: Die Kuppel zeichnet sich jede Minute neu, und Tropfen,
- * die dabei umsortiert würden, sähe man springen.
+ * die dabei umsortiert würden, sähe man springen. Dass sie auch in der
+ * Bewegung nicht springen, besorgt bewegungVerankern().
  */
 function reihe(saat, n) {
   const aus = [];
