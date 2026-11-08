@@ -4,7 +4,7 @@
 > the people who get offered an update in the Foundry catalogue, and most of
 > them do not read German. Older entries stay as they are.
 
-## Unreleased
+## 14.2611.81 - 2026-11-08
 
 - **Clouds no longer jump.** The sky dome of the time bar redraws every
   minute and whenever the weather changes, and every redraw started all its
