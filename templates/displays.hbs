@@ -46,6 +46,14 @@
     </div>
 
     <div class="form-group">
+      <label>{{localize "INPERSON.Settings.CompanionRedirect.Name"}}</label>
+      <div class="form-fields">
+        <input type="checkbox" name="companionRedirect" {{#if companionRedirect}}checked{{/if}}>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.CompanionRedirect.Hint"}}</p>
+    </div>
+
+    <div class="form-group">
       <label>{{localize "INPERSON.Settings.MonitorScCombat.Name"}}</label>
       <div class="form-fields">
         <input type="checkbox" name="scCombat" {{#if scCombat}}checked{{/if}}>

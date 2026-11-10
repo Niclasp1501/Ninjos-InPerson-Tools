@@ -33,6 +33,7 @@ const FIELDS = [
   SETTINGS.MONITOR_RELEASE,
   SETTINGS.MONITOR_IDLE_SCENE,
   SETTINGS.DEFAULT_COMPANION,
+  SETTINGS.COMPANION_REDIRECT,
   SETTINGS.MONITOR_SC_COMBAT,
   SETTINGS.IDLE_ENABLED,
   SETTINGS.IDLE_AFTER,
@@ -123,6 +124,7 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
       folders: mark(this.#folders(), get(SETTINGS.IDLE_FOLDER)),
       idleAfter,
       scCombat: !!get(SETTINGS.MONITOR_SC_COMBAT),
+      companionRedirect: get(SETTINGS.COMPANION_REDIRECT) !== false,
       idleEnabled: !!get(SETTINGS.IDLE_ENABLED),
       modeIsCover: get(SETTINGS.IDLE_MODE) !== "scene",
       rotateEvery: get(SETTINGS.IDLE_ROTATE_EVERY),
@@ -364,6 +366,7 @@ export class DisplaySettings extends HandlebarsApplicationMixin(ApplicationV2) {
     await game.settings.set(MODULE_ID, SETTINGS.MONITOR_IDLE_SCENE, data.monitorIdleScene ?? "");
     await game.settings.set(MODULE_ID, SETTINGS.DEFAULT_COMPANION, data.defaultCompanionScene ?? "");
     await game.settings.set(MODULE_ID, SETTINGS.MONITOR_SC_COMBAT, !!data.scCombat);
+    await game.settings.set(MODULE_ID, SETTINGS.COMPANION_REDIRECT, !!data.companionRedirect);
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_ENABLED, !!data.idleEnabled);
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_AFTER, Math.max(1, number(data.idleAfter)));
     await game.settings.set(MODULE_ID, SETTINGS.IDLE_MODE, data.idleMode === "scene" ? "scene" : "cover");

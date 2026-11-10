@@ -119,6 +119,18 @@ async function rememberScene(sceneId) {
   await game.settings.set(MODULE_ID, SETTINGS.MONITOR_SCENE, sceneId ?? "");
 }
 
+/** The same, for the companion redirect (begleit-umleitung.js). GM only. */
+export async function rememberDisplayScene(sceneId) {
+  if (!game.user.isGM) return;
+  await rememberScene(sceneId);
+}
+
+/**
+ * Update option on a map's activation: the scene display goes to this
+ * companion instead of the map's first one. Set by the companion redirect.
+ */
+export const COMPANION_OPTION = "inpersonCompanion";
+
 /* -------------------------------------------- */
 /*  Following the display for real               */
 /* -------------------------------------------- */
@@ -507,7 +519,10 @@ function onActivate(wrapped, active, operation) {
   if (!isSceneDisplay(game.user)) return wrapped(active, operation);
 
   if (active) {
-    const target = resolveDisplayTarget(this);
+    // A companion activated from the scene list: the map came up in its stead,
+    // and the display shows that companion rather than the map's first one.
+    const asked = operation?.[COMPANION_OPTION] ? game.scenes?.get(operation[COMPANION_OPTION]) : null;
+    const target = asked ?? resolveDisplayTarget(this);
     if (target === FOLLOW) return wrapped(active, operation);
     if (target === STAY) {
       console.debug(`${MODULE_ID} | Scene display pinned - staying put.`);

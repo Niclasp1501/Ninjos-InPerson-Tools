@@ -28,6 +28,7 @@ import { migrateFromOldId } from "./migrate.js";
 import { installLockViewInterop, onRotationChanged, describeInterop } from "./lockview.js";
 import { installScreensaver, screensaverControl, newPicture, holdScreensaver } from "./screensaver.js";
 import { NO_SCREENSAVER_FLAG, exemptFromScreensaver } from "./schoner-ausnahme.js";
+import { installCompanionRedirect } from "./begleit-umleitung.js";
 import { openDisplaySettings } from "./displays-settings.js";
 import { openTableModeSettings } from "./tablemode-settings.js";
 import { buildSceneListField } from "./scene-field.js";
@@ -439,6 +440,15 @@ function registerSettings() {
     type: String,
     default: "",
     onChange: () => refreshPanel()
+  });
+
+  S(SETTINGS.COMPANION_REDIRECT, {
+    name: "INPERSON.Settings.CompanionRedirect.Name",
+    hint: "INPERSON.Settings.CompanionRedirect.Hint",
+    scope: "world",
+    config: false,   // lives on the scene-display page
+    type: Boolean,
+    default: true
   });
 
   S(SETTINGS.IDLE_ENABLED, {
@@ -937,6 +947,7 @@ Hooks.once("init", () => {
   stilleMeldungenEinrichten();
   installMonitorWrapper();
   installCombatWrapper();
+  installCompanionRedirect();
   // Vor dem ersten Zeichnen, damit schon die Startansicht des Monitors die
   // richtige Ebene hat: Foundry ruft beim Start selbst scene.view() auf.
   ebenenHuellenEinrichten();

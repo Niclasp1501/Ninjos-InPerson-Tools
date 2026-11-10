@@ -50,6 +50,8 @@ export const SETTINGS = {
    * battlemap, which is the one thing a second screen need not do.
    */
   DEFAULT_COMPANION: "defaultCompanionScene",
+  /** Activating a companion scene activates its map instead (begleit-umleitung.js). */
+  COMPANION_REDIRECT: "companionRedirect",
   /**
    * Does the scene display count the active battlemap's combat as its own
    * while it shows another scene (world)? Foundry shows a combat only on the
