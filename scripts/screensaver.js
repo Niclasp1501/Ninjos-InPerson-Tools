@@ -43,6 +43,7 @@
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
 import { isSceneDisplay } from "./state.js";
 import { applyPinnedScene, getMapScreensaver } from "./monitor.js";
+import { exemptFromScreensaver, screensaverCandidates } from "./schoner-ausnahme.js";
 
 /** How often the state is reconsidered. A clock in minutes needs no finer tick. */
 const TICK_MS = 10_000;
@@ -98,19 +99,24 @@ let _breathTimer = null;
 const setting = key => game.settings.get(MODULE_ID, key);
 const minutes = key => Number(setting(key)) || 0;
 
-/** Scenes the screensaver may show, in folder order. @returns {Scene[]} */
+/**
+ * Scenes the screensaver may show, in folder order. A scene exempt from the
+ * screensaver is not one of them, even in the folder: it would stop the
+ * screensaver the moment it came up.
+ * @returns {Scene[]}
+ */
 function screensaverScenes() {
   const folderId = setting(SETTINGS.IDLE_FOLDER);
   if (!folderId) return [];
-  return game.scenes
-    .filter(s => s.folder?.id === folderId)
+  return screensaverCandidates(game.scenes.filter(s => s.folder?.id === folderId))
     .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.name.localeCompare(b.name));
 }
 
-/** The single screensaver scene, when one is chosen and still exists. */
+/** The single screensaver scene, when one is chosen, still exists and is not exempt. */
 function screensaverScene() {
   const id = setting(SETTINGS.IDLE_SCENE);
-  return id ? (game.scenes?.get(id) ?? null) : null;
+  const scene = id ? (game.scenes?.get(id) ?? null) : null;
+  return exemptFromScreensaver(scene) ? null : scene;
 }
 
 /**
@@ -480,6 +486,14 @@ async function tick() {
   if (!isSceneDisplay(game.user)) return;
   if (_holds.size) {
     if (isCovered()) setCovered(false);
+    return;
+  }
+  // A scene exempt from the screensaver: nothing starts, in no mode, the map's
+  // rule included. The clock keeps the time it has; another scene from the
+  // gamemaster starts it over in onCanvasReady, as any new picture does.
+  if (exemptFromScreensaver(canvas?.scene)) {
+    if (isCovered()) setCovered(false);
+    if (_announced) announce(false);
     return;
   }
   // The map's own rule first, and regardless of the general switch: set on a

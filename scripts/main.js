@@ -27,6 +27,7 @@ import { openPullDialog } from "./pull.js";
 import { migrateFromOldId } from "./migrate.js";
 import { installLockViewInterop, onRotationChanged, describeInterop } from "./lockview.js";
 import { installScreensaver, screensaverControl, newPicture, holdScreensaver } from "./screensaver.js";
+import { NO_SCREENSAVER_FLAG, exemptFromScreensaver } from "./schoner-ausnahme.js";
 import { openDisplaySettings } from "./displays-settings.js";
 import { openTableModeSettings } from "./tablemode-settings.js";
 import { buildSceneListField } from "./scene-field.js";
@@ -1387,6 +1388,13 @@ function onRenderSceneConfig(app, element) {
   schoner.className = "inperson-companion";
   schoner.innerHTML = `
     <legend>${t("INPERSON.SceneConfig.ScreensaverLegend")}</legend>
+    <div class="form-group">
+      <label for="inperson-ohne-schoner-${scene?.id}">${t("INPERSON.SceneConfig.NoScreensaver")}</label>
+      <div class="form-fields">
+        <input type="checkbox" id="inperson-ohne-schoner-${scene?.id}" name="flags.${MODULE_ID}.${NO_SCREENSAVER_FLAG}"${exemptFromScreensaver(scene) ? " checked" : ""}>
+      </div>
+      <p class="hint">${t("INPERSON.SceneConfig.NoScreensaverHint")}</p>
+    </div>
     <div class="form-group">
       <label>${t("INPERSON.SceneConfig.ScreensaverMode")}</label>
       <div class="form-fields">
