@@ -1,0 +1,21 @@
+{{!-- Reiter Feinheiten: was man selten braucht und das Gerät selbst betrifft. --}}
+<section class="tab inperson-einrichten-reiter {{tabs.feinheiten.cssClass}}" data-tab="feinheiten" data-group="einrichten">
+  <fieldset>
+    <legend>{{localize "INPERSON.TableMode.DeviceLegend"}}</legend>
+    <div class="form-group">
+      <label>{{localize "INPERSON.Settings.HideProgress.Name"}}</label>
+      <div class="form-fields">
+        <input type="checkbox" name="hideProgress" {{#if hideProgress}}checked{{/if}}>
+      </div>
+      <p class="hint">{{localize "INPERSON.Settings.HideProgress.Hint"}}</p>
+    </div>
+    <div class="form-group">
+      <label>{{localize "INPERSON.SheetView.DeviceReport"}}</label>
+      <div class="form-fields">
+        <input type="checkbox" name="deviceReport" {{#if deviceReport}}checked{{/if}}>
+      </div>
+      <p class="hint">{{localize "INPERSON.SheetView.DeviceReportHint"}}</p>
+    </div>
+  </fieldset>
+  <div class="inperson-fremde-teile" data-seite="feinheiten"></div>
+</section>

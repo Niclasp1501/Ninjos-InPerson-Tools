@@ -3609,3 +3609,90 @@ body:has(> #inperson-sheetview-uhr-anker) .calendaria-hud:not(.inperson-fremde-k
   width: auto;
   height: auto;
 }
+
+
+/* ── In-Person einrichten (einrichten.js) ─────────────────────────────
+   Ein Fenster mit Reitern statt fünf Fenstern. Die Reiterleiste steht fest,
+   jeder Reiter rollt für sich, der Speichern-Knopf bleibt unten sichtbar. */
+.inperson-einrichten .window-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.inperson-einrichten nav.sheet-tabs {
+  flex: 0 0 auto;
+}
+
+.inperson-einrichten .inperson-einrichten-reiter {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px 4px;
+}
+
+.inperson-einrichten .inperson-einrichten-reiter:not(.active) {
+  display: none;
+}
+
+.inperson-einrichten .inperson-foot {
+  flex: 0 0 auto;
+}
+
+.inperson-fremde-teile:empty {
+  display: none;
+}
+
+/* Konten und Geräte: eine Zeile je Konto. */
+.inperson-konten {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inperson-konten-zeile {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr) minmax(0, 1.3fr) 5.5rem 2.5rem;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.inperson-konten-zeile:not(.inperson-konten-kopf):nth-child(odd) {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.inperson-konten-kopf {
+  font-weight: 600;
+  font-size: 0.85em;
+}
+
+.inperson-konten-name em {
+  display: block;
+  font-size: 0.85em;
+  opacity: 0.75;
+}
+
+.inperson-konten-zeile.ist-monitor .inperson-nur-spieler {
+  opacity: 0.35;
+}
+
+.inperson-konten-zeile select {
+  width: 100%;
+}
+
+.inperson-unsichtbar {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .inperson-konten-zeile {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}

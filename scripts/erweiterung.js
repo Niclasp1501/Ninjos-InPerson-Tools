@@ -19,12 +19,17 @@
 import { MODULE_ID } from "./const.js";
 
 /** Die Fassung der Schnittstelle. */
-export const SCHNITTSTELLE = 3;
+export const SCHNITTSTELLE = 4;
 
 const _leistenKnoepfe = [];
 const _reiterTeile = [];
 /** Abschnitte auf Einstellungsseiten, je Seite: `{ bauen(), speichern(daten) }`. */
 const _einstellungsTeile = { displays: [] };
+
+/** Hat ein Zusatzmodul etwas für diese Seite angemeldet? Ohne zu bauen. */
+export function hatEinstellungsTeile(seite) {
+  return (_einstellungsTeile[seite] ?? []).length > 0;
+}
 
 /**
  * Was Zusatzmodule in die Begleitleiste stellen wollen, frisch gebaut.
@@ -132,8 +137,13 @@ export function erweiterungApi({
     /**
      * Seit Schnittstelle 3. Ein Abschnitt auf einer Einstellungsseite dieses
      * Moduls, damit die Einstellungen eines Zusatzmoduls dort stehen, wo man
-     * sie sucht, und nicht als eigener Eintrag in Foundrys Modulliste. Seite
-     * bisher: "displays" (Szenen-Monitore einrichten).
+     * sie sucht, und nicht als eigener Eintrag in Foundrys Modulliste.
+     *
+     * Seit Schnittstelle 4 sind das Reiter im Fenster „In-Person einrichten“:
+     * "displays" (Monitore), "tablets", "ton", "buehne" (Bühnen und Blende),
+     * "feinheiten". Ton und Bühnen erscheinen nur, wenn dort etwas steht. Bis
+     * Schnittstelle 3 gab es nur "displays"; wer dorthin schreibt, landet bei
+     * den Monitoren wie bisher.
      *
      * `bauen()` gibt ein Element mit Formularfeldern zurück, gern ein
      * `<fieldset>` mit `<legend>`. `speichern(daten)` bekommt beim Speichern

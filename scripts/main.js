@@ -29,8 +29,7 @@ import { installLockViewInterop, onRotationChanged, describeInterop } from "./lo
 import { installScreensaver, screensaverControl, newPicture, holdScreensaver } from "./screensaver.js";
 import { NO_SCREENSAVER_FLAG, exemptFromScreensaver } from "./schoner-ausnahme.js";
 import { installCompanionRedirect } from "./begleit-umleitung.js";
-import { openDisplaySettings } from "./displays-settings.js";
-import { openTableModeSettings } from "./tablemode-settings.js";
+import { openEinrichten } from "./einrichten.js";
 import { buildSceneListField } from "./scene-field.js";
 import { openBegleitwahl, installBegleitwahl, begleitwahlKnopfEinrichten } from "./begleitwahl.js";
 import { installBegleitleiste, begleitleisteAuffrischen, aktuelleId } from "./begleitleiste.js";
@@ -45,11 +44,8 @@ import {
 } from "./actor-panel.js";
 import { installClock, syncClock, refreshClock, bewegungAnwenden } from "./clock.js";
 import { willkommenEinrichten, willkommenZeigen } from "./willkommen.js";
-import { openClockSettings } from "./clock-settings.js";
-import { openTradeSettings } from "./trade-settings.js";
 import { installSheetView, syncSheetView, sheetViewApi, federAnwenden } from "./sheetview.js";
 import { installZeigen, zeigenSocket } from "./zeigen.js";
-import { openSheetViewSettings } from "./sheetview-settings.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
 import { fensterPassenEinrichten } from "./fensterpassen.js";
 import {
@@ -631,10 +627,22 @@ function registerSettings() {
   // downloads and steering two televisions have nothing to do with one another
   // beyond the occasion, and a flat list made whichever tool had the most
   // settings look like "the settings of the module".
+  // Seit 11.11.2026 ein Fenster für alles Einrichten, in Einrichtungsreihenfolge
+  // (einrichten.js). Die Einträge darunter öffnen den passenden Reiter, damit
+  // Gewohnheit und alte Anleitungen nicht ins Leere laufen.
+  game.settings.registerMenu(MODULE_ID, "einrichten", {
+    name: "INPERSON.Setup.MenuName",
+    label: "INPERSON.Setup.MenuLabel",
+    hint: "INPERSON.Setup.MenuHint",
+    icon: "fa-solid fa-gears",
+    type: EinrichtenShim,
+    restricted: true
+  });
+
   game.settings.registerMenu(MODULE_ID, "tablemode", {
     name: "INPERSON.TableMode.MenuName",
     label: "INPERSON.TableMode.MenuLabel",
-    hint: "INPERSON.TableMode.MenuHint",
+    hint: "INPERSON.Setup.OldMenuHint",
     icon: "fa-solid fa-eye-slash",
     type: TableModeSettingsShim,
     restricted: true
@@ -646,7 +654,7 @@ function registerSettings() {
   game.settings.registerMenu(MODULE_ID, "displays", {
     name: "INPERSON.Displays.MenuName",
     label: "INPERSON.Displays.MenuLabel",
-    hint: "INPERSON.Displays.MenuHint",
+    hint: "INPERSON.Setup.OldMenuHint",
     icon: "fa-solid fa-display",
     type: DisplaySettingsShim,
     restricted: true
@@ -656,7 +664,7 @@ function registerSettings() {
   game.settings.registerMenu(MODULE_ID, "sheetview", {
     name: "INPERSON.SheetView.MenuName",
     label: "INPERSON.SheetView.MenuLabel",
-    hint: "INPERSON.SheetView.MenuHint",
+    hint: "INPERSON.Setup.OldMenuHint",
     icon: "fa-solid fa-tablet-screen-button",
     type: SheetViewSettingsShim,
     restricted: true
@@ -666,7 +674,7 @@ function registerSettings() {
   game.settings.registerMenu(MODULE_ID, "clock", {
     name: "INPERSON.Clock.MenuName",
     label: "INPERSON.Clock.MenuLabel",
-    hint: "INPERSON.Clock.MenuHint",
+    hint: "INPERSON.Setup.OldMenuHint",
     icon: "fa-solid fa-clock",
     type: ClockSettingsShim,
     restricted: true
@@ -678,7 +686,7 @@ function registerSettings() {
   game.settings.registerMenu(MODULE_ID, "trade", {
     name: "INPERSON.TradeSettings.MenuName",
     label: "INPERSON.TradeSettings.MenuLabel",
-    hint: "INPERSON.TradeSettings.MenuHint",
+    hint: "INPERSON.Setup.OldMenuHint",
     icon: "fa-solid fa-right-left",
     type: TradeSettingsShim,
     restricted: true
@@ -690,10 +698,18 @@ function registerSettings() {
 }
 
 /** Same shim trick as below - the menu wants a class, we want our own window. */
+class EinrichtenShim extends foundry.applications.api.ApplicationV2 {
+  constructor(...args) {
+    super(...args);
+    openEinrichten("konten");
+  }
+  async render() { return this; }
+}
+
 class TableModeSettingsShim extends foundry.applications.api.ApplicationV2 {
   constructor(...args) {
     super(...args);
-    openTableModeSettings();
+    openEinrichten("tablets");
   }
   async render() { return this; }
 }
@@ -701,7 +717,7 @@ class TableModeSettingsShim extends foundry.applications.api.ApplicationV2 {
 class TradeSettingsShim extends foundry.applications.api.ApplicationV2 {
   constructor(...args) {
     super(...args);
-    openTradeSettings();
+    openEinrichten("tablets");
   }
   async render() { return this; }
 }
@@ -709,7 +725,7 @@ class TradeSettingsShim extends foundry.applications.api.ApplicationV2 {
 class ClockSettingsShim extends foundry.applications.api.ApplicationV2 {
   constructor(...args) {
     super(...args);
-    openClockSettings();
+    openEinrichten("tablets");
   }
   async render() { return this; }
 }
@@ -717,7 +733,7 @@ class ClockSettingsShim extends foundry.applications.api.ApplicationV2 {
 class SheetViewSettingsShim extends foundry.applications.api.ApplicationV2 {
   constructor(...args) {
     super(...args);
-    openSheetViewSettings();
+    openEinrichten("tablets");
   }
   async render() { return this; }
 }
@@ -725,7 +741,7 @@ class SheetViewSettingsShim extends foundry.applications.api.ApplicationV2 {
 class DisplaySettingsShim extends foundry.applications.api.ApplicationV2 {
   constructor(...args) {
     super(...args);
-    openDisplaySettings();
+    openEinrichten("monitore");
   }
   async render() { return this; }
 }

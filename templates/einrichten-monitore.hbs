@@ -1,34 +1,6 @@
-<div class="inperson-body">
-  <div class="inperson-scroll">
-
-  <fieldset>
-    <legend>{{localize "INPERSON.Displays.AccountsLegend"}}</legend>
-    <p class="hint">{{localize "INPERSON.Displays.AccountsHint"}}</p>
-
-    <div class="form-group">
-      <label>{{localize "INPERSON.Settings.MonitorBM.Name"}}</label>
-      <div class="form-fields">
-        <select name="monitorBM">
-          {{#each accountsBM}}
-            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
-          {{/each}}
-        </select>
-      </div>
-      <p class="hint">{{localize "INPERSON.Settings.MonitorBM.Hint"}}</p>
-    </div>
-
-    <div class="form-group">
-      <label>{{localize "INPERSON.Settings.MonitorSC.Name"}}</label>
-      <div class="form-fields">
-        <select name="monitorSC">
-          {{#each accountsSC}}
-            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>
-          {{/each}}
-        </select>
-      </div>
-      <p class="hint">{{localize "INPERSON.Settings.MonitorSC.Hint"}}</p>
-    </div>
-  </fieldset>
+{{!-- Reiter Monitore des Einrichtungsfensters. Die Konten der beiden Monitore stehen im Reiter Konten und Geräte. --}}
+<section class="tab inperson-einrichten-reiter {{tabs.monitore.cssClass}}" data-tab="monitore" data-group="einrichten">
+  <p class="hint">{{localize "INPERSON.Setup.Monitore.Hint"}}</p>
 
   <fieldset>
     <legend>{{localize "INPERSON.Displays.SceneLegend"}}</legend>
@@ -208,11 +180,5 @@
     </div>
   </fieldset>
 
-  </div>
-
-  <footer class="inperson-foot">
-    <button type="submit" class="inperson-mini">
-      <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> {{localize "INPERSON.Displays.Save"}}
-    </button>
-  </footer>
-</div>
+  <div class="inperson-fremde-teile" data-seite="displays"></div>
+</section>
