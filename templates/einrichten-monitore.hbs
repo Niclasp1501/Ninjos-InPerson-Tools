@@ -1,9 +1,26 @@
-{{!-- Reiter Monitore des Einrichtungsfensters. Die Konten der beiden Monitore stehen im Reiter Konten und Geräte. --}}
+{{!--
+  Reiter Monitore: was auf den beiden Bildschirmen am Tisch geschieht. Welche
+  Konten die Monitore sind, steht im Reiter Konten und Geräte. Wie die
+  Tablets: je Funktion ein Block mit einem Satz, wofür sie da ist.
+--}}
 <section class="tab inperson-einrichten-reiter {{tabs.monitore.cssClass}}" data-tab="monitore" data-group="einrichten">
-  <p class="hint">{{localize "INPERSON.Setup.Monitore.Hint"}}</p>
+  <p class="inperson-reiter-einleitung">{{localize "INPERSON.Setup.Monitore.Hint"}}</p>
+  {{#unless hatMonitor}}
+    <p class="inperson-aus-hinweis">
+      <i class="fa-solid fa-circle-info" aria-hidden="true"></i> {{localize "INPERSON.Setup.Monitore.Keine"}}
+      <button type="button" class="inperson-mini" data-action="zuKonten">{{localize "INPERSON.Setup.Tab.konten"}}</button>
+    </p>
+  {{/unless}}
 
-  <fieldset>
-    <legend>{{localize "INPERSON.Displays.SceneLegend"}}</legend>
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-display" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Displays.SceneLegend"}}</h3>
+        <p>{{localize "INPERSON.Setup.Card.SzeneFor"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
 
     <div class="form-group">
       <label>{{localize "INPERSON.Panel.DefaultCompanion"}}</label>
@@ -59,7 +76,7 @@
     </div>
 
     <div class="inperson-pairs">
-      <h4>{{localize "INPERSON.Panel.PairsTitle"}}</h4>
+      <h4 class="inperson-zwischentitel">{{localize "INPERSON.Panel.PairsTitle"}}</h4>
       <p class="hint">{{localize "INPERSON.Displays.PairsHint"}}</p>
 
       <div class="inperson-pair-list"></div>
@@ -73,21 +90,19 @@
         </button>
       </div>
     </div>
-  </fieldset>
-
-  <fieldset>
-    <legend>{{localize "INPERSON.Displays.BurnInLegend"}}</legend>
-    <p class="hint">{{localize "INPERSON.Displays.BurnInHint"}}</p>
-
-    <div class="form-group">
-      <label>{{localize "INPERSON.Settings.IdleEnabled.Name"}}</label>
-      <div class="form-fields">
-        <input type="checkbox" name="idleEnabled" {{#if idleEnabled}}checked{{/if}}>
-      </div>
-      <p class="hint">{{localize "INPERSON.Settings.IdleEnabled.Hint"}}</p>
     </div>
+  </section>
 
-    <div class="inperson-when-idle" {{#unless idleEnabled}}hidden{{/unless}}>
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-moon" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Setup.Card.Schoner"}}</h3>
+        <p>{{localize "INPERSON.Setup.Card.SchonerFor"}}</p>
+      </div>
+      <label class="inperson-schalter"><input type="checkbox" name="idleEnabled" data-funktionsschalter {{#if idleEnabled}}checked{{/if}}> {{localize "INPERSON.Setup.Use"}}</label>
+    </header>
+    <div class="inperson-funktion-inhalt">
 
       <div class="form-group">
         <label>{{localize "INPERSON.Settings.IdleAfter.Name"}}</label>
@@ -119,7 +134,7 @@
           <p class="hint">{{localize "INPERSON.Settings.IdleBlankFor.Hint"}}</p>
         </div>
 
-        <div class="form-group">
+        <div class="form-group inperson-breit">
           <label>{{localize "INPERSON.Settings.IdleLogo.Name"}}</label>
           <div class="form-fields inperson-logo-row">
             <input type="text" name="idleLogo" value="{{logo}}" placeholder="{{localize 'INPERSON.Settings.IdleLogo.Placeholder'}}">
@@ -178,7 +193,7 @@
         </div>
       </div>
     </div>
-  </fieldset>
+  </section>
 
   <div class="inperson-fremde-teile" data-seite="displays"></div>
 </section>

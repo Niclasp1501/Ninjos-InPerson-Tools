@@ -95,6 +95,7 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
     form: { handler: InPersonEinrichten.#speichern, closeOnSubmit: true },
     actions: {
       openControls: InPersonEinrichten.#steuerung,
+      zuKonten: InPersonEinrichten.#zuKonten,
       resetBar: InPersonEinrichten.#leisteZuruecksetzen,
       pickLogo: InPersonEinrichten.#logoWaehlen,
       clearLogo: InPersonEinrichten.#logoLeeren,
@@ -167,6 +168,7 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
       ...kontext,
       // Konten und Geräte
       konten,
+      hatMonitor: !!(sc || bm),
       defaultPlayers: get(SETTINGS.DEFAULT_PLAYERS),
       // Monitore
       releaseFollow: get(SETTINGS.MONITOR_RELEASE) === "follow",
@@ -278,12 +280,25 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
     el.querySelector('select[name="blockScope"]')?.addEventListener("change", breit);
     breit();
 
+    // Jede Funktion ist ein Block mit Schalter. Ist sie aus, klappt ihr Inhalt
+    // zu: Es steht nur da, was gilt. Die Felder bleiben im Formular und werden
+    // mitgespeichert, beim Wiedereinschalten ist nichts verloren.
+    for (const block of el.querySelectorAll(".inperson-funktion")) {
+      const schalter = block.querySelector("[data-funktionsschalter]");
+      if (!schalter) continue;
+      const klappen = () => {
+        block.classList.toggle("ist-aus", !schalter.checked);
+        block.querySelector(".inperson-funktion-inhalt")?.toggleAttribute("hidden", !schalter.checked);
+      };
+      schalter.addEventListener("change", klappen);
+      klappen();
+    }
+
     // Monitore: nur zeigen, was die Antworten darüber gerade wichtig machen.
     const zeigen = (wahl, an) => el.querySelector(wahl)?.toggleAttribute("hidden", !an);
     const schoner = () => {
       const an = el.querySelector('input[name="idleEnabled"]')?.checked;
       const abdeckung = el.querySelector('select[name="idleMode"]')?.value !== "scene";
-      zeigen(".inperson-when-idle", an);
       zeigen(".inperson-when-cover", an && abdeckung);
       zeigen(".inperson-when-scene", an && !abdeckung);
     };
@@ -358,6 +373,10 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
       zeile.append(von, pfeil, zu, weg);
       liste.appendChild(zeile);
     }
+  }
+
+  static #zuKonten() {
+    this.changeTab("konten", "einrichten");
   }
 
   static #steuerung() {
@@ -479,6 +498,8 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
     await set(SETTINGS.CLOCK_SKY_TIMES, !!d.skyTimes);
     if (d.skyMotion) await set(SETTINGS.CLOCK_SKY_MOTION, String(d.skyMotion));
     await set(SETTINGS.TRADE, !!d.trade);
+    // Der Hauptschalter des Tischmodus zuletzt: Sein onChange wendet an, was darüber steht.
+    await set(SETTINGS.ENABLED, !!d.tischmodusAn);
 
     // Feinheiten
     await set(SETTINGS.HIDE_PROGRESS, !!d.hideProgress);

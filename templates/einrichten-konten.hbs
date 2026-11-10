@@ -1,73 +1,83 @@
 {{!--
-  Reiter Konten und Geräte: je Konto, was es am Tisch ist. Bis 14.2611.81
-  stand das an drei Stellen: die Monitore unter „Szenen-Monitore“, der
-  Tischmodus je Spieler in der Steuerung, die Blattansicht in ihrem eigenen
-  Fenster. Die Werte bleiben in denselben Einstellungen, nur die Eingabe ist
-  an einem Ort.
+  Reiter Konten und Geräte: je Konto, was es am Tisch ist. Die Werte bleiben in
+  den bisherigen Einstellungen, nur die Eingabe ist an einem Ort.
+
+  Überarbeitet am 12.11.2026 nach Ninjos Urteil („gar nicht klar, für was die
+  einzelnen Funktionen sind, wie Nur das Blatt“): Jede Spalte sagt in einem
+  Satz, was sie tut, und eine Spalte, deren Funktion ausgeschaltet ist, sagt
+  das, statt wirkungslose Haken zu zeigen.
 --}}
 <section class="tab inperson-einrichten-reiter {{tabs.konten.cssClass}}" data-tab="konten" data-group="einrichten">
-  <p class="hint">{{localize "INPERSON.Setup.Konten.Hint"}}</p>
+  <p class="inperson-reiter-einleitung">{{localize "INPERSON.Setup.Konten.Hint"}}</p>
 
-  <fieldset>
-    <legend>{{localize "INPERSON.Setup.Konten.Legend"}}</legend>
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-users" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Setup.Konten.Legend"}}</h3>
+        <p>{{localize "INPERSON.Setup.Konten.MonitorHint"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      {{#if konten.length}}
+        <table class="inperson-konten">
+          <thead>
+            <tr>
+              <th scope="col">{{localize "INPERSON.Setup.Konten.Konto"}}</th>
+              <th scope="col">{{localize "INPERSON.Setup.Konten.Rolle"}}<small>{{localize "INPERSON.Setup.Konten.RolleSub"}}</small></th>
+              <th scope="col" class="{{#unless running}}ist-aus{{/unless}}">{{localize "INPERSON.Setup.Konten.Tischmodus"}}<small>{{localize "INPERSON.Setup.Konten.TischmodusSub"}}</small></th>
+              <th scope="col" class="{{#unless sheetviewEnabled}}ist-aus{{/unless}}">{{localize "INPERSON.Setup.Konten.Blatt"}}<small>{{localize "INPERSON.Setup.Konten.BlattSub"}}</small></th>
+              <th scope="col">{{localize "INPERSON.Setup.Konten.Leiste"}}<small>{{localize "INPERSON.Setup.Konten.LeisteSub"}}</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each konten}}
+              <tr class="inperson-konten-zeile" data-user="{{this.id}}">
+                <th scope="row" class="inperson-konten-name">
+                  <span>{{this.name}}{{#if this.online}} <span class="inperson-tag ok">{{localize "INPERSON.SheetView.Online"}}</span>{{/if}}</span>
+                  {{#if this.figur}}<em>{{this.figur}}</em>{{/if}}
+                </th>
+                <td>
+                  <select name="rolle.{{this.id}}" aria-label="{{localize 'INPERSON.Setup.Konten.Rolle'}}: {{this.name}}">
+                    <option value="spieler" {{#if this.istSpieler}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.RolleSpieler"}}</option>
+                    <option value="sc" {{#if this.istSc}}selected{{/if}}>{{localize "INPERSON.Settings.MonitorSC.Name"}}</option>
+                    <option value="bm" {{#if this.istBm}}selected{{/if}}>{{localize "INPERSON.Settings.MonitorBM.Name"}}</option>
+                  </select>
+                </td>
+                <td>
+                  <select name="tisch.{{this.id}}" class="inperson-nur-spieler" aria-label="{{localize 'INPERSON.Setup.Konten.Tischmodus'}}: {{this.name}}">
+                    <option value="" {{#if this.tischVorgabe}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.TischVorgabe"}}</option>
+                    <option value="an" {{#if this.tischAn}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.TischAn"}}</option>
+                    <option value="aus" {{#if this.tischAus}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.TischAus"}}</option>
+                  </select>
+                </td>
+                <td class="inperson-konten-mitte">
+                  <input type="checkbox" name="blatt.{{this.id}}" class="inperson-nur-spieler" {{#if this.blatt}}checked{{/if}}
+                         aria-label="{{localize 'INPERSON.Setup.Konten.Blatt'}}: {{this.name}}">
+                </td>
+                <td class="inperson-konten-mitte">
+                  <button type="button" class="inperson-mini inperson-nur-spieler" data-action="resetBar" data-user="{{this.id}}"
+                          data-tooltip="{{localize 'INPERSON.SheetView.ResetHint'}}" aria-label="{{localize 'INPERSON.SheetView.ResetHint'}}: {{this.name}}">
+                    <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        {{#unless running}}<p class="inperson-aus-hinweis"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> {{localize "INPERSON.Setup.Konten.TischmodusOff"}}</p>{{/unless}}
+        {{#unless sheetviewEnabled}}<p class="inperson-aus-hinweis"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> {{localize "INPERSON.Setup.Konten.BlattOff"}}</p>{{/unless}}
+      {{else}}
+        <p class="hint">{{localize "INPERSON.SheetView.NoUsers"}}</p>
+      {{/if}}
 
-    {{#if konten.length}}
-      <div class="inperson-konten" role="table" aria-label="{{localize 'INPERSON.Setup.Konten.Legend'}}">
-        <div class="inperson-konten-zeile inperson-konten-kopf" role="row">
-          <span role="columnheader">{{localize "INPERSON.Setup.Konten.Konto"}}</span>
-          <span role="columnheader">{{localize "INPERSON.Setup.Konten.Rolle"}}</span>
-          <span role="columnheader">{{localize "INPERSON.Setup.Konten.Tischmodus"}}</span>
-          <span role="columnheader">{{localize "INPERSON.Setup.Konten.Blatt"}}</span>
-          <span role="columnheader"><span class="inperson-unsichtbar">{{localize "INPERSON.SheetView.ResetHint"}}</span></span>
+      <div class="form-group">
+        <label for="inperson-vorgabe-spieler">{{localize "INPERSON.Settings.DefaultPlayers.Name"}}</label>
+        <div class="form-fields">
+          <input type="checkbox" id="inperson-vorgabe-spieler" name="defaultForPlayers" {{#if defaultPlayers}}checked{{/if}}>
         </div>
-        {{#each konten}}
-          <div class="inperson-konten-zeile" role="row" data-user="{{this.id}}">
-            <span class="inperson-konten-name" role="cell">
-              {{this.name}}
-              {{#if this.figur}}<em>{{this.figur}}</em>{{/if}}
-              {{#if this.online}}<span class="inperson-tag ok">{{localize "INPERSON.SheetView.Online"}}</span>{{/if}}
-            </span>
-            <span role="cell">
-              <select name="rolle.{{this.id}}" aria-label="{{localize 'INPERSON.Setup.Konten.Rolle'}}: {{this.name}}">
-                <option value="spieler" {{#if this.istSpieler}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.RolleSpieler"}}</option>
-                <option value="sc" {{#if this.istSc}}selected{{/if}}>{{localize "INPERSON.Settings.MonitorSC.Name"}}</option>
-                <option value="bm" {{#if this.istBm}}selected{{/if}}>{{localize "INPERSON.Settings.MonitorBM.Name"}}</option>
-              </select>
-            </span>
-            <span role="cell">
-              <select name="tisch.{{this.id}}" class="inperson-nur-spieler" aria-label="{{localize 'INPERSON.Setup.Konten.Tischmodus'}}: {{this.name}}">
-                <option value="" {{#if this.tischVorgabe}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.TischVorgabe"}}</option>
-                <option value="an" {{#if this.tischAn}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.TischAn"}}</option>
-                <option value="aus" {{#if this.tischAus}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.TischAus"}}</option>
-              </select>
-            </span>
-            <span role="cell">
-              <input type="checkbox" name="blatt.{{this.id}}" class="inperson-nur-spieler" {{#if this.blatt}}checked{{/if}}
-                     aria-label="{{localize 'INPERSON.Setup.Konten.Blatt'}}: {{this.name}}">
-            </span>
-            <span role="cell">
-              <button type="button" class="inperson-mini inperson-nur-spieler" data-action="resetBar" data-user="{{this.id}}"
-                      data-tooltip="{{localize 'INPERSON.SheetView.ResetHint'}}" aria-label="{{localize 'INPERSON.SheetView.ResetHint'}}: {{this.name}}">
-                <i class="fa-solid fa-rotate-left" aria-hidden="true"></i>
-              </button>
-            </span>
-          </div>
-        {{/each}}
+        <p class="hint">{{localize "INPERSON.Setup.Konten.VorgabeHint"}}</p>
       </div>
-    {{else}}
-      <p class="hint">{{localize "INPERSON.SheetView.NoUsers"}}</p>
-    {{/if}}
-    <p class="hint">{{localize "INPERSON.Setup.Konten.MonitorHint"}}</p>
-  </fieldset>
-
-  <fieldset>
-    <legend>{{localize "INPERSON.TableMode.WhoLegend"}}</legend>
-    <div class="form-group">
-      <label>{{localize "INPERSON.Settings.DefaultPlayers.Name"}}</label>
-      <div class="form-fields">
-        <input type="checkbox" name="defaultForPlayers" {{#if defaultPlayers}}checked{{/if}}>
-      </div>
-      <p class="hint">{{localize "INPERSON.Settings.DefaultPlayers.Hint"}} {{localize "INPERSON.Setup.Konten.VorgabeHint"}}</p>
     </div>
-  </fieldset>
+  </section>
 </section>

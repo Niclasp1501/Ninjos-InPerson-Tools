@@ -1,21 +1,25 @@
-{{!-- Reiter Feinheiten: was man selten braucht und das Gerät selbst betrifft. --}}
+{{!-- Reiter Feinheiten: was man selten braucht. --}}
 <section class="tab inperson-einrichten-reiter {{tabs.feinheiten.cssClass}}" data-tab="feinheiten" data-group="einrichten">
-  <fieldset>
-    <legend>{{localize "INPERSON.TableMode.DeviceLegend"}}</legend>
-    <div class="form-group">
-      <label>{{localize "INPERSON.Settings.HideProgress.Name"}}</label>
-      <div class="form-fields">
-        <input type="checkbox" name="hideProgress" {{#if hideProgress}}checked{{/if}}>
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.TableMode.DeviceLegend"}}</h3>
+        <p>{{localize "INPERSON.Setup.Card.FeinFor"}}</p>
       </div>
-      <p class="hint">{{localize "INPERSON.Settings.HideProgress.Hint"}}</p>
-    </div>
-    <div class="form-group">
-      <label>{{localize "INPERSON.SheetView.DeviceReport"}}</label>
-      <div class="form-fields">
-        <input type="checkbox" name="deviceReport" {{#if deviceReport}}checked{{/if}}>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      <div class="form-group">
+        <label>{{localize "INPERSON.Settings.HideProgress.Name"}}</label>
+        <div class="form-fields"><input type="checkbox" name="hideProgress" {{#if hideProgress}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.Settings.HideProgress.Hint"}}</p>
       </div>
-      <p class="hint">{{localize "INPERSON.SheetView.DeviceReportHint"}}</p>
+      <div class="form-group">
+        <label>{{localize "INPERSON.SheetView.DeviceReport"}}</label>
+        <div class="form-fields"><input type="checkbox" name="deviceReport" {{#if deviceReport}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.SheetView.DeviceReportHint"}}</p>
+      </div>
     </div>
-  </fieldset>
+  </section>
   <div class="inperson-fremde-teile" data-seite="feinheiten"></div>
 </section>

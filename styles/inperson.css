@@ -3612,23 +3612,32 @@ body:has(> #inperson-sheetview-uhr-anker) .calendaria-hud:not(.inperson-fremde-k
 
 
 /* ── In-Person einrichten (einrichten.js) ─────────────────────────────
-   Ein Fenster mit Reitern statt fünf Fenstern. Die Reiterleiste steht fest,
-   jeder Reiter rollt für sich, der Speichern-Knopf bleibt unten sichtbar. */
+   Ein Fenster mit Reitern. Die Reiterleiste steht fest, jeder Reiter rollt
+   für sich, der Speichern-Knopf bleibt unten sichtbar.
+
+   Überarbeitet am 12.11.2026: Jede Funktion ist ein Block mit Titel, einem
+   Satz, wofür sie da ist, und einem Schalter. Darin steht je Einstellung
+   eine Zeile: links Name und Erklärung, rechts das Feld. Die erste Fassung
+   stapelte Name, Feld und Erklärung untereinander, und man sah nicht mehr,
+   was zusammengehört. Die Zeilenregel gilt für jedes .form-group im Fenster,
+   also auch für die Abschnitte der Zusatzmodule. */
 .inperson-einrichten .window-content {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding: 0 12px 10px;
 }
 
 .inperson-einrichten nav.sheet-tabs {
   flex: 0 0 auto;
+  margin: 0 0 4px;
 }
 
 .inperson-einrichten .inperson-einrichten-reiter {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: 8px 4px;
+  padding: 8px 6px 12px 2px;
 }
 
 .inperson-einrichten .inperson-einrichten-reiter:not(.active) {
@@ -3643,43 +3652,318 @@ body:has(> #inperson-sheetview-uhr-anker) .calendaria-hud:not(.inperson-fremde-k
   display: none;
 }
 
-/* Konten und Geräte: eine Zeile je Konto. */
-.inperson-konten {
+.inperson-einrichten .inperson-reiter-einleitung {
+  margin: 0 0 10px;
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+/* Der Block einer Funktion, und genauso die Abschnitte der Zusatzmodule. */
+.inperson-einrichten .inperson-funktion,
+.inperson-einrichten .inperson-fremde-teile > fieldset {
+  margin: 0 0 12px;
+  padding: 0;
+  border: 1px solid var(--ninjo-rand, #d8cfbf);
+  border-radius: 8px;
+  background: var(--ninjo-flaeche, #fdfbf7);
+  overflow: hidden;
+}
+
+.inperson-einrichten .inperson-funktion-kopf {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.035);
 }
 
-.inperson-konten-zeile {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr) minmax(0, 1.3fr) 5.5rem 2.5rem;
+.inperson-einrichten .inperson-funktion-kopf > i {
+  flex: 0 0 1.6rem;
+  margin-top: 3px;
+  font-size: 1.15rem;
+  text-align: center;
+  color: var(--ninjo-marke, #8b0000);
+}
+
+.inperson-einrichten .inperson-funktion-titel {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inperson-einrichten .inperson-funktion-titel h3 {
+  margin: 0;
+  border: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ninjo-text, #1a1a1a);
+}
+
+.inperson-einrichten .inperson-funktion-titel p {
+  margin: 2px 0 0;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten .inperson-schalter {
+  flex: 0 0 auto;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 4px 6px;
-  border-radius: 6px;
+  gap: 6px;
+  min-height: var(--ninjo-tippziel, 36px);
+  padding: 0 10px;
+  border: 1px solid var(--ninjo-rand, #d8cfbf);
+  border-radius: 999px;
+  background: var(--ninjo-flaeche, #fdfbf7);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
-.inperson-konten-zeile:not(.inperson-konten-kopf):nth-child(odd) {
+.inperson-einrichten .inperson-funktion.ist-aus .inperson-funktion-kopf > i,
+.inperson-einrichten .inperson-funktion.ist-aus .inperson-funktion-titel h3 {
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten .inperson-funktion-inhalt {
+  padding: 2px 14px 10px;
+}
+
+.inperson-einrichten .inperson-funktion-inhalt[hidden] {
+  display: none;
+}
+
+.inperson-einrichten .inperson-fremde-teile > fieldset {
+  padding: 2px 14px 10px;
+}
+
+.inperson-einrichten .inperson-fremde-teile > fieldset > legend {
+  float: left;
+  width: calc(100% + 28px);
+  margin: -2px -14px 0;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.035);
+  border: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ninjo-text, #1a1a1a);
+}
+
+.inperson-einrichten .inperson-fremde-teile > fieldset > legend + * {
+  clear: both;
+}
+
+/* Eine Einstellung, eine Zeile: links Name und Erklärung, rechts das Feld. */
+.inperson-einrichten .form-group {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(7rem, 15rem);
+  column-gap: 18px;
+  row-gap: 2px;
+  align-items: start;
+  margin: 0;
+  padding: 9px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.inperson-einrichten .inperson-funktion-inhalt > .form-group:first-child,
+.inperson-einrichten .inperson-fremde-teile > fieldset > legend + .form-group {
+  border-top: 0;
+}
+
+.inperson-einrichten .form-group[hidden] {
+  display: none;
+}
+
+.inperson-einrichten .form-group > label {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ninjo-text, #1a1a1a);
+}
+
+.inperson-einrichten .form-group > .form-fields {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.inperson-einrichten .form-group > .hint,
+.inperson-einrichten .form-group > p.notification {
+  grid-column: 1;
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten .form-group > .form-fields > select,
+.inperson-einrichten .form-group > .form-fields > input[type="number"] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inperson-einrichten .form-group > .form-fields > input[type="number"] {
+  max-width: 6rem;
+  text-align: right;
+}
+
+/* Breite Felder (Pfade, Text, Szenenfelder) über die ganze Zeile, unter dem Namen. */
+.inperson-einrichten .form-group.inperson-breit,
+.inperson-einrichten .form-group:has(> .form-fields > textarea),
+.inperson-einrichten .form-group:has(> .form-fields > input[type="text"]),
+.inperson-einrichten .form-group:has(> .form-fields .inperson-scenefield) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.inperson-einrichten .form-group.inperson-breit > .form-fields,
+.inperson-einrichten .form-group:has(> .form-fields > textarea) > .form-fields,
+.inperson-einrichten .form-group:has(> .form-fields > input[type="text"]) > .form-fields,
+.inperson-einrichten .form-group:has(> .form-fields .inperson-scenefield) > .form-fields {
+  grid-column: 1;
+  grid-row: auto;
+  justify-content: flex-start;
+  margin: 4px 0;
+}
+
+.inperson-einrichten .form-group > .form-fields > input[type="text"] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.inperson-einrichten .form-group > .form-fields > textarea {
+  flex: 1 1 auto;
+  width: 100%;
+  min-height: 3.4em;
+  font-family: var(--ninjo-schrift, inherit);
+  font-size: inherit;
+  resize: vertical;
+}
+
+.inperson-einrichten .form-group > .form-fields > button {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.inperson-einrichten .inperson-zwischentitel {
+  margin: 12px 0 0;
+  padding-top: 10px;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten .inperson-funktion-fuss,
+.inperson-einrichten .inperson-aus-hinweis {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.045);
+  font-size: 0.88rem;
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten .inperson-funktion-fuss > button,
+.inperson-einrichten .inperson-aus-hinweis > button {
+  flex: 0 0 auto;
+  margin-left: auto;
+  width: auto;
+}
+
+.inperson-einrichten .inperson-haken-reihe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  padding: 10px 0;
+}
+
+.inperson-einrichten .inperson-haken-reihe > label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+/* Konten und Geräte: eine Zeile je Konto. */
+.inperson-einrichten table.inperson-konten {
+  width: 100%;
+  margin: 6px 0 4px;
+  border: 0;
+  border-collapse: collapse;
+  background: none;
+}
+
+.inperson-einrichten table.inperson-konten th,
+.inperson-einrichten table.inperson-konten td {
+  padding: 5px 8px;
+  border: 0;
+  text-align: left;
+  vertical-align: middle;
+  background: none;
+}
+
+.inperson-einrichten table.inperson-konten thead th {
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--ninjo-rand, #d8cfbf);
+  font-weight: 700;
+  vertical-align: bottom;
+  color: var(--ninjo-text, #1a1a1a);
+}
+
+.inperson-einrichten table.inperson-konten thead th small {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten table.inperson-konten thead th.ist-aus {
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten table.inperson-konten .inperson-konten-zeile {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.inperson-einrichten table.inperson-konten .inperson-konten-zeile.ist-monitor {
   background: rgba(0, 0, 0, 0.04);
 }
 
-.inperson-konten-kopf {
+.inperson-einrichten .inperson-konten-name {
   font-weight: 600;
-  font-size: 0.85em;
 }
 
-.inperson-konten-name em {
+.inperson-einrichten .inperson-konten-name em {
   display: block;
-  font-size: 0.85em;
-  opacity: 0.75;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--ninjo-text-blass, #5f5a52);
 }
 
-.inperson-konten-zeile.ist-monitor .inperson-nur-spieler {
-  opacity: 0.35;
+.inperson-einrichten table.inperson-konten td.inperson-konten-mitte {
+  width: 6.5rem;
+  text-align: center;
 }
 
-.inperson-konten-zeile select {
+.inperson-einrichten table.inperson-konten select {
   width: 100%;
+  min-width: 9rem;
+}
+
+.inperson-einrichten tr.ist-monitor .inperson-nur-spieler {
+  visibility: hidden;
 }
 
 .inperson-unsichtbar {
@@ -3691,8 +3975,28 @@ body:has(> #inperson-sheetview-uhr-anker) .calendaria-hud:not(.inperson-fremde-k
   white-space: nowrap;
 }
 
-@media (max-width: 700px) {
-  .inperson-konten-zeile {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+@media (max-width: 760px) {
+  .inperson-einrichten .form-group {
+    grid-template-columns: minmax(0, 1fr);
   }
+
+  .inperson-einrichten .form-group > .form-fields {
+    grid-column: 1;
+    grid-row: auto;
+    justify-content: flex-start;
+  }
+}
+
+/* Die Liste der Begleitszenen im Block „Welche Szene wann“: ohne eigenen Rahmen. */
+.inperson-einrichten .inperson-pairs {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.inperson-einrichten .inperson-pairs > .hint {
+  margin: 4px 0 8px;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  color: var(--ninjo-text-blass, #5f5a52);
 }
