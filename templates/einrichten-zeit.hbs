@@ -1,4 +1,4 @@
-{{!-- Reiter Zeit & Wetter und Reiter Tauschen: zwei kleine Funktionen, je mit eigenem Reiter. --}}
+{{!-- Reiter Zeit & Wetter. --}}
 <section class="tab inperson-einrichten-reiter {{tabs.zeit.cssClass}}" data-tab="zeit" data-group="einrichten">
   <p class="inperson-reiter-einleitung">{{localize "INPERSON.Setup.Card.LeisteFor"}}</p>
 
@@ -58,10 +58,4 @@
       {{/if}}
     </div>
   </section>
-</section>
-
-<section class="tab inperson-einrichten-reiter {{tabs.tausch.cssClass}}" data-tab="tausch" data-group="einrichten">
-  <p class="inperson-reiter-einleitung">{{localize "INPERSON.Settings.Trade.Hint"}}</p>
-  <p class="inperson-aus-hinweis"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> {{#if shops}}{{localize "INPERSON.TradeSettings.Moved"}}{{else}}{{localize "INPERSON.TradeSettings.MovedMissing"}}{{/if}}</p>
-  {{#if itemPiles}}<p class="notification warning">{{localize "INPERSON.TradeSettings.ItemPiles"}}</p>{{/if}}
 </section>

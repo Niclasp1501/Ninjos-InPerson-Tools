@@ -141,7 +141,8 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
     monitore: { template: `modules/${MODULE_ID}/templates/einrichten-monitore.hbs`, scrollable: [""] },
     tischmodus: { template: `modules/${MODULE_ID}/templates/einrichten-tischmodus.hbs`, scrollable: [""] },
     blatt: { template: `modules/${MODULE_ID}/templates/einrichten-blatt.hbs`, scrollable: [""] },
-    zeit: { template: `modules/${MODULE_ID}/templates/einrichten-zeit.hbs`, scrollable: [".inperson-einrichten-reiter"] },
+    zeit: { template: `modules/${MODULE_ID}/templates/einrichten-zeit.hbs`, scrollable: [""] },
+    tausch: { template: `modules/${MODULE_ID}/templates/einrichten-tausch.hbs`, scrollable: [""] },
     ton: { template: `modules/${MODULE_ID}/templates/einrichten-ton.hbs`, scrollable: [""] },
     buehne: { template: `modules/${MODULE_ID}/templates/einrichten-buehne.hbs`, scrollable: [""] },
     fuss: { template: `modules/${MODULE_ID}/templates/einrichten-fuss.hbs` }
