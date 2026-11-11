@@ -1,0 +1,62 @@
+{{!--
+  Startseite des Einrichtungsfensters: Was nutzt dein Tisch?
+
+  Ninjo, 12.11.2026: In-Person soll modular sein, man wählt, was man nutzen
+  möchte, und jede Funktion steht dann an einer Stelle. Je Funktion eine
+  Kachel mit einem Satz, wofür sie da ist, und einem Schalter. Was an ist,
+  bekommt einen Reiter; was aus ist, taucht sonst nirgends auf.
+
+  Die Premium-Funktionen stehen auch ohne das Premium-Modul hier, als
+  solche gekennzeichnet und mit dem Weg dorthin.
+--}}
+<section class="tab inperson-einrichten-reiter {{tabs.funktionen.cssClass}}" data-tab="funktionen" data-group="einrichten">
+  <p class="inperson-reiter-einleitung">{{localize "INPERSON.Setup.Funktionen.Hint"}}</p>
+
+  <div class="inperson-kacheln">
+    {{#each funktionen}}
+      <label class="inperson-kachel {{#if this.an}}ist-an{{/if}}" data-reiter="{{this.reiter}}">
+        <span class="inperson-kachel-kopf">
+          <i class="{{this.symbol}}" aria-hidden="true"></i>
+          <strong>{{localize this.titel}}</strong>
+          <input type="checkbox" name="{{this.feld}}" data-kachelschalter {{#if this.an}}checked{{/if}} aria-label="{{localize this.titel}}">
+        </span>
+        <span class="inperson-kachel-text">{{localize this.wofuer}}</span>
+      </label>
+    {{/each}}
+  </div>
+
+  <h3 class="inperson-kacheln-titel">
+    <i class="fa-brands fa-patreon" aria-hidden="true"></i> {{localize "INPERSON.Setup.Prem.Titel"}}
+    {{#if premiumDa}}<span class="inperson-tag ok">{{localize "INPERSON.Setup.Prem.Aktiv"}}</span>{{/if}}
+  </h3>
+  {{#unless premiumDa}}<p class="inperson-reiter-einleitung">{{localize "INPERSON.Setup.Prem.Hint"}}</p>{{/unless}}
+
+  <div class="inperson-kacheln">
+    {{#each premium}}
+      <div class="inperson-kachel ist-premium {{#if ../premiumDa}}ist-an{{/if}}">
+        <span class="inperson-kachel-kopf">
+          <i class="{{this.symbol}}" aria-hidden="true"></i>
+          <strong>{{localize this.titel}}</strong>
+          <span class="inperson-kachel-marke">{{localize "INPERSON.Setup.Prem.Badge"}}</span>
+        </span>
+        <span class="inperson-kachel-text">{{localize this.wofuer}}</span>
+        {{#if ../premiumDa}}
+          {{#if this.reiter}}
+            <button type="button" class="inperson-mini" data-action="zuReiter" data-reiter="{{this.reiter}}">
+              <i class="fa-solid fa-sliders" aria-hidden="true"></i> {{localize "INPERSON.Setup.Prem.Oeffnen"}}
+            </button>
+          {{else}}
+            <span class="inperson-kachel-fuss">{{localize "INPERSON.Setup.Prem.Szene"}}</span>
+          {{/if}}
+        {{/if}}
+      </div>
+    {{/each}}
+  </div>
+
+  {{#unless premiumDa}}
+    <p class="inperson-premium-wege">
+      <a class="inperson-mini" href="{{patreon}}" target="_blank" rel="noopener"><i class="fa-brands fa-patreon" aria-hidden="true"></i> {{localize "INPERSON.Setup.Prem.Holen"}}</a>
+      <a class="inperson-mini" href="{{forge}}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i> {{localize "INPERSON.Setup.Prem.Mehr"}}</a>
+    </p>
+  {{/unless}}
+</section>

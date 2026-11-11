@@ -1,0 +1,82 @@
+{{!-- Reiter Tischmodus: alles dazu an einer Stelle, auch für wen er gilt. --}}
+<section class="tab inperson-einrichten-reiter {{tabs.tischmodus.cssClass}}" data-tab="tischmodus" data-group="einrichten">
+  <p class="inperson-reiter-einleitung">{{localize "INPERSON.Setup.Card.TischmodusFor"}}</p>
+
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-users" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Setup.Wer.Tisch"}}</h3>
+        <p>{{localize "INPERSON.Setup.Wer.TischHint"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      <div class="form-group">
+        <label for="inperson-vorgabe-spieler">{{localize "INPERSON.Settings.DefaultPlayers.Name"}}</label>
+        <div class="form-fields">
+          <input type="checkbox" id="inperson-vorgabe-spieler" name="defaultForPlayers" {{#if defaultPlayers}}checked{{/if}}>
+        </div>
+        <p class="hint">{{localize "INPERSON.Setup.Konten.VorgabeHint"}}</p>
+      </div>
+      {{#each spieler}}
+        <div class="form-group inperson-kontozeile">
+          <label for="inperson-tisch-{{this.id}}">{{this.name}}{{#if this.figur}} <em>{{this.figur}}</em>{{/if}}{{#if this.online}} <span class="inperson-tag ok">{{localize "INPERSON.SheetView.Online"}}</span>{{/if}}</label>
+          <div class="form-fields">
+            <select id="inperson-tisch-{{this.id}}" name="tisch.{{this.id}}">
+              <option value="" {{#if this.tischVorgabe}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.TischVorgabe"}}</option>
+              <option value="an" {{#if this.tischAn}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.TischAn"}}</option>
+              <option value="aus" {{#if this.tischAus}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.TischAus"}}</option>
+            </select>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+  </section>
+
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-eye-slash" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Setup.Was.Tisch"}}</h3>
+        <p>{{localize "INPERSON.Setup.Was.TischHint"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      <div class="form-group">
+        <label>{{localize "INPERSON.Settings.Scope.Name"}}</label>
+        <div class="form-fields">
+          <select name="blockScope">
+            <option value="background" {{#if scopeBackground}}selected{{/if}}>{{localize "INPERSON.Settings.Scope.Background"}}</option>
+            <option value="everything" {{#unless scopeBackground}}selected{{/unless}}>{{localize "INPERSON.Settings.Scope.Everything"}}</option>
+          </select>
+        </div>
+        <p class="hint">{{localize "INPERSON.Settings.Scope.Hint"}}</p>
+      </div>
+      <div class="form-group inperson-when-wide" {{#if scopeBackground}}hidden{{/if}}>
+        <label>{{localize "INPERSON.Settings.KeepTokens.Name"}}</label>
+        <div class="form-fields"><input type="checkbox" name="keepTokens" {{#if keepTokens}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.Settings.KeepTokens.Hint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "INPERSON.Settings.BlockAudio.Name"}}</label>
+        <div class="form-fields"><input type="checkbox" name="blockAudio" {{#if blockAudio}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.Settings.BlockAudio.Hint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "INPERSON.Settings.AutoNoCanvas.Name"}}</label>
+        <div class="form-fields"><input type="checkbox" name="autoNoCanvas" {{#if autoNoCanvas}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.Settings.AutoNoCanvas.Hint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "INPERSON.Settings.HideProgress.Name"}}</label>
+        <div class="form-fields"><input type="checkbox" name="hideProgress" {{#if hideProgress}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.Settings.HideProgress.Hint"}}</p>
+      </div>
+      <div class="form-group inperson-breit">
+        <label>{{localize "INPERSON.Settings.AllowList.Name"}}</label>
+        <div class="form-fields"><textarea name="allowList" rows="2">{{allowList}}</textarea></div>
+        <p class="hint">{{localize "INPERSON.Settings.AllowList.Hint"}}</p>
+      </div>
+    </div>
+  </section>
+</section>

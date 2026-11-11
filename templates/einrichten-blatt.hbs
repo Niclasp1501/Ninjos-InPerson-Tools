@@ -1,0 +1,108 @@
+{{!-- Reiter Blattansicht: eine eigene Hauptfunktion, mit allem an einer Stelle, auch wer sie bekommt. --}}
+<section class="tab inperson-einrichten-reiter {{tabs.blatt.cssClass}}" data-tab="blatt" data-group="einrichten">
+  <p class="inperson-reiter-einleitung">{{localize "INPERSON.Setup.Card.BlattFor"}}</p>
+
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-users" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Setup.Wer.Blatt"}}</h3>
+        <p>{{localize "INPERSON.Setup.Wer.BlattHint"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      {{#each spieler}}
+        <div class="form-group inperson-kontozeile">
+          <label for="inperson-blatt-{{this.id}}">{{this.name}}{{#if this.figur}} <em>{{this.figur}}</em>{{/if}}{{#if this.online}} <span class="inperson-tag ok">{{localize "INPERSON.SheetView.Online"}}</span>{{/if}}</label>
+          <div class="form-fields">
+            <button type="button" class="inperson-mini" data-action="resetBar" data-user="{{this.id}}"
+                    data-tooltip="{{localize 'INPERSON.SheetView.ResetHint'}}" aria-label="{{localize 'INPERSON.SheetView.ResetHint'}}: {{this.name}}">
+              <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> {{localize "INPERSON.Setup.Konten.Leiste"}}
+            </button>
+            <input type="checkbox" id="inperson-blatt-{{this.id}}" name="blatt.{{this.id}}" {{#if this.blatt}}checked{{/if}}>
+          </div>
+        </div>
+      {{else}}
+        <p class="hint">{{localize "INPERSON.SheetView.NoUsers"}}</p>
+      {{/each}}
+    </div>
+  </section>
+
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Setup.Verhalten"}}</h3>
+        <p>{{localize "INPERSON.Setup.VerhaltenHint"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      <div class="form-group">
+        <label>{{localize "INPERSON.SheetView.NoCanvas"}}</label>
+        <div class="form-fields"><input type="checkbox" name="noCanvas" {{#if noCanvas}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.SheetView.NoCanvasHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "INPERSON.SheetView.EditPen"}}</label>
+        <div class="form-fields"><input type="checkbox" name="editPen" {{#if editPen}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.SheetView.EditPenHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "INPERSON.SheetView.ChatOnUse"}}</label>
+        <div class="form-fields"><input type="checkbox" name="chatOnUse" {{#if chatOnUse}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.SheetView.ChatOnUseHint"}}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-eye" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.SheetView.Showing"}}</h3>
+        <p>{{localize "INPERSON.Setup.ZeigenHint"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      <div class="form-group">
+        <label>{{localize "INPERSON.SheetView.ShowAllow"}}</label>
+        <div class="form-fields"><input type="checkbox" name="showAllow" {{#if showAllow}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.SheetView.ShowAllowHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "INPERSON.SheetView.ShowTv"}}</label>
+        <div class="form-fields"><input type="checkbox" name="showTv" {{#if showTv}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.SheetView.ShowTvHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "INPERSON.SheetView.ShowGmCopy"}}</label>
+        <div class="form-fields"><input type="checkbox" name="showGmCopy" {{#if showGmCopy}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.SheetView.ShowGmCopyHint"}}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Setup.AlteGeraete"}}</h3>
+        <p>{{localize "INPERSON.Setup.AlteGeraeteHint"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      <div class="form-group">
+        <label>{{localize "INPERSON.SheetView.OldIpad"}}</label>
+        <div class="form-fields"><input type="checkbox" name="oldIpad" {{#if oldIpad}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.SheetView.OldIpadHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "INPERSON.SheetView.DeviceReport"}}</label>
+        <div class="form-fields"><input type="checkbox" name="deviceReport" {{#if deviceReport}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.SheetView.DeviceReportHint"}}</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="inperson-fremde-teile" data-seite="tablets"></div>
+</section>

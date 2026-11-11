@@ -52,6 +52,8 @@ export const SETTINGS = {
   DEFAULT_COMPANION: "defaultCompanionScene",
   /** Activating a companion scene activates its map instead (begleit-umleitung.js). */
   COMPANION_REDIRECT: "companionRedirect",
+  /** Zeigt das Einrichtungsfenster den Reiter Monitore? Nur Anzeige; die Monitore selbst hängen an ihren Konten. */
+  USE_DISPLAYS: "useDisplays",
   /**
    * Does the scene display count the active battlemap's combat as its own
    * while it shows another scene (world)? Foundry shows a combat only on the

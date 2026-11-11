@@ -105,7 +105,7 @@ for (const f of sources) {
 for (const s of ["gefragt", "sieht", "nein", "abgelaufen"]) used.add(`${PREFIX}Show.State.${s}`);
 
 // The tabs of the setup window, assembled from their ids (einrichten.js).
-for (const r of ["konten", "monitore", "tablets", "ton", "buehne", "feinheiten"]) used.add(`${PREFIX}Setup.Tab.${r}`);
+for (const r of ["funktionen", "monitore", "tischmodus", "blatt", "zeit", "tausch", "ton", "buehne"]) used.add(`${PREFIX}Setup.Tab.${r}`);
 
 // Reason keys are assembled at runtime from a state name.
 for (const r of ["disabled", "forcedOn", "forcedOff", "selfOn", "selfOff",

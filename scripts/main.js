@@ -438,6 +438,13 @@ function registerSettings() {
     onChange: () => refreshPanel()
   });
 
+  S(SETTINGS.USE_DISPLAYS, {
+    scope: "world",
+    config: false,   // Startseite von „In-Person einrichten“
+    type: Boolean,
+    default: true
+  });
+
   S(SETTINGS.COMPANION_REDIRECT, {
     name: "INPERSON.Settings.CompanionRedirect.Name",
     hint: "INPERSON.Settings.CompanionRedirect.Hint",
@@ -627,9 +634,9 @@ function registerSettings() {
   // downloads and steering two televisions have nothing to do with one another
   // beyond the occasion, and a flat list made whichever tool had the most
   // settings look like "the settings of the module".
-  // Seit 11.11.2026 ein Fenster für alles Einrichten, in Einrichtungsreihenfolge
-  // (einrichten.js). Die Einträge darunter öffnen den passenden Reiter, damit
-  // Gewohnheit und alte Anleitungen nicht ins Leere laufen.
+  // Ein Fenster für alles Einrichten (einrichten.js): eine Startseite, auf der
+  // man wählt, was der Tisch nutzt, und je Funktion ein Reiter. Bis 14.2611.81
+  // standen hier fünf Einträge, je Werkzeug einer.
   game.settings.registerMenu(MODULE_ID, "einrichten", {
     name: "INPERSON.Setup.MenuName",
     label: "INPERSON.Setup.MenuLabel",
@@ -638,110 +645,13 @@ function registerSettings() {
     type: EinrichtenShim,
     restricted: true
   });
-
-  game.settings.registerMenu(MODULE_ID, "tablemode", {
-    name: "INPERSON.TableMode.MenuName",
-    label: "INPERSON.TableMode.MenuLabel",
-    hint: "INPERSON.Setup.OldMenuHint",
-    icon: "fa-solid fa-eye-slash",
-    type: TableModeSettingsShim,
-    restricted: true
-  });
-
-  // Everything about the two televisions has its own page. Steering displays and
-  // stopping downloads are separate jobs that merely share a module, and one
-  // flat list made them read as a heap of unrelated switches.
-  game.settings.registerMenu(MODULE_ID, "displays", {
-    name: "INPERSON.Displays.MenuName",
-    label: "INPERSON.Displays.MenuLabel",
-    hint: "INPERSON.Setup.OldMenuHint",
-    icon: "fa-solid fa-display",
-    type: DisplaySettingsShim,
-    restricted: true
-  });
-
-  // Die Blattansicht: der Beta-Schalter und die Liste der Konten.
-  game.settings.registerMenu(MODULE_ID, "sheetview", {
-    name: "INPERSON.SheetView.MenuName",
-    label: "INPERSON.SheetView.MenuLabel",
-    hint: "INPERSON.Setup.OldMenuHint",
-    icon: "fa-solid fa-tablet-screen-button",
-    type: SheetViewSettingsShim,
-    restricted: true
-  });
-
-  // The strip has its own page too, and like the others it is the gamemaster's.
-  game.settings.registerMenu(MODULE_ID, "clock", {
-    name: "INPERSON.Clock.MenuName",
-    label: "INPERSON.Clock.MenuLabel",
-    hint: "INPERSON.Setup.OldMenuHint",
-    icon: "fa-solid fa-clock",
-    type: ClockSettingsShim,
-    restricted: true
-  });
-
-  // Trading: who may trade with whom, and whether the logbook is kept. The page
-  // also holds the door to that logbook, because a gamemaster asking "where did
-  // the sword go" is looking here, not at the list of journals.
-  game.settings.registerMenu(MODULE_ID, "trade", {
-    name: "INPERSON.TradeSettings.MenuName",
-    label: "INPERSON.TradeSettings.MenuLabel",
-    hint: "INPERSON.Setup.OldMenuHint",
-    icon: "fa-solid fa-right-left",
-    type: TradeSettingsShim,
-    restricted: true
-  });
-
-
-
-
 }
 
 /** Same shim trick as below - the menu wants a class, we want our own window. */
 class EinrichtenShim extends foundry.applications.api.ApplicationV2 {
   constructor(...args) {
     super(...args);
-    openEinrichten("konten");
-  }
-  async render() { return this; }
-}
-
-class TableModeSettingsShim extends foundry.applications.api.ApplicationV2 {
-  constructor(...args) {
-    super(...args);
-    openEinrichten("tablets");
-  }
-  async render() { return this; }
-}
-
-class TradeSettingsShim extends foundry.applications.api.ApplicationV2 {
-  constructor(...args) {
-    super(...args);
-    openEinrichten("tablets");
-  }
-  async render() { return this; }
-}
-
-class ClockSettingsShim extends foundry.applications.api.ApplicationV2 {
-  constructor(...args) {
-    super(...args);
-    openEinrichten("tablets");
-  }
-  async render() { return this; }
-}
-
-class SheetViewSettingsShim extends foundry.applications.api.ApplicationV2 {
-  constructor(...args) {
-    super(...args);
-    openEinrichten("tablets");
-  }
-  async render() { return this; }
-}
-
-class DisplaySettingsShim extends foundry.applications.api.ApplicationV2 {
-  constructor(...args) {
-    super(...args);
-    openEinrichten("monitore");
+    openEinrichten("funktionen");
   }
   async render() { return this; }
 }

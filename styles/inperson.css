@@ -3895,77 +3895,6 @@ body:has(> #inperson-sheetview-uhr-anker) .calendaria-hud:not(.inperson-fremde-k
   font-weight: 600;
 }
 
-/* Konten und Geräte: eine Zeile je Konto. */
-.inperson-einrichten table.inperson-konten {
-  width: 100%;
-  margin: 6px 0 4px;
-  border: 0;
-  border-collapse: collapse;
-  background: none;
-}
-
-.inperson-einrichten table.inperson-konten th,
-.inperson-einrichten table.inperson-konten td {
-  padding: 5px 8px;
-  border: 0;
-  text-align: left;
-  vertical-align: middle;
-  background: none;
-}
-
-.inperson-einrichten table.inperson-konten thead th {
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--ninjo-rand, #d8cfbf);
-  font-weight: 700;
-  vertical-align: bottom;
-  color: var(--ninjo-text, #1a1a1a);
-}
-
-.inperson-einrichten table.inperson-konten thead th small {
-  display: block;
-  font-size: 0.78rem;
-  font-weight: 400;
-  line-height: 1.25;
-  color: var(--ninjo-text-blass, #5f5a52);
-}
-
-.inperson-einrichten table.inperson-konten thead th.ist-aus {
-  color: var(--ninjo-text-blass, #5f5a52);
-}
-
-.inperson-einrichten table.inperson-konten .inperson-konten-zeile {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-}
-
-.inperson-einrichten table.inperson-konten .inperson-konten-zeile.ist-monitor {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.inperson-einrichten .inperson-konten-name {
-  font-weight: 600;
-}
-
-.inperson-einrichten .inperson-konten-name em {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: var(--ninjo-text-blass, #5f5a52);
-}
-
-.inperson-einrichten table.inperson-konten td.inperson-konten-mitte {
-  width: 6.5rem;
-  text-align: center;
-}
-
-.inperson-einrichten table.inperson-konten select {
-  width: 100%;
-  min-width: 9rem;
-}
-
-.inperson-einrichten tr.ist-monitor .inperson-nur-spieler {
-  visibility: hidden;
-}
-
 .inperson-unsichtbar {
   position: absolute;
   width: 1px;
@@ -3999,4 +3928,142 @@ body:has(> #inperson-sheetview-uhr-anker) .calendaria-hud:not(.inperson-fremde-k
   font-size: 0.88rem;
   line-height: 1.35;
   color: var(--ninjo-text-blass, #5f5a52);
+}
+
+/* ── Startseite des Einrichtungsfensters: eine Kachel je Funktion ─────
+   Ninjo, 12.11.2026: In-Person soll modular sein. Hier wählt man, was der
+   Tisch nutzt; jede eingeschaltete Funktion hat ihren Reiter. */
+.inperson-einrichten .inperson-kacheln {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.inperson-einrichten .inperson-kachel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--ninjo-rand, #d8cfbf);
+  border-left: 4px solid var(--ninjo-rand, #d8cfbf);
+  border-radius: 8px;
+  background: var(--ninjo-flaeche, #fdfbf7);
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.inperson-einrichten label.inperson-kachel {
+  cursor: pointer;
+}
+
+.inperson-einrichten .inperson-kachel.ist-an {
+  border-left-color: var(--ninjo-marke, #8b0000);
+}
+
+.inperson-einrichten .inperson-kachel.ist-premium {
+  border-left-color: var(--ninjo-akzent, #c9a227);
+}
+
+.inperson-einrichten .inperson-kachel-kopf {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inperson-einrichten .inperson-kachel-kopf > i {
+  flex: 0 0 1.5rem;
+  font-size: 1.15rem;
+  text-align: center;
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten .inperson-kachel.ist-an .inperson-kachel-kopf > i {
+  color: var(--ninjo-marke, #8b0000);
+}
+
+.inperson-einrichten .inperson-kachel-kopf > strong {
+  flex: 1 1 auto;
+  font-size: 1.05rem;
+  color: var(--ninjo-text, #1a1a1a);
+}
+
+.inperson-einrichten .inperson-kachel-kopf > input {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.inperson-einrichten .inperson-kachel-text {
+  font-size: 0.88rem;
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten .inperson-kachel-marke {
+  flex: 0 0 auto;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--ninjo-akzent, #c9a227);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+
+.inperson-einrichten .inperson-kachel > button {
+  align-self: flex-start;
+  width: auto;
+  margin-top: 2px;
+}
+
+.inperson-einrichten .inperson-kachel-fuss {
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten .inperson-kacheln-titel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 6px;
+  padding-top: 12px;
+  border: 0;
+  border-top: 1px solid var(--ninjo-rand, #d8cfbf);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ninjo-text, #1a1a1a);
+}
+
+.inperson-einrichten .inperson-premium-wege {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+.inperson-einrichten .inperson-premium-wege > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--ninjo-tippziel, 36px);
+  padding: 0 12px;
+  text-decoration: none;
+}
+
+.inperson-einrichten nav.sheet-tabs [data-tab][hidden] {
+  display: none;
+}
+
+/* Eine Zeile je Konto in den Reitern Tischmodus und Blattansicht. */
+.inperson-einrichten .inperson-kontozeile > label em {
+  margin-left: 6px;
+  font-weight: 400;
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten .inperson-kontozeile {
+  align-items: center;
+  padding: 5px 0;
 }

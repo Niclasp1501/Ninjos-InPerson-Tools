@@ -1,16 +1,39 @@
 {{!--
-  Reiter Monitore: was auf den beiden Bildschirmen am Tisch geschieht. Welche
-  Konten die Monitore sind, steht im Reiter Konten und Geräte. Wie die
-  Tablets: je Funktion ein Block mit einem Satz, wofür sie da ist.
+  Reiter Monitore: alles zu den beiden Bildschirmen am Tisch an einer Stelle,
+  auch welche Konten sie sind.
 --}}
 <section class="tab inperson-einrichten-reiter {{tabs.monitore.cssClass}}" data-tab="monitore" data-group="einrichten">
-  <p class="inperson-reiter-einleitung">{{localize "INPERSON.Setup.Monitore.Hint"}}</p>
-  {{#unless hatMonitor}}
-    <p class="inperson-aus-hinweis">
-      <i class="fa-solid fa-circle-info" aria-hidden="true"></i> {{localize "INPERSON.Setup.Monitore.Keine"}}
-      <button type="button" class="inperson-mini" data-action="zuKonten">{{localize "INPERSON.Setup.Tab.konten"}}</button>
-    </p>
-  {{/unless}}
+  <p class="inperson-reiter-einleitung">{{localize "INPERSON.Setup.Feat.MonitoreFor"}}</p>
+
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-users" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Setup.Wer.Monitore"}}</h3>
+        <p>{{localize "INPERSON.Setup.Wer.MonitoreHint"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      <div class="form-group">
+        <label>{{localize "INPERSON.Settings.MonitorSC.Name"}}</label>
+        <div class="form-fields">
+          <select name="monitorSC">
+            {{#each accountsSC}}<option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>{{/each}}
+          </select>
+        </div>
+        <p class="hint">{{localize "INPERSON.Settings.MonitorSC.Hint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "INPERSON.Settings.MonitorBM.Name"}}</label>
+        <div class="form-fields">
+          <select name="monitorBM">
+            {{#each accountsBM}}<option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{this.name}}</option>{{/each}}
+          </select>
+        </div>
+        <p class="hint">{{localize "INPERSON.Settings.MonitorBM.Hint"}}</p>
+      </div>
+    </div>
+  </section>
 
   <section class="inperson-funktion">
     <header class="inperson-funktion-kopf">

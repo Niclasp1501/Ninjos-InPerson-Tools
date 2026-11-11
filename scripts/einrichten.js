@@ -36,46 +36,69 @@ import { syncTradeButton } from "./trade-start.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-/** Die Reiter, in Einrichtungsreihenfolge. */
-export const REITER = ["konten", "monitore", "tablets", "ton", "buehne", "feinheiten"];
+/**
+ * Die Reiter: die Startseite, dann je Funktion einer. Seit dem 12.11.2026
+ * (Ninjo: In-Person soll modular sein, jede Funktion an einer Stelle) steht
+ * auch die Frage, für welche Konten eine Funktion gilt, in ihrem eigenen
+ * Reiter und nicht mehr in einer Sammeltabelle.
+ */
+export const REITER = ["funktionen", "monitore", "tischmodus", "blatt", "zeit", "tausch", "ton", "buehne"];
 const SYMBOLE = {
-  konten: "fa-solid fa-users", monitore: "fa-solid fa-display", tablets: "fa-solid fa-tablet-screen-button",
-  ton: "fa-solid fa-volume-high", buehne: "fa-solid fa-masks-theater", feinheiten: "fa-solid fa-sliders"
+  funktionen: "fa-solid fa-table-cells-large", monitore: "fa-solid fa-display", tischmodus: "fa-solid fa-eye-slash",
+  blatt: "fa-solid fa-tablet-screen-button", zeit: "fa-solid fa-cloud-sun", tausch: "fa-solid fa-right-left",
+  ton: "fa-solid fa-volume-high", buehne: "fa-solid fa-masks-theater"
 };
 /** Reiter, die nur zeigen, was Zusatzmodule eintragen. */
 const NUR_ZUSATZ = ["ton", "buehne"];
+/** Die Funktionen des freien Moduls: Reiter, Feld des Schalters auf der Startseite, Texte. */
+const FUNKTIONEN = [
+  { reiter: "monitore", feld: "useDisplays", titel: "INPERSON.Setup.Tab.monitore", wofuer: "INPERSON.Setup.Feat.MonitoreFor" },
+  { reiter: "tischmodus", feld: "tischmodusAn", titel: "INPERSON.Setup.Card.Tischmodus", wofuer: "INPERSON.Setup.Card.TischmodusFor" },
+  { reiter: "blatt", feld: "sheetviewEnabled", titel: "INPERSON.SheetView.Name", wofuer: "INPERSON.Setup.Card.BlattFor" },
+  { reiter: "zeit", feld: "strip", titel: "INPERSON.Clock.MenuName", wofuer: "INPERSON.Setup.Card.LeisteFor" },
+  { reiter: "tausch", feld: "trade", titel: "INPERSON.TradeSettings.MenuName", wofuer: "INPERSON.Settings.Trade.Hint" }
+];
+/** Was das Premium-Modul dazubringt. Die Texte stehen hier, damit sie auch ohne Premium zu lesen sind. */
+const PREMIUM_ID = "ninjos-inperson-tools-premium";
+const PREMIUM = [
+  { symbol: "fa-solid fa-masks-theater", titel: "INPERSON.Setup.Prem.Buehne", wofuer: "INPERSON.Setup.Prem.BuehneFor", reiter: "buehne" },
+  { symbol: "fa-solid fa-eye-slash", titel: "INPERSON.Setup.Prem.Blende", wofuer: "INPERSON.Setup.Prem.BlendeFor", reiter: "buehne" },
+  { symbol: "fa-solid fa-volume-high", titel: "INPERSON.Setup.Prem.Ton", wofuer: "INPERSON.Setup.Prem.TonFor", reiter: "monitore" },
+  { symbol: "fa-solid fa-clapperboard", titel: "INPERSON.Setup.Prem.Gleichlauf", wofuer: "INPERSON.Setup.Prem.GleichlaufFor", reiter: "" }
+];
+const FORGE = "https://ninjos-forge.web.app/modules/inperson-premium";
+const PATREON = "https://www.patreon.com/ninjosforge";
 
 /* -------------------------------------------- */
 /*  Konten und Geräte: die Regel                 */
 /* -------------------------------------------- */
 
 /**
- * Aus den Zeilen der Kontentabelle die Werte der bisherigen Einstellungen.
+ * Aus den Feldern der Reiter die Werte der Kontoeinstellungen.
  *
- * Für sich, damit der Test sie ohne Foundry prüfen kann. Monitore bekommen
- * weder Tischmodus noch Blattansicht: Ihre Felder sind gesperrt und kommen
- * nicht mit, und eine gespeicherte Wahl für sie bleibt, wie sie war.
- * Spielleiter stehen nicht in der Tabelle; ihre Einträge bleiben unberührt.
+ * Für sich, damit der Test sie ohne Foundry prüfen kann. Die beiden Monitore
+ * kommen aus dem Reiter Monitore; dasselbe Konto kann nicht beides sein, dann
+ * gilt es als Szenen-Monitor. Für Monitore zählen weder Tischmodus noch
+ * Blattansicht, und Konten, die nicht im Formular stehen (Spielleiter),
+ * behalten, was gespeichert ist.
  * @param {object} daten Formulardaten
- * @param {string[]} kontoIds Die Konten der Tabelle
+ * @param {string[]} kontoIds Die Spielerkonten, die das Formular kennt
  * @param {object} bisher `{ forced, sheetUsers }` wie gespeichert
  * @returns {{sc: string, bm: string, forced: object, sheetUsers: object}}
  */
 export function kontenAuswerten(daten, kontoIds, bisher = {}) {
-  let sc = "", bm = "";
+  const sc = String(daten.monitorSC ?? "");
+  const bm = String(daten.monitorBM ?? "") === sc ? "" : String(daten.monitorBM ?? "");
   const forced = { ...(bisher.forced ?? {}) };
   const sheetUsers = {};
   for (const [id, an] of Object.entries(bisher.sheetUsers ?? {})) if (an && !kontoIds.includes(id)) sheetUsers[id] = true;
 
   for (const id of kontoIds) {
-    const rolle = daten[`rolle.${id}`];
-    if (rolle === "sc" && !sc) { sc = id; continue; }
-    if (rolle === "bm" && !bm) { bm = id; continue; }
-    if (rolle === "sc" || rolle === "bm") continue;   // ein zweiter Monitor derselben Art zählt nicht
+    if (id === sc || id === bm) continue;
     const tisch = daten[`tisch.${id}`];
     if (tisch === "an") forced[id] = true;
     else if (tisch === "aus") forced[id] = false;
-    else delete forced[id];
+    else if (`tisch.${id}` in daten) delete forced[id];
     if (daten[`blatt.${id}`]) sheetUsers[id] = true;
   }
   return { sc, bm, forced, sheetUsers };
@@ -95,7 +118,7 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
     form: { handler: InPersonEinrichten.#speichern, closeOnSubmit: true },
     actions: {
       openControls: InPersonEinrichten.#steuerung,
-      zuKonten: InPersonEinrichten.#zuKonten,
+      zuReiter: InPersonEinrichten.#zuReiter,
       resetBar: InPersonEinrichten.#leisteZuruecksetzen,
       pickLogo: InPersonEinrichten.#logoWaehlen,
       clearLogo: InPersonEinrichten.#logoLeeren,
@@ -108,18 +131,19 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
   static TABS = {
     einrichten: {
       tabs: REITER.map(id => ({ id, icon: SYMBOLE[id], label: `INPERSON.Setup.Tab.${id}` })),
-      initial: "konten"
+      initial: "funktionen"
     }
   };
 
   static PARTS = {
     tabs: { template: "templates/generic/tab-navigation.hbs" },
-    konten: { template: `modules/${MODULE_ID}/templates/einrichten-konten.hbs`, scrollable: [""] },
+    funktionen: { template: `modules/${MODULE_ID}/templates/einrichten-funktionen.hbs`, scrollable: [""] },
     monitore: { template: `modules/${MODULE_ID}/templates/einrichten-monitore.hbs`, scrollable: [""] },
-    tablets: { template: `modules/${MODULE_ID}/templates/einrichten-tablets.hbs`, scrollable: [""] },
+    tischmodus: { template: `modules/${MODULE_ID}/templates/einrichten-tischmodus.hbs`, scrollable: [""] },
+    blatt: { template: `modules/${MODULE_ID}/templates/einrichten-blatt.hbs`, scrollable: [""] },
+    zeit: { template: `modules/${MODULE_ID}/templates/einrichten-zeit.hbs`, scrollable: [".inperson-einrichten-reiter"] },
     ton: { template: `modules/${MODULE_ID}/templates/einrichten-ton.hbs`, scrollable: [""] },
     buehne: { template: `modules/${MODULE_ID}/templates/einrichten-buehne.hbs`, scrollable: [""] },
-    feinheiten: { template: `modules/${MODULE_ID}/templates/einrichten-feinheiten.hbs`, scrollable: [""] },
     fuss: { template: `modules/${MODULE_ID}/templates/einrichten-fuss.hbs` }
   };
 
@@ -138,7 +162,7 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
     // Ton und Bühnen nur, wenn ein Zusatzmodul dort etwas einträgt.
     for (const id of NUR_ZUSATZ) if (!hatEinstellungsTeile(id)) delete tabs[id];
     if (!tabs[this.tabGroups[group]]) {
-      this.tabGroups[group] = "konten";
+      this.tabGroups[group] = "funktionen";
       return this._prepareTabs(group);
     }
     return tabs;
@@ -154,21 +178,33 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
     const sheetUsers = get(SETTINGS.SHEETVIEW_USERS) ?? {};
     const logo = get(SETTINGS.IDLE_LOGO);
 
-    const konten = game.users
-      .filter(u => !u.isGM)
+    const spieler = game.users
+      .filter(u => !u.isGM && u.id !== sc && u.id !== bm)
       .sort((a, b) => a.name.localeCompare(b.name))
       .map(u => ({
         id: u.id, name: u.name, online: u.active, figur: characterOf(u)?.name ?? "",
-        istSc: u.id === sc, istBm: u.id === bm, istSpieler: u.id !== sc && u.id !== bm,
         tischVorgabe: typeof forced[u.id] !== "boolean", tischAn: forced[u.id] === true, tischAus: forced[u.id] === false,
         blatt: sheetUsers[u.id] === true
       }));
+    const konten = [{ id: "", name: game.i18n.localize("INPERSON.Settings.NoAccount") },
+      ...game.users.filter(u => !u.isGM).sort((a, b) => a.name.localeCompare(b.name)).map(u => ({ id: u.id, name: u.name }))];
+    const an = {
+      useDisplays: get(SETTINGS.USE_DISPLAYS) !== false, tischmodusAn: !!get(SETTINGS.ENABLED), sheetviewEnabled: !!get(SETTINGS.SHEETVIEW),
+      strip: !!get(SETTINGS.CLOCK_STRIP), trade: !!get(SETTINGS.TRADE)
+    };
 
     return {
       ...kontext,
-      // Konten und Geräte
-      konten,
-      hatMonitor: !!(sc || bm),
+      // Startseite
+      funktionen: FUNKTIONEN.map(f => ({ ...f, symbol: SYMBOLE[f.reiter], an: an[f.feld] })),
+      premium: PREMIUM,
+      premiumDa: !!game.modules.get(PREMIUM_ID)?.active,
+      patreon: PATREON,
+      forge: FORGE,
+      // Konten
+      spieler,
+      accountsSC: mark(konten, sc),
+      accountsBM: mark(konten, bm),
       defaultPlayers: get(SETTINGS.DEFAULT_PLAYERS),
       // Monitore
       releaseFollow: get(SETTINGS.MONITOR_RELEASE) === "follow",
@@ -253,28 +289,25 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
       this.#fremde.push(...teile);
     }
 
-    // Konten: ein Monitor bekommt weder Tischmodus noch Blattansicht, und
-    // jeder Monitor nur einmal. Wählt man ihn für ein zweites Konto, wird das
-    // erste wieder Spieler.
-    const zeilen = [...el.querySelectorAll(".inperson-konten-zeile[data-user]")];
-    const kontenAbgleichen = geaendert => {
-      const rolle = z => z.querySelector('select[name^="rolle."]');
-      if (geaendert && geaendert.value !== "spieler") {
-        for (const z of zeilen) {
-          const r = rolle(z);
-          if (r !== geaendert && r.value === geaendert.value) r.value = "spieler";
-        }
-      }
-      for (const z of zeilen) {
-        const monitor = rolle(z).value !== "spieler";
-        z.classList.toggle("ist-monitor", monitor);
-        for (const feld of z.querySelectorAll(".inperson-nur-spieler")) feld.disabled = monitor;
-      }
-    };
-    for (const z of zeilen) z.querySelector('select[name^="rolle."]')?.addEventListener("change", e => kontenAbgleichen(e.target));
-    kontenAbgleichen();
+    // Startseite: Eine Kachel schaltet ihre Funktion, und damit ihren Reiter. Ohne
+    // Neuzeichnen, damit nichts Eingetipptes verloren geht.
+    for (const kachel of el.querySelectorAll(".inperson-kachel[data-reiter]")) {
+      const schalter = kachel.querySelector("[data-kachelschalter]");
+      const reiter = el.querySelector(`nav.sheet-tabs [data-tab="${kachel.dataset.reiter}"]`);
+      const gleichen = () => {
+        kachel.classList.toggle("ist-an", schalter.checked);
+        reiter?.toggleAttribute("hidden", !schalter.checked);
+      };
+      schalter.addEventListener("change", gleichen);
+      gleichen();
+    }
 
-    // Tablets: Token-Bilder nur, wenn mehr als der Hintergrund gesperrt ist.
+    // Monitore: Ein Konto kann nicht beide Monitore sein.
+    const scFeld = el.querySelector('select[name="monitorSC"]'), bmFeld = el.querySelector('select[name="monitorBM"]');
+    scFeld?.addEventListener("change", () => { if (scFeld.value && bmFeld?.value === scFeld.value) bmFeld.value = ""; });
+    bmFeld?.addEventListener("change", () => { if (bmFeld.value && scFeld?.value === bmFeld.value) scFeld.value = ""; });
+
+    // Tischmodus: Token-Bilder nur, wenn mehr als der Hintergrund gesperrt ist.
     const breit = () => el.querySelector(".inperson-when-wide")
       ?.toggleAttribute("hidden", el.querySelector('select[name="blockScope"]')?.value !== "everything");
     el.querySelector('select[name="blockScope"]')?.addEventListener("change", breit);
@@ -375,8 +408,8 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
     }
   }
 
-  static #zuKonten() {
-    this.changeTab("konten", "einrichten");
+  static #zuReiter(event, ziel) {
+    if (REITER.includes(ziel.dataset.reiter)) this.changeTab(ziel.dataset.reiter, "einrichten");
   }
 
   static #steuerung() {
@@ -455,6 +488,7 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
     await set(SETTINGS.MONITOR_SC, konten.sc);
     await set(SETTINGS.FORCED, konten.forced);
     await set(SETTINGS.DEFAULT_PLAYERS, !!d.defaultForPlayers);
+    await set(SETTINGS.USE_DISPLAYS, !!d.useDisplays);
 
     // Monitore
     await set(SETTINGS.MONITOR_RELEASE, d.monitorRelease ?? "follow");

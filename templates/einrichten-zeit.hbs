@@ -1,0 +1,67 @@
+{{!-- Reiter Zeit & Wetter und Reiter Tauschen: zwei kleine Funktionen, je mit eigenem Reiter. --}}
+<section class="tab inperson-einrichten-reiter {{tabs.zeit.cssClass}}" data-tab="zeit" data-group="einrichten">
+  <p class="inperson-reiter-einleitung">{{localize "INPERSON.Setup.Card.LeisteFor"}}</p>
+
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-clock" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Setup.Zeit.Was"}}</h3>
+        <p>{{localize "INPERSON.Setup.Zeit.WasHint"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      <div class="inperson-haken-reihe">
+        <label><input type="checkbox" name="date" {{#if date}}checked{{/if}}> {{localize "INPERSON.Clock.Field.Date"}}</label>
+        <label><input type="checkbox" name="time" {{#if time}}checked{{/if}}> {{localize "INPERSON.Clock.Field.Time"}}</label>
+        <label><input type="checkbox" name="weather" {{#if weather}}checked{{/if}}> {{localize "INPERSON.Clock.Field.Weather"}}</label>
+        <label><input type="checkbox" name="season" {{#if season}}checked{{/if}}> {{localize "INPERSON.Clock.Field.Season"}}</label>
+      </div>
+      {{#unless hasWeatherSource}}<p class="hint">{{localize "INPERSON.Clock.NoWeatherSource"}}</p>{{/unless}}
+    </div>
+  </section>
+
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-cloud-sun" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Clock.Field.Sky"}}</h3>
+        <p>{{localize "INPERSON.Clock.Field.SkyHint"}}</p>
+      </div>
+      <label class="inperson-schalter"><input type="checkbox" name="sky" data-funktionsschalter {{#if sky}}checked{{/if}}> {{localize "INPERSON.Setup.Use"}}</label>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      <div class="form-group">
+        <label>{{localize "INPERSON.Clock.Field.SkyTimes"}}</label>
+        <div class="form-fields"><input type="checkbox" name="skyTimes" {{#if skyTimes}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.Clock.Field.SkyTimesHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label>{{localize "INPERSON.Clock.Field.Motion"}}</label>
+        <div class="form-fields">
+          <select name="skyMotion">
+            {{#each motionOptions}}<option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>{{/each}}
+          </select>
+        </div>
+        <p class="hint">{{localize "INPERSON.Clock.Field.MotionHint"}}</p>
+      </div>
+      {{#if hasCalendaria}}
+        <div class="form-group">
+          <label>{{localize "INPERSON.Clock.Field.SkySource"}}</label>
+          <div class="form-fields">
+            <select name="skySource">
+              {{#each skySourceOptions}}<option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>{{/each}}
+            </select>
+          </div>
+          <p class="hint">{{localize "INPERSON.Clock.Field.SkySourceHint"}}</p>
+        </div>
+      {{/if}}
+    </div>
+  </section>
+</section>
+
+<section class="tab inperson-einrichten-reiter {{tabs.tausch.cssClass}}" data-tab="tausch" data-group="einrichten">
+  <p class="inperson-reiter-einleitung">{{localize "INPERSON.Settings.Trade.Hint"}}</p>
+  <p class="inperson-aus-hinweis"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> {{#if shops}}{{localize "INPERSON.TradeSettings.Moved"}}{{else}}{{localize "INPERSON.TradeSettings.MovedMissing"}}{{/if}}</p>
+  {{#if itemPiles}}<p class="notification warning">{{localize "INPERSON.TradeSettings.ItemPiles"}}</p>{{/if}}
+</section>
