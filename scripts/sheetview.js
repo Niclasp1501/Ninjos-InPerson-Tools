@@ -196,7 +196,7 @@ const GRUPPEN = {
     { icon: "fa-users",        titel: "INPERSON.SheetView.WhoHint",   flaeche: "chars" },
     { icon: "fa-comments",     titel: "INPERSON.SheetView.ChatHint",  flaeche: "chat" },
     { icon: "fa-book-open",    titel: "INPERSON.SheetView.NotesHint", flaeche: "journal" },
-    { icon: "fa-right-left",   titel: "INPERSON.SheetView.TradeHint", tun: () => openTrade() }
+    { icon: "fa-right-left",   titel: "INPERSON.SheetView.TradeHint", tun: () => fensterOeffnen(openTrade) }
   ],
   extra: [
     { icon: "fa-magnifying-glass-minus", titel: "INPERSON.SheetView.Smaller",    tun: () => zoomen(-0.1) },
@@ -278,6 +278,19 @@ function knopf({ icon, titel, flaeche = null, tun = null }) {
   return b;
 }
 
+/**
+ * Ein Knopf, der ein Fenster öffnet, schließt vorher die offene Fläche.
+ *
+ * Das Blatt liegt bei z-index 20, die Flächen bei 9999, ein gewöhnliches
+ * Fenster dazwischen. War der Chat oder die Notizen offen, ging FANG (oder der
+ * Tausch) dahinter auf, und am Tablet sah es aus, als täte der Knopf nichts.
+ * Dieselbe Regel wie bei den Einstellungen.
+ */
+async function fensterOeffnen(oeffnen) {
+  if (offeneFlaeche) await flaecheSchliessen();
+  return oeffnen();
+}
+
 let gruppe = "haupt";
 
 function gruppeZeichnen(bar) {
@@ -296,7 +309,7 @@ function gruppeZeichnen(bar) {
     const b = knopf({
       icon: f.icon,
       titel: game.i18n.has(f.title) ? game.i18n.localize(f.title) : f.title,
-      tun: () => f.onClick()
+      tun: () => fensterOeffnen(f.onClick)
     });
     b.dataset.modul = id;
     reihe.append(b);
