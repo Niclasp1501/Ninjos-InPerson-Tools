@@ -223,7 +223,7 @@ const GRUPPEN = {
  * zeichnet ihn, wann immer sie sich zeichnet. Wer sich vor uns meldet, hat die
  * Schnittstelle noch nicht: dafür ruft main.js `ninjosInPersonTools.ready`.
  *
- * @type {Map<string, {icon: string, title: string, onClick: Function, group: string}>}
+ * @type {Map<string, {icon: string, title: string, onClick: Function, group: string, badge: number}>}
  */
 const fremde = new Map();
 
@@ -235,12 +235,28 @@ export const sheetViewApi = {
    * @param {string} knopf.title    Tooltip, fertig übersetzt oder als Sprachschlüssel
    * @param {Function} knopf.onClick
    * @param {"haupt"|"extra"} [knopf.group]  vorn bei den täglichen oder hinten
+   * @param {number} [knopf.badge]  eine Zahl am Knopf, etwa ungelesene Nachrichten; 0 zeigt keine
    */
-  registerButton({ id, icon, title, onClick, group = "haupt" } = {}) {
+  registerButton({ id, icon, title, onClick, group = "haupt", badge = 0 } = {}) {
     if (!id || !icon || typeof onClick !== "function") {
       throw new Error(`${MODULE_ID} | registerButton braucht id, icon und onClick`);
     }
-    fremde.set(String(id), { icon, title: title ?? id, onClick, group: group === "extra" ? "extra" : "haupt" });
+    fremde.set(String(id), { icon, title: title ?? id, onClick, group: group === "extra" ? "extra" : "haupt", badge: zahlPruefen(badge) });
+    const bar = document.getElementById(BAR_ID);
+    if (bar) gruppeZeichnen(bar);
+  },
+  /**
+   * Die Zahl an einem angemeldeten Knopf ändern, ohne ihn neu anzumelden.
+   * Seit Schnittstelle 5 (18.11.2026), für den Briefkasten der geheimen Post.
+   * @param {string} id
+   * @param {number} anzahl  0 nimmt die Zahl weg
+   */
+  setBadge(id, anzahl) {
+    const f = fremde.get(String(id));
+    if (!f) return;
+    const neu = zahlPruefen(anzahl);
+    if (f.badge === neu) return;
+    f.badge = neu;
     const bar = document.getElementById(BAR_ID);
     if (bar) gruppeZeichnen(bar);
   },
@@ -251,6 +267,12 @@ export const sheetViewApi = {
   },
   isRunning: () => laufend
 };
+
+/** Eine Zahl für den Knopf: ganz, nicht negativ, sonst 0. */
+function zahlPruefen(wert) {
+  const n = Math.floor(Number(wert));
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
 
 /**
  * Ein Knopf: ein Zeichen, kein Wort.
@@ -312,6 +334,13 @@ function gruppeZeichnen(bar) {
       tun: () => fensterOeffnen(f.onClick)
     });
     b.dataset.modul = id;
+    if (f.badge) {
+      const zahl = document.createElement("span");
+      zahl.className = "inperson-sv-zahl";
+      zahl.setAttribute("aria-hidden", "true");
+      zahl.textContent = f.badge > 99 ? "99+" : String(f.badge);
+      b.append(zahl);
+    }
     reihe.append(b);
   }
   markieren();

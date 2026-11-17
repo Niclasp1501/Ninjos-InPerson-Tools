@@ -2908,6 +2908,30 @@ body.inperson-sheetview .inperson-stage-sheet.tidy5e-sheet {
   color: #ffffff;
 }
 
+/* Eine Zahl am Knopf eines anderen Moduls, etwa ungelesene geheime Post.
+   Der Name mit der Zahl steht im Tooltip und im aria-label des Knopfs. */
+.inperson-sheetview-bar button:has(> .inperson-sv-zahl) {
+  position: relative;
+}
+
+.inperson-sv-zahl {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: 9px;
+  background: #8B0000;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 18px;
+  text-align: center;
+  pointer-events: none;
+}
+
 /* Der Umschalter setzt sich ab: er wechselt die Gruppe, er tut nichts im Spiel.
    Deshalb hinter einem Trennstrich und in Modulrot. */
 .inperson-sv-reihe::after {

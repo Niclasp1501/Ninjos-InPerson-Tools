@@ -14,12 +14,17 @@
  *
  * Angelegt am 08.10.2026 für den Gleichlauf von Bild und Ton, die erste
  * Funktion von Ninjo's In-Person Tools Premium.
+ *
+ * Schnittstelle 5 (18.11.2026): Knöpfe in der Leiste der Blattansicht
+ * (`api.sheetView.registerButton`) tragen eine Zahl, `badge` beim Anmelden
+ * und `api.sheetView.setBadge(id, anzahl)` danach. Für den Briefkasten der
+ * geheimen Post in In-Person Tools Premium.
  */
 
 import { MODULE_ID } from "./const.js";
 
 /** Die Fassung der Schnittstelle. */
-export const SCHNITTSTELLE = 4;
+export const SCHNITTSTELLE = 5;
 
 const _leistenKnoepfe = [];
 const _reiterTeile = [];
