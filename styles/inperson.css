@@ -2542,6 +2542,25 @@ body.inperson-anzeige #notifications {
   display: none !important;
 }
 
+/*
+ * Beide Monitore: die Zahl am Lineal (Ninjo, 19.11.2026).
+ *
+ * Foundry legt die Beschriftung beider Lineale, beim Ziehen einer Figur und
+ * beim Messwerkzeug, in `#hud #measurement`. Monk's Common Display blendet
+ * auf den Monitorkonten jedes Kind von `#hud` aus
+ * (`body.hide-ui #hud > *:not(#image-hover-hud):not(#healthEstimate)`, mit
+ * !important), und so stand auf dem Monitor die farbige Linie ohne „18 m“.
+ *
+ * Dagegen hilft nur ein Wähler mit mehr Kennungen: Monks hat drei (#hud und
+ * zwei in :not), dieser vier. Die beiden :not(#…) passen auf jedes Element
+ * und zählen nur. Welche Beschriftung erscheint, entscheidet weiter Foundry:
+ * Es blendet sie mit dem Lineal aus, also bei feindlichen Figuren ohne
+ * Beobachterrecht, und dort bleibt sie unsichtbar.
+ */
+body.inperson-anzeige #hud > #measurement:not(#inperson-zahl-a):not(#inperson-zahl-b) {
+  display: block !important;
+}
+
 /* `#tooltip` bleibt: Es ist Foundrys Erklärkasten für alles, auch für unsere
    Zeitleiste - Wetter und Mondphase hängen daran. Mit ausgeblendet, zeigte
    ein Finger auf der Leiste nichts mehr. */
