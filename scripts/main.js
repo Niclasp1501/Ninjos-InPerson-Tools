@@ -48,6 +48,7 @@ import { installSheetView, syncSheetView, sheetViewApi, federAnwenden } from "./
 import { installZeigen, zeigenSocket } from "./zeigen.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
 import { fensterPassenEinrichten } from "./fensterpassen.js";
+import { bewegungsweiteEinrichten } from "./bewegungsweite.js";
 import {
   installMonitorWrapper, installCombatWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
   getSceneDisplay, getPinnedScene,
@@ -1388,6 +1389,8 @@ Hooks.once("setup", () => {
   // Ein zweites Mal, jetzt mit allen registrierten Szenenblättern. Ein Modul,
   // das ein eigenes Blatt mit eigenen PARTS mitbringt, ist erst hier bekannt.
   sceneTabEinrichten();
+  // Vor dem ersten Zeichnen, damit die Tokens schon mit diesem Lineal entstehen.
+  schritt("bewegungsweiteEinrichten", bewegungsweiteEinrichten);
 });
 Hooks.on("renderSceneConfig", onRenderSceneConfig);
 
