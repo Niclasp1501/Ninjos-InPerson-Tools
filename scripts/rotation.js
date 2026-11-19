@@ -187,6 +187,34 @@ export function uprightAllTokens() {
 }
 
 /**
+ * Keep a journal note upright on a rotated scene: its icon and its label.
+ *
+ * Ninjo, 19.11.2026: "Journale sind übrigens auch nicht richtig gedreht bei
+ * gedrehten Views." On the scene turned a quarter, the note icons lay on their
+ * side and "Maris: Kajüte" ran down the map instead of across.
+ *
+ * Unlike a token, a note can simply be turned as a whole. Its origin is the
+ * centre of the icon (placeables/note.mjs `_refreshPosition` puts it at the
+ * document's x/y, the ControlIcon pivots about its own middle), and Foundry
+ * places the label around that origin. Turning the note about it leaves the
+ * icon where it is and carries the label round to where "below" is on the
+ * screen. Notes have no rotation of their own, so nothing Foundry writes is
+ * overwritten, and the square icon covers the same spot at any quarter turn.
+ * @param {Note} note
+ */
+export function uprightNote(note) {
+  if (!note || note.destroyed || !note.document) return;
+  const onViewed = note.document.parent?.id === canvas?.scene?.id;
+  const radians = -(onViewed ? getRotation() : 0) * Math.PI / 180;
+  if (note.rotation !== radians) note.rotation = radians;
+}
+
+/** All notes of the viewed scene, after its rotation changed. */
+export function uprightAllNotes() {
+  for (const note of canvas?.notes?.placeables ?? []) uprightNote(note);
+}
+
+/**
  * Undo the rotation. Used when a scene without one is drawn, so nothing is
  * carried over from the previous scene.
  */

@@ -21,7 +21,8 @@ import { openPanel, refreshPanel, playerReports } from "./panel.js";
 import { syncNoCanvas, noCanvasBeforeFirstDraw } from "./nocanvas.js";
 import { erweiterungApi, reiterTeile, SCHNITTSTELLE } from "./erweiterung.js";
 import {
-  applyRotation, getRotation, ROTATION_FLAG, ANGLES, uprightTokenLabels, uprightAllTokens
+  applyRotation, getRotation, ROTATION_FLAG, ANGLES, uprightTokenLabels, uprightAllTokens,
+  uprightNote, uprightAllNotes
 } from "./rotation.js";
 import { openPullDialog } from "./pull.js";
 import { migrateFromOldId } from "./migrate.js";
@@ -1016,12 +1017,15 @@ Hooks.on("updateScene", (scene, changed) => {
   if (rotationChange && (ROTATION_FLAG in rotationChange || `-=${ROTATION_FLAG}` in rotationChange)) {
     onRotationChanged(scene);
     uprightAllTokens();
+    uprightAllNotes();
   }
 });
 
 // Name, bars and icons of a token turn with the map; see uprightTokenLabels.
 // Every refresh, because Foundry rebuilds and repositions them on its own.
 Hooks.on("refreshToken", token => uprightTokenLabels(token));
+// Journal notes likewise, icon and label together; see uprightNote.
+Hooks.on("refreshNote", note => uprightNote(note));
 
 for (const hook of ["createToken", "updateToken", "deleteToken"]) {
   Hooks.on(hook, () => refreshTokenSources());
