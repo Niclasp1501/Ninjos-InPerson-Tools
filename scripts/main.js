@@ -49,6 +49,7 @@ import { installZeigen, zeigenSocket } from "./zeigen.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
 import { fensterPassenEinrichten } from "./fensterpassen.js";
 import { bewegungsweiteEinrichten } from "./bewegungsweite.js";
+import { vorschaubildEinrichten, vorschaubildErzeugen } from "./vorschaubild.js";
 import {
   installMonitorWrapper, installCombatWrapper, installActivityListener, applyPinnedScene, showOnMonitor, setPinned, isPinned,
   getSceneDisplay, getPinnedScene,
@@ -882,6 +883,9 @@ Hooks.once("init", () => {
   // wer erst bei "ready" kommt, fehlt bis zum naechsten Neuaufbau.
   ebenenKnopfEinrichten();
   begleitwahlKnopfEinrichten();
+  // Ersatz für Foundrys Eintrag „Vorschaubild erzeugen“, der bei Karten aus
+  // Kacheln oder auf anderen Ebenen fehlt (vorschaubild.js).
+  schritt("vorschaubildEinrichten", vorschaubildEinrichten);
 });
 
 /**
@@ -945,6 +949,9 @@ Hooks.once("ready", async () => {
     // sheetview.js. FANG und NDRS melden sich hier an, statt in unserem DOM
     // nach einem Element zu suchen.
     sheetView: sheetViewApi,
+    // Vorschaubild einer Szene neu zeichnen, wie der Eintrag im Szenenverzeichnis.
+    generateThumbnail: szene => vorschaubildErzeugen(
+      typeof szene === "string" ? (game.scenes.get(szene) ?? fromUuidSync(szene)) : szene),
     // Andockstellen für Zusatzmodule wie In-Person Tools Premium (erweiterung.js).
     interface: SCHNITTSTELLE,
     extension: erweiterungApi({
