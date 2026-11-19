@@ -44,7 +44,7 @@
  * display showing nothing at all.
  */
 
-import { MODULE_ID, SETTINGS } from "./const.js";
+import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
 import { still } from "./stille.js";
 import { isSceneDisplay } from "./state.js";
 
@@ -296,7 +296,15 @@ export async function showOnMonitor(scene, viewOptions = {}) {
   await rememberScene(scene.id);
   // Marked deliberate: this *is* the GM steering the display, so the pin must
   // not stand in the way of it.
-  if (display.active) scene.pullUsers([display], { ...viewOptions, [DELIBERATE]: true });
+  if (display.active) {
+    scene.pullUsers([display], { ...viewOptions, [DELIBERATE]: true });
+    // Something new was sent, so a running screensaver steps aside and its
+    // clock starts over (Ninjo, 2026-11-19). Said outright rather than left to
+    // the display's canvasReady: a scene that is already drawn under the
+    // cover gives no canvasReady at all. Every route that sends lands here:
+    // the companion bar, the scene's context menu and macros.
+    game.socket.emit(SOCKET.NAME, { type: SOCKET.SCREENSAVER_CONTROL, action: "wake", userId: game.user.id });
+  }
 
   still(game.i18n.format("INPERSON.Notify.SentToMonitor", {
     scene: scene.name,

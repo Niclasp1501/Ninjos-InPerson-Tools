@@ -23,6 +23,13 @@
  * ist die Stelle, an der die Spielleitung ohnehin steuert, was der Fernseher
  * zeigt, statt einer Einstellungsseite mitten im Spiel.
  *
+ * **Viele Szenen werden ein Raster** (19.11.2026): Die Laderaum-Karte von
+ * GdA hat 21 Begleitszenen, und als eine Reihe lief die Leiste quer über den
+ * Bildschirm. Ab {@link RASTER_AB} Szenen stehen sie in einem Raster mit
+ * höchstens {@link SPALTEN} Spalten, das in sich scrollt und nie über den
+ * Rand des Bildes hinausreicht; Schoner und Knöpfe anderer Module stehen
+ * daneben in einer eigenen Spalte.
+ *
  * **Verschiebbar am Griff**, der Platz wird je Gerät gemerkt. Beim Laden und
  * bei jeder Größenänderung des Fensters wird er ins Bild geklemmt; eine Leiste,
  * die nach einem Wechsel auf einen kleineren Bildschirm außerhalb liegt, findet
@@ -41,6 +48,14 @@ const PLATZ_KEY = `${MODULE_ID}.begleitleiste.platz`;
 
 /** Wie lange nach einem Klick die gewählte Szene als aktuell gilt, bis der Monitor sich meldet. */
 const NACHLAUF_MS = 1500;
+
+/** Ab so vielen Szenen ein Raster statt einer Reihe. */
+const RASTER_AB = 9;
+/** Höchstens so viele Spalten; weniger, wenn rechts der Platz fehlt. */
+const SPALTEN = 6;
+/** Breite einer Zelle samt Abstand, wie im Stylesheet (64 px und 4 px). */
+const ZELLE = 68;
+const RAND = 8;
 
 let gewaehlt = null;
 let geplant = null;
@@ -146,9 +161,39 @@ function zeichnen() {
   });
 
   // Knöpfe von Zusatzmodulen (erweiterung.js) nach den Szenen, vor dem Schoner.
-  knoepfe.push(...fremde);
-  if (schoner) knoepfe.push(schonerKnopf());
-  reihe.replaceChildren(...knoepfe);
+  const extras = [...fremde];
+  if (schoner) extras.push(schonerKnopf());
+
+  const raster = knoepfe.length >= RASTER_AB;
+  leiste.classList.toggle("ist-raster", raster);
+  if (!raster) {
+    reihe.replaceChildren(...knoepfe, ...extras);
+    return;
+  }
+  const feld = document.createElement("div");
+  feld.className = "inperson-begleitleiste-raster";
+  feld.append(...knoepfe);
+  const spalte = document.createElement("div");
+  spalte.className = "inperson-begleitleiste-extras";
+  spalte.append(...extras);
+  reihe.replaceChildren(feld, ...(extras.length ? [spalte] : []));
+  rasterMessen(leiste);
+}
+
+/**
+ * Spalten und Höhe des Rasters nach dem Platz, der vom Ort der Leiste bis zum
+ * Rand des Bildes bleibt. Was nicht hineinpasst, scrollt im Raster.
+ */
+function rasterMessen(leiste) {
+  const feld = leiste.querySelector(".inperson-begleitleiste-raster");
+  if (!feld) return;
+  const r = leiste.getBoundingClientRect();
+  const breite = window.visualViewport?.width ?? window.innerWidth;
+  const hoehe = window.visualViewport?.height ?? window.innerHeight;
+  // Griff und Extraspalte brauchen rund 100 px neben dem Raster.
+  const spalten = Math.max(2, Math.min(SPALTEN, Math.floor((breite - r.left - 100 - RAND) / ZELLE)));
+  feld.style.setProperty("--inperson-spalten", String(spalten));
+  feld.style.maxHeight = `${Math.max(120, Math.round(hoehe - r.top - RAND - 8))}px`;
 }
 
 /**
@@ -233,6 +278,7 @@ function ziehbar(leiste, griff) {
     if (!versatz) return;
     versatz = null;
     leiste.classList.remove("wird-gezogen");
+    rasterMessen(leiste);
     const r = leiste.getBoundingClientRect();
     try {
       localStorage.setItem(PLATZ_KEY, JSON.stringify({ x: Math.round(r.left), y: Math.round(r.top) }));
@@ -269,7 +315,10 @@ export function installBegleitleiste() {
   });
   const klemmen = () => {
     const leiste = document.getElementById(LEISTE_ID);
-    if (leiste) platzAnwenden(leiste);
+    if (leiste) {
+      platzAnwenden(leiste);
+      rasterMessen(leiste);
+    }
   };
   window.addEventListener("resize", klemmen);
   window.visualViewport?.addEventListener("resize", klemmen);

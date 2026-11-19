@@ -566,7 +566,8 @@ export function previewCover(seconds = 8, logo) {
  * Starting pretends the picture has stood long enough and runs the clock at
  * once, so the same path decides what comes: cover, single scene or folder.
  * Ending counts as a new picture: the clock starts over, the cover drops, and
- * a screensaver scene hands back to the display's own. A starting request is
+ * a screensaver scene hands back to the display's own. "wake" comes with every
+ * scene the gamemaster sends and only clears the way. A starting request is
  * ignored while the screensaver is switched off in the settings; the clock
  * would end it again on its next tick.
  * @param {{action: string, userId: string}} payload
@@ -586,6 +587,23 @@ export async function screensaverControl({ action, userId } = {}) {
     _returnedAt = 0;
     _rotatedAt = 0;
     return tick();
+  }
+
+  // The gamemaster sent something new (showOnMonitor): out of the way, and the
+  // ordinary clock from now, until the next send. Unlike "stop" the display
+  // is not sent back to its own scene, the gamemaster just chose one.
+  if (action === "wake") {
+    _ownMoveUntil = 0;
+    _pictureSince = Date.now();
+    setCovered(false);
+    announce(false);
+    _index = 0;
+    _rotatedAt = 0;
+    _uncoveredSince = 0;
+    _showingSince = 0;
+    _returnedAt = 0;
+    restoreVision();
+    return;
   }
 
   if (action === "stop") {

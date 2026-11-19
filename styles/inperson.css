@@ -1399,6 +1399,32 @@
   color: var(--ninjo-akzent, #D4AF37);
 }
 
+/* Many companions: a grid that scrolls in itself, the extra buttons in a
+   column beside it. Columns and height are set from the free space by
+   rasterMessen() in begleitleiste.js. */
+.inperson-begleitleiste.ist-raster {
+  align-items: flex-start;
+}
+
+.inperson-begleitleiste-raster {
+  display: grid;
+  grid-template-columns: repeat(var(--inperson-spalten, 6), 64px);
+  gap: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 2px;
+}
+
+.inperson-begleitleiste-extras {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.inperson-begleitleiste-extras .inperson-begleitleiste-schoner {
+  margin-left: 6px;
+}
+
 /* The single screensaver scene on the display settings page: the scene
  * field takes the full width of its row, like the pairing fields. */
 .inperson-idle-scene {

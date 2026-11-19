@@ -936,6 +936,11 @@ Hooks.once("ready", async () => {
     refresh: applyStateChange,
     // Opens the trade in Shops & Trade, or says where it went.
     openTrade,
+    // Eine Szene auf den Szenen-Monitor, wie aus der Begleitleiste: Makros
+    // brauchen dafür keinen Import von monitor.js mehr (19.11.2026). Nimmt
+    // die Szene, ihre Kennung oder ihre uuid.
+    showOnMonitor: (szene, optionen) => showOnMonitor(
+      typeof szene === "string" ? (game.scenes.get(szene) ?? fromUuidSync(szene)) : szene, optionen),
     // Die Leiste der Blattansicht nimmt Knöpfe anderer Module an - siehe
     // sheetview.js. FANG und NDRS melden sich hier an, statt in unserem DOM
     // nach einem Element zu suchen.
