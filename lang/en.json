@@ -157,6 +157,7 @@
   "INPERSON.Redirect.Cancel": "Cancel",
   "INPERSON.Context.ShowOnSceneDisplay": "Show on scene display",
   "INPERSON.Thumb.Generate": "Generate thumbnail",
+  "INPERSON.Thumb.GenerateVideo": "Thumbnail from the middle of the video",
   "INPERSON.Thumb.NothingToDraw": "Nothing to draw for \"{scene}\": no level has a background or a visible tile.",
   "INPERSON.Thumb.NoResult": "Foundry did not return an image.",
   "INPERSON.Thumb.Done": "Thumbnail for \"{scene}\" generated.",

@@ -157,6 +157,7 @@
   "INPERSON.Redirect.Cancel": "Zrušit",
   "INPERSON.Context.ShowOnSceneDisplay": "Ukázat na obrazovce scény",
   "INPERSON.Thumb.Generate": "Vytvořit náhled",
+  "INPERSON.Thumb.GenerateVideo": "Náhled ze středu videa",
   "INPERSON.Thumb.NothingToDraw": "Pro „{scene}\" není co vykreslit: žádná úroveň nemá pozadí ani viditelnou dlaždici.",
   "INPERSON.Thumb.NoResult": "Foundry nevrátilo žádný obrázek.",
   "INPERSON.Thumb.Done": "Náhled pro „{scene}\" vytvořen.",

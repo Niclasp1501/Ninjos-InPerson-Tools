@@ -157,6 +157,7 @@
   "INPERSON.Redirect.Cancel": "Отмена",
   "INPERSON.Context.ShowOnSceneDisplay": "Показать на экране сцены",
   "INPERSON.Thumb.Generate": "Создать миниатюру",
+  "INPERSON.Thumb.GenerateVideo": "Миниатюра из середины видео",
   "INPERSON.Thumb.NothingToDraw": "Для «{scene}» нечего рисовать: ни на одном уровне нет фона или видимого тайла.",
   "INPERSON.Thumb.NoResult": "Foundry не вернул изображение.",
   "INPERSON.Thumb.Done": "Миниатюра для «{scene}» создана.",

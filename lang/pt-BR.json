@@ -157,6 +157,7 @@
   "INPERSON.Redirect.Cancel": "Cancelar",
   "INPERSON.Context.ShowOnSceneDisplay": "Mostrar na tela de cena",
   "INPERSON.Thumb.Generate": "Gerar miniatura",
+  "INPERSON.Thumb.GenerateVideo": "Miniatura do meio do vídeo",
   "INPERSON.Thumb.NothingToDraw": "Nada para desenhar em \"{scene}\": nenhum nível tem fundo ou um tile visível.",
   "INPERSON.Thumb.NoResult": "O Foundry não retornou nenhuma imagem.",
   "INPERSON.Thumb.Done": "Miniatura de \"{scene}\" gerada.",

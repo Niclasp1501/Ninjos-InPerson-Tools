@@ -157,6 +157,7 @@
   "INPERSON.Redirect.Cancel": "Annuleren",
   "INPERSON.Context.ShowOnSceneDisplay": "Op het scènescherm tonen",
   "INPERSON.Thumb.Generate": "Miniatuur maken",
+  "INPERSON.Thumb.GenerateVideo": "Miniatuur uit het midden van de video",
   "INPERSON.Thumb.NothingToDraw": "Niets te tekenen voor \"{scene}\": geen enkel niveau heeft een achtergrond of een zichtbare tegel.",
   "INPERSON.Thumb.NoResult": "Foundry heeft geen afbeelding teruggegeven.",
   "INPERSON.Thumb.Done": "Miniatuur voor \"{scene}\" gemaakt.",

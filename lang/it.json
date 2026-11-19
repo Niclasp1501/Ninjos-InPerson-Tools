@@ -157,6 +157,7 @@
   "INPERSON.Redirect.Cancel": "Annulla",
   "INPERSON.Context.ShowOnSceneDisplay": "Mostra sullo schermo scena",
   "INPERSON.Thumb.Generate": "Genera miniatura",
+  "INPERSON.Thumb.GenerateVideo": "Miniatura dalla metà del video",
   "INPERSON.Thumb.NothingToDraw": "Niente da disegnare per «{scene}»: nessun livello ha uno sfondo o una tile visibile.",
   "INPERSON.Thumb.NoResult": "Foundry non ha restituito alcuna immagine.",
   "INPERSON.Thumb.Done": "Miniatura di «{scene}» generata.",

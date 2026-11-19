@@ -157,6 +157,7 @@
   "INPERSON.Redirect.Cancel": "Abbrechen",
   "INPERSON.Context.ShowOnSceneDisplay": "Auf Szenen-Monitor anzeigen",
   "INPERSON.Thumb.Generate": "Vorschaubild erzeugen",
+  "INPERSON.Thumb.GenerateVideo": "Vorschaubild aus der Videomitte",
   "INPERSON.Thumb.NothingToDraw": "Für „{scene}\" gibt es nichts zu zeichnen: Keine Ebene hat einen Hintergrund oder eine sichtbare Kachel.",
   "INPERSON.Thumb.NoResult": "Foundry hat kein Bild geliefert.",
   "INPERSON.Thumb.Done": "Vorschaubild für „{scene}\" erzeugt.",
