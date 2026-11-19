@@ -19,12 +19,16 @@
  * (`api.sheetView.registerButton`) tragen eine Zahl, `badge` beim Anmelden
  * und `api.sheetView.setBadge(id, anzahl)` danach. Für den Briefkasten der
  * geheimen Post in In-Person Tools Premium.
+ *
+ * Schnittstelle 6 (20.11.2026): `wakeScreensaver()` nimmt den
+ * Bildschirmschoner auf dem Szenen-Monitor sofort weg. Für den Sync-Knopf
+ * des Gleichlaufs, der einen Film startet, ohne eine Szene zu schicken.
  */
 
 import { MODULE_ID } from "./const.js";
 
 /** Die Fassung der Schnittstelle. */
-export const SCHNITTSTELLE = 5;
+export const SCHNITTSTELLE = 6;
 
 const _leistenKnoepfe = [];
 const _reiterTeile = [];
@@ -95,7 +99,8 @@ function bauen(liste, args) {
  * @param {() => void} teile.newPicture
  */
 export function erweiterungApi({
-  refreshCompanionBar, sceneDisplay, displayedSceneId, newPicture, holdScreensaver, isSceneDisplay
+  refreshCompanionBar, sceneDisplay, displayedSceneId, newPicture, holdScreensaver, isSceneDisplay,
+  wakeScreensaver
 }) {
   return {
     interface: SCHNITTSTELLE,
@@ -139,6 +144,12 @@ export function erweiterungApi({
     holdScreensaver,
     /** Seit Schnittstelle 2. Ist dieser Rechner der Szenen-Monitor? */
     isSceneDisplay,
+    /**
+     * Seit Schnittstelle 6. Den Bildschirmschoner auf diesem Rechner sofort
+     * wegnehmen, und die Wartezeit beginnt von vorn. Wirkt nur auf dem
+     * Szenen-Monitor, also dort aufrufen, nicht bei der Spielleitung.
+     */
+    wakeScreensaver,
     /**
      * Seit Schnittstelle 3. Ein Abschnitt auf einer Einstellungsseite dieses
      * Moduls, damit die Einstellungen eines Zusatzmoduls dort stehen, wo man

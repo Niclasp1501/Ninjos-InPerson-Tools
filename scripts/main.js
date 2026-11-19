@@ -27,7 +27,7 @@ import {
 import { openPullDialog } from "./pull.js";
 import { migrateFromOldId } from "./migrate.js";
 import { installLockViewInterop, onRotationChanged, describeInterop } from "./lockview.js";
-import { installScreensaver, screensaverControl, newPicture, holdScreensaver } from "./screensaver.js";
+import { installScreensaver, screensaverControl, newPicture, holdScreensaver, wakeScreensaver } from "./screensaver.js";
 import { NO_SCREENSAVER_FLAG, exemptFromScreensaver } from "./schoner-ausnahme.js";
 import { installCompanionRedirect } from "./begleit-umleitung.js";
 import { openEinrichten } from "./einrichten.js";
@@ -961,7 +961,8 @@ Hooks.once("ready", async () => {
       displayedSceneId: aktuelleId,
       newPicture,
       holdScreensaver,
-      isSceneDisplay: () => isSceneDisplay(game.user)
+      isSceneDisplay: () => isSceneDisplay(game.user),
+      wakeScreensaver
     })
   };
   // Wer vor uns fertig war, hat die Schnittstelle noch nicht gesehen. Ein

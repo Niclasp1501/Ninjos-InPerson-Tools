@@ -222,6 +222,28 @@ export function newPicture() {
 }
 
 /**
+ * Out of the way on this computer, now: the cover drops and the ordinary clock
+ * starts over. What "wake" does for every scene the gamemaster sends, and what
+ * an add-on calls when it starts something on the display without sending a
+ * scene, such as the synced film of In-Person Tools Premium (Ninjo, 20.11.2026:
+ * "wenn eine Szene über den Sync-Knopf gestartet wird, muss auch der
+ * Bildschirmschoner weggehen"). Only acts on the scene display.
+ */
+export function wakeScreensaver() {
+  if (!isSceneDisplay(game.user)) return;
+  _ownMoveUntil = 0;
+  _pictureSince = Date.now();
+  setCovered(false);
+  announce(false);
+  _index = 0;
+  _rotatedAt = 0;
+  _uncoveredSince = 0;
+  _showingSince = 0;
+  _returnedAt = 0;
+  restoreVision();
+}
+
+/**
  * Reasons to hold the screensaver back entirely, by key: a stage an add-on
  * shows on the display, for example. While any is held, no cover, no scene
  * of its own and no turns between companions; the clock starts over when
@@ -592,19 +614,7 @@ export async function screensaverControl({ action, userId } = {}) {
   // The gamemaster sent something new (showOnMonitor): out of the way, and the
   // ordinary clock from now, until the next send. Unlike "stop" the display
   // is not sent back to its own scene, the gamemaster just chose one.
-  if (action === "wake") {
-    _ownMoveUntil = 0;
-    _pictureSince = Date.now();
-    setCovered(false);
-    announce(false);
-    _index = 0;
-    _rotatedAt = 0;
-    _uncoveredSince = 0;
-    _showingSince = 0;
-    _returnedAt = 0;
-    restoreVision();
-    return;
-  }
+  if (action === "wake") return wakeScreensaver();
 
   if (action === "stop") {
     const onOwnScene = !_showingSince && !_rotatedAt;
