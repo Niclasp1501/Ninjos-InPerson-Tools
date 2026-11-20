@@ -57,6 +57,13 @@
   color: var(--tm-red);
 }
 
+/* In der Blattansicht ist keine Karte zu sehen, die die Anzeige erklären
+   müsste. Dort lag sie auf der Münzzeile im Inventar und auf der Zeile mit
+   Zauber-SG und Vorbereitet (20.11.2026). */
+body.inperson-sheetview #ninjos-inperson-tools-pill {
+  display: none;
+}
+
 #ninjos-inperson-tools-pill.is-gm {
   cursor: pointer;
   transition: border-color 0.2s;
