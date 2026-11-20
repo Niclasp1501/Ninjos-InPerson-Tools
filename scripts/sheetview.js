@@ -445,7 +445,59 @@ function leisteUnterDieUhr() {
   if (barFrei) {
     oben(bar);
     if (uhr) bar.style.top = `${Math.round(uhr.getBoundingClientRect().bottom + 12)}px`;
+    leisteFreiRuecken();
   }
+}
+
+/**
+ * Quer: die Menüleiste neben das rücken, was man im Blatt antippen muss.
+ *
+ * „Über dem Banner, wo es sonst nichts zu bedienen gibt" stimmt für den
+ * Tidy-Bogen nicht: Dort stehen die Attribute im Kopf. Am 20.11.2026 lag die
+ * Leiste bei 1600 × 900 genau auf WEI, CHA und INI, und diese Würfe ließen
+ * sich nicht mehr antippen. Ein Kleriker ohne Weisheitswurf.
+ *
+ * Liegt die Leiste auf etwas Bedienbarem, rückt sie in derselben Höhe rechts
+ * oder links daneben. Passt sie dort nirgends hin, geht sie wie hochkant an
+ * den unteren Rand: Dort deckt sie nur Listenzeilen, die man scrollen kann.
+ * Nur, solange niemand die Leiste selbst gezogen hat; wer zieht, gewinnt.
+ */
+function leisteFreiRuecken() {
+  const bar = document.getElementById(BAR_ANKER);
+  if (!bar || lage() === "hoch" || bar.classList.contains("wird-gezogen")) return;
+  if (localStorage.getItem(lageKey(PLATZ_KEY))) return;
+  for (const p of ["left", "right", "bottom", "transform"]) bar.style.removeProperty(p);
+
+  const r = bar.getBoundingClientRect();
+  const im = bedienbaresUnter(r);
+  if (!im.length) return;
+
+  const rand = 12;
+  const rechts = Math.max(...im.map(h => h.right)) + rand;
+  const links = Math.min(...im.map(h => h.left)) - rand - r.width;
+  for (const x of [rechts, links]) {
+    if (x < 8 || x + r.width > window.innerWidth - 8) continue;
+    if (bedienbaresUnter(new DOMRect(x, r.top, r.width, r.height)).length) continue;
+    bar.style.left = `${Math.round(x)}px`;
+    bar.style.transform = "none";
+    return;
+  }
+  bar.style.top = "auto";
+  bar.style.bottom = "calc(env(safe-area-inset-bottom, 0px) + 92px)";
+}
+
+/** Was man im Blatt der Bühne antippen kann und das Rechteck berührt. */
+function bedienbaresUnter(rechteck) {
+  const blatt = blattApp()?.element;
+  if (!blatt) return [];
+  const treffer = [];
+  for (const el of blatt.querySelectorAll("button, a, input, select, textarea, [data-action], [role=button]")) {
+    const r = el.getBoundingClientRect();
+    if (!r.width || !r.height) continue;
+    if (r.right <= rechteck.left || rechteck.right <= r.left || r.bottom <= rechteck.top || rechteck.bottom <= r.top) continue;
+    treffer.push(r);
+  }
+  return treffer;
 }
 
 /* ── Verschieben ─────────────────────────────────────────────────── */
@@ -1284,12 +1336,45 @@ export function syncSheetView() {
  * einen Knopf zu suchen. Nur eigene Nachrichten - sonst ginge bei jedem Wurf
  * des Spielleiters auf allen Tablets der Chat auf.
  */
-function chatBeiBenutzung(message) {
+async function chatBeiBenutzung(message) {
   if (!laufend) return;
   if (!game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_CHAT_ON_USE)) return;
   if (message?.author?.id !== game.user.id) return;
-  if (offeneFlaeche === "chat") return;
-  flaecheUmschalten("chat");
+  if (offeneFlaeche === "chat" || chatKommt) return;
+  // Angriff und Schaden kommen fast gleichzeitig; nur einer klappt auf, sonst
+  // klappte der zweite den Chat gleich wieder zu.
+  chatKommt = true;
+  try {
+    await gepostet(message);
+    if (laufend && offeneFlaeche !== "chat") flaecheUmschalten("chat");
+  } finally {
+    chatKommt = false;
+  }
+}
+
+let chatKommt = false;
+
+/**
+ * Warten, bis Foundry die Nachricht ins Protokoll gesetzt hat.
+ *
+ * `ChatLog#postOne` zeichnet die Nachricht erst (asynchron) und reicht sie
+ * danach an ein offenes Chatfenster weiter. Klappten wir das Fenster in dieser
+ * Lücke auf, zeichnete es die neue Nachricht beim ersten Aufbau schon mit, und
+ * Foundry hängte sie gleich darauf ein zweites Mal an: Der erste Wurf stand
+ * doppelt da (gemessen am 20.11.2026). Steht sie im Protokoll, ist die
+ * Weitergabe vorbei, und das Fenster bekommt sie genau einmal.
+ */
+function gepostet(message, frist = 2000) {
+  const start = Date.now();
+  return new Promise(fertig => {
+    const schauen = () => {
+      const da = !ui.chat?.rendered
+        || ui.chat.element?.querySelector(`.chat-log [data-message-id="${message.id}"]`);
+      if (da || Date.now() - start > frist) fertig();
+      else setTimeout(schauen, 40);
+    };
+    schauen();
+  });
 }
 
 export function installSheetView() {
@@ -1347,7 +1432,15 @@ export function installSheetView() {
   const blattGezeichnet = (app, actor) => {
     if (!laufend || !actor) return;
     if (buehnentauglich(actor)) buehneWechseln(actor);
-    if (actor.id === buehnenAktor()?.id) app.element?.classList.add("inperson-stage-sheet");
+    if (actor.id === buehnenAktor()?.id) {
+      app.element?.classList.add("inperson-stage-sheet");
+      // Erst jetzt stehen die Knöpfe im Kopf des Blatts, an denen die
+      // Menüleiste quer vorbei muss. Nicht mitten im Ziehen.
+      requestAnimationFrame(() => {
+        if (!laufend || document.querySelector(".inperson-sv-anker.wird-gezogen")) return;
+        sicher("leisteUnterDieUhr", leisteUnterDieUhr);
+      });
+    }
   };
   Hooks.on("renderActorSheet", app => blattGezeichnet(app, app?.actor));
   Hooks.on("renderApplicationV2", app => {
