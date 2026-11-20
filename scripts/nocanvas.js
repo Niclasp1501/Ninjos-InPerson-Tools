@@ -98,3 +98,28 @@ export async function syncNoCanvas() {
 
   if (!wanted && current && owned) await release();
 }
+
+/**
+ * Keine Messschablone legen, wo es kein Spielfeld gibt.
+ *
+ * dnd5e will bei jedem Zauber oder Gegenstand mit Wirkungsbereich eine
+ * Schablone auf die Karte setzen und fragt dabei nicht, ob es überhaupt eine
+ * Karte gibt. Ohne Spielfeld (Tischmodus, Blattansicht) kam deshalb bei jeder
+ * Benutzung die rote Meldung „Die Messschablone konnte nicht platziert
+ * werden“, gesehen am 20.11.2026 an der Abdeckbaren Laterne. Am Tablet hieße
+ * das: Brennende Hände wirken und eine Fehlermeldung lesen.
+ *
+ * Abgeschaltet wird nur das Legen der Schablone. Wurf, Verbrauch und
+ * Chatkarte laufen wie sonst; die Spielleitung legt die Fläche an ihrem
+ * Rechner, wie am Tisch ohnehin üblich. Zweimal, weil der Benutzungsdialog
+ * den Wert aus seinem Formular wieder setzen kann.
+ */
+export function schabloneOhneSpielfeld() {
+  if (game.system?.id !== "dnd5e") return;
+  const weg = konfig => {
+    if (canvas?.ready) return;
+    if (konfig?.create?.measuredTemplate) konfig.create.measuredTemplate = false;
+  };
+  Hooks.on("dnd5e.preUseActivity", (_aktivitaet, konfig) => weg(konfig));
+  Hooks.on("dnd5e.preActivityConsumption", (_aktivitaet, konfig) => weg(konfig));
+}

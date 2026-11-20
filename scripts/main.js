@@ -18,7 +18,7 @@ import {
 } from "./blocker.js";
 import { collectSceneSources, sumKnown, formatBytes } from "./measure.js";
 import { openPanel, refreshPanel, playerReports } from "./panel.js";
-import { syncNoCanvas, noCanvasBeforeFirstDraw } from "./nocanvas.js";
+import { syncNoCanvas, noCanvasBeforeFirstDraw, schabloneOhneSpielfeld } from "./nocanvas.js";
 import { erweiterungApi, reiterTeile, SCHNITTSTELLE } from "./erweiterung.js";
 import {
   applyRotation, getRotation, ROTATION_FLAG, ANGLES, uprightTokenLabels, uprightAllTokens,
@@ -887,6 +887,9 @@ Hooks.once("init", () => {
   // Ersatz für Foundrys Eintrag „Vorschaubild erzeugen“, der bei Karten aus
   // Kacheln oder auf anderen Ebenen fehlt (vorschaubild.js).
   schritt("vorschaubildEinrichten", vorschaubildEinrichten);
+  // Ohne Spielfeld keine Messschablone, sonst kommt bei jedem Flächenzauber
+  // eine Fehlermeldung (nocanvas.js).
+  schritt("schabloneOhneSpielfeld", schabloneOhneSpielfeld);
 });
 
 /**
