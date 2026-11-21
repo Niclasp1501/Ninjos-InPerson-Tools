@@ -380,6 +380,8 @@
   "INPERSON.Show.Title": "Laten zien",
   "INPERSON.Show.TitleFor": "Laten zien: {was}",
   "INPERSON.Show.Button": "Aan de anderen laten zien",
+  "INPERSON.Show.ImageButton": "Aan tafel laten zien",
+  "INPERSON.Show.AnImage": "een afbeelding",
   "INPERSON.Show.Hint": "Wie dit ziet, mag het lezen zolang het venster open is. Houden kan niet.",
   "INPERSON.Show.Everyone": "Iedereen aan tafel",
   "INPERSON.Show.Offline": "weg",

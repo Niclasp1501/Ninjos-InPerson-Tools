@@ -380,6 +380,8 @@
   "INPERSON.Show.Title": "Zeigen",
   "INPERSON.Show.TitleFor": "Zeigen: {was}",
   "INPERSON.Show.Button": "Den anderen zeigen",
+  "INPERSON.Show.ImageButton": "Am Tisch zeigen",
+  "INPERSON.Show.AnImage": "ein Bild",
   "INPERSON.Show.Hint": "Wer das sieht, darf es lesen, solange das Fenster offen ist. Behalten kann er es nicht.",
   "INPERSON.Show.Everyone": "Alle am Tisch",
   "INPERSON.Show.Offline": "nicht da",

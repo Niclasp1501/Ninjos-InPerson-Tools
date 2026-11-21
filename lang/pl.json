@@ -380,6 +380,8 @@
   "INPERSON.Show.Title": "Pokaż",
   "INPERSON.Show.TitleFor": "Pokaż: {was}",
   "INPERSON.Show.Button": "Pokaż innym",
+  "INPERSON.Show.ImageButton": "Pokaż przy stole",
+  "INPERSON.Show.AnImage": "obraz",
   "INPERSON.Show.Hint": "Kto to widzi, może to czytać, dopóki okno jest otwarte. Nie może tego zatrzymać.",
   "INPERSON.Show.Everyone": "Wszyscy przy stole",
   "INPERSON.Show.Offline": "nieobecny",

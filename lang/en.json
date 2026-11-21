@@ -380,6 +380,8 @@
   "INPERSON.Show.Title": "Show",
   "INPERSON.Show.TitleFor": "Show: {was}",
   "INPERSON.Show.Button": "Show the others",
+  "INPERSON.Show.ImageButton": "Show at the table",
+  "INPERSON.Show.AnImage": "a picture",
   "INPERSON.Show.Hint": "Whoever sees this may read it while the window is open. They cannot keep it.",
   "INPERSON.Show.Everyone": "Everyone at the table",
   "INPERSON.Show.Offline": "away",

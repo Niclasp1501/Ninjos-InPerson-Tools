@@ -40,8 +40,14 @@
  * auch. Wir bauen einen Knopf mit Leitplanken: nur Eigenes, höchstens alle
  * fünf Sekunden, und die Spielleitung liest mit.
  *
- * Das Konzept mit den übrigen zwei Teilen (Bild, Gegenstand) steht in
- * KONZEPT-zeigen.md.
+ * **Zweiter Teil, seit 21.11.2026: das Bild.** Foundrys Bildfenster hat seinen
+ * Knopf „Zeigen" im Drei-Punkte-Menü, und er schickt das Bild sofort an alle.
+ * Die Spielleitung bekommt daneben ein sichtbares Auge, das dasselbe
+ * Auswahlfenster öffnet wie bei Journalseiten: Empfänger wählen, erst fragen,
+ * für alle wieder schließen. Nur für die Spielleitung, weil ein Bild kein
+ * Dokument ist, an dem sich Besitz prüfen ließe.
+ *
+ * Das Konzept mit dem übrigen Teil (Gegenstand) steht in KONZEPT-zeigen.md.
  */
 
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
@@ -158,6 +164,81 @@ export function darfSchliessen(nachricht, vorgang) {
   return nachricht.gm === true || nachricht.von === vorgang.von;
 }
 
+/* ── Was gezeigt wird: Seite oder Bild ───────────────────────────── */
+
+/**
+ * Ein Bild zum Zeigen, aus einem offenen Bildfenster.
+ *
+ * Ein Bild ist kein Dokument. Damit Auswahlfenster und Ablauf es genauso
+ * behandeln können wie eine Seite, bekommt es eine kleine Beschreibung mit
+ * `name`. Titel, Verweis und `showTitle` reisen mit, damit Foundry beim
+ * Empfänger wie gewohnt entscheidet, ob er den Titel sehen darf.
+ */
+export function bildAusFenster(app) {
+  const o = app?.options ?? {};
+  if (!o.src) return null;
+  const titel = o.window?.title || "";
+  return {
+    art: "bild",
+    src: o.src,
+    name: titel || o.src.split("/").pop(),
+    titel,
+    caption: o.caption || "",
+    uuid: o.uuid ?? null,
+    showTitle: o.showTitle
+  };
+}
+
+const istBild = ding => ding?.art === "bild";
+
+/** Darf dieser Mensch das zeigen? Seiten nur mit Besitz, Bilder nur die Spielleitung. */
+export function darfZeigen(ding) {
+  if (istBild(ding)) return game.user.isGM && !!ding.src;
+  return !!ding?.isOwner;
+}
+
+/**
+ * Wie das Bild im Angebot heißt.
+ *
+ * Foundry blendet den Titel eines Bildes aus, wenn der Betrachter das Dokument
+ * dahinter nicht kennen darf. Das Angebot darf ihn nicht vorher verraten: Nur
+ * wenn jeder Gefragte den Titel ohnehin sähe, steht er darin, sonst „ein Bild".
+ */
+export function bildNameFuer(bild, ids) {
+  if (!bild.titel || bild.showTitle === false) return null;
+  if (bild.showTitle === true || !bild.uuid) return bild.titel;
+  const doc = foundry.utils.fromUuidSync?.(bild.uuid);
+  if (!doc) return null;
+  const alle = ids.every(id => {
+    const u = game.users.get(id);
+    return !!u && !!doc.testUserPermission?.(u, "LIMITED");
+  });
+  return alle ? bild.titel : null;
+}
+
+/**
+ * Wirklich schicken. Nie mit leerer Liste: Foundry schickte sonst an alle.
+ *
+ * Seiten gehen mit `force`. Ohne öffnet Foundry die Seite beim Empfänger nur,
+ * wenn er sie ohnehin sehen darf (`_showEntry`), und ein Brief, der einem
+ * Spieler gehört, käme bei den anderen nie an. Mit `force` bekommt der
+ * Empfänger für diesen Augenblick Beobachterrechte an genau dieser Seite,
+ * nur auf seinem Rechner und ohne etwas zu speichern. Am 21.11.2026 beim
+ * Test bemerkt: Das Angebot kam an, nach dem Ja blieb der Schirm leer.
+ */
+async function schicken(vorgang, users) {
+  if (!users?.length) return;
+  if (vorgang.bild) {
+    const b = vorgang.bild;
+    foundry.documents.collections.Journal.showImage(b.src, {
+      users, title: b.titel, caption: b.caption, uuid: b.uuid ?? undefined, showTitle: b.showTitle
+    });
+    return;
+  }
+  const seite = await foundry.utils.fromUuid(vorgang.seiteUuid).catch(() => null);
+  if (seite?.isOwner) await foundry.documents.collections.Journal.show(seite, { users, force: true });
+}
+
 /* ── Zeigen: der Ablauf beim Zeigenden ───────────────────────────── */
 
 /**
@@ -167,7 +248,7 @@ export function darfSchliessen(nachricht, vorgang) {
  * annehmen könnte. Menschen bekommen ein Angebot.
  */
 export async function zeigenStarten(seite, ids) {
-  if (!seite?.isOwner || !ids?.length) return null;
+  if (!darfZeigen(seite) || !ids?.length) return null;
   if (!zeigenErlaubt() && !game.user.isGM) return null;
   if (!taktFrei()) return null;
   taktMerken();
@@ -176,11 +257,15 @@ export async function zeigenStarten(seite, ids) {
   const sofort = ids.filter(id => id === tv);
   const gefragt = ids.filter(id => id !== tv);
   const token = foundry.utils.randomID();
+  const bild = istBild(seite)
+    ? { src: seite.src, titel: seite.titel, caption: seite.caption, uuid: seite.uuid, showTitle: seite.showTitle }
+    : null;
 
   laufend = {
     token,
     von: game.user.id,
-    seiteUuid: seite.uuid,
+    seiteUuid: bild ? null : seite.uuid,
+    bild,
     name: seite.name,
     stand: new Map([
       ...sofort.map(id => [id, "sieht"]),
@@ -189,7 +274,8 @@ export async function zeigenStarten(seite, ids) {
   };
 
   if (sofort.length) {
-    await foundry.documents.collections.Journal.show(seite, { users: sofort });
+    if (bild) await schicken(laufend, sofort);
+    else await foundry.documents.collections.Journal.show(seite, { users: sofort, force: true });
   }
   if (gefragt.length) {
     game.socket.emit(SOCKET.NAME, {
@@ -197,8 +283,9 @@ export async function zeigenStarten(seite, ids) {
       token,
       von: game.user.id,
       vonName: game.user.name,
-      seiteUuid: seite.uuid,
-      name: seite.name,
+      seiteUuid: laufend.seiteUuid,
+      bildSrc: bild?.src ?? null,
+      name: bild ? bildNameFuer(bild, gefragt) : seite.name,
       an: gefragt
     });
   }
@@ -231,6 +318,16 @@ export function zeigenBeenden() {
 }
 
 /* ── Empfangen ───────────────────────────────────────────────────── */
+
+/** Das gezeigte Bild wieder zumachen: jedes Bildfenster mit genau dieser Datei. */
+function bildSchliessen(src) {
+  const ImagePopout = foundry.applications.apps?.ImagePopout;
+  for (const app of foundry.applications.instances.values()) {
+    if (ImagePopout && !(app instanceof ImagePopout)) continue;
+    if (app?.options?.src !== src) continue;
+    try { app.close(); } catch { /* schon zu */ }
+  }
+}
 
 /**
  * Das Journal wieder zumachen.
@@ -278,6 +375,7 @@ export async function zeigenSocket(nachricht) {
       token: nachricht.token,
       von: nachricht.von,
       seiteUuid: nachricht.seiteUuid,
+      bildSrc: nachricht.bildSrc ?? null,
       name: nachricht.name
     };
     new ZeigenAngebot(nachricht).render({ force: true });
@@ -288,10 +386,7 @@ export async function zeigenSocket(nachricht) {
     // Beim Zeigenden: Stand nachtragen und, bei Ja, die Seite wirklich schicken.
     if (nachricht.an !== game.user.id || nachricht.token !== laufend?.token) return;
     laufend.stand?.set(nachricht.von, nachricht.antwort === "ja" ? "sieht" : nachricht.antwort);
-    if (nachricht.antwort === "ja") {
-      const seite = await foundry.utils.fromUuid(laufend.seiteUuid).catch(() => null);
-      if (seite?.isOwner) await foundry.documents.collections.Journal.show(seite, { users: [nachricht.von] });
-    }
+    if (nachricht.antwort === "ja") await schicken(laufend, [nachricht.von]);
     for (const app of foundry.applications.instances.values()) {
       if (app instanceof ZeigenAuswahl) app.render();
     }
@@ -301,9 +396,13 @@ export async function zeigenSocket(nachricht) {
   if (nachricht?.type === SOCKET.SHOW_CLOSE) {
     if (!darfSchliessen(nachricht, laufend)) return;
     const uuid = laufend.seiteUuid;
+    const src = laufend.bildSrc ?? laufend.bild?.src ?? null;
     const warIch = laufend.von === game.user.id;
     laufend = null;
-    if (!warIch) await journalSchliessen(uuid);
+    if (!warIch) {
+      if (src) bildSchliessen(src);
+      else await journalSchliessen(uuid);
+    }
     for (const app of foundry.applications.instances.values()) {
       if (app instanceof ZeigenAngebot || app instanceof ZeigenAuswahl) app.close();
     }
@@ -339,7 +438,7 @@ export class ZeigenAngebot extends HandlebarsApplicationMixin(ApplicationV2) {
   async _prepareContext() {
     return {
       von: this.nachricht.vonName,
-      was: this.nachricht.name,
+      was: this.nachricht.name || game.i18n.localize("INPERSON.Show.AnImage"),
       sekunden: Math.max(0, Math.round((this.endet - Date.now()) / 1000))
     };
   }
@@ -513,8 +612,53 @@ function sichtbareSeite(app) {
   return eintrag.pages.contents[app.pageIndex ?? 0] ?? null;
 }
 
+/**
+ * Das Auge im Kopf des Bildfensters, sichtbar neben dem Kreuz.
+ *
+ * Foundry legt seinen eigenen Knopf „Zeigen" ins Drei-Punkte-Menü. Am Tisch ist
+ * das ein Griff zu viel, und er fragt nicht, an wen. Einen Haken für Knöpfe
+ * direkt im Rahmen bietet Foundry nicht (`_getFrameButtons` hat keinen), also
+ * setzt dieser Teil den Knopf beim Zeichnen selbst vor das Kreuz, mit denselben
+ * Klassen wie Foundrys eigene Rahmenknöpfe. Der Klick läuft über `data-action`
+ * und `options.actions` wie jeder andere Knopf im Fenster.
+ *
+ * Foundrys Eintrag im Menü bleibt stehen. Wer ihn gewohnt ist, findet ihn.
+ */
+function bildKnopfSetzen(app, element) {
+  if (!game.user.isGM) return;
+  const kopf = element?.querySelector?.(":scope > .window-header");
+  const kreuz = kopf?.querySelector(":scope > [data-action=close]");
+  if (!kreuz || kopf.querySelector("[data-action=inpersonZeigenBild]")) return;
+  if (!bildAusFenster(app)) return;
+
+  app.options.actions ??= {};
+  app.options.actions.inpersonZeigenBild ??= async function () {
+    const bild = bildAusFenster(this);
+    if (!bild) return;
+    // Das Auswahlfenster gibt es nur einmal. Steht es noch vom letzten Zeigen
+    // offen, geht es zuerst zu, und damit endet das alte Zeigen bei allen.
+    const alt = foundry.applications.instances.get(ZeigenAuswahl.DEFAULT_OPTIONS.id);
+    if (alt) await alt.close();
+    new ZeigenAuswahl(bild).render({ force: true });
+  };
+
+  const name = game.i18n.localize("INPERSON.Show.ImageButton");
+  const knopf = document.createElement("button");
+  knopf.type = "button";
+  knopf.className = "header-control icon fa-solid fa-eye";
+  knopf.dataset.action = "inpersonZeigenBild";
+  knopf.dataset.tooltip = name;
+  knopf.setAttribute("aria-label", name);
+  kreuz.before(knopf);
+}
+
 export function installZeigen() {
   installZeigenSocket();
+
+  Hooks.on("renderImagePopout", (app, element) => {
+    try { bildKnopfSetzen(app, element); }
+    catch (err) { console.warn(`${MODULE_ID} | Knopf im Bildfenster`, err); }
+  });
 
   /*
    * Am allgemeinen Haken statt am Journal-eigenen: `parentClassHooks` steht in

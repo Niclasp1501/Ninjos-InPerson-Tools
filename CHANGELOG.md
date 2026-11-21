@@ -4,6 +4,24 @@
 > the people who get offered an update in the Foundry catalogue, and most of
 > them do not read German. Older entries stay as they are.
 
+## Unreleased
+
+- **Show a picture at the table.** The picture window now has an eye in its
+  header, next to the close button, for the game master. It opens the same
+  window as showing a journal page: pick who gets it, players are asked
+  first, the scene display gets it straight away, and one button closes it
+  for everyone. Foundry's own entry stays in the menu. A shown journal page
+  now also opens for people who cannot see it themselves; before, they said
+  yes and nothing appeared.
+- **Ability buttons stay free in the sheet view.** In landscape the bar could
+  sit on Wisdom, Charisma and Initiative. Until it has been moved by hand it
+  now steps aside.
+- **No doubled first roll.** The first roll of a session no longer appears
+  twice when the chat opens for it.
+- **Quieter sheet view.** The table mode badge no longer covers the coin and
+  spell lines, and using a spell or item with an area no longer reports that
+  the template could not be placed, since there is no canvas to place it on.
+
 ## 14.2611.81 - 2026-11-08
 
 - **Clouds no longer jump.** The sky dome of the time bar redraws every

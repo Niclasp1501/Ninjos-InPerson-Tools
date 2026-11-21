@@ -380,6 +380,8 @@
   "INPERSON.Show.Title": "Ukázat",
   "INPERSON.Show.TitleFor": "Ukázat: {was}",
   "INPERSON.Show.Button": "Ukázat ostatním",
+  "INPERSON.Show.ImageButton": "Ukázat u stolu",
+  "INPERSON.Show.AnImage": "obrázek",
   "INPERSON.Show.Hint": "Kdo to uvidí, smí to číst, dokud je okno otevřené. Ponechat si to nemůže.",
   "INPERSON.Show.Everyone": "Všichni u stolu",
   "INPERSON.Show.Offline": "pryč",

@@ -380,6 +380,8 @@
   "INPERSON.Show.Title": "Показать",
   "INPERSON.Show.TitleFor": "Показать: {was}",
   "INPERSON.Show.Button": "Показать остальным",
+  "INPERSON.Show.ImageButton": "Показать за столом",
+  "INPERSON.Show.AnImage": "изображение",
   "INPERSON.Show.Hint": "Кто это видит, может читать, пока окно открыто. Сохранить себе не получится.",
   "INPERSON.Show.Everyone": "Все за столом",
   "INPERSON.Show.Offline": "нет на месте",
