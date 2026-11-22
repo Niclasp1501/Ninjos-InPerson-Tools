@@ -18,6 +18,10 @@ In-Person Tools are built for exactly these games. They make sure every device o
 actually needs, and they let two screens in the room show two different things. Every part works
 on its own, so you only switch on what you need.
 
+![The setup window: every feature is switched on separately, premium add-ons below](docs/images/features.png)
+
+![The In-Person window with the displays and the players, each listed by their character](docs/images/panel.png)
+
 ### The map stays on the TV
 
 Map blocking stops the background map of a scene from being downloaded to your players' devices
@@ -89,6 +93,16 @@ OLED are genuinely off and do not wear. As soon as someone moves again, the scen
 Instead of the cover, the display can wander through a folder of other scenes during the quiet
 time, and the drifting dot can be an image of your own.
 
+**Foundry's interface on the displays** is up to you. For each display you choose which of
+Foundry's bars disappear: scene controls, player list, scene navigation, macro bar, sidebar, chat
+pop-ups, camera views and the overlays of other modules. Pictures and journals you show appear
+large and without a window frame, and they can close by themselves after a time you set. A
+button in the companion bar closes whatever is shown on both displays at once. If you already
+manage your displays with another module such as *Monk's Common Display*, In-Person leaves them
+alone and the setup window tells you so.
+
+![Choosing per display which parts of Foundry's interface disappear](docs/images/display-interface.png)
+
 ### Portrait maps across a wide screen
 
 Plenty of maps are drawn in portrait, but your TV is wide. Set a rotation of 90, 180 or 270
@@ -113,6 +127,8 @@ evening: their characters, the chat, the journal, the trade table, and the butto
 modules such as FANG and the DnD Reference Sheet. Text size, volume and fullscreen sit in a
 second bar next to it.
 
+![Choosing the tablets for the sheet view, listed by character](docs/images/sheet-view-setup.png)
+
 Both bars can be moved with a long press and resized. Each tablet remembers its layout separately
 for portrait and landscape. In combat, **"You're up next"** appears in good time, followed by
 **"Your turn!"**, so nobody misses their move.
@@ -125,6 +141,19 @@ When a player finds a letter or a map, they can **show** that page from their jo
 others. Everyone else gets a small request first and decides whether to look, so nobody loses
 their screen in the middle of reading. The TV gets the page straight away. You can end any showing
 for everyone with one click.
+
+![Showing a letter: the players are listed by their character](docs/images/show.png)
+
+A tablet lying on the table while its owner fetches a drink is an open book. **Privacy** helps:
+players can blur parts of their own sheet (actions, inventory, spells, features, effects,
+biography and their own notes). A tap reveals a part, and 30 seconds after the last touch it
+blurs again. One button in the bar covers the whole screen, and the cover only lifts when held,
+so a passing hand does not open it. If they like, the tablet covers itself after a few idle
+minutes. You decide in the setup whether players may use it.
+
+![The privacy settings on the tablet](docs/images/privacy.png)
+
+![Blurred until tapped, and the whole screen covered](docs/images/self-cover.png)
 
 Above the sheet there can also be a slim bar with the **date, time and weather**, together with a
 little sky dome: the sun by day, and the moon in its real phase by night. Rain, snow, fog and
@@ -201,6 +230,10 @@ trotzdem lädt bei jedem Szenenwechsel jedes Gerät dieselbe riesige Battlemap h
 Die In-Person Tools sind genau für diese Runden gebaut. Sie sorgen dafür, dass jedes Gerät nur
 das bekommt, was es wirklich braucht, und dass zwei Bildschirme im Raum zwei verschiedene Dinge
 zeigen können. Jeder Bereich funktioniert für sich, du schaltest also nur ein, was du brauchst.
+
+![Das Einrichtungsfenster: Jede Funktion wird einzeln eingeschaltet, darunter die Premium-Erweiterungen](docs/images/features.png)
+
+![Das In-Person-Fenster mit den Monitoren und den Spielern, jeder unter seinem Charakter](docs/images/panel.png)
 
 ### Die Karte bleibt auf dem Fernseher
 
@@ -280,6 +313,16 @@ Tisch wieder etwas regt, ist die Szene sofort zurück. Statt der Blende kann der
 Ruhezeit auch durch einen Ordner mit anderen Szenen wandern, und statt des Punktes darf ein
 eigenes Bild über den Schirm ziehen.
 
+**Foundrys Oberfläche auf den Monitoren** bestimmst du selbst. Je Monitor wählst du, welche
+Leisten verschwinden: Szenen-Werkzeuge, Spielerliste, Szenennavigation, Makroleiste,
+Seitenleiste, Chat-Einblendungen, Kamerabilder und die Einblendungen anderer Module. Gezeigte
+Bilder und Journale erscheinen groß und ohne Fensterrahmen, und auf Wunsch schließen sie sich nach
+einer Zeit deiner Wahl von selbst. Ein Knopf in der Begleitleiste schließt das Gezeigte auf beiden
+Monitoren auf einmal. Kümmert sich bei dir schon ein anderes Modul wie *Monk's Common Display* um
+die Monitore, lässt In-Person sie in Ruhe, und das Einrichtungsfenster sagt dir das.
+
+![Je Monitor wählen, welche Teile von Foundrys Oberfläche verschwinden](docs/images/display-interface.png)
+
 ### Hochkante Karten quer auf den Bildschirm
 
 Viele Karten sind hochkant gezeichnet, dein Fernseher ist aber breit. Stell in der
@@ -306,6 +349,8 @@ Spieler am Abend braucht: seine Charaktere, der Chat, die Notizen, der Tauschtis
 anderer Module wie FANG und dem DnD Reference Sheet. Schriftgröße, Lautstärke und Vollbild
 liegen in einer zweiten Leiste daneben.
 
+![Die Tablets für die Blattansicht auswählen, aufgeführt nach Charakter](docs/images/sheet-view-setup.png)
+
 Beide Leisten lassen sich mit einem langen Druck verschieben und in der Größe anpassen. Jedes
 Tablet merkt sich die Einstellung getrennt für hochkant und quer. Im Kampf erscheint rechtzeitig
 **„Gleich bist du dran"** und dann **„Du bist dran!"**, damit niemand den eigenen Zug verpasst.
@@ -318,6 +363,21 @@ Findet ein Spieler einen Brief oder eine Karte, kann er die Seite aus seinen Not
 **zeigen**. Die bekommen zuerst eine kleine Anfrage und entscheiden selbst, ob sie hinschauen
 wollen, damit niemandem mitten beim Nachlesen der Bildschirm weggenommen wird. Der Fernseher
 bekommt die Seite dagegen sofort. Du kannst jedes Zeigen mit einem Klick für alle beenden.
+
+![Einen Brief zeigen: Die Spieler stehen unter ihrem Charakter in der Liste](docs/images/show.png)
+
+Ein Tablet, das auf dem Tisch liegt, während sein Besitzer etwas zu trinken holt, ist ein offenes
+Buch. Dafür gibt es den **Sichtschutz**: Spieler können Teile ihres Blatts unscharf stellen
+(Aktionen, Inventar, Zauber, Merkmale, Effekte, Biografie und die eigenen Notizen). Ein Tippen
+deckt einen Teil auf, und 30 Sekunden nach der letzten Berührung wird er wieder unscharf. Ein
+Knopf in der Leiste deckt den ganzen Bildschirm ab, und die Abdeckung geht nur auf, wenn man ihn
+gedrückt hält, damit eine vorbeistreifende Hand sie nicht öffnet. Auf Wunsch deckt sich das
+Tablet nach ein paar Minuten Ruhe von selbst ab. Ob Spieler das nutzen dürfen, legst du in der
+Einrichtung fest.
+
+![Die Einstellungen zum Sichtschutz auf dem Tablet](docs/images/privacy.png)
+
+![Unscharf bis zum Antippen, und der ganze Bildschirm abgedeckt](docs/images/self-cover.png)
 
 Über dem Blatt kann außerdem eine schmale Leiste mit **Datum, Uhrzeit und Wetter** stehen, dazu
 eine kleine Himmelskuppel mit Sonne am Tag und dem Mond in seiner echten Phase bei Nacht. Regen,
