@@ -4,7 +4,7 @@
 > the people who get offered an update in the Foundry catalogue, and most of
 > them do not read German. Older entries stay as they are.
 
-## Unreleased
+## 14.2611.82 - 2026-11-22
 
 - **Players can cover their own screen.** The sheet view has a new button
   that lays a dark cover with the table logo over the device, for when a
@@ -43,6 +43,15 @@
 - **Quieter sheet view.** The table mode badge no longer covers the coin and
   spell lines, and using a spell or item with an area no longer reports that
   the template could not be placed, since there is no canvas to place it on.
+- **Thumbnails for every scene.** Foundry only offers "Generate Thumbnail"
+  when the scene's level has a background image. Scenes built from tiles or
+  on another level now get their own entry, and scenes with a video
+  background get one that draws from the middle of the video instead of its
+  black first frame.
+- **Journal notes stay upright on rotated scenes.** On a scene turned a
+  quarter, note icons and their labels now stand upright like token names.
+- **For add-ons:** the extension interface (version 6) can wake the
+  screensaver on the scene display.
 
 ## 14.2611.81 - 2026-11-08
 
