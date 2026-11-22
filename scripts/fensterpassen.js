@@ -161,6 +161,14 @@ export function insBildRuecken(app, { nurKlemmen = false } = {}) {
   if (!el || !el.isConnected) return;
 
   /*
+   * **Ein minimiertes Fenster bleibt minimiert.** Foundry merkt sich die alte
+   * Groesse selbst und stellt sie beim Aufklappen wieder her. Setzten wir hier
+   * eine Hoehe, wuchs die Titelleiste bei jedem Neuzeichnen zu einem halben
+   * Fenster, das unten rechts im Weg lag (Spielabend 21.11.2026).
+   */
+  if (app.minimized || el.classList.contains("minimized")) return;
+
+  /*
    * **Fremdes nur, wenn es wirklich ein schwebendes Fenster ist.**
    *
    * Der Haken haengt an *jedem* `renderApplicationV2`, und in Foundry v13+

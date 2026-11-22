@@ -20,7 +20,7 @@
       </div>
       {{#each spieler}}
         <div class="form-group inperson-kontozeile">
-          <label for="inperson-tisch-{{this.id}}">{{this.name}}{{#if this.figur}} <em>{{this.figur}}</em>{{/if}}{{#if this.online}} <span class="inperson-tag ok">{{localize "INPERSON.SheetView.Online"}}</span>{{/if}}</label>
+          <label for="inperson-tisch-{{this.id}}">{{#if this.figur}}{{this.figur}} <em class="inperson-konto">{{this.name}}</em>{{else}}{{this.name}}{{/if}}{{#if this.online}} <span class="inperson-tag ok">{{localize "INPERSON.SheetView.Online"}}</span>{{/if}}</label>
           <div class="form-fields">
             <select id="inperson-tisch-{{this.id}}" name="tisch.{{this.id}}">
               <option value="" {{#if this.tischVorgabe}}selected{{/if}}>{{localize "INPERSON.Setup.Konten.TischVorgabe"}}</option>

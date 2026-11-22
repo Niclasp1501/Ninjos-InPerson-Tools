@@ -26,7 +26,7 @@
 import { MODULE_ID, SETTINGS } from "./const.js";
 import { still } from "./stille.js";
 import { openPanel } from "./panel.js";
-import { characterOf } from "./figuren.js";
+import { characterOf, anzeigeText } from "./figuren.js";
 import { listCompanionPairs, setCompanionScenes, addCompanionScene } from "./monitor.js";
 import { buildSceneField } from "./scene-field.js";
 import { previewCover } from "./screensaver.js";
@@ -192,14 +192,15 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
 
     const spieler = game.users
       .filter(u => !u.isGM && u.id !== sc && u.id !== bm)
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => (characterOf(a)?.name ?? a.name).localeCompare(characterOf(b)?.name ?? b.name))
       .map(u => ({
         id: u.id, name: u.name, online: u.active, figur: characterOf(u)?.name ?? "",
+        titel: characterOf(u)?.name || u.name,
         tischVorgabe: typeof forced[u.id] !== "boolean", tischAn: forced[u.id] === true, tischAus: forced[u.id] === false,
         blatt: sheetUsers[u.id] === true
       }));
     const konten = [{ id: "", name: game.i18n.localize("INPERSON.Settings.NoAccount") },
-      ...game.users.filter(u => !u.isGM).sort((a, b) => a.name.localeCompare(b.name)).map(u => ({ id: u.id, name: u.name }))];
+      ...game.users.filter(u => !u.isGM).map(u => ({ id: u.id, name: anzeigeText(u) })).sort((a, b) => a.name.localeCompare(b.name))];
     const an = {
       useDisplays: get(SETTINGS.USE_DISPLAYS) !== false, tischmodusAn: !!get(SETTINGS.ENABLED), sheetviewEnabled: !!get(SETTINGS.SHEETVIEW),
       strip: !!get(SETTINGS.CLOCK_STRIP), trade: !!get(SETTINGS.TRADE)
@@ -447,7 +448,7 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
     const stempel = foundry.utils.deepClone(game.settings.get(MODULE_ID, SETTINGS.SHEETVIEW_RESET) ?? {});
     stempel[user.id] = Date.now();
     await game.settings.set(MODULE_ID, SETTINGS.SHEETVIEW_RESET, stempel);
-    still(game.i18n.format("INPERSON.SheetView.ResetDone", { name: user.name }));
+    still(game.i18n.format("INPERSON.SheetView.ResetDone", { name: anzeigeText(user) }));
   }
 
   static async #logoWaehlen() {

@@ -19,7 +19,7 @@
     <div class="inperson-zeigen-stand">
       {{#each stand}}
         <div class="inperson-zeigen-standzeile" data-wie="{{this.wie}}">
-          <span class="inperson-pick-name">{{this.name}}</span>
+          <span class="inperson-pick-name">{{this.name}}{{#if this.konto}} <em class="inperson-konto">{{this.konto}}</em>{{/if}}</span>
           <span class="inperson-tag">{{this.text}}</span>
         </div>
       {{/each}}
@@ -50,7 +50,7 @@
             <input type="checkbox" data-user="{{this.id}}" {{checked this.an}}>
             <img src="{{this.img}}" alt="" aria-hidden="true">
             <span class="inperson-pick-name">
-              {{this.name}}
+              {{this.name}}{{#if this.konto}} <em class="inperson-konto">{{this.konto}}</em>{{/if}}
               {{#unless this.aktiv}}<em>{{localize "INPERSON.Show.Offline"}}</em>{{/unless}}
             </span>
           </label>

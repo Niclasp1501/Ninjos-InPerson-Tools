@@ -13,10 +13,10 @@
     <div class="inperson-funktion-inhalt">
       {{#each spieler}}
         <div class="form-group inperson-kontozeile">
-          <label for="inperson-blatt-{{this.id}}">{{this.name}}{{#if this.figur}} <em>{{this.figur}}</em>{{/if}}{{#if this.online}} <span class="inperson-tag ok">{{localize "INPERSON.SheetView.Online"}}</span>{{/if}}</label>
+          <label for="inperson-blatt-{{this.id}}">{{#if this.figur}}{{this.figur}} <em class="inperson-konto">{{this.name}}</em>{{else}}{{this.name}}{{/if}}{{#if this.online}} <span class="inperson-tag ok">{{localize "INPERSON.SheetView.Online"}}</span>{{/if}}</label>
           <div class="form-fields">
             <button type="button" class="inperson-mini" data-action="resetBar" data-user="{{this.id}}"
-                    data-tooltip="{{localize 'INPERSON.SheetView.ResetHint'}}" aria-label="{{localize 'INPERSON.SheetView.ResetHint'}}: {{this.name}}">
+                    data-tooltip="{{localize 'INPERSON.SheetView.ResetHint'}}" aria-label="{{localize 'INPERSON.SheetView.ResetHint'}}: {{this.titel}}">
               <i class="fa-solid fa-rotate-left" aria-hidden="true"></i> {{localize "INPERSON.Setup.Konten.Leiste"}}
             </button>
             <input type="checkbox" id="inperson-blatt-{{this.id}}" name="blatt.{{this.id}}" {{#if this.blatt}}checked{{/if}}>

@@ -32,7 +32,7 @@ const einstellungen = {
 const nutzer = [
   { id: "u-gm", name: "Dungeonmaster", isGM: true, active: true },
   { id: "u-ich", name: "Nadylos", isGM: false, active: true },
-  { id: "u-roxy", name: "Roxy", isGM: false, active: true },
+  { id: "u-roxy", name: "Roxy", isGM: false, active: true, character: { name: "Ayla" } },
   { id: "u-albrion", name: "Albrion", isGM: false, active: false },
   { id: "u-tv", name: "MonitorSC", isGM: false, active: true },
   { id: "u-bm", name: "MonitorBM", isGM: false, active: true }
@@ -84,12 +84,14 @@ const Z = await import("../scripts/zeigen.js");
 
 const liste = Z.empfaengerListe();
 pruefe("nur Mitspieler und der Fernseher", liste.map(e => e.name),
-  ["Albrion", "Roxy", "INPERSON.Show.Tv"]);
+  ["Albrion", "Ayla", "INPERSON.Show.Tv"]);
+pruefe("die Figur zuerst, das Konto dahinter", liste.find(e => e.id === "u-roxy").konto, "Roxy");
+pruefe("ohne Figur bleibt die Anmeldung, ohne Zusatz", liste.find(e => e.id === "u-albrion").konto, "");
 pruefe("der Fernseher steht zuletzt", liste.at(-1).fernseher, true);
 pruefe("Abwesende stehen dabei, aber erkennbar", liste.find(e => e.name === "Albrion").aktiv, false);
 
 einstellungen.showTv = false;
-pruefe("ohne Fernseher-Schalter kein Fernseher", Z.empfaengerListe().map(e => e.name), ["Albrion", "Roxy"]);
+pruefe("ohne Fernseher-Schalter kein Fernseher", Z.empfaengerListe().map(e => e.name), ["Albrion", "Ayla"]);
 einstellungen.showTv = true;
 
 /* ── 2. Ohne Besitz geht nichts hinaus ───────────────────────────── */

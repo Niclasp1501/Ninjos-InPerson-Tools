@@ -31,8 +31,33 @@ export function characterOf(user) {
 
 /** Player characters this account owns outright. */
 export function ownedCharacters(user) {
-  return game.actors.filter(a =>
-    a.type === "character" && user && a.testUserPermission(user, "OWNER"));
+  return game.actors?.filter(a =>
+    a.type === "character" && user && a.testUserPermission(user, "OWNER")) ?? [];
+}
+
+/**
+ * Wie jemand in einer Liste heißt: die Figur zuerst, das Konto dahinter.
+ *
+ * Bis 14.2611.82 standen beim Zeigen, Herholen und in der Spielerleiste die
+ * Anmeldenamen. Am Tisch denkt die Spielleitung aber in Figuren, und bei einem
+ * Konto wie „Testnutzer2“ weiß niemand, wer dahintersteckt (Ninjo, 22.11.2026).
+ * Konten ohne Figur, etwa die Monitore, behalten ihren Anmeldenamen. Die
+ * Spielleitung besitzt jede Figur; für sie zählt nur die zugewiesene.
+ *
+ * @param {User} user
+ * @returns {{name: string, konto: string}} `konto` ist leer, wenn es nichts hinzufügt
+ */
+export function anzeigeName(user) {
+  const figur = (user?.isGM ? user.character : characterOf(user))?.name;
+  const login = user?.name ?? "";
+  if (!figur || figur === login) return { name: login, konto: "" };
+  return { name: figur, konto: login };
+}
+
+/** Als einfacher Text, etwa für eine Auswahlliste oder eine Chatzeile: „Figur (Konto)“. */
+export function anzeigeText(user) {
+  const { name, konto } = anzeigeName(user);
+  return konto ? `${name} (${konto})` : name;
 }
 
 /** Why this account has no clear character, or null when it has one. */

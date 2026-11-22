@@ -52,6 +52,7 @@
 
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
 import { getSceneDisplay } from "./monitor.js";
+import { anzeigeName, anzeigeText } from "./figuren.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -107,14 +108,14 @@ export function empfaengerListe() {
 
   const leute = game.users
     .filter(u => !u.isGM && u.id !== game.user.id && !monitore.has(u.id))
-    .sort((a, b) => a.name.localeCompare(b.name))
     .map(u => ({
       id: u.id,
-      name: u.name,
+      ...anzeigeName(u),
       img: u.avatar || u.character?.img || "icons/svg/mystery-man.svg",
       aktiv: u.active,
       fernseher: false
-    }));
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   if (tv) {
     leute.push({
@@ -282,7 +283,7 @@ export async function zeigenStarten(seite, ids) {
       type: SOCKET.SHOW_OFFER,
       token,
       von: game.user.id,
-      vonName: game.user.name,
+      vonName: anzeigeText(game.user),
       seiteUuid: laufend.seiteUuid,
       bildSrc: bild?.src ?? null,
       name: bild ? bildNameFuer(bild, gefragt) : seite.name,
@@ -291,14 +292,14 @@ export async function zeigenStarten(seite, ids) {
   }
 
   if (mitlesenErlaubt() && !game.user.isGM) {
-    const namen = ids.map(id => game.users.get(id)?.name).filter(Boolean).join(", ");
+    const namen = ids.map(id => game.users.get(id)).filter(Boolean).map(anzeigeText).join(", ");
     ChatMessage.create({
       content: `${game.i18n.format("INPERSON.Show.GmLine", { was: seite.name, wem: namen })}
         <button type="button" class="inperson-zeigen-stop" data-inperson-schliessen="${token}">
           <i class="fa-solid fa-eye-slash"></i> ${game.i18n.localize("INPERSON.Show.StopAll")}
         </button>`,
       whisper: ChatMessage.getWhisperRecipients("GM"),
-      speaker: { alias: game.user.name }
+      speaker: { alias: anzeigeText(game.user) }
     });
   }
   return laufend;
@@ -523,7 +524,7 @@ export class ZeigenAuswahl extends HandlebarsApplicationMixin(ApplicationV2) {
     const vorgang = laufend?.von === game.user.id ? laufend : null;
     if (vorgang) {
       const stand = [...vorgang.stand.entries()].map(([id, wie]) => ({
-        name: game.users.get(id)?.name ?? game.i18n.localize("INPERSON.Show.Tv"),
+        ...(game.users.get(id) ? anzeigeName(game.users.get(id)) : { name: game.i18n.localize("INPERSON.Show.Tv"), konto: "" }),
         wie,
         text: game.i18n.localize(`INPERSON.Show.State.${wie}`)
       }));

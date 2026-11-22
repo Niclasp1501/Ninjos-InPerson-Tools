@@ -22,7 +22,7 @@
           <span class="inperson-dot" style="background:{{this.color}}"></span>
           <span class="inperson-pull-main">
             <span class="inperson-pull-name">
-              {{this.name}}
+              {{this.name}}{{#if this.konto}} <em class="inperson-konto">{{this.konto}}</em>{{/if}}
               {{#if this.isGM}}<em class="inperson-tag">GM</em>{{/if}}
               {{#if this.isMonitor}}<em class="inperson-tag muted">{{localize "INPERSON.Panel.MonitorTag"}}</em>{{/if}}
             </span>

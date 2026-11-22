@@ -25,6 +25,7 @@ import {
   uprightNote, uprightAllNotes
 } from "./rotation.js";
 import { openPullDialog } from "./pull.js";
+import { anzeigeText } from "./figuren.js";
 import { migrateFromOldId } from "./migrate.js";
 import { installLockViewInterop, onRotationChanged, describeInterop } from "./lockview.js";
 import { installScreensaver, screensaverControl, newPicture, holdScreensaver, wakeScreensaver } from "./screensaver.js";
@@ -1238,7 +1239,7 @@ Hooks.once("ready", () => {
  */
 function fillAccountChoices() {
   const options = { "": game.i18n.localize("INPERSON.Settings.NoAccount") };
-  for (const user of game.users) options[user.id] = user.name;
+  for (const user of game.users) options[user.id] = anzeigeText(user);
   for (const key of [SETTINGS.MONITOR_BM, SETTINGS.MONITOR_SC]) {
     const setting = game.settings.settings.get(`${MODULE_ID}.${key}`);
     if (setting) setting.choices = options;

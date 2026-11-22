@@ -20,6 +20,7 @@ import { MODULE_ID, SETTINGS } from "./const.js";
 import { still } from "./stille.js";
 import { isMonitorUser, isSceneDisplay } from "./state.js";
 import { DELIBERATE } from "./monitor.js";
+import { anzeigeName } from "./figuren.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -61,13 +62,13 @@ export class PullPlayersDialog extends HandlebarsApplicationMixin(ApplicationV2)
     const scene = this.#scene;
     const users = game.users
       .filter(u => u.active && u.id !== game.user.id)
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => anzeigeName(a).name.localeCompare(anzeigeName(b).name))
       .map(user => {
         const here = user.viewedScene === scene?.id;
         const monitor = isMonitorUser(user);
         return {
           id: user.id,
-          name: user.name,
+          ...anzeigeName(user),
           color: user.color?.css ?? user.color ?? "#888888",
           isGM: user.isGM,
           isMonitor: monitor,

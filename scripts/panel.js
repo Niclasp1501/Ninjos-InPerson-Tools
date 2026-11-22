@@ -8,6 +8,7 @@ import { openEbenenSteuerung } from "./ebenen-fenster.js";
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
 import { isSceneBackground } from "./blocker.js";
 import { openPullDialog } from "./pull.js";
+import { anzeigeName } from "./figuren.js";
 import {
   isPinned, setPinned, getSceneDisplay, getBattlemapDisplay, getPinnedScene
 } from "./monitor.js";
@@ -60,14 +61,14 @@ export class InPersonPanel extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const users = game.users
       .filter(u => u.active || !u.isGM)
-      .sort((a, b) => Number(b.active) - Number(a.active) || a.name.localeCompare(b.name))
+      .sort((a, b) => Number(b.active) - Number(a.active) || anzeigeName(a).name.localeCompare(anzeigeName(b).name))
       .map(user => {
         const state = resolveFor(user);
         const report = playerReports.get(user.id);
         const forced = getForcedState(user.id);
         return {
           id: user.id,
-          name: user.name,
+          ...anzeigeName(user),
           color: user.color?.css ?? user.color ?? "#888888",
           active: user.active,
           isGM: user.isGM,
