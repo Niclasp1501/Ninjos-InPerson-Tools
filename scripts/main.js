@@ -217,7 +217,7 @@ function registerSettings() {
     scope: "world", config: false, type: Boolean, default: true,
     onChange: () => { sichtschutzAbgleichen(); leisteAuffrischen(); }
   });
-  // Die Monitore ohne Monk's Common Display (monitoranzeige.js).
+  // Die Oberfläche der Monitore (monitoranzeige.js).
   S(SETTINGS.MONITOR_UI, {
     scope: "world", config: false, type: Object, default: MONITOR_UI_VORGABE,
     onChange: () => monitorAnzeigeAnwenden()

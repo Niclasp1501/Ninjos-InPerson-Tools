@@ -4358,7 +4358,7 @@ body.inperson-schutz-notes:not(.inperson-schutz-offen-notes) .inperson-eigene-no
   pointer-events: none;
 }
 
-/* ══ Die Monitore ohne Monk's Common Display (monitoranzeige.js) ═════ */
+/* ══ Die Oberfläche der Monitore (monitoranzeige.js) ═════════════════ */
 
 body.inperson-anzeige.inperson-ui-aus-controls #scene-controls,
 body.inperson-anzeige.inperson-ui-aus-players #players,

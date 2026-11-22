@@ -2,10 +2,8 @@
  * Was die beiden Monitore von Foundrys Oberfläche zeigen, und wie gezeigte
  * Bilder und Journale dort erscheinen und wieder gehen.
  *
- * Bis zum 22.11.2026 hat das Monk's Common Display erledigt. Ninjo wollte es
- * im freien Modul, „damit das auch standalone fähig ist“. Nachgebaut nach dem
- * Verhalten, ohne Code von dort (es steht unter GPL-3.0): siehe die Analyse
- * vom 20.11.2026.
+ * Ninjo wollte das im freien Modul, „damit das auch standalone fähig ist“
+ * (20.11.2026). Eigener Code; aus anderen Modulen ist nichts übernommen.
  *
  * **Erlaubnisliste statt Kampf gegen fremde Regeln.** Ausgeblendet werden
  * benannte Teile von Foundry, je Monitor wählbar. Der eine Sammelpunkt
@@ -14,9 +12,9 @@
  * Was wir selbst an `<body>` hängen, beginnt mit „inperson“ und bleibt so
  * sichtbar, ohne dass jede neue Anzeige einen Umweg braucht.
  *
- * **Läuft Monk's Common Display noch, tut dieser Teil nichts.** Zwei
- * Ausblenderegeln, die gegeneinander arbeiten, sind schlimmer als eine. Das
- * Einrichtungsfenster sagt es dann dazu.
+ * **Kümmert sich Monk's Common Display um die Monitore, tut dieser Teil
+ * nichts.** Zwei Module, die dieselben Leisten verwalten, kämen sich in die
+ * Quere. Das Einrichtungsfenster sagt es dann dazu.
  */
 
 import { MODULE_ID, SETTINGS, SOCKET } from "./const.js";
@@ -35,7 +33,7 @@ export const TEILE = [
 ];
 const ALLE = TEILE.map(t => t.id);
 
-/** Ab Werk ist auf beiden Monitoren alles aus, wie bisher mit Common Display. */
+/** Ab Werk ist auf beiden Monitoren alles aus: Ein Monitor zeigt das Spielfeld, nicht die Bedienung. */
 export const VORGABE = { sc: [...ALLE], bm: [...ALLE] };
 
 export const COMMON_DISPLAY = "monks-common-display";
@@ -169,6 +167,6 @@ export function installMonitorAnzeige() {
   });
   Hooks.on("closeApplicationV2", app => clearTimeout(_zeitgeber.get(app)));
   if (game.user.isGM && commonDisplayAktiv()) {
-    console.info(`${MODULE_ID} | Monk's Common Display ist aktiv; die Monitoranzeige von In-Person bleibt aus, bis es abgeschaltet ist.`);
+    console.info(`${MODULE_ID} | Monk's Common Display verwaltet die Monitore; die Monitoranzeige von In-Person bleibt dann aus.`);
   }
 }
