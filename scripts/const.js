@@ -194,6 +194,22 @@ export const SETTINGS = {
   /** Chat aufklappen, sobald der Spieler selbst etwas würfelt oder benutzt (world). */
   SHEETVIEW_CHAT_ON_USE: "sheetViewChatOnUse",
   SHEETVIEW_EDIT_PEN: "sheetViewEditPen",
+  /**
+   * Dürfen Spieler ihr Gerät selbst abdecken und Bereiche ihres Bogens
+   * verschwimmen lassen (world)? Ab Werk an; siehe sichtschutz.js.
+   */
+  PRIVACY_ALLOW: "privacyAllow",
+  /**
+   * Welche Teile der Oberfläche die Monitore ausblenden, je Monitor:
+   * `{ sc: string[], bm: string[] }` (world). Siehe monitoranzeige.js.
+   */
+  MONITOR_UI: "monitorUi",
+  /** Gezeigte Bilder und Journale auf den Monitoren groß und ohne Fensterkopf (world). */
+  MONITOR_LARGE: "monitorShowLarge",
+  /** Sekunden, bis ein gezeigtes Bild auf dem Monitor von selbst zugeht; 0 heißt nie (world). */
+  MONITOR_CLOSE_IMAGE: "monitorCloseImage",
+  /** Dasselbe für Journale (world). */
+  MONITOR_CLOSE_JOURNAL: "monitorCloseJournal",
   SHOW_ALLOW: "showAllow",
   SHOW_TV: "showTv",
   SHOW_GM_COPY: "showGmCopy",
@@ -233,6 +249,8 @@ export const SOCKET = {
   SHOW_OFFER: "showOffer",
   SHOW_ANSWER: "showAnswer",
   SHOW_CLOSE: "showClose",
+  /** Die Spielleitung schließt alles Gezeigte auf den Monitoren (monitoranzeige.js). */
+  MONITOR_CLOSE: "monitorClose",
   SCREENSAVER: "screensaver",
   /**
    * The gamemaster starting or ending the screensaver on the scene display by

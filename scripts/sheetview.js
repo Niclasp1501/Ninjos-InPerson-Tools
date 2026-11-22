@@ -29,6 +29,7 @@ import { mountClockInto } from "./clock.js";
 import { queueSweep, removeShells, hideShells, isGhost } from "./shells.js";
 import { installZug, zugStarten, zugBeenden } from "./sheetview-zug.js";
 import { tastaturStarten, tastaturBeenden } from "./tastatur.js";
+import { sichtschutzFuer, selbstblendeSetzen, sichtschutzFeldFuellen } from "./sichtschutz.js";
 
 const BODY_CLASS = "inperson-sheetview";
 const BAR_ID = "inperson-sheetview-bar";
@@ -196,7 +197,10 @@ const GRUPPEN = {
     { icon: "fa-users",        titel: "INPERSON.SheetView.WhoHint",   flaeche: "chars" },
     { icon: "fa-comments",     titel: "INPERSON.SheetView.ChatHint",  flaeche: "chat" },
     { icon: "fa-book-open",    titel: "INPERSON.SheetView.NotesHint", flaeche: "journal" },
-    { icon: "fa-right-left",   titel: "INPERSON.SheetView.TradeHint", tun: () => fensterOeffnen(openTrade) }
+    { icon: "fa-right-left",   titel: "INPERSON.SheetView.TradeHint", tun: () => fensterOeffnen(openTrade) },
+    // Der Sichtschutz steht bei den täglichen Knöpfen, weil er in Eile
+    // gebraucht wird: aufstehen, tippen, gehen (sichtschutz.js).
+    { icon: "fa-user-lock",    titel: "INPERSON.Privacy.CoverNow",    tun: () => selbstblendeSetzen(), wenn: () => sichtschutzFuer(game.user) }
   ],
   extra: [
     { icon: "fa-magnifying-glass-minus", titel: "INPERSON.SheetView.Smaller",    tun: () => zoomen(-0.1) },
@@ -206,6 +210,7 @@ const GRUPPEN = {
     // käme ein Spieler in der Ansicht an nichts davon heran.
     { icon: "fa-volume-high",            titel: "INPERSON.SheetView.Volume",     tun: lautstaerke },
     { icon: "fa-up-right-and-down-left-from-center", titel: "INPERSON.SheetView.BarSize", tun: leistengroesse },
+    { icon: "fa-user-shield",            titel: "INPERSON.Privacy.Settings",     tun: sichtschutz, wenn: () => sichtschutzFuer(game.user) },
     { icon: "fa-gear",                   titel: "INPERSON.SheetView.Settings",   tun: einstellungen },
     { icon: "fa-expand",                 titel: "INPERSON.SheetView.Fullscreen", tun: vollbild },
     { icon: "fa-right-from-bracket",     titel: "INPERSON.SheetView.LogOut",     tun: abmelden }
@@ -319,6 +324,7 @@ function gruppeZeichnen(bar) {
   const reihe = bar.querySelector(".inperson-sv-reihe");
   reihe.replaceChildren();
   for (const k of GRUPPEN[gruppe]) {
+    if (k.wenn && !k.wenn()) continue;
     reihe.append(knopf({
       icon: k.icon,
       titel: game.i18n.localize(k.titel),
@@ -809,6 +815,7 @@ async function vollbild() {
  */
 const LAUT_ID = "inperson-sv-lautstaerke";
 const GROESSE_ID = "inperson-sv-groesse";
+const SCHUTZ_ID = "inperson-sv-sichtschutz";
 
 /**
  * Ein kleines Feld unter (oder über) der Leiste, das sich von selbst schließt.
@@ -875,7 +882,9 @@ function feldPlatzieren(feld) {
   const boden = u && u.top >= b.bottom - 4 && u.top <= b.bottom + 90 ? u.bottom : b.bottom;
   const dach = u && u.bottom <= b.top + 4 && u.bottom >= b.top - 90 ? u.top : b.top;
   const passtUnten = boden + 8 + f.height < window.innerHeight;
-  const oben = passtUnten ? boden + 8 : dach - 8 - f.height;
+  // Passt es weder darunter noch darüber, oben ans Bild: Das Feld scrollt
+  // dann in sich, statt über den Rand hinauszuragen.
+  const oben = passtUnten ? boden + 8 : Math.max(8, dach - 8 - f.height);
   anker.style.left = `${Math.round(links)}px`;
   anker.style.top = `${Math.round(oben)}px`;
 }
@@ -990,6 +999,20 @@ function leistengroesse() {
       }
     }));
   });
+}
+
+/** Abdecken, verschwommene Bereiche, Blende nach Ruhe: alles je Spieler (sichtschutz.js). */
+function sichtschutz() {
+  feldOeffnen(SCHUTZ_ID, feld => sichtschutzFeldFuellen(feld, {
+    schalterZeile,
+    nachAbdecken: () => feldSchliessen(SCHUTZ_ID)
+  }));
+}
+
+/** Die Leiste neu zeichnen, etwa wenn die Spielleitung den Sichtschutz erlaubt oder verbietet. */
+export function leisteAuffrischen() {
+  const bar = document.getElementById(BAR_ID);
+  if (bar) gruppeZeichnen(bar);
 }
 
 async function einstellungen() {
@@ -1312,6 +1335,7 @@ async function beenden() {
   for (const id of [BAR_ANKER, UHR_ANKER, BAR_ID, UHR_ID]) document.getElementById(id)?.remove();
   feldSchliessen(LAUT_ID);
   feldSchliessen(GROESSE_ID);
+  feldSchliessen(SCHUTZ_ID);
   document.documentElement.style.removeProperty("--inperson-sv-leiste");
   document.documentElement.style.removeProperty("--inperson-sv-uhr");
   blattApp()?.element?.classList.remove("inperson-stage-sheet");

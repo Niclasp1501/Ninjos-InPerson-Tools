@@ -4143,3 +4143,335 @@ body:has(> #inperson-sheetview-uhr-anker) .calendaria-hud:not(.inperson-fremde-k
   align-items: center;
   padding: 5px 0;
 }
+
+/* ══ Sichtschutz am eigenen Gerät (sichtschutz.js, 22.11.2026) ════════ */
+
+/* Die Selbstblende: ein modaler Dialog in der obersten Schicht. Die Anzeige
+   setzt sichtschutz.js am Element, damit kein fremdes !important sie schluckt. */
+#inperson-selbstblende {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 24px 16px;
+  border: 0;
+  box-sizing: border-box;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background: #0b0908;
+  color: #e6e2d8;
+  font-family: var(--ninjo-schrift);
+  overflow: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+#inperson-selbstblende:focus {
+  outline: none;
+}
+
+#inperson-selbstblende::backdrop {
+  background: #0b0908;
+}
+
+#inperson-selbstblende img {
+  max-width: min(46vw, 320px);
+  max-height: 36vh;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity .3s;
+  pointer-events: none;
+}
+
+#inperson-selbstblende img.ist-geladen {
+  opacity: 0.85;
+}
+
+.inperson-selbstblende-text {
+  margin: 0;
+  max-width: 34rem;
+  font-size: 1.15rem;
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* Halten zum Aufheben: Der Rand füllt sich im Uhrzeigersinn. */
+.inperson-selbstblende-halten {
+  --inperson-halten: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0 22px;
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background:
+    linear-gradient(#1c1714, #1c1714) padding-box,
+    conic-gradient(#d4af37 calc(var(--inperson-halten) * 360deg), rgb(255 255 255 / 18%) 0) border-box;
+  color: #e6e2d8;
+  font-family: var(--ninjo-schrift);
+  font-size: 1rem;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+
+.inperson-selbstblende-halten:focus-visible {
+  outline: 2px solid #d4af37;
+  outline-offset: 3px;
+}
+
+.inperson-selbstblende-halten.wird-gehalten i {
+  color: #d4af37;
+}
+
+/* Das Feld der Blattansicht: ein Knopf oben, darunter die Bereiche. */
+#inperson-sv-sichtschutz {
+  max-height: calc(100vh - 16px);
+  max-height: calc(100dvh - 16px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.inperson-sv-feldknopf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--ninjo-tippziel, 36px);
+  margin: 0;
+  border: 1px solid #a51414;
+  border-radius: 10px;
+  background: #8B0000;
+  color: #ffffff;
+  font-family: var(--ninjo-schrift);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.inperson-sv-feldtitel {
+  margin: 2px 0 0;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.inperson-sv-auswahl {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgb(255 255 255 / 10%);
+}
+
+.inperson-sv-auswahl span {
+  flex: 1 1 auto;
+}
+
+.inperson-sv-auswahl select {
+  flex: 0 0 auto;
+  width: auto;
+  min-height: 30px;
+  background: rgb(255 255 255 / 12%);
+  color: #e6e2d8;
+  border: 1px solid rgb(255 255 255 / 25%);
+  border-radius: 8px;
+}
+
+.inperson-sv-auswahl select option {
+  color: #1a1a1a;
+}
+
+/*
+ * Verschwommene Bereiche. Die Klassen stehen am body, nicht am Bogen: Tidy5e
+ * zeichnet seine Reiter neu und nähme eine Klasse am Reiter wieder mit.
+ * Jeder Bereich hat zwei Wähler, Tidy5e und dnd5e selbst, und dieselben
+ * Wähler stehen in sichtschutz.js (WAHL) für das Antippen.
+ */
+body.inperson-schutz-actions:not(.inperson-schutz-offen-actions) .sheet.actor [data-tab-contents-for="actions"],
+body.inperson-schutz-inventory:not(.inperson-schutz-offen-inventory) .sheet.actor [data-tab-contents-for="inventory"],
+body.inperson-schutz-inventory:not(.inperson-schutz-offen-inventory) .sheet.actor .tab[data-tab="inventory"],
+body.inperson-schutz-spells:not(.inperson-schutz-offen-spells) .sheet.actor [data-tab-contents-for="spellbook"],
+body.inperson-schutz-spells:not(.inperson-schutz-offen-spells) .sheet.actor .tab[data-tab="spells"],
+body.inperson-schutz-features:not(.inperson-schutz-offen-features) .sheet.actor [data-tab-contents-for="features"],
+body.inperson-schutz-features:not(.inperson-schutz-offen-features) .sheet.actor .tab[data-tab="features"],
+body.inperson-schutz-effects:not(.inperson-schutz-offen-effects) .sheet.actor [data-tab-contents-for="effects"],
+body.inperson-schutz-effects:not(.inperson-schutz-offen-effects) .sheet.actor .tab[data-tab="effects"],
+body.inperson-schutz-biography:not(.inperson-schutz-offen-biography) .sheet.actor [data-tab-contents-for="biography"],
+body.inperson-schutz-biography:not(.inperson-schutz-offen-biography) .sheet.actor .tab[data-tab="biography"],
+body.inperson-schutz-notes:not(.inperson-schutz-offen-notes) .inperson-eigene-notiz .window-content {
+  position: relative;
+  cursor: pointer;
+}
+
+body.inperson-schutz-actions:not(.inperson-schutz-offen-actions) .sheet.actor [data-tab-contents-for="actions"] > *,
+body.inperson-schutz-inventory:not(.inperson-schutz-offen-inventory) .sheet.actor [data-tab-contents-for="inventory"] > *,
+body.inperson-schutz-inventory:not(.inperson-schutz-offen-inventory) .sheet.actor .tab[data-tab="inventory"] > *,
+body.inperson-schutz-spells:not(.inperson-schutz-offen-spells) .sheet.actor [data-tab-contents-for="spellbook"] > *,
+body.inperson-schutz-spells:not(.inperson-schutz-offen-spells) .sheet.actor .tab[data-tab="spells"] > *,
+body.inperson-schutz-features:not(.inperson-schutz-offen-features) .sheet.actor [data-tab-contents-for="features"] > *,
+body.inperson-schutz-features:not(.inperson-schutz-offen-features) .sheet.actor .tab[data-tab="features"] > *,
+body.inperson-schutz-effects:not(.inperson-schutz-offen-effects) .sheet.actor [data-tab-contents-for="effects"] > *,
+body.inperson-schutz-effects:not(.inperson-schutz-offen-effects) .sheet.actor .tab[data-tab="effects"] > *,
+body.inperson-schutz-biography:not(.inperson-schutz-offen-biography) .sheet.actor [data-tab-contents-for="biography"] > *,
+body.inperson-schutz-biography:not(.inperson-schutz-offen-biography) .sheet.actor .tab[data-tab="biography"] > *,
+body.inperson-schutz-notes:not(.inperson-schutz-offen-notes) .inperson-eigene-notiz .window-content > * {
+  filter: blur(9px);
+  pointer-events: none;
+  user-select: none;
+}
+
+body.inperson-schutz-actions:not(.inperson-schutz-offen-actions) .sheet.actor [data-tab-contents-for="actions"]::after,
+body.inperson-schutz-inventory:not(.inperson-schutz-offen-inventory) .sheet.actor [data-tab-contents-for="inventory"]::after,
+body.inperson-schutz-inventory:not(.inperson-schutz-offen-inventory) .sheet.actor .tab[data-tab="inventory"]::after,
+body.inperson-schutz-spells:not(.inperson-schutz-offen-spells) .sheet.actor [data-tab-contents-for="spellbook"]::after,
+body.inperson-schutz-spells:not(.inperson-schutz-offen-spells) .sheet.actor .tab[data-tab="spells"]::after,
+body.inperson-schutz-features:not(.inperson-schutz-offen-features) .sheet.actor [data-tab-contents-for="features"]::after,
+body.inperson-schutz-features:not(.inperson-schutz-offen-features) .sheet.actor .tab[data-tab="features"]::after,
+body.inperson-schutz-effects:not(.inperson-schutz-offen-effects) .sheet.actor [data-tab-contents-for="effects"]::after,
+body.inperson-schutz-effects:not(.inperson-schutz-offen-effects) .sheet.actor .tab[data-tab="effects"]::after,
+body.inperson-schutz-biography:not(.inperson-schutz-offen-biography) .sheet.actor [data-tab-contents-for="biography"]::after,
+body.inperson-schutz-biography:not(.inperson-schutz-offen-biography) .sheet.actor .tab[data-tab="biography"]::after,
+body.inperson-schutz-notes:not(.inperson-schutz-offen-notes) .inperson-eigene-notiz .window-content::after {
+  content: var(--inperson-schutz-text, "");
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  max-width: calc(100% - 32px);
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgb(20 20 24 / 88%);
+  color: #e6e2d8;
+  font-family: var(--ninjo-schrift);
+  font-size: 14px;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* ══ Die Monitore ohne Monk's Common Display (monitoranzeige.js) ═════ */
+
+body.inperson-anzeige.inperson-ui-aus-controls #scene-controls,
+body.inperson-anzeige.inperson-ui-aus-players #players,
+body.inperson-anzeige.inperson-ui-aus-navigation #scene-navigation,
+body.inperson-anzeige.inperson-ui-aus-hotbar #hotbar,
+body.inperson-anzeige.inperson-ui-aus-sidebar #sidebar,
+body.inperson-anzeige.inperson-ui-aus-chat #chat-notifications,
+body.inperson-anzeige.inperson-ui-aus-cameras #camera-views {
+  display: none !important;
+}
+
+/*
+ * Einblendungen anderer Module: jedes direkte Kind von body, das nicht zu
+ * Foundrys Spielfeld, zu einem Fenster, zu Foundrys Leisten oder zu uns
+ * gehört. Unsere Elemente beginnen alle mit „inperson“ (auch die von
+ * Premium); so bleibt jede neue Anzeige von uns sichtbar.
+ */
+body.inperson-anzeige.inperson-ui-aus-foreign > :not(#board):not(#hud):not(#interface):not(#notifications):not(#tooltip):not(#camera-views):not(#pause):not(.application):not(dialog):not(script):not(template):not([id^="inperson"]):not([class*="inperson"]) {
+  display: none !important;
+}
+
+/* Gezeigte Bilder und Journale groß und ohne Fensterkopf. Bedient wird am
+   Monitor nichts; geschlossen wird über die Spielleitung oder die Zeit. */
+body.inperson-anzeige.inperson-gezeigt-gross .inperson-monitor-gezeigt.ist-gross > .window-header {
+  display: none !important;
+}
+
+body.inperson-anzeige.inperson-gezeigt-gross .inperson-monitor-bild.ist-gross {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #000000 !important;
+  box-shadow: none !important;
+}
+
+body.inperson-anzeige.inperson-gezeigt-gross .inperson-monitor-bild.ist-gross > .window-content {
+  height: 100%;
+  padding: 0;
+  background: transparent;
+}
+
+/* Foundry legt das Bild in eine figure mit Innenabstand, die mit dem Bild
+   wächst; ohne die Deckelung lief ein hohes Bild unten aus dem Monitor. */
+body.inperson-anzeige.inperson-gezeigt-gross .inperson-monitor-bild.ist-gross figure {
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body.inperson-anzeige.inperson-gezeigt-gross .inperson-monitor-bild.ist-gross img {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+}
+
+body.inperson-anzeige.inperson-gezeigt-gross .inperson-monitor-journal.ist-gross {
+  left: 5vw !important;
+  top: 4vh !important;
+  width: 90vw !important;
+  height: 92vh !important;
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* Einrichtung: die Tabelle der Teile je Monitor. */
+.inperson-einrichten .inperson-monitorui-tabelle {
+  width: 100%;
+  margin: 4px 0 8px;
+  border-collapse: collapse;
+  background: transparent;
+  border: 0;
+}
+
+.inperson-einrichten .inperson-monitorui-tabelle th,
+.inperson-einrichten .inperson-monitorui-tabelle td {
+  padding: 5px 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  text-align: center;
+}
+
+.inperson-einrichten .inperson-monitorui-tabelle th[scope="row"] {
+  text-align: left;
+  font-weight: 600;
+}
+
+.inperson-einrichten .inperson-monitorui-tabelle thead th:first-child {
+  text-align: left;
+}
+
+.inperson-einrichten .inperson-monitorui-tabelle thead th {
+  border-top: 0;
+  font-size: 0.9em;
+  color: var(--ninjo-text-blass, #5f5a52);
+}
+
+.inperson-einrichten .inperson-monitorui-warnung {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 8px 0;
+  padding: 8px 12px;
+  border: 1px solid #b8860b;
+  border-radius: 8px;
+  background: rgb(212 175 55 / 14%);
+}

@@ -33,6 +33,7 @@ import { previewCover } from "./screensaver.js";
 import { einstellungsTeile, hatEinstellungsTeile } from "./erweiterung.js";
 import { syncClock, refreshClock } from "./clock.js";
 import { syncTradeButton } from "./trade-start.js";
+import { TEILE as MONITOR_TEILE, teileLesen, commonDisplayAktiv } from "./monitoranzeige.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -102,6 +103,16 @@ export function kontenAuswerten(daten, kontoIds, bisher = {}) {
     if (daten[`blatt.${id}`]) sheetUsers[id] = true;
   }
   return { sc, bm, forced, sheetUsers };
+}
+
+/**
+ * Aus den Häkchen `ui.sc.<teil>` und `ui.bm.<teil>` die Liste je Monitor.
+ * @param {object} daten Formulardaten
+ * @returns {{sc: string[], bm: string[]}}
+ */
+export function monitorTeileAuswerten(daten) {
+  const liste = art => MONITOR_TEILE.filter(t => !!daten[`ui.${art}.${t.id}`]).map(t => t.id);
+  return { sc: liste("sc"), bm: liste("bm") };
 }
 
 /* -------------------------------------------- */
@@ -236,6 +247,16 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
       showAllow: get(SETTINGS.SHOW_ALLOW),
       showTv: get(SETTINGS.SHOW_TV),
       showGmCopy: get(SETTINGS.SHOW_GM_COPY),
+      privacyAllow: get(SETTINGS.PRIVACY_ALLOW) !== false,
+      // Oberfläche der Monitore
+      commonDisplay: commonDisplayAktiv(),
+      monitorTeile: (() => {
+        const wahl = teileLesen(get(SETTINGS.MONITOR_UI));
+        return MONITOR_TEILE.map(t => ({ ...t, sc: wahl.sc.includes(t.id), bm: wahl.bm.includes(t.id) }));
+      })(),
+      monitorShowLarge: get(SETTINGS.MONITOR_LARGE) !== false,
+      monitorCloseImage: get(SETTINGS.MONITOR_CLOSE_IMAGE) || 0,
+      monitorCloseJournal: get(SETTINGS.MONITOR_CLOSE_JOURNAL) || 0,
       strip: get(SETTINGS.CLOCK_STRIP),
       date: get(SETTINGS.CLOCK_DATE),
       time: get(SETTINGS.CLOCK_TIME),
@@ -519,6 +540,11 @@ export class InPersonEinrichten extends HandlebarsApplicationMixin(ApplicationV2
     await set(SETTINGS.SHOW_ALLOW, !!d.showAllow);
     await set(SETTINGS.SHOW_TV, !!d.showTv);
     await set(SETTINGS.SHOW_GM_COPY, !!d.showGmCopy);
+    await set(SETTINGS.PRIVACY_ALLOW, !!d.privacyAllow);
+    await set(SETTINGS.MONITOR_UI, monitorTeileAuswerten(d));
+    await set(SETTINGS.MONITOR_LARGE, !!d.monitorShowLarge);
+    await set(SETTINGS.MONITOR_CLOSE_IMAGE, Math.min(3600, Math.max(0, Math.round(zahl(d.monitorCloseImage)))));
+    await set(SETTINGS.MONITOR_CLOSE_JOURNAL, Math.min(3600, Math.max(0, Math.round(zahl(d.monitorCloseJournal)))));
     await set(SETTINGS.SHEETVIEW_USERS, konten.sheetUsers);
     // Der Hauptschalter der Blattansicht nach der Liste: Sein onChange baut die
     // Ansicht auf den Geräten, und die soll die Liste schon kennen.

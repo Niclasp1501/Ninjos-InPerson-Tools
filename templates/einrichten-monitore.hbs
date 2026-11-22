@@ -218,5 +218,63 @@
     </div>
   </section>
 
+  {{!-- Was die Monitore von Foundrys Oberfläche zeigen. Ersatz für Monk's Common Display (monitoranzeige.js). --}}
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-window-restore" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.MonitorUi.Title"}}</h3>
+        <p>{{localize "INPERSON.MonitorUi.Hint"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      {{#if commonDisplay}}
+        <p class="inperson-monitorui-warnung" role="note">
+          <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+          {{localize "INPERSON.MonitorUi.CommonDisplayActive"}}
+        </p>
+      {{/if}}
+      <table class="inperson-monitorui-tabelle">
+        <thead>
+          <tr>
+            <th scope="col">{{localize "INPERSON.MonitorUi.Hide"}}</th>
+            <th scope="col">{{localize "INPERSON.MonitorUi.SceneDisplay"}}</th>
+            <th scope="col">{{localize "INPERSON.MonitorUi.MapDisplay"}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each monitorTeile}}
+            <tr>
+              <th scope="row">{{localize this.titel}}</th>
+              <td><input type="checkbox" name="ui.sc.{{this.id}}" aria-label="{{localize 'INPERSON.MonitorUi.SceneDisplay'}}: {{localize this.titel}}" {{#if this.sc}}checked{{/if}}></td>
+              <td><input type="checkbox" name="ui.bm.{{this.id}}" aria-label="{{localize 'INPERSON.MonitorUi.MapDisplay'}}: {{localize this.titel}}" {{#if this.bm}}checked{{/if}}></td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <div class="form-group">
+        <label for="inperson-monitor-gross">{{localize "INPERSON.MonitorUi.Large"}}</label>
+        <div class="form-fields"><input type="checkbox" id="inperson-monitor-gross" name="monitorShowLarge" {{#if monitorShowLarge}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.MonitorUi.LargeHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label for="inperson-monitor-bildzu">{{localize "INPERSON.MonitorUi.CloseImage"}}</label>
+        <div class="form-fields">
+          <input type="number" id="inperson-monitor-bildzu" name="monitorCloseImage" value="{{monitorCloseImage}}" min="0" max="3600" step="1">
+          <span class="units">{{localize "INPERSON.MonitorUi.Seconds"}}</span>
+        </div>
+        <p class="hint">{{localize "INPERSON.MonitorUi.CloseHint"}}</p>
+      </div>
+      <div class="form-group">
+        <label for="inperson-monitor-journalzu">{{localize "INPERSON.MonitorUi.CloseJournal"}}</label>
+        <div class="form-fields">
+          <input type="number" id="inperson-monitor-journalzu" name="monitorCloseJournal" value="{{monitorCloseJournal}}" min="0" max="3600" step="1">
+          <span class="units">{{localize "INPERSON.MonitorUi.Seconds"}}</span>
+        </div>
+        <p class="hint">{{localize "INPERSON.MonitorUi.CloseHint"}}</p>
+      </div>
+    </div>
+  </section>
+
   <div class="inperson-fremde-teile" data-seite="displays"></div>
 </section>

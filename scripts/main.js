@@ -45,8 +45,10 @@ import {
 } from "./actor-panel.js";
 import { installClock, syncClock, refreshClock, bewegungAnwenden } from "./clock.js";
 import { willkommenEinrichten, willkommenZeigen } from "./willkommen.js";
-import { installSheetView, syncSheetView, sheetViewApi, federAnwenden } from "./sheetview.js";
+import { installSheetView, syncSheetView, sheetViewApi, federAnwenden, leisteAuffrischen } from "./sheetview.js";
 import { installZeigen, zeigenSocket } from "./zeigen.js";
+import { installSichtschutz, sichtschutzFrueh, sichtschutzAbgleichen, sichtschutzApi } from "./sichtschutz.js";
+import { installMonitorAnzeige, monitorAnzeigeAnwenden, monitorSocket, aufMonitorenSchliessen, VORGABE as MONITOR_UI_VORGABE } from "./monitoranzeige.js";
 import { installTradeButton, syncTradeButton, openTrade } from "./trade-start.js";
 import { fensterPassenEinrichten } from "./fensterpassen.js";
 import { bewegungsweiteEinrichten } from "./bewegungsweite.js";
@@ -88,6 +90,9 @@ function onRelevantSettingChanged() {
 function markSceneDisplayBody() {
   document.body?.classList.toggle("inperson-scenedisplay", isSceneDisplay(game.user));
   document.body?.classList.toggle("inperson-anzeige", isMonitorUser(game.user));
+  // Welches Konto ein Monitor ist, entscheidet auch, was er ausblendet und ob
+  // ein Spieler den Sichtschutz bekommt.
+  monitorAnzeigeAnwenden();
 }
 
 function registerSettings() {
@@ -206,6 +211,23 @@ function registerSettings() {
   S(SETTINGS.SHOW_ALLOW, { scope: "world", config: false, type: Boolean, default: true });
   S(SETTINGS.SHOW_TV, { scope: "world", config: false, type: Boolean, default: true });
   S(SETTINGS.SHOW_GM_COPY, { scope: "world", config: false, type: Boolean, default: true });
+  // Sichtschutz am eigenen Gerät (sichtschutz.js). Ab Werk an: Er deckt nur
+  // ab, was dem Spieler selbst gehört.
+  S(SETTINGS.PRIVACY_ALLOW, {
+    scope: "world", config: false, type: Boolean, default: true,
+    onChange: () => { sichtschutzAbgleichen(); leisteAuffrischen(); }
+  });
+  // Die Monitore ohne Monk's Common Display (monitoranzeige.js).
+  S(SETTINGS.MONITOR_UI, {
+    scope: "world", config: false, type: Object, default: MONITOR_UI_VORGABE,
+    onChange: () => monitorAnzeigeAnwenden()
+  });
+  S(SETTINGS.MONITOR_LARGE, {
+    scope: "world", config: false, type: Boolean, default: true,
+    onChange: () => monitorAnzeigeAnwenden()
+  });
+  S(SETTINGS.MONITOR_CLOSE_IMAGE, { scope: "world", config: false, type: Number, default: 0 });
+  S(SETTINGS.MONITOR_CLOSE_JOURNAL, { scope: "world", config: false, type: Number, default: 0 });
   S(SETTINGS.SHEETVIEW_CHAT_ON_USE, {
     scope: "world",
     config: false,
@@ -778,6 +800,10 @@ function onSocket(payload) {
     zeigenSocket(payload);
     return;
   }
+  if (payload?.type === SOCKET.MONITOR_CLOSE) {
+    monitorSocket(payload);
+    return;
+  }
   if (payload?.type === SOCKET.SCREENSAVER_CONTROL) {
     screensaverControl(payload);
     return;
@@ -953,6 +979,10 @@ Hooks.once("ready", async () => {
     // sheetview.js. FANG und NDRS melden sich hier an, statt in unserem DOM
     // nach einem Element zu suchen.
     sheetView: sheetViewApi,
+    // Sichtschutz des eigenen Geräts: cover(), uncover(), isCovered().
+    privacy: sichtschutzApi,
+    // Alles Gezeigte auf beiden Monitoren schließen (nur Spielleitung).
+    closeShownOnDisplays: aufMonitorenSchliessen,
     // Vorschaubild einer Szene neu zeichnen, wie der Eintrag im Szenenverzeichnis.
     generateThumbnail: szene => vorschaubildErzeugen(
       typeof szene === "string" ? (game.scenes.get(szene) ?? fromUuidSync(szene)) : szene),
@@ -986,6 +1016,8 @@ Hooks.once("ready", async () => {
   schritt("installClock", installClock);
   schritt("installTradeButton", installTradeButton);
   schritt("installSheetView", installSheetView);
+  schritt("installSichtschutz", installSichtschutz);
+  schritt("installMonitorAnzeige", installMonitorAnzeige);
   // Lock View may not have built its global yet when our `ready` runs; the
   // canvasReady attempt below is the second chance. Both are no-ops without it.
   schritt("installLockViewInterop", installLockViewInterop);
@@ -1411,6 +1443,10 @@ Hooks.once("setup", () => {
   sceneTabEinrichten();
   // Vor dem ersten Zeichnen, damit die Tokens schon mit diesem Lineal entstehen.
   schritt("bewegungsweiteEinrichten", bewegungsweiteEinrichten);
+  // Noch vor dem ersten Bild: Ein Monitor zeigt Foundrys Leisten gar nicht
+  // erst, und ein abgedecktes Tablet, das neu lädt, zeigt den Bogen nicht.
+  schritt("monitorAnzeigeAnwenden", monitorAnzeigeAnwenden);
+  schritt("sichtschutzFrueh", sichtschutzFrueh);
 });
 Hooks.on("renderSceneConfig", onRenderSceneConfig);
 

@@ -84,6 +84,23 @@
 
   <section class="inperson-funktion">
     <header class="inperson-funktion-kopf">
+      <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+      <div class="inperson-funktion-titel">
+        <h3>{{localize "INPERSON.Privacy.Title"}}</h3>
+        <p>{{localize "INPERSON.Privacy.SetupHint"}}</p>
+      </div>
+    </header>
+    <div class="inperson-funktion-inhalt">
+      <div class="form-group">
+        <label for="inperson-privacy-allow">{{localize "INPERSON.Privacy.Allow"}}</label>
+        <div class="form-fields"><input type="checkbox" id="inperson-privacy-allow" name="privacyAllow" {{#if privacyAllow}}checked{{/if}}></div>
+        <p class="hint">{{localize "INPERSON.Privacy.AllowHint"}}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="inperson-funktion">
+    <header class="inperson-funktion-kopf">
       <i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i>
       <div class="inperson-funktion-titel">
         <h3>{{localize "INPERSON.Setup.AlteGeraete"}}</h3>

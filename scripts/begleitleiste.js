@@ -42,6 +42,7 @@ import {
 } from "./monitor.js";
 import { thumbOf, withFallback } from "./scene-field.js";
 import { leistenKnoepfe } from "./erweiterung.js";
+import { schliessenKnopf } from "./monitoranzeige.js";
 
 const LEISTE_ID = "inperson-begleitleiste";
 const PLATZ_KEY = `${MODULE_ID}.begleitleiste.platz`;
@@ -163,6 +164,9 @@ function zeichnen() {
   // Knöpfe von Zusatzmodulen (erweiterung.js) nach den Szenen, vor dem Schoner.
   const extras = [...fremde];
   if (schoner) extras.push(schonerKnopf());
+  // Gezeigte Bilder und Journale auf beiden Monitoren schließen
+  // (monitoranzeige.js). Lässt die Leiste nicht von selbst erscheinen.
+  if (getSceneDisplay()) extras.push(schliessenKnopf());
 
   const raster = knoepfe.length >= RASTER_AB;
   leiste.classList.toggle("ist-raster", raster);

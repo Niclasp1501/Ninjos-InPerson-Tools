@@ -6,6 +6,28 @@
 
 ## Unreleased
 
+- **Players can cover their own screen.** The sheet view has a new button
+  that lays a dark cover with the table logo over the device, for when a
+  player steps away or wants to keep their notes from the neighbours. Only
+  holding the button on the cover for a moment lifts it, so a stray tap does
+  not. A reload keeps it in place. If the game master's cover from Premium is
+  up, that one always wins. Optionally the cover comes by itself after 2, 5,
+  10 or 15 minutes without use.
+- **Blur parts of your own sheet.** Under "Privacy" in the sheet view each
+  player picks what stays blurred: actions, inventory, spells, features,
+  effects, biography and their own journal notes. A tap reveals that part for
+  30 seconds after the last touch. The choice belongs to the player and
+  follows them to every device. The game master can switch the whole privacy
+  feature off in the setup window.
+- **The displays no longer need Monk's Common Display.** In the setup window,
+  under Displays, you choose per display which parts of Foundry's interface
+  disappear: scene controls, player list, scene navigation, macro bar,
+  sidebar, chat pop-ups, camera views and overlays of other modules. Shown
+  pictures fill the display and shown journals nearly do, without a window
+  header, and both can close by themselves after a set time. A new button in
+  the companion bar closes everything shown on both displays. While Monk's
+  Common Display is still active, all of this stays off and the setup window
+  says so.
 - **Show a picture at the table.** The picture window now has an eye in its
   header, next to the close button, for the game master. It opens the same
   window as showing a journal page: pick who gets it, players are asked
