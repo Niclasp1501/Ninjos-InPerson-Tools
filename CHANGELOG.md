@@ -4,6 +4,22 @@
 > the people who get offered an update in the Foundry catalogue, and most of
 > them do not read German. Older entries stay as they are.
 
+## 14.2611.83 - 2026-11-22
+
+- **Players are listed by their character.** When you show a page, bring
+  players to a scene, look at the In-Person window, or pick accounts in the
+  setup window, each player now appears under the name of their character,
+  with the login name small behind it. Accounts without a character, such as
+  the displays, keep their login name. At the table nobody thinks in login
+  names.
+- **Minimized windows stay minimized.** Fitting a window to the screen set a
+  height on every redraw, even on a minimized window, which then grew into
+  half a window. Minimized windows are now left alone.
+- **Clearer wording for the display interface.** The setup window describes
+  the option to hide Foundry's interface on the displays on its own terms,
+  in all ten languages, and explains plainly what happens when another
+  module already looks after the displays.
+
 ## 14.2611.82 - 2026-11-22
 
 - **Players can cover their own screen.** The sheet view has a new button
